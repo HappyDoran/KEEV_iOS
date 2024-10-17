@@ -11,12 +11,14 @@ import Foundation
 ///
 /// URL, header, body를 동봉하여 선택한 method 방식으로 request 한다.
 ///
-/// - Note: URLComposable 프로토콜을 상속하여 asURL() function을 사용하여 URL을 만들 수 있다.
+/// - Note: URLComposable 프로토콜을 상속하여 configureURL() function을 사용하여 URL을 만들 수 있다.
 /// - Author: Doran
 protocol HTTPRequestable: URLComposable {
     var method: HTTPMethod { get }
-    var headers: [String: String]? { get }
-    var body: Data? { get }
+    
+// MARK: Sprint1에서는 서버와 통신하는 것이 아니기 때문에 header와 body는 주석 처리 해놓았습니다.
+//    var headers: [String: String]? { get }
+//    var body: Data? { get }
     
     /// URL을 토대로 request 실행하는 함수
     ///
@@ -32,11 +34,12 @@ extension HTTPRequestable {
     
     func asURLRequest() throws -> URLRequest {
         let url = try configureURL()
-        
         var request = URLRequest(url: url)
+        
         request.httpMethod = "\(method)"
-        request.allHTTPHeaderFields = headers
-        request.httpBody = body
+// MARK: Sprint1에서는 서버와 통신하는 것이 아니기 때문에 header와 body는 주석 처리 해놓았습니다.
+//        request.allHTTPHeaderFields = headers
+//        request.httpBody = body
         
         return request
     }
