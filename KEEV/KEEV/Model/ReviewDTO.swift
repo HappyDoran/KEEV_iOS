@@ -14,7 +14,7 @@ import Foundation
 /// - Author: Doran
 struct ReviewDTO: Codable, Identifiable {
     /// 리뷰 고유 ID
-    var id = UUID()
+    var id : String { concert.id }
     /// 공연 데이터
     let concert: ConcertDTO
     /// 사용자가 올린 이미지
