@@ -16,4 +16,7 @@ struct AppEnvironment {
     /// KOPIS API Key입니다.
     /// KOPIS_API_KEY에 대한 value는 Secret.xcconfig에 저장되어있습니다.
     static let kopisApiKey = Bundle.main.infoDictionary?["KOPIS_API_KEY"] as? String ?? ""
+    
+    /// KOPIS baseURL입니다.
+    static let kopisBaseURL: URL = .init(string: "kopis.or.kr")!
 }
