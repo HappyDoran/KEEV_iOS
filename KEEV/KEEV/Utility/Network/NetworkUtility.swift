@@ -30,11 +30,31 @@ struct NetworkUtility {
     /// - Author: Doran
     func request<ResultType: Decodable>(router: HTTPRequestable) async throws -> ResultType {
         let request = try router.asURLRequest()
-        let (data, response) = try await session.data(for: request)
+        let (data, _) = try await session.data(for: request)
         
         /// decode error 발생시 알아서 오류 출력
         let decodedData = try decoder.decode(ResultType.self, from: data)
         
         return decodedData
+    }
+    
+    /// API 통신시 XML 데이터를 가져오기 위한 메소드
+    ///
+    /// - Parameters:
+    ///   - router: HTTPRequestable
+    ///
+    ///  - Throws: Response가 실패할 경우 ServerError, URL이 잘못 된 경우 badURL
+    /// - Returns: XMLData를 담은 Data
+    ///
+    /// - Author: Doran
+    func xmlRequest(router: HTTPRequestable) async throws -> Data {
+        let request = try router.asURLRequest()
+        let (data, response) = try await session.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+            throw NSError(domain: "ServerError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Server Error"])
+        }
+        
+        return data
     }
 }
