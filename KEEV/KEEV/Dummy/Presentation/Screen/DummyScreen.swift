@@ -8,14 +8,8 @@
 import SwiftUI
 
 struct DummyScreen: View {
-    @EnvironmentObject var router: NavigationRouter
-    
     var body: some View {
-        Button {
-            router.pop()
-        } label: {
-            Text("Go back")
-        }
+        Text("Hello, World!")
     }
 }
 

@@ -24,9 +24,30 @@ class NavigationRouter: ObservableObject {
     ///
     /// - Note: 뷰 작업 완료되면 case 추가해줘야 합니다.
     /// - Author: 라움
-    enum Route: Hashable {
+    enum Route {
         case dummyScreen
         case dummyView
+    }
+    
+    /// 뷰를 빌드해주는 ViewBuilder 함수
+    ///
+    /// - Parameters:
+    ///   - route: Route 열거형 값
+    ///
+    /// 인자로 받은 Route 열거형의 값에 따라서 뷰를 만들어주는 ViewBuiler 함수입니다.
+    ///
+    /// - Returns: route 값에 따른 View를 리턴합니다.
+    ///
+    /// - Note: 뷰 작업 완료되면 case 추가해줘야 합니다.
+    /// - Author: 라움
+    @ViewBuilder
+    func view(for route: Route) -> some View {
+        switch route {
+        case .dummyScreen:
+            DummyScreen()
+        case .dummyView:
+            DummyView()
+        }
     }
     
     /// path 스택에 Route를 넣는 push 함수
