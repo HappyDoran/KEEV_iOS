@@ -32,9 +32,8 @@ struct NetworkUtility {
         let request = try router.asURLRequest()
         let (data, response) = try await session.data(for: request)
         
-        guard let decodedData = try? decoder.decode(ResultType.self, from: data) else {
-            throw NetworkError.decodingError
-        }
+        /// decode error 발생시 알아서 오류 출력
+        let decodedData = try decoder.decode(ResultType.self, from: data)
         
         return decodedData
     }
