@@ -37,6 +37,13 @@
 			);
 			target = 0DF5F1AE2CBE82560031DEF0 /* KEEV */;
 		};
+		4F317BC82CC1ED720022A50B /* Exceptions for "KEEV" folder in "KEEVTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resource/Config/Secret.xcconfig,
+			);
+			target = 0DF5F1BE2CBE82570031DEF0 /* KEEVTests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +51,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				018BB4502CC00B2A00EFCC7C /* Exceptions for "KEEV" folder in "KEEV" target */,
+				4F317BC82CC1ED720022A50B /* Exceptions for "KEEV" folder in "KEEVTests" target */,
 			);
 			path = KEEV;
 			sourceTree = "<group>";
