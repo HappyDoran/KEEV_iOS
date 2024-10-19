@@ -61,20 +61,18 @@ extension EventView {
     }
     
     private func loadEventDataByKeyword(keyword: String) {
-            isLoading = true
-            
-            Task {
-                do {
-                    let loadedEvents = try await eventService.loadEventByKeyword(startDate: "20240304", endDate: Date().toString(format: "yyyyMMdd"), keyword: keyword, page: "1", rows: "10")
-                    self.events = loadedEvents
-                }
-                catch {
-                    self.error = error.localizedDescription
-                }
-                isLoading = false
+        isLoading = true
+        Task {
+            do {
+                let loadedEvents = try await eventService.loadEventByKeyword(startDate: "20240304", endDate: Date().toString(format: "yyyyMMdd"), keyword: keyword, page: "1", rows: "10")
+                self.events = loadedEvents
             }
+            catch {
+                self.error = error.localizedDescription
+            }
+            isLoading = false
         }
-
+    }
 }
 
 

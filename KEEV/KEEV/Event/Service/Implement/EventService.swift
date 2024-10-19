@@ -40,17 +40,7 @@ class EventService: ObservableObject {
         )
         
         /// 비동기 통신
-        do {
-            let data: Data = try await networkUtility.xmlRequest(router: router)
-            
-            let parser = EventXMLParser()
-            let events = parser.parse(data)
-            
-            return events
-        } catch {
-            print("\(error)")
-            throw error
-        }
+        return try await loadEventsInternal(router: router)
     }
     
     /// 주어진 날짜 범위와 페이지 정보를 사용하여 이벤트 목록 중 keyword에 해당하는 이벤트들만  비동기적으로 가져오는 함수
@@ -75,16 +65,29 @@ class EventService: ObservableObject {
             rows: rows
         )
         
-        do {
-            let data: Data = try await networkUtility.xmlRequest(router: router)
-            
-            let parser = EventXMLParser()
-            let events = parser.parse(data)
-            
-            return events
-        } catch {
-            print("\(error)")
-            throw error
-        }
+        return try await loadEventsInternal(router: router)
+    }
+}
+
+extension EventService {
+    /// XML Data를 비동기적으로 가져오는 함수
+    ///
+    /// - Parameters:
+    ///   - router: 이벤트를 가져오기 위한 요청을 구성하는 `EventRouter` 인스턴스
+    ///
+    ///  내부적으로 XML 요청과 파싱 로직을 분리하여 재사용성을 고려한 메소드 입니다.
+    ///
+    /// - Throws:
+    ///   - `NetworkError`: 네트워크 요청 중 발생한 오류.
+    ///   - `XMLParsingError`: XML 데이터 파싱 중 발생한 오류.
+    ///
+    /// - Returns: 이벤트 목록 [ConcertDTO]
+    ///
+    /// - Author: Doran
+    private func loadEventsInternal(router: EventRouter) async throws -> [ConcertDTO] {
+        let data: Data = try await networkUtility.xmlRequest(router: router)
+        let parser = EventXMLParser()
+        let events = parser.parse(data)
+        return events
     }
 }
