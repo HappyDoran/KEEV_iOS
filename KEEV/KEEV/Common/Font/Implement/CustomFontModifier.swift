@@ -28,7 +28,7 @@ struct CustomFontModifier: ViewModifier {
     func body(content: Content) -> some View {
         content
             .font(customFont.font)
-            .tracking(customFont.letterSpace)
+            .kerning(customFont.letterSpace)
             .lineSpacing(customFont.lineHeight)
     }
 }
