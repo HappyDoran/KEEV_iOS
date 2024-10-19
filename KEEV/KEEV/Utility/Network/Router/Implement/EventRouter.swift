@@ -14,6 +14,7 @@ import Foundation
 /// - Author: Doran
 enum EventRouter {
     case getEvents(stdate: String, eddate: String, cpage: String, rows:String)
+    case getEventByKeyword(stdate: String, eddate: String, keyword: String, cpage: String, rows:String)
 }
 
 /// HTTPRequestable 프로토콜을 준수하기 위한 확장
@@ -29,7 +30,7 @@ extension EventRouter: HTTPRequestable {
     /// HTTP 메소드 반환
     var method: HTTPMethod {
         switch self {
-        case .getEvents :
+        case .getEvents, .getEventByKeyword :
                 .get
         }
     }
@@ -54,6 +55,17 @@ extension EventRouter: HTTPRequestable {
                 URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
                 URLQueryItem(name: "stdate", value: stdate),
                 URLQueryItem(name: "eddate", value: eddate),
+                URLQueryItem(name: "cpage", value: cpage),
+                URLQueryItem(name: "rows", value: rows),
+                URLQueryItem(name: "shcate", value: "CCCD")
+            ]
+            /// 검색어에 따라서 이벤트 항목 가져오기
+        case .getEventByKeyword(let stdate, let eddate, let keyword, let cpage, let rows):
+            return [
+                URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
+                URLQueryItem(name: "stdate", value: stdate),
+                URLQueryItem(name: "eddate", value: eddate),
+                URLQueryItem(name: "shprfnm", value: keyword),
                 URLQueryItem(name: "cpage", value: cpage),
                 URLQueryItem(name: "rows", value: rows),
                 URLQueryItem(name: "shcate", value: "CCCD")
