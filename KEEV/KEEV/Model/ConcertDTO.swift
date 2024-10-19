@@ -16,25 +16,24 @@ struct ConcertDTO: Codable {
     /// 공연 고유 ID
     let id: String
     /// 공연 이름
-    let name: String
+    let title: String
     /// 공연 시작 날짜
     let startDate: String
     /// 공연 종료 날짜
     let endDate: String
     /// 공연 위치
-    let location: String
+    let place: String
     /// 공연 포스터
     let poster: String
     
     /// 디코딩을 위한 CodingKey
     enum CodingKeys: String, CodingKey {
         case id = "mt20id"
-        case name = "prfnm"
+        case title = "prfnm"
         case startDate = "prfpdfrom"
         case endDate = "prfpdto"
-        case location = "fcltynm"
-        case poster
+        case place = "fcltynm"
+        case poster = "poster"
     }
 }
-
 
