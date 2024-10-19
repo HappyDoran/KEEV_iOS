@@ -32,11 +32,18 @@ final class UserDefaultsUtility {
     ///
     /// Codable을 채택하는 타입의 입력값과 키 값으로 사용할 값을 인자로 받아서 UserDefaults에 저장하는 함수입니다.
     ///
+    /// - Throws: 인코딩 에러가 발생할 경우 error를 throw합니다.
+    ///
     /// - Author: 라움
-    func set<InputType: Codable>(_ value: InputType, forKey key: String) {
-        userDefaults.set(try? jsonEncoder.encode(value), forKey: key)
+    func set<InputType: Codable>(_ value: InputType, forKey key: String) throws {
+        do {
+            let encodedData = try jsonEncoder.encode(value)
+            userDefaults.set(encodedData, forKey: key)
+        } catch {
+            throw error
+        }
     }
-    
+        
     /// UserDefaults에서 값을 가져오는 함수입니다.
     ///
     /// - Parameters:
@@ -45,18 +52,18 @@ final class UserDefaultsUtility {
     ///
     /// Codable을 채택하는 타입과 키 값을 인자로 받아서 키 값에 해당하는 값을 가져와서 인자로 받은 타입으로 디코딩 한 후 리턴해주는 함수입니다.
     ///
+    /// - Throws: 디코딩 에러가 발생할 경우 error를 throw합니다.
     /// - Returns: Codable을 채택하는 OutputType의 값 혹은 nil
     ///
     /// - Author: 라움
-    func get<OutputType: Codable>(_ type: OutputType.Type, forKey key: String) -> OutputType? {
+    func get<OutputType: Codable>(_ type: OutputType.Type, forKey key: String) throws -> OutputType? {
         guard let data = userDefaults.data(forKey: key) else { return nil }
         
         do {
             let decodedData = try jsonDecoder.decode(OutputType.self, from: data)
             return decodedData
         } catch {
-            print("디코딩 오류: \(error.localizedDescription)")
-            return nil
+            throw error
         }
     }
     

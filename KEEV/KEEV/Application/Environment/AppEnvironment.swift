@@ -19,7 +19,4 @@ struct AppEnvironment {
     
     /// KOPIS baseURL입니다.
     static let kopisBaseURL: URL = .init(string: "kopis.or.kr")!
-    
-    /// UserDefaults에 저장된 바이브들의 배열에 접근하기 위한 key 값입니다.
-    static let vibesKey: String = "accessToVibes"
 }
