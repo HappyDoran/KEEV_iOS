@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Author: Doran
 enum EventRouter {
-    case getEvents(eddate: String, cpage: String, rows:String)
+    case getEvents(stdate: String, eddate: String, cpage: String, rows:String)
 }
 
 /// HTTPRequestable 프로토콜을 준수하기 위한 확장
@@ -29,7 +29,7 @@ extension EventRouter: HTTPRequestable {
     /// HTTP 메소드 반환
     var method: HTTPMethod {
         switch self {
-        case .getEvents:
+        case .getEvents :
                 .get
         }
     }
@@ -48,10 +48,11 @@ extension EventRouter: HTTPRequestable {
     /// API 통신에 필요한 쿼리 반환
     var queryItems: [URLQueryItem]? {
         switch self {
-        case .getEvents(let eddate, let cpage, let rows):
+            /// 이벤트 전체 항목 가져오기
+        case .getEvents(let stdate, let eddate, let cpage, let rows):
             return [
                 URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
-                URLQueryItem(name: "stdate", value: "20240304"),
+                URLQueryItem(name: "stdate", value: stdate),
                 URLQueryItem(name: "eddate", value: eddate),
                 URLQueryItem(name: "cpage", value: cpage),
                 URLQueryItem(name: "rows", value: rows),
