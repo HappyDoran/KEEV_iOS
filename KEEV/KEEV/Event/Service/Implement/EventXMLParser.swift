@@ -75,17 +75,17 @@ class EventXMLParser: NSObject, XMLParserDelegate {
     /// - Author: Doran
     func parser(_ parser: XMLParser, foundCharacters string: String){
         switch currentElement {
-        case XMLKey.id.rawValue:
+        case ConcertDTO.CodingKeys.id.rawValue:
             currentID += string
-        case XMLKey.title.rawValue:
+        case ConcertDTO.CodingKeys.title.rawValue:
             currentTitle += string
-        case XMLKey.startDate.rawValue:
+        case ConcertDTO.CodingKeys.startDate.rawValue:
             currentStartDate += string
-        case XMLKey.endDate.rawValue:
+        case ConcertDTO.CodingKeys.endDate.rawValue:
             currentEndDate += string
-        case XMLKey.place.rawValue:
+        case ConcertDTO.CodingKeys.place.rawValue:
             currentPlace += string
-        case XMLKey.poster.rawValue:
+        case ConcertDTO.CodingKeys.poster.rawValue:
             currentPoster += string
         default:
             break
