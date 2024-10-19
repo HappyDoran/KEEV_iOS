@@ -43,11 +43,7 @@ extension EventRouter: HTTPRequestable {
     var port: Int? { nil }
     
     /// 필수적으로 들어가는 경로 반환
-    var path: [String]? {
-        let path = ["openApi","restful","pblprfr"]
-    
-        return path
-    }
+    var path: [String]? { ["openApi","restful","pblprfr"] }
     
     /// API 통신에 필요한 쿼리 반환
     var queryItems: [URLQueryItem]? {
