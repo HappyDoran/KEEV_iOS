@@ -36,12 +36,8 @@ final class UserDefaultsUtility {
     ///
     /// - Author: 라움
     func set<InputType: Codable>(_ value: InputType, forKey key: String) throws {
-        do {
-            let encodedData = try jsonEncoder.encode(value)
-            userDefaults.set(encodedData, forKey: key)
-        } catch {
-            throw error
-        }
+        let encodedData = try jsonEncoder.encode(value)
+        userDefaults.set(encodedData, forKey: key)
     }
         
     /// UserDefaults에서 값을 가져오는 함수입니다.
@@ -59,12 +55,8 @@ final class UserDefaultsUtility {
     func get<OutputType: Codable>(_ type: OutputType.Type, forKey key: String) throws -> OutputType? {
         guard let data = userDefaults.data(forKey: key) else { return nil }
         
-        do {
-            let decodedData = try jsonDecoder.decode(OutputType.self, from: data)
-            return decodedData
-        } catch {
-            throw error
-        }
+        let decodedData = try jsonDecoder.decode(OutputType.self, from: data)
+        return decodedData
     }
     
     /// UserDefaults에서 값을 삭제하는 함수입니다.
