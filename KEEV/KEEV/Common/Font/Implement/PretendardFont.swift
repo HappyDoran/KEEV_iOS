@@ -43,19 +43,28 @@ import SwiftUI
 /// - SeeAlso: PretendardFont.TitleStyle, PretendardFont.BodyStyle
 ///
 /// - Author: newJunsung
-enum PretendardFont: Fontable, LineHeightable, LetterSpaceable {
+enum PretendardFont: FigmaFontable {
     private var name: String { "Pretendard" }
     
     case title(style: TitleStyle)
     case body(style: BodyStyle)
     
     /// 글꼴
-    var font: Font {
+    var uiFont: UIFont {
         switch self {
         case .title(let style):
-            Font.custom("\(name)-Bold", size: style.fontSize)
+            UIFont(name: "\(name)-Bold", size: style.fontSize)!
         case .body(let style):
-            Font.custom("\(name)-\(style.weight)", size: style.fontSize)
+            UIFont(name: "\(name)-\(style.weight)", size: style.fontSize)!
+        }
+    }
+    
+    var fontSize: CGFloat {
+        switch self {
+        case .title(let style):
+            style.fontSize
+        case .body(let style):
+            style.fontSize
         }
     }
     

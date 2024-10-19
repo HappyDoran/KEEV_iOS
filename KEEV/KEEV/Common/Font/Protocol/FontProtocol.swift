@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-typealias CustomFontable = Fontable & LineHeightable & LetterSpaceable
+typealias FigmaFontable = Fontable & LineHeightable & LetterSpaceable
 
 protocol Fontable {
-    var font: Font { get }
+    var uiFont: UIFont { get }
 }
 
 protocol FontSizeable {
