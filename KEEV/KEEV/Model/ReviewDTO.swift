@@ -23,4 +23,6 @@ struct ReviewDTO: Codable, Identifiable {
     let text: String
     /// 별 갯수
     let starCount: Int
+    /// 리뷰를 만든 날짜
+    let createdDate: Date
 }
