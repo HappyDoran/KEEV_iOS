@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EventView: View {
-    @StateObject private var eventService = EventService(networkUtility: NetworkUtility())
+    @StateObject private var eventService = EventService()
     @State private var events: [ConcertDTO] = []
     @State private var error: String? = nil
     @State private var isLoading: Bool = false
