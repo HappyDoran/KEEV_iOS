@@ -10,6 +10,9 @@ import SwiftUI
 struct DummyScreen: View {
     var body: some View {
         Text("Hello, World!")
+            .customFont(
+                PretendardFont.title(style: .lg)
+            )
     }
 }
 

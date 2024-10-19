@@ -21,7 +21,7 @@ import SwiftUI
 struct CustomFontModifier: ViewModifier {
     private let customFont: CustomFontable
     
-    init(_ customFont: CustomFontable) {
+    init(_ customFont: some CustomFontable) {
         self.customFont = customFont
     }
     
