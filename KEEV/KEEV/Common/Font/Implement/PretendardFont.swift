@@ -49,6 +49,7 @@ enum PretendardFont: Fontable, LineHeightable, LetterSpaceable {
     case title(style: TitleStyle)
     case body(style: BodyStyle)
     
+    /// 글꼴
     var font: Font {
         switch self {
         case .title(let style):
@@ -58,6 +59,7 @@ enum PretendardFont: Fontable, LineHeightable, LetterSpaceable {
         }
     }
     
+    /// 행간
     var lineHeight: CGFloat {
         switch self {
         case .title(let style): style.lineHeight
@@ -65,6 +67,7 @@ enum PretendardFont: Fontable, LineHeightable, LetterSpaceable {
         }
     }
     
+    /// 자간
     var letterSpace: CGFloat {
         switch self {
         case .title(let style): style.letterSpace
