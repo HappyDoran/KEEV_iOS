@@ -177,8 +177,13 @@ extension PretendardFont {
     /// - SeeAlso: PretendardFont.BodyStyle.BodySize, PretendardFont.BodyStyle.BodyWeight
     /// - Author: newJunsung
     struct BodyStyle: LineHeightable, LetterSpaceable, FontSizeable {
-        let bodySize: BodySize
-        let bodyWeight: BodyWeight
+        private let bodySize: BodySize
+        private let bodyWeight: BodyWeight
+        
+        init(bodySize: BodySize, bodyWeight: BodyWeight) {
+            self.bodySize = bodySize
+            self.bodyWeight = bodyWeight
+        }
         
         var fontSize: CGFloat { bodySize.fontSize }
         var weight: String { bodyWeight.rawValue }
