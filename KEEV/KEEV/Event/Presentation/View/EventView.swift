@@ -15,32 +15,13 @@ struct EventView: View {
     @State private var keyword: String = ""
     
     var body: some View {
-        VStack{
-            HStack {
-                TextField("검색어를 넣어주세요" , text : self.$keyword)
-                Button(action: {loadEventDataByKeyword(keyword: keyword)}){
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(Color(.black))
-                        .padding()
-                }
-            }
-
-            List {
-                if isLoading {
-                    ProgressView("Loading...")
-                } else if let error = error {
-                    Text("Error: \(error)")
-                        .foregroundColor(.red)
-                } else {
-                    ForEach(events, id: \.id) { event in
-                        Text(event.title)
-                    }
-                }
-            }
-            .onAppear {
-                loadEventData()
-            }
+        VStack {
+            Image(systemName: "globe")
+                .imageScale(.large)
+                .foregroundStyle(.tint)
+            Text("Hello, world!")
         }
+        .padding()
     }
 }
 
