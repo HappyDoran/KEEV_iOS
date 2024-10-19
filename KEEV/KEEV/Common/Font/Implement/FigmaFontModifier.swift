@@ -19,17 +19,17 @@ import SwiftUI
 /// - Note: `FigmaFontable`은 `Fontable`와, `LineHeightable`, `LetterSpaceable`을 합친 프로토콜입니다.
 /// - Author: newJunsung
 struct FigmaFontModifier: ViewModifier {
-    private let customFont: FigmaFontable
+    private let figmaFont: FigmaFontable
     
-    init(_ customFont: some FigmaFontable) {
-        self.customFont = customFont
+    init(_ figmaFont: some FigmaFontable) {
+        self.figmaFont = figmaFont
     }
     
     func body(content: Content) -> some View {
         content
-            .font(Font(customFont.uiFont))
-            .kerning(customFont.letterSpace)
-            .lineSpacing(customFont.lineHeight - customFont.uiFont.lineHeight)
-            .padding(.vertical, (customFont.lineHeight - customFont.uiFont.lineHeight) / 2)
+            .font(Font(figmaFont.uiFont))
+            .kerning(figmaFont.letterSpace)
+            .lineSpacing(figmaFont.lineHeight - figmaFont.uiFont.lineHeight)
+            .padding(.vertical, (figmaFont.lineHeight - figmaFont.uiFont.lineHeight) / 2)
     }
 }
