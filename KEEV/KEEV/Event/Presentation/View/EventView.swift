@@ -26,7 +26,6 @@ struct EventView: View {
 }
 
 extension EventView {
-    @MainActor
     private func loadEventData() {
         isLoading = true
         Task {
@@ -37,15 +36,17 @@ extension EventView {
                     page: 1,
                     rows: 10
                 )
-                self.events = loadedEvents
+                DispatchQueue.main.async {
+                    self.events = loadedEvents
+                }
             } catch {
-                self.error = error.localizedDescription
+                DispatchQueue.main.async {
+                    self.error = error.localizedDescription
+                }
             }
             isLoading = false
         }
     }
-    
-    @MainActor
     private func loadEventDataByKeyword(keyword: String) {
         isLoading = true
         Task {
@@ -60,8 +61,7 @@ extension EventView {
                 DispatchQueue.main.async {
                     self.events = loadedEvents
                 }
-            }
-            catch {
+            } catch {
                 DispatchQueue.main.async {
                     self.error = error.localizedDescription
                 }

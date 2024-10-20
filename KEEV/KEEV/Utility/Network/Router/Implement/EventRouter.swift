@@ -55,8 +55,8 @@ extension EventRouter: HTTPRequestable {
                 URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
                 URLQueryItem(name: "stdate", value: stdate.toString(format: "yyyyMMdd")),
                 URLQueryItem(name: "eddate", value: eddate.toString(format: "yyyyMMdd")),
-                URLQueryItem(name: "cpage", value: String(cpage)),
-                URLQueryItem(name: "rows", value: String(rows)),
+                URLQueryItem(name: "cpage", value: "\(cpage)"),
+                URLQueryItem(name: "rows", value: "\(rows)"),
                 URLQueryItem(name: "shcate", value: "CCCD")
             ]
             /// 검색어에 따라서 이벤트 항목 가져오기
@@ -66,8 +66,8 @@ extension EventRouter: HTTPRequestable {
                 URLQueryItem(name: "stdate", value: stdate.toString(format: "yyyyMMdd")),
                 URLQueryItem(name: "eddate", value: eddate.toString(format: "yyyyMMdd")),
                 URLQueryItem(name: "shprfnm", value: keyword),
-                URLQueryItem(name: "cpage", value: String(cpage)),
-                URLQueryItem(name: "rows", value: String(rows)),
+                URLQueryItem(name: "cpage", value: "\(cpage)"),
+                URLQueryItem(name: "rows", value: "\(rows)"),
                 URLQueryItem(name: "shcate", value: "CCCD")
             ]
         }
