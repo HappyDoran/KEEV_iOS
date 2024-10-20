@@ -10,11 +10,12 @@ import Foundation
 /// VibeService를 구현하기 위한 프로토콜입니다.
 ///
 /// - Author: 라움
-protocol VibeServiceProtocol {
+protocol VibeServiceProtocol: ObservableObject {
     var vibes: [ReviewDTO] { get }
     
-    func createVibe(forKey key: String, newVibe: ReviewDTO)
     func getVibes(forKey key: String)
-    func editVibe(forKey key: String, newVibe: ReviewDTO)
-    func removeVibe(forKey key: String, _ id: String)
+    func setVibes(forKey key: String) async
+    func createVibe(newVibe: ReviewDTO)
+    func editVibe(newVibe: ReviewDTO)
+    func removeVibe(vibe: ReviewDTO)
 }

@@ -13,29 +13,11 @@ import Foundation
 ///
 /// - Note: ObservableObject로 구현하였습니다.
 /// - Author: 라움
-class VibeService: VibeServiceProtocol, ObservableObject {
+class VibeService: VibeServiceProtocol {
     /// 불러온 바이브들의 목록을 저장하는 배열입니다.
     @Published var vibes: [ReviewDTO] = []
     
     private let userDefaultsUtility = UserDefaultsUtility()
-    
-    /// 바이브를 저장하는 함수입니다.
-    ///
-    /// - Parameters:
-    ///   - key: 키 값
-    ///   - newVibe: 새로 저장할 바이브
-    ///
-    /// 새로 저장할 바이브를 인자로 받아서 바이브 목록에 추가하고 업데이트된 바이브 목록을 키 값에 해당하는 UserDefaults에 저장합니다.
-    ///
-    /// - Author: 라움
-    func createVibe(forKey key: String, newVibe: ReviewDTO) {
-        do {
-            vibes.append(newVibe)
-            try userDefaultsUtility.set(vibes, forKey: key)
-        } catch {
-            print(error)
-        }
-    }
     
     /// 바이브 목록을 가져오는 함수입니다.
     ///
@@ -53,43 +35,60 @@ class VibeService: VibeServiceProtocol, ObservableObject {
         }
     }
     
-    /// 바이브를 수정하는 함수입니다.
+    /// 바이브를 저장하는 함수입니다.
     ///
     /// - Parameters:
     ///   - key: 키 값
-    ///   - newVibe: 바이브 목록에 업데이트할 수정된 바이브
     ///
-    /// 수정된 바이브를 인자로 받아서 바이브 목록을 업데이트하고 업데이트된 바이브 목록을 키 값에 해당하는 UserDefaults에 저장합니다.
+    /// 업데이트된 바이브 목록을 키 값에 해당하는 UserDefaults에 저장합니다.
+    /// 저장할 데이터가 많아지면 저장하는 시간이 길어지기 때문에 이를 해결하기 위해 async로 작성하였습니다.
     ///
     /// - Author: 라움
-    func editVibe(forKey key: String, newVibe: ReviewDTO) {
+    func setVibes(forKey key: String) async {
+        do {
+            try userDefaultsUtility.set(vibes, forKey: key)
+        } catch {
+            print(error)
+        }
+    }
+    
+    /// 바이브를 저장하는 함수입니다.
+    ///
+    /// - Parameters:
+    ///   - newVibe: 새로 저장할 바이브
+    ///
+    /// 새로 저장할 바이브를 인자로 받아서 바이브 목록에 추가합니다.
+    ///
+    /// - Author: 라움
+    func createVibe(newVibe: ReviewDTO) {
+        vibes.append(newVibe)
+    }
+    
+    /// 바이브를 수정하는 함수입니다.
+    ///
+    /// - Parameters:
+    ///   - newVibe: 바이브 목록에 업데이트할 수정된 바이브
+    ///
+    /// 수정된 바이브를 인자로 받아서 바이브 목록을 업데이트합니다.
+    ///
+    /// - Author: 라움
+    func editVibe(newVibe: ReviewDTO) {
         if let index = vibes.firstIndex(where: { $0.id == newVibe.id }) {
             vibes[index] = newVibe
-            do {
-                try userDefaultsUtility.set(vibes, forKey: key)
-            } catch {
-                print(error)
-            }
         }
     }
     
     /// 바이브를 삭제하는 함수입니다.
     ///
     /// - Parameters:
-    ///   - key: 키 값
-    ///   - id: 삭제할 바이브의 id 값
+    ///   - vibe: 삭제할 바이브
     ///
-    /// 삭제할 바이브의 id 값을 인자로 받아서 해당 id에 해당하는 바이브를 삭제하고 UserDefaults에 업데이트합니다.
+    /// 삭제할 바이브를 인자로 받아서 해당 바이브와 id 값이 일치하는 바이브를 바이브 목록에서 삭제합니다.
     ///
     /// - Author: 라움
-    func removeVibe(forKey key: String, _ id: String) {
-        if let index = vibes.firstIndex(where: { $0.id == id }) {
+    func removeVibe(vibe: ReviewDTO) {
+        if let index = vibes.firstIndex(where: { $0.id == vibe.id }) {
             vibes.remove(at: index)
-            do {
-                try userDefaultsUtility.set(vibes, forKey: key)
-            } catch {
-                print(error)
-            }
         }
     }
 }
