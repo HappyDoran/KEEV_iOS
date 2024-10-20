@@ -13,8 +13,8 @@ import Foundation
 ///
 /// - Author: Doran
 enum EventRouter {
-    case getEvents(stdate: String, eddate: String, cpage: String, rows:String)
-    case getEventByKeyword(stdate: String, eddate: String, keyword: String, cpage: String, rows:String)
+    case getEvents(stdate: Date, eddate: Date, cpage: Int, rows:Int)
+    case getEventByKeyword(stdate: Date, eddate: Date, keyword: String, cpage: Int, rows:Int)
 }
 
 /// HTTPRequestable 프로토콜을 준수하기 위한 확장
@@ -53,21 +53,21 @@ extension EventRouter: HTTPRequestable {
         case .getEvents(let stdate, let eddate, let cpage, let rows):
             return [
                 URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
-                URLQueryItem(name: "stdate", value: stdate),
-                URLQueryItem(name: "eddate", value: eddate),
-                URLQueryItem(name: "cpage", value: cpage),
-                URLQueryItem(name: "rows", value: rows),
+                URLQueryItem(name: "stdate", value: stdate.toString(format: "yyyyMMdd")),
+                URLQueryItem(name: "eddate", value: eddate.toString(format: "yyyyMMdd")),
+                URLQueryItem(name: "cpage", value: String(cpage)),
+                URLQueryItem(name: "rows", value: String(rows)),
                 URLQueryItem(name: "shcate", value: "CCCD")
             ]
             /// 검색어에 따라서 이벤트 항목 가져오기
         case .getEventByKeyword(let stdate, let eddate, let keyword, let cpage, let rows):
             return [
                 URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
-                URLQueryItem(name: "stdate", value: stdate),
-                URLQueryItem(name: "eddate", value: eddate),
+                URLQueryItem(name: "stdate", value: stdate.toString(format: "yyyyMMdd")),
+                URLQueryItem(name: "eddate", value: eddate.toString(format: "yyyyMMdd")),
                 URLQueryItem(name: "shprfnm", value: keyword),
-                URLQueryItem(name: "cpage", value: cpage),
-                URLQueryItem(name: "rows", value: rows),
+                URLQueryItem(name: "cpage", value: String(cpage)),
+                URLQueryItem(name: "rows", value: String(rows)),
                 URLQueryItem(name: "shcate", value: "CCCD")
             ]
         }

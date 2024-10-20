@@ -26,12 +26,16 @@ struct EventView: View {
 }
 
 extension EventView {
+    @MainActor
     private func loadEventData() {
         isLoading = true
         Task {
             do {
                 let loadedEvents = try await eventService.loadEvents(
-                    startDate: "20240304", endDate: Date().toString(format: "yyyyMMdd"), page: "1", rows: "10"
+                    startDate: Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 4)) ?? Date(),
+                    endDate: Date(),
+                    page: 1,
+                    rows: 10
                 )
                 self.events = loadedEvents
             } catch {
@@ -41,15 +45,26 @@ extension EventView {
         }
     }
     
+    @MainActor
     private func loadEventDataByKeyword(keyword: String) {
         isLoading = true
         Task {
             do {
-                let loadedEvents = try await eventService.loadEventByKeyword(startDate: "20240304", endDate: Date().toString(format: "yyyyMMdd"), keyword: keyword, page: "1", rows: "10")
-                self.events = loadedEvents
+                let loadedEvents = try await eventService.loadEventByKeyword(
+                    startDate: Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 4)) ?? Date(),
+                    endDate: Date(),
+                    keyword: keyword,
+                    page: 1,
+                    rows: 10
+                )
+                DispatchQueue.main.async {
+                    self.events = loadedEvents
+                }
             }
             catch {
-                self.error = error.localizedDescription
+                DispatchQueue.main.async {
+                    self.error = error.localizedDescription
+                }
             }
             isLoading = false
         }

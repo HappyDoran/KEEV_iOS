@@ -8,6 +8,11 @@
 import Foundation
 
 extension Date {
+    private static var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        return formatter
+    }()
+
     /// Date 타입의 객체를 사용자가 정한 형식의 문자열로 변환하는 함수
     ///
     /// - Parameters:
@@ -25,8 +30,7 @@ extension Date {
     /// ```
     /// - Author: Doran
     func toString(format: String) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = format
-        return dateFormatter.string(from: self)
+        Date.dateFormatter.dateFormat = format
+        return Date.dateFormatter.string(from: self)
     }
 }

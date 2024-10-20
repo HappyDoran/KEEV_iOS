@@ -10,13 +10,11 @@ import Observation
 
 /// EventService는 이벤트와 관련된 비즈니스 로직을 구현한 클래스
 ///
-/// 이벤트 데이터를 가져오거나, 특정 이벤트를 검색하여 가져오는 기능을 제공합니다.
-///
-/// - Note: 싱글톤 패턴으로 구현 가능하며 이를 통해 전역 인스턴스로 공유할 수 있습니다.
-///
 /// - Author: Doran
 class EventService: ObservableObject {
+    
     private let networkUtility: NetworkUtility = NetworkUtility()
+    private let xmlParser: EventXMLParser = EventXMLParser()
     
     /// 주어진 날짜 범위와 페이지 정보를 사용하여 이벤트 목록을 비동기적으로 가져오는 함수
     ///
@@ -30,7 +28,7 @@ class EventService: ObservableObject {
     /// - Returns: 이벤트 목록 [ConcertDTO]
     ///
     /// - Author: Doran
-    func loadEvents(startDate: String, endDate: String, page: String, rows: String) async throws -> [ConcertDTO] {
+    func loadEvents(startDate: Date, endDate: Date, page: Int, rows: Int) async throws -> [ConcertDTO] {
         /// getEvent router 생성
         let router = EventRouter.getEvents(
             stdate: startDate,
@@ -56,7 +54,7 @@ class EventService: ObservableObject {
     /// - Returns: 이벤트 목록 [ConcertDTO]
     ///
     /// - Author: Doran
-    func loadEventByKeyword(startDate: String, endDate: String, keyword: String, page: String, rows: String) async throws -> [ConcertDTO] {
+    func loadEventByKeyword(startDate: Date, endDate: Date, keyword: String, page: Int, rows: Int) async throws -> [ConcertDTO] {
         let router = EventRouter.getEventByKeyword(
             stdate: startDate,
             eddate: endDate,
@@ -86,8 +84,7 @@ extension EventService {
     /// - Author: Doran
     private func loadEventsInternal(router: EventRouter) async throws -> [ConcertDTO] {
         let data: Data = try await networkUtility.xmlRequest(router: router)
-        let parser = EventXMLParser()
-        let events = parser.parse(data)
+        let events = xmlParser.parse(data)
         return events
     }
 }
