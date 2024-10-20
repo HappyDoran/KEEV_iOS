@@ -8,7 +8,7 @@
 import Foundation
 
 extension Date {
-    private static let dateFormatter: DateFormatter = { DateFormatter() }()
+    private static let dateFormatter: DateFormatter = DateFormatter()
 
     /// Date 타입의 객체를 사용자가 정한 형식의 문자열로 변환하는 함수
     ///

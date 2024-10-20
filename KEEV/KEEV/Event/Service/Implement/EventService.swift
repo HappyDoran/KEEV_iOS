@@ -11,7 +11,7 @@ import Observation
 /// EventService는 이벤트와 관련된 비즈니스 로직을 구현한 클래스
 ///
 /// - Author: Doran
-class EventService: ObservableObject {
+class EventService: EventServiceProtocol {
     
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let xmlParser: EventXMLParser = EventXMLParser()
