@@ -407,8 +407,6 @@
 		};
 		0DF5F1D42CBE82570031DEF0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 0DF5F1B12CBE82560031DEF0 /* KEEV */;
-			baseConfigurationReferenceRelativePath = Resource/Config/Secret.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -443,8 +441,6 @@
 		};
 		0DF5F1D52CBE82570031DEF0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 0DF5F1B12CBE82560031DEF0 /* KEEV */;
-			baseConfigurationReferenceRelativePath = Resource/Config/Secret.xcconfig;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -479,8 +475,6 @@
 		};
 		0DF5F1D72CBE82570031DEF0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 0DF5F1B12CBE82560031DEF0 /* KEEV */;
-			baseConfigurationReferenceRelativePath = Resource/Config/Secret.xcconfig;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -504,8 +498,6 @@
 		};
 		0DF5F1D82CBE82570031DEF0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 0DF5F1B12CBE82560031DEF0 /* KEEV */;
-			baseConfigurationReferenceRelativePath = Resource/Config/Secret.xcconfig;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
