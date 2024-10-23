@@ -29,9 +29,7 @@ struct CommonButton: View {
     }
 
     var body: some View {
-        Button(action: {
-            action()
-        }) {
+        Button(action: action) {
             Text(title)
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
                 .frame(width: style.width, height: style.height)
