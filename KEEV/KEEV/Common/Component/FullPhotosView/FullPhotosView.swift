@@ -13,6 +13,35 @@ struct FullPhotosView: View {
     
     @Environment(\.dismiss) private var dismiss
     
+    @State private var scale: CGFloat = 1.0
+    @State private var latestScale: CGFloat = 1.0
+    
+    private var magnification: some Gesture {
+        MagnifyGesture()
+            .onChanged { value in
+                let delta = value.magnification / latestScale
+                latestScale = value.magnification
+                scale *= delta
+            }
+            .onEnded { _ in
+                latestScale = 1.0
+                if scale < latestScale {
+                    scale = 1.0
+                }
+            }
+    }
+    
+    private var doubleTap: some Gesture {
+        TapGesture(count: 2)
+            .onEnded { _ in
+                if scale == 1.0 {
+                    scale *= 2.0
+                } else {
+                    scale = 1.0
+                }
+            }
+    }
+    
     var body: some View {
         ZStack {
             TabView(selection: $selectedPhoto) {
@@ -20,6 +49,9 @@ struct FullPhotosView: View {
                     Image(photo)
                         .resizable()
                         .scaledToFit()
+                        .scaleEffect(scale)
+                        .gesture(magnification)
+                        .gesture(doubleTap)
                         .tag(photo)
                 }
             }
