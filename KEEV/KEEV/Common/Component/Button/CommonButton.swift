@@ -17,10 +17,16 @@ import SwiftUI
 /// - Note: CommonButtonStyle을 통해 각 상황에 맞는 버튼 스타일을 지정할 수 있습니다.
 /// - Author: Doran
 struct CommonButton: View {
-    var title: String
-    var action: () -> Void
-    var style: CommonButtonStyle = .submit(isEnabled: true)
-    var cornerRadius: CGFloat = 16
+    private let title: String
+    private let action: () -> Void
+    private var style: CommonButtonStyle = .submit(isEnabled: true)
+    private let cornerRadius: CGFloat = 16
+    
+    init(title: String, action: @escaping () -> Void, style: CommonButtonStyle) {
+        self.title = title
+        self.action = action
+        self.style = style
+    }
 
     var body: some View {
         Button(action: {
