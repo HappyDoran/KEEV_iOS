@@ -42,6 +42,15 @@ struct FullPhotosView: View {
             }
     }
     
+    private var slideDown: some Gesture {
+        DragGesture()
+            .onEnded { value in
+                if value.location.y - value.startLocation.y > 100 {
+                    dismiss()
+                }
+            }
+    }
+    
     var body: some View {
         ZStack {
             TabView(selection: $selectedPhoto) {
@@ -56,6 +65,7 @@ struct FullPhotosView: View {
                 }
             }
             .tabViewStyle(PageTabViewStyle())
+            .gesture(slideDown)
             
             VStack {
                 HStack(spacing: 40) {
