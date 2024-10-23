@@ -7,6 +7,33 @@
 
 import SwiftUI
 
+/// 탭과 드래그를 통해 평점을 조절하는 뷰.
+///
+/// 색칠된 이미지와 색칠되지 않은 이미지와 관계없이 이미지를 탭하면, 이미지가 속한 인덱스의 평점으로 변경됩니다.
+/// 색칠된 이미지 부분을 드래그하면 자신이 원하는 평점으로 조절할 수 있습니다.
+/// `init`을 할 때 필요한 파라미터는 다음과 같습니다.
+/// - `rating`: 현재 별점
+/// - `maxRating`: 총 별점
+/// - `spacing`: 이미지 간의 공간
+/// - `image`: 평점을 표현할 이미지
+///
+/// `image`의 경우 클로저이며, 해당 클로저의 파라미터로 `(Double, Int)`가 들어갑니다.
+/// `Double`의 경우 현재 평점이며, `Int`의 경우 이미지의 인덱스 입니다.
+///
+/// 아래의 코드는 사용 예시입니다.
+/// ```swift
+/// RateSettingView(
+///     rating: .constant(3.5),
+///     maxRating: 5,
+///     spacing: 12
+/// ) { _, _ in
+///     Image(systemName: "star.fill")
+/// }
+/// ```
+///
+/// - Note: 이 뷰의 경우 0.5 단위로 평점이 조절됩니다. 그리고 왼쪽에서 오른쪽으로만 평점 조절이 가능합니다.
+/// - Important: 이 뷰는 Frame을 지정하기 어렵습니다. 이 뷰에서 이미지의 크기는 상위 뷰와 주변 뷰의 크기, 패딩 등으로 결정됩니다.
+/// - Author: newJunsung
 struct RateSettingView: View {
     @State private var x: CGFloat = 0
     @State private var starWidth = CGFloat.zero
