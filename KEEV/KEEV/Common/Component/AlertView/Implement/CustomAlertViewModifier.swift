@@ -30,12 +30,12 @@ import SwiftUI
 /// - Note: 제일 바깥쪽 컨테이너에 motifier로 사용해야 합니다.
 /// - Author: Doran
 struct CustomAlertViewModifier: ViewModifier {
-    let title: String
-    let message: String
-    let leftButtonText: String
-    let rightButtonText: String
-    let leftAction: () -> Void
-    let rightAction: () -> Void
+    private let title: String
+    private let message: String
+    private let leftButtonText: String
+    private let rightButtonText: String
+    private let leftAction: () -> Void
+    private let rightAction: () -> Void
     @Binding var isPresented: Bool
 
     init(title: String, message: String, leftButtonText: String, rightButtonText: String, leftAction: @escaping () -> Void, rightAction: @escaping () -> Void, isPresented: Binding<Bool>) {
@@ -71,9 +71,6 @@ struct CustomAlertViewModifier: ViewModifier {
                         .lineSpacing(2)
                     
                     HStack(spacing: 8) {
-//                        CustomButton(title: leftButtonText, action: {
-//                            leftAction()
-//                        }, style: .alert(isPositive: true))
                         Button(action: {
                             leftAction() }){
                                 Text(leftButtonText)
@@ -83,9 +80,6 @@ struct CustomAlertViewModifier: ViewModifier {
                                     .padding()
                                     .background(Color.blue)
                             }
-//                        CustomButton(title: rightButtonText, action: {
-//                            rightAction()
-//                        }, style: .alert(isPositive: false))
                         Button(action: {
                             rightAction() }){
                                 Text(rightButtonText)
