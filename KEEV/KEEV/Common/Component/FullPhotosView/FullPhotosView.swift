@@ -59,8 +59,8 @@ struct FullPhotosView: View {
                         .resizable()
                         .scaledToFit()
                         .scaleEffect(scale)
-                        .gesture(magnification)
-                        .gesture(doubleTap)
+                        .gesture(scale == 1.0 ? nil : DragGesture())
+                        .gesture(magnification.simultaneously(with: doubleTap))
                         .tag(photo)
                 }
             }
