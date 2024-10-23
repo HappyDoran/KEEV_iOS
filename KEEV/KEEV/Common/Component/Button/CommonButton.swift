@@ -12,8 +12,7 @@ import SwiftUI
 /// - Parameters:
 ///   - title: 버튼 텍스트
 ///   - action: 버튼 액션
-///   - style: 버튼의 스타일
-///
+///   - style: 버튼의 스타일 : CommonButtonStyle
 ///
 /// - Note: CommonButtonStyle을 통해 각 상황에 맞는 버튼 스타일을 지정할 수 있습니다.
 /// - Author: Doran
