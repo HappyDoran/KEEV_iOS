@@ -24,8 +24,6 @@ enum CommonButtonStyle {
     case small
     // width가 179인 버튼 ex) 지금 기록하러 가기 버튼
     case medium
-    // 비활성화 버튼
-    case disabled
 
     // brandColor600 - gray
     // grayColor100 - red
@@ -41,8 +39,6 @@ enum CommonButtonStyle {
             return isPositive ? .gray : .blue
         case .small, .medium:
             return .gray
-        default:
-            return .gray
         }
     }
     
@@ -53,8 +49,6 @@ enum CommonButtonStyle {
             return .blue
         case .alert, .small, .medium:
             return .red
-        default:
-            return .red
         }
     }
     
@@ -64,8 +58,6 @@ enum CommonButtonStyle {
         case .maxWidth:
             return .infinity
         case .alert, .small, .medium:
-            return nil
-        default:
             return nil
         }
     }
@@ -92,8 +84,6 @@ enum CommonButtonStyle {
         case .alert:
             return 45
         case .small, .medium:
-            return 48
-        default:
             return 48
         }
     }

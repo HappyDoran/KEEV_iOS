@@ -40,7 +40,6 @@ struct CommonButton: View {
                 .cornerRadius(16)
         }
         .disabled(disabled)
-
     }
 }
 
