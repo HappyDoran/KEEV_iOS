@@ -34,7 +34,7 @@ enum CommonButtonStyle {
         case .maxWidth:
             return .purple
         case .alert(let isPositive):
-            return isPositive ? .gray : .blue
+            return isPositive ? .blue : .gray
         case .small, .medium:
             return .gray
         }
@@ -53,9 +53,9 @@ enum CommonButtonStyle {
     // MARK: 가로로 긴 버튼은 maxWidth 지정
     var maxWidth: CGFloat? {
         switch self {
-        case .maxWidth:
+        case .maxWidth, .alert:
             return .infinity
-        case .alert, .small, .medium:
+        case .small, .medium:
             return nil
         }
     }

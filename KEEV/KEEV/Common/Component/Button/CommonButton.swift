@@ -37,8 +37,8 @@ struct CommonButton: View {
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                 .frame(width: style.width, height: style.height)
                 .frame(maxWidth: style.maxWidth)
-                .background(disabled ? .gray : style.backgroundColor)
-                .foregroundColor(disabled ? .red : style.foregroundColor)
+                .background(disabled ? .brown : style.backgroundColor)
+                .foregroundColor(disabled ? .yellow : style.foregroundColor)
                 .cornerRadius(16)
         }
         .disabled(disabled)
