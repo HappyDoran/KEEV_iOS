@@ -23,20 +23,15 @@ enum CommonButtonStyle {
     // width가 179인 버튼 ex) 지금 기록하러 가기 버튼
     case medium
 
-    // brandColor600 - gray
-    // grayColor100 - red
-    // grayColor500 - blue
-    // grayColor900 - purple
-    
     // MARK: 배경 색
     var backgroundColor: Color {
         switch self {
         case .maxWidth:
-            return .purple
+            return .brand600
         case .alert(let isActive):
-            return isActive ? .blue : .gray
+            return isActive ? .brand600 : .gray500
         case .small, .medium:
-            return .gray
+            return .brand600
         }
     }
     
@@ -44,9 +39,9 @@ enum CommonButtonStyle {
     var foregroundColor: Color {
         switch self {
         case .maxWidth:
-            return .blue
+            return .gray100
         case .alert, .small, .medium:
-            return .red
+            return .gray100
         }
     }
     

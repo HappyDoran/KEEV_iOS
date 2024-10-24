@@ -42,6 +42,7 @@ struct RateSettingView: View {
     private let spacing: CGFloat
     private let maxRating: CGFloat
     private let image: (Double, Int) -> Image
+    private let brandColor: Color = .brand500
     
     init(
         rating: Binding<Double>,
@@ -85,7 +86,7 @@ struct RateSettingView: View {
             GeometryReader { geometry in
                 HStack {
                     Rectangle()
-                        .foregroundStyle(.red)
+                        .foregroundStyle(brandColor)
                         .frame(width: x)
                     Spacer()
                 }
