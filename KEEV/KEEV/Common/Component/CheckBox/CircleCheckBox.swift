@@ -85,12 +85,11 @@ fileprivate struct CheckedCircleView: View {
             path.addLine(to: middlePoint)
             path.addLine(to: endPoint)
         }
-        .stroke(style: StrokeStyle(lineWidth: 2 / 20 * radius, lineCap: .round, lineJoin: .round))
-        .foregroundStyle(.black)
+        .stroke(Color.gray800, style: StrokeStyle(lineWidth: 2 / 20 * radius, lineCap: .round, lineJoin: .round))
         .background(
             Circle()
                 .frame(width: radius, height: radius)
-                .foregroundStyle(.purple)
+                .foregroundStyle(.brand500)
         )
     }
 }
@@ -121,7 +120,7 @@ fileprivate struct UncheckedCircleView: View {
     
     var body: some View {
         Circle()
-            .stroke(Color.gray, style: StrokeStyle(lineWidth: lineWidth))
+            .stroke(Color.gray800, style: StrokeStyle(lineWidth: lineWidth))
             .padding(padding + lineWidth / 2)
     }
 }
@@ -130,7 +129,6 @@ fileprivate struct UncheckedCircleView: View {
     @Previewable @State var isChecked = false
     
     CircleCheckBox(isChecked: $isChecked)
-        .frame(width: 32, height: 32)
         .onTapGesture {
             isChecked.toggle()
         }
