@@ -38,7 +38,7 @@ extension View {
     ///   - rightAction: 오른쪽 버튼 클릭 시 실행될 액션
     ///
     /// customAlert를 사용하여 사용자 지정 경고창을 만듭니다.
-    /// 아래는 사용 예시입니다.
+    /// 기본적인 사용 예시는 아래와 같습니다.
     /// ```swift
     ///  ZStack {
     ///     Color.grayColor950
@@ -47,28 +47,49 @@ extension View {
     ///                 ...
     ///         }
     ///     }
-    ///  }.customAlert(title: "잠깐!",
+    ///  }.customAlert(isPresented: $showAlert,
+    ///                title: "잠깐!",
     ///                message: "공연을 변경하면 작성하던 내용이 사라집니다.\n다른 공연을 선택하시겠어요?",
     ///                isPresented: $showAlert,
-    ///                leftButtonText: "취소",
-    ///                rightButtonText: "공연 변경",
-    ///                leftAction: {print("취소")},
-    ///                rightAction: {print("공연 변경")}
+    ///                closeText: "취소",
+    ///                closeAction: {print("취소")}
+    ///  )
+    /// ```
+    ///
+    /// `someText`와 `someAction`의 경우에는 옵셔널 타입이기 때문에 모달에서 이루어지는 특별한 액션이 있는 경우 추가로 넣어서 사용하면 됩니다.
+    ///
+    /// 사용 예시는 아래와 같습니다.
+    /// ```swift
+    ///  ZStack {
+    ///     Color.grayColor950
+    ///     VStack(spacing: 20) {
+    ///         CustomButton(title: "지금 기록하러 가기!", action: { print("hello world")}, style: .goToRecord)
+    ///                 ...
+    ///         }
+    ///     }
+    ///  }.customAlert(isPresented: $showAlert,
+    ///                title: "잠깐!",
+    ///                message: "공연을 변경하면 작성하던 내용이 사라집니다.\n다른 공연을 선택하시겠어요?",
+    ///                isPresented: $showAlert,
+    ///                closeText: "취소",
+    ///                closeAction: {print("취소")},
+    ///                someText: "공연 변경",
+    ///                someAction: {print("공연 변경")}
     ///  )
     /// ```
     ///
     /// - Returns: Custom된 alert 뷰
     ///
     /// - Author: Doran
-    func customAlert(title: String, message: String, isPresented: Bool, leftButtonText: String, rightButtonText: String, leftAction: @escaping () -> Void, rightAction: @escaping () -> Void ) -> some View {
+    func customAlert(isPresented: Binding<Bool>, title: String, message: String, closeText: String, closeAction: @escaping () -> Void, someText: String? = nil, someAction: (() -> Void)? = nil) -> some View {
         modifier(CustomAlertViewModifier(
+            isPresented: isPresented,
             title: title,
             message: message,
-            leftButtonText: leftButtonText,
-            rightButtonText: rightButtonText,
-            leftAction: leftAction,
-            rightAction: rightAction,
-            isPresented: isPresented
+            closeText: closeText,
+            closeAction: closeAction,
+            someText: someText,
+            someAction: someAction
         ))
     }
 }
