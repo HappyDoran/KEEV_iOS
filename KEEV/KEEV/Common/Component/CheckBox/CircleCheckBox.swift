@@ -15,6 +15,20 @@ import SwiftUI
 /// 해당 뷰는 이미지를 쓰는 것이 아닌, 직접 뷰를 그립니다.
 /// `isChecked`라는 `Bool` 값이 속성으로 있기에, 참/거짓 여부에 따라 뷰가 변경됩니다.
 ///
+/// 사용법은 아래와 같습니다.
+/// ```swift
+/// struct DummyScreen: View {
+///     @State private var isChecked = false
+///
+///     var body: some View {
+///         CircleCheckBox(isChecked: $isChecked)
+///             .onTapGesture {
+///                 isChecked.toggle()
+///             }
+///         }
+///     }
+/// }
+/// ```
 /// - Note: 내부는 `GeometryReader`와 `ZStack`으로 구성되어 있습니다.
 /// 체크안된 상태의 원은 계속 있지만, 체크된 상태의 원은 `isChecked`의 값이 참이면 기존 원에 덮어씌워 올라갑니다.
 /// - Author: newJunsung
