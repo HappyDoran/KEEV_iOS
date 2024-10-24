@@ -10,8 +10,6 @@ import SwiftUI
 
 /// 프로젝트에서 전반적으로 사용되는 버튼들을 정의하기 위한 열거형
 ///
-/// `submit`의 경우에는 `isEnabled(버튼의 활성화 상태)` 라는 bool타입 상수를 통해서 backgroundColor, foregroundColor 상태가 달라집니다.
-///
 /// `alert`의 경우에는 `isPositive(확인과 취소의 구분)` 라는 bool타입 상수를 통해서 backgroundColor 상태가 달라집니다.
 ///
 /// - Author: Doran
