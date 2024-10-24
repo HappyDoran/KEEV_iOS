@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// MARK: CheckBox
+// MARK: CircleCheckBox
 struct CircleCheckBox: View {
     @Binding private var isChecked: Bool
     
@@ -119,7 +119,7 @@ fileprivate struct UncheckedCircleView: View {
 #Preview {
     @Previewable @State var isChecked = false
     
-    CheckBox(isChecked: $isChecked)
+    CircleCheckBox(isChecked: $isChecked)
         .frame(width: 32, height: 32)
         .onTapGesture {
             isChecked.toggle()
