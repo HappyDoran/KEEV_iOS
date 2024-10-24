@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// MARK: CheckBox
 struct CheckBox: View {
     var body: some View {
         CheckedCircleView()
@@ -14,6 +15,7 @@ struct CheckBox: View {
     }
 }
 
+// MARK: CheckedCircleView
 fileprivate struct CheckedCircleView: View {
     var body: some View {
         GeometryReader { proxy in
@@ -42,6 +44,7 @@ fileprivate struct CheckedCircleView: View {
         }
     }
     
+    // MARK: CheckedCircleView function
     private func getStartPoint(from frame: CGRect, with radius: CGFloat) -> CGPoint {
         CGPoint(
             x: frame.midX - 5 / 20 * radius,
