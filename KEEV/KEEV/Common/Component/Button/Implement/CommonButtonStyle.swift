@@ -16,13 +16,13 @@ import SwiftUI
 /// - Author: Doran
 enum CommonButtonStyle {
     // 확인 버튼
-    case submit(isEnabled: Bool)
+    case maxWidth(isEnabled: Bool)
     // alert에서 사용되는 버튼
     case alert(isPositive: Bool)
-    // 기록하러 가기 버튼
-    case goToRecord
-    // 공연 등록 요청하기 버튼
-    case request
+    // width가 174인 버튼 ex) 공연등록 요청하기 버튼
+    case small
+    // width가 179인 버튼 ex) 지금 기록하러 가기 버튼
+    case medium
 
     // brandColor600 - gray
     // grayColor100 - red
@@ -32,11 +32,11 @@ enum CommonButtonStyle {
     // MARK: 배경 색
     var backgroundColor: Color {
         switch self {
-        case .submit(let isEnabled):
+        case .maxWidth(let isEnabled):
             return isEnabled ? .gray : .purple
         case .alert(let isPositive):
             return isPositive ? .gray : .blue
-        case .goToRecord, .request:
+        case .small, .medium:
             return .gray
         }
     }
@@ -44,11 +44,11 @@ enum CommonButtonStyle {
     // MARK: 텍스트 색
     var foregroundColor: Color {
         switch self {
-        case .submit(let isEnabled):
+        case .maxWidth(let isEnabled):
             return isEnabled ? .red : .blue
         case .alert:
             return .red
-        case .goToRecord, .request:
+        case .small, .medium:
             return .red
         }
     }
@@ -56,9 +56,9 @@ enum CommonButtonStyle {
     // MARK: 가로로 긴 버튼은 maxWidth 지정
     var maxWidth: CGFloat? {
         switch self {
-        case .submit:
+        case .maxWidth:
             return .infinity
-        case .alert, .goToRecord, .request:
+        case .alert, .small, .medium:
             return nil
         }
     }
@@ -68,10 +68,10 @@ enum CommonButtonStyle {
         switch self {
         case .alert:
             return 131
-        case .goToRecord:
-            return 179
-        case .request:
+        case .small:
             return 174
+        case .medium:
+            return 179
         default:
             return 355
         }
@@ -80,11 +80,11 @@ enum CommonButtonStyle {
     // MARK: 세로 길이
     var height: CGFloat {
         switch self {
-        case .submit:
+        case .maxWidth:
             return 56
         case .alert:
             return 45
-        case .goToRecord, .request:
+        case .small, .medium:
             return 48
         }
     }
