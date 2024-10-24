@@ -60,7 +60,7 @@ extension View {
     /// - Returns: Custom된 alert 뷰
     ///
     /// - Author: Doran
-    func customAlert(title: String, message: String, isPresented: Binding<Bool>, leftButtonText: String, rightButtonText: String, leftAction: @escaping () -> Void, rightAction: @escaping () -> Void ) -> some View {
+    func customAlert(title: String, message: String, isPresented: Bool, leftButtonText: String, rightButtonText: String, leftAction: @escaping () -> Void, rightAction: @escaping () -> Void ) -> some View {
         modifier(CustomAlertViewModifier(
             title: title,
             message: message,

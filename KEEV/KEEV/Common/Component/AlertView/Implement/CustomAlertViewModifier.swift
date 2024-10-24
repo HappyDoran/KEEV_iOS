@@ -36,16 +36,16 @@ struct CustomAlertViewModifier: ViewModifier {
     private let rightButtonText: String
     private let leftAction: () -> Void
     private let rightAction: () -> Void
-    @Binding var isPresented: Bool
+    private let isPresented: Bool
 
-    init(title: String, message: String, leftButtonText: String, rightButtonText: String, leftAction: @escaping () -> Void, rightAction: @escaping () -> Void, isPresented: Binding<Bool>) {
+    init(title: String, message: String, leftButtonText: String, rightButtonText: String, leftAction: @escaping () -> Void, rightAction: @escaping () -> Void, isPresented: Bool) {
         self.title = title
         self.message = message
         self.leftButtonText = leftButtonText
         self.rightButtonText = rightButtonText
         self.leftAction = leftAction
         self.rightAction = rightAction
-        self._isPresented = isPresented
+        self.isPresented = isPresented
     }
 
     func body(content: Content) -> some View {
@@ -54,10 +54,6 @@ struct CustomAlertViewModifier: ViewModifier {
             if isPresented {
                 Color.black.opacity(0.7)
                     .edgesIgnoringSafeArea(.all)
-                    .onTapGesture {
-                        isPresented.toggle()
-                    }
-                
                 // brandColor500 - black
                 // grayColor300 - orange
                 // grayColor800 - pink
