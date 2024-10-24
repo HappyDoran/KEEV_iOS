@@ -8,8 +8,12 @@
 import SwiftUI
 
 // MARK: CheckBox
-struct CheckBox: View {
-    @State private var isChecked: Bool = false
+struct CircleCheckBox: View {
+    @Binding private var isChecked: Bool
+    
+    init(isChecked: Binding<Bool>) {
+        self._isChecked = isChecked
+    }
     
     var body: some View {
         GeometryReader { proxy in
@@ -22,9 +26,6 @@ struct CheckBox: View {
                     CheckedCircleView(frame: frame)
                 }
             }
-            .onTapGesture {
-                isChecked.toggle()
-            }
         }
     }
 }
@@ -32,13 +33,17 @@ struct CheckBox: View {
 // MARK: CheckedCircleView
 fileprivate struct CheckedCircleView: View {
     private let frame: CGRect
-    private let width: CGFloat
-    private let radius: CGFloat
     
     init(frame: CGRect) {
         self.frame = frame
-        self.width = min(frame.width, frame.height)
-        self.radius = width - 12 / 32 * width
+    }
+    
+    private var width: CGFloat {
+        min(frame.width, frame.height)
+    }
+    
+    private var radius: CGFloat {
+        width - 12 / 32 * width
     }
     
     private var startPoint: CGPoint {
@@ -84,6 +89,10 @@ fileprivate struct CheckedCircleView: View {
 fileprivate struct UncheckedCircleView: View {
     private let frame: CGRect
     
+    init(frame: CGRect) {
+        self.frame = frame
+    }
+    
     private var width: CGFloat {
         min(frame.width, frame.height)
     }
@@ -100,11 +109,6 @@ fileprivate struct UncheckedCircleView: View {
         2 / 20 * radius
     }
     
-    
-    init(frame: CGRect) {
-        self.frame = frame
-    }
-    
     var body: some View {
         Circle()
             .stroke(Color.gray, style: StrokeStyle(lineWidth: lineWidth))
@@ -113,6 +117,11 @@ fileprivate struct UncheckedCircleView: View {
 }
 
 #Preview {
-    CheckBox()
-            .frame(width: 32, height: 32)
+    @Previewable @State var isChecked = false
+    
+    CheckBox(isChecked: $isChecked)
+        .frame(width: 32, height: 32)
+        .onTapGesture {
+            isChecked.toggle()
+        }
 }
