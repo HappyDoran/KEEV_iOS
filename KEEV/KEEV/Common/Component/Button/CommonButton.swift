@@ -56,9 +56,9 @@ struct CommonButton: View {
     CommonButton(title: "작성완료", action: { print("hello world")}, style: .maxWidth, disabled: isDisabled)
     
     HStack(spacing: 0) {
-        CommonButton(title: "취소", action: { print("hello world")}, style: .alert(isPositive: true))
+        CommonButton(title: "취소", action: { print("hello world")}, style: .alert(isActive: false))
         
-        CommonButton(title: "공연 변경", action: { print("hello world")}, style: .alert(isPositive: false))
+        CommonButton(title: "공연 변경", action: { print("hello world")}, style: .alert(isActive: true))
     }
     CommonButton(title: "공연 등록 요청하기", action: { print("hello world")}, style: .small)
 }

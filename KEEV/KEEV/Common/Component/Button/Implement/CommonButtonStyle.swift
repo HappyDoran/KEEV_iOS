@@ -10,14 +10,14 @@ import SwiftUI
 
 /// 프로젝트에서 전반적으로 사용되는 버튼들을 정의하기 위한 열거형
 ///
-/// `alert`의 경우에는 `isPositive(확인과 취소의 구분)` 라는 bool타입 상수를 통해서 backgroundColor 상태가 달라집니다.
+/// `alert`의 경우에는 `isActive(어떠한 액션 발생과 취소의 구분)`  라는 bool타입 상수를 통해서 backgroundColor 상태가 달라집니다.
 ///
 /// - Author: Doran
 enum CommonButtonStyle {
     // maxWidth 버튼 ex) 확인 버튼
     case maxWidth
     // alert에서 사용되는 버튼
-    case alert(isPositive: Bool)
+    case alert(isActive: Bool)
     // width가 174인 버튼 ex) 공연등록 요청하기 버튼
     case small
     // width가 179인 버튼 ex) 지금 기록하러 가기 버튼
@@ -33,8 +33,8 @@ enum CommonButtonStyle {
         switch self {
         case .maxWidth:
             return .purple
-        case .alert(let isPositive):
-            return isPositive ? .blue : .gray
+        case .alert(let isActive):
+            return isActive ? .blue : .gray
         case .small, .medium:
             return .gray
         }

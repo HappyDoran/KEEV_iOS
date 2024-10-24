@@ -97,14 +97,14 @@ struct CustomAlertViewModifier: ViewModifier {
                                      action: {
                             closeAction()
                             isPresented.toggle()
-                        }, style: .alert(isPositive: false))
+                        }, style: .alert(isActive: false))
                         
                         if let someText = someText, let someAction = someAction {
                             CommonButton(title: someText,
                                          action: {
                                 someAction()
                                 isPresented.toggle()
-                            }, style: .alert(isPositive: true))
+                            }, style: .alert(isActive: true))
                         }
                     }
                     .padding(.top, 20)
