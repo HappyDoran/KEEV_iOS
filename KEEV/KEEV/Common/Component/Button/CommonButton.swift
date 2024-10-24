@@ -19,42 +19,47 @@ import SwiftUI
 struct CommonButton: View {
     private let title: String
     private let action: () -> Void
-    private var style: CommonButtonStyle = .submit(isEnabled: true)
-    private let cornerRadius: CGFloat = 16
+    private let style: CommonButtonStyle
+    private let disabled: Bool
     
-    init(title: String, action: @escaping () -> Void, style: CommonButtonStyle) {
+    init(title: String, action: @escaping () -> Void, style: CommonButtonStyle, disabled: Bool = false) {
         self.title = title
         self.action = action
         self.style = style
+        self.disabled = disabled
     }
-
+    
     var body: some View {
         Button(action: action) {
             Text(title)
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
                 .frame(width: style.width, height: style.height)
                 .frame(maxWidth: style.maxWidth)
-                .background(style.backgroundColor)
-                .foregroundColor(style.foregroundColor)
-                .cornerRadius(cornerRadius)
+                .background(disabled ? CommonButtonStyle.disabled.backgroundColor : style.backgroundColor)
+                .foregroundColor(disabled ? CommonButtonStyle.disabled.foregroundColor : style.foregroundColor)
+                .cornerRadius(16)
         }
+        .disabled(disabled)
 
     }
 }
 
 
 #Preview {
-    CommonButton(title: "지금 기록하러 가기!", action: { print("hello world")}, style: .goToRecord)
+    @Previewable @State var isDisabled: Bool = true
     
-    CommonButton(title: "작성완료", action: { print("hello world")}, style: .submit(isEnabled: true))
+    CommonButton(title: "지금 기록하러 가기!", action: { print("hello world")}, style: .medium)
     
-    CommonButton(title: "작성완료", action: { print("hello world")}, style: .submit(isEnabled: false)).disabled(true)
+    CommonButton(title: "작성완료", action: { print("hello world") }, style: .maxWidth)
+    
+    CommonButton(title: "작성완료", action: { print("hello world")}, style: .maxWidth, disabled: isDisabled)
     
     HStack(spacing: 0) {
         CommonButton(title: "취소", action: { print("hello world")}, style: .alert(isPositive: true))
         
         CommonButton(title: "공연 변경", action: { print("hello world")}, style: .alert(isPositive: false))
     }
-    CommonButton(title: "공연 등록 요청하기", action: { print("hello world")}, style: .request)
+    CommonButton(title: "공연 등록 요청하기", action: { print("hello world")}, style: .small)
 }
+
 

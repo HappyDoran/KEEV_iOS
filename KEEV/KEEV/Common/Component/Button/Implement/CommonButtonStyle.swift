@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 /// 프로젝트에서 전반적으로 사용되는 버튼들을 정의하기 위한 열거형
 ///
 /// `submit`의 경우에는 `isEnabled(버튼의 활성화 상태)` 라는 bool타입 상수를 통해서 backgroundColor, foregroundColor 상태가 달라집니다.
@@ -15,14 +16,16 @@ import SwiftUI
 ///
 /// - Author: Doran
 enum CommonButtonStyle {
-    // 확인 버튼
-    case maxWidth(isEnabled: Bool)
+    // maxWidth 버튼 ex) 확인 버튼
+    case maxWidth
     // alert에서 사용되는 버튼
     case alert(isPositive: Bool)
     // width가 174인 버튼 ex) 공연등록 요청하기 버튼
     case small
     // width가 179인 버튼 ex) 지금 기록하러 가기 버튼
     case medium
+    // 비활성화 버튼
+    case disabled
 
     // brandColor600 - gray
     // grayColor100 - red
@@ -32,11 +35,13 @@ enum CommonButtonStyle {
     // MARK: 배경 색
     var backgroundColor: Color {
         switch self {
-        case .maxWidth(let isEnabled):
-            return isEnabled ? .gray : .purple
+        case .maxWidth:
+            return .purple
         case .alert(let isPositive):
             return isPositive ? .gray : .blue
         case .small, .medium:
+            return .gray
+        default:
             return .gray
         }
     }
@@ -44,11 +49,11 @@ enum CommonButtonStyle {
     // MARK: 텍스트 색
     var foregroundColor: Color {
         switch self {
-        case .maxWidth(let isEnabled):
-            return isEnabled ? .red : .blue
-        case .alert:
+        case .maxWidth:
+            return .blue
+        case .alert, .small, .medium:
             return .red
-        case .small, .medium:
+        default:
             return .red
         }
     }
@@ -59,6 +64,8 @@ enum CommonButtonStyle {
         case .maxWidth:
             return .infinity
         case .alert, .small, .medium:
+            return nil
+        default:
             return nil
         }
     }
@@ -86,6 +93,9 @@ enum CommonButtonStyle {
             return 45
         case .small, .medium:
             return 48
+        default:
+            return 48
         }
     }
 }
+
