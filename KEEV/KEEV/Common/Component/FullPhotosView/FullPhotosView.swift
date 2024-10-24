@@ -14,8 +14,8 @@ import SwiftUI
 /// - Note: 화면 확대/축소와 관련된 제스처는 화면이 확대된 상태에서의 버그 발생으로 인해서 포함시키지 않았습니다. 이후에 버그 해결하면 기능 추가토록 하겠습니다.
 /// - Author: 라움
 struct FullPhotosView: View {
-    let photos: [String]
-    @Binding var selectedPhoto: String
+    private let photos: [UIImage]
+    @Binding var selectedPhoto: UIImage
     
     @Environment(\.dismiss) private var dismiss
     
@@ -67,7 +67,7 @@ struct FullPhotosView: View {
         ZStack {
             TabView(selection: $selectedPhoto) {
                 ForEach(photos, id: \.self) { photo in
-                    Image(photo)
+                    Image(uiImage: photo)
                         .resizable()
                         .scaledToFit()
                         .tag(photo)
@@ -113,8 +113,4 @@ struct FullPhotosView: View {
             .ignoresSafeArea()
         }
     }
-}
-
-#Preview {
-    FullPhotosView(photos: ["temp1", "temp2", "temp3", "temp4", "temp5"], selectedPhoto: .constant("temp1"))
 }
