@@ -37,24 +37,12 @@ import SwiftUI
 struct RateSettingView: View {
     @State private var x: CGFloat = 0
     @State private var starWidth = CGFloat.zero
-    @Binding private var rating: Double
+    @Binding private(set) var rating: Double
     
-    private let spacing: CGFloat
-    private let maxRating: CGFloat
-    private let image: (Double, Int) -> Image
-    private let brandColor: Color = .brand500
-    
-    init(
-        rating: Binding<Double>,
-        maxRating: Int,
-        spacing: CGFloat,
-        image: @escaping (Double, Int) -> Image
-    ) {
-        self._rating = rating
-        self.spacing = spacing
-        self.maxRating = CGFloat(maxRating)
-        self.image = image
-    }
+    let spacing: CGFloat
+    let maxRating: CGFloat
+    let image: (Double, Int) -> Image
+    let brandColor: Color = .brand500
     
     private var spaceCount: CGFloat {
         maxRating - 1 < 0 ? 0 : maxRating - 1
