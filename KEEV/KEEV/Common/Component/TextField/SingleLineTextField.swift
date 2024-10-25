@@ -10,10 +10,12 @@ import SwiftUI
 struct SingleLineTextField: View {
     private let placeholder: String
     @Binding var text: String
+    private let keyboardType: UIKeyboardType
     
-    init(placeholder: String, text: Binding<String>) {
+    init(placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType = .default) {
         self.placeholder = placeholder
         self._text = text
+        self.keyboardType = keyboardType
     }
     
     var body: some View {
@@ -25,6 +27,7 @@ struct SingleLineTextField: View {
             TextField("", text: $text, prompt: Text(placeholder).foregroundStyle(.gray700))
                 .frame(width: 305, height: 24)
                 .foregroundStyle(.gray100)
+                .keyboardType(keyboardType)
         }
     }
 }
