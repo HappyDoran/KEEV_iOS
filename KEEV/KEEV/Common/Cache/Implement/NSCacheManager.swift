@@ -7,10 +7,10 @@
 
 import Foundation
 
-actor NSCacheManager: CacheManagerProtocol {
+class NSCacheManager: CacheManagerProtocol {
     private let cache: NSCache<NSString, NSData>
     
-    init(cache: NSCache<NSString, NSData>) {
+    init(cache: NSCache<NSString, NSData> = .init()) {
         self.cache = cache
     }
     
