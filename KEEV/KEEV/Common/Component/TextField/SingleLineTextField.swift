@@ -53,14 +53,10 @@ struct SingleLineTextField: View {
                         })
                     
                     if let maxLength = maxLength {
-                        HStack {
-                            Spacer()
-                            
-                            Text("\(text.count) / \(maxLength)")
-                                .frame(width: 33, height: 17)
-                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                                .foregroundStyle(.gray700)
-                        }
+                        Text("\(text.count) / \(maxLength)")
+                            .frame(width: 33, height: 17)
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                            .foregroundStyle(.gray700)
                     }
                 }
                 .padding(.vertical, 16)
