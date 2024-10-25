@@ -7,16 +7,18 @@
 
 import UIKit
 
-final class UIImageCache {
+actor UIImageCache {
     private let cache: CacheManagerProtocol
+    private let imageType: ImageType
     
-    init(cache: CacheManagerProtocol) {
+    init(cache: CacheManagerProtocol, imageType: ImageType) {
         self.cache = cache
+        self.imageType = imageType
     }
     
     func image(for key: String) async -> UIImage? {
         do {
-            let data = try await cache.loadFromCache(for: key)
+            let data = try await cache.loadFromCache(for: "\(key).\(imageType)")
             return UIImage(data: data)
         } catch {
             print(error)
@@ -24,12 +26,16 @@ final class UIImageCache {
         }
     }
     
-    func store(uiImage: UIImage, _ imageType: ImageType, for key: String) async throws {
+    func store(uiImage: UIImage, for key: String) async throws {
         guard let data = imageType.data(for: uiImage) else {
             throw CacheError.notFound
         }
         
         try await cache.storeInCache(data, for: "\(key).\(imageType)")
+    }
+    
+    func remove(key: String) async throws {
+        try await cache.removeFromCache(for: "\(key).\(imageType)")
     }
 }
 
