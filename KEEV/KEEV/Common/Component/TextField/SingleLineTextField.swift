@@ -37,40 +37,35 @@ struct SingleLineTextField: View {
     }
     
     var body: some View {
-        ZStack {
-            GeometryReader { geometry in
-                RoundedRectangle(cornerRadius: 16)
-                    .frame(width: geometry.size.width * 0.88 , height: 56)
-                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
-                    .foregroundStyle(.gray900)
-                
-                TextField("", text: $text, prompt: Text(placeholder).foregroundStyle(.gray700))
-                    .frame(width: geometry.size.width * 0.77, height: 24)
-                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
-                    .foregroundStyle(.gray100)
-                    .keyboardType(keyboardType)
-                    .onChange(of: text, {
-                        if let maxLength = maxLength {
-                            text = String(text.prefix(maxLength))
+        RoundedRectangle(cornerRadius: 16)
+            .frame(height: 56)
+            .foregroundStyle(.gray900)
+            .overlay {
+                HStack(spacing: 8) {
+                    TextField("", text: $text, prompt: Text(placeholder).foregroundStyle(.gray700))
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
+                        .foregroundStyle(.gray100)
+                        .keyboardType(keyboardType)
+                        .onChange(of: text, {
+                            if let maxLength = maxLength {
+                                text = String(text.prefix(maxLength))
+                            }
+                        })
+                    
+                    if let maxLength = maxLength {
+                        HStack {
+                            Spacer()
+                            
+                            Text("\(text.count) / \(maxLength)")
+                                .frame(width: 33, height: 17)
+                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                                .foregroundStyle(.gray700)
                         }
-                    })
-                
-                if let maxLength = maxLength {
-                    HStack {
-                        Spacer()
-                        
-                        Text("\(text.count) / \(maxLength)")
-                            .frame(width: 33, height: 17)
-                            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                            .foregroundStyle(.gray700)
                     }
-                    .frame(width: geometry.size.width * 0.77)
-                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.5)
                 }
+                .padding(.vertical, 16)
+                .padding(.horizontal, 20)
             }
-        }
-        .frame(width: .infinity, height: 56)
     }
 }
 
