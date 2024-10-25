@@ -33,11 +33,7 @@ import SwiftUI
 /// 체크안된 상태의 원은 계속 있지만, 체크된 상태의 원은 `isChecked`의 값이 참이면 기존 원에 덮어씌워 올라갑니다.
 /// - Author: newJunsung
 struct CircleCheckBox: View {
-    @Binding private var isChecked: Bool
-    
-    init(isChecked: Binding<Bool>) {
-        self._isChecked = isChecked
-    }
+    @Binding private(set) var isChecked: Bool
     
     var body: some View {
         GeometryReader { proxy in
@@ -56,11 +52,7 @@ struct CircleCheckBox: View {
 
 // MARK: CheckedCircleView
 fileprivate struct CheckedCircleView: View {
-    private let frame: CGRect
-    
-    init(frame: CGRect) {
-        self.frame = frame
-    }
+    let frame: CGRect
     
     private var width: CGFloat {
         min(frame.width, frame.height)
@@ -110,11 +102,7 @@ fileprivate struct CheckedCircleView: View {
 
 // MARK: UncheckedCircleView
 fileprivate struct UncheckedCircleView: View {
-    private let frame: CGRect
-    
-    init(frame: CGRect) {
-        self.frame = frame
-    }
+    let frame: CGRect
     
     private var width: CGFloat {
         min(frame.width, frame.height)
