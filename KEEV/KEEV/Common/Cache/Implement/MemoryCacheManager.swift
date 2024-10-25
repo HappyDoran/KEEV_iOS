@@ -7,7 +7,7 @@
 
 import Foundation
 
-class MemoryCacheManager: CacheManagerProtocol {
+final class MemoryCacheManager: CacheManagerProtocol {
     private var cache: [String: Data] = [:]
     
     func storeInCache(_ value: Data, for key: String) async throws {

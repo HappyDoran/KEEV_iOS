@@ -7,7 +7,7 @@
 
 import Foundation
 
-class DiskCacheManager: CacheManagerProtocol {
+final class DiskCacheManager: CacheManagerProtocol {
     private let fileManager: FileManager
     private var cachedPath: URL? {
         fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first
