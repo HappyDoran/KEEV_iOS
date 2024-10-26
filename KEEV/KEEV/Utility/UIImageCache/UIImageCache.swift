@@ -38,9 +38,9 @@ actor UIImageCache {
     // MARK: Functions
     
     /// 키에 맞는 이미지를 반환합니다.
-    func image(for key: String) async -> UIImage? {
+    func image(for key: URL) async -> UIImage? {
         do {
-            let data = try await cache.loadFromCache(for: "\(key).\(imageType)")
+            let data = try await cache.loadFromCache(for: "\(key)")
             return UIImage(data: data)
         } catch {
             return nil
@@ -48,17 +48,17 @@ actor UIImageCache {
     }
     
     /// 키와 이미지를 저장합니다.
-    func store(uiImage: UIImage, for key: String) async throws {
+    func store(uiImage: UIImage, for key: URL) async throws {
         guard let data = imageType.data(for: uiImage) else {
             throw CacheError.notFound
         }
         
-        try await cache.storeInCache(data, for: "\(key).\(imageType)")
+        try await cache.storeInCache(data, for: "\(key)")
     }
     
     /// 키와 이미지를 삭제합니다.
-    func remove(key: String) async throws {
-        try await cache.removeFromCache(for: "\(key).\(imageType)")
+    func remove(key: URL) async throws {
+        try await cache.removeFromCache(for: "\(key)")
     }
 }
 
