@@ -7,9 +7,15 @@
 
 import Foundation
 
+/// 딕셔너리를 통해서 데이터를 캐싱하는 객체
+///
+/// - Author: newJunsung
 final class MemoryCacheManager: CacheManagerProtocol {
+    // MARK: Private attributes
+    
     private var cache: [String: Data] = [:]
     
+    // MARK: Functions
     func storeInCache(_ value: Data, for key: String) async throws {
         cache[key] = value
     }
