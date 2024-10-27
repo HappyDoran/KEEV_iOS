@@ -1,21 +1,28 @@
+//
+//  CustomAlertViewModifier.swift
+//  KEEV
+//
+//  Created by Doran on 10/25/24.
+//
+
 import SwiftUI
 import PhotosUI
 
 struct PhotoPickerView: View {
-    @State private var selectedItems: [PhotosPickerItem] = []
-    @Binding private var selectedImages: [UIImage]
+    @State private var selectedItems =  [PhotosPickerItem]()
+    @State private var selectedImages = [Image]()
     @Binding private var isPresentedError: Bool
     private let maxSelectedCount: Int = 5
     
     private var disabled: Bool {
         selectedImages.count >= maxSelectedCount
     }
+    
     private var availableSelectedCount: Int {
         maxSelectedCount - selectedImages.count
     }
     
-    init(selectedImages: Binding<[UIImage]>, isPresentedError: Binding<Bool>){
-        self._selectedImages = selectedImages
+    init(isPresentedError: Binding<Bool>){
         self._isPresentedError = isPresentedError
     }
 
@@ -24,7 +31,7 @@ struct PhotoPickerView: View {
             HStack {
                 PhotosPicker(
                     selection: $selectedItems,
-                    maxSelectionCount: availableSelectedCount,
+                    maxSelectionCount: maxSelectedCount,
                     matching: .images,
                     photoLibrary: PHPhotoLibrary.shared()
                 ) {
@@ -49,12 +56,12 @@ struct PhotoPickerView: View {
                         }
                     }
                     .onChange(of: selectedItems) { _, newValue in
-                        handleSelectedPhotos(newValue)
+                        handleSelectedPhotos()
                     }
                 }
-                ForEach(selectedImages, id: \.self) { image in
+                ForEach(0..<selectedImages.count, id: \.self) { i in
                     ZStack {
-                        Image(uiImage: image)
+                        selectedImages[i]
                             .resizable()
                             .scaledToFill()
                             .frame(width: 112, height: 112)
@@ -73,24 +80,15 @@ struct PhotoPickerView: View {
 }
 
 extension PhotoPickerView {
-    private func handleSelectedPhotos(_ newPhotos: [PhotosPickerItem]) {
-        for newPhoto in newPhotos {
-            newPhoto.loadTransferable(type: Data.self) { result in
-                switch result {
-                case .success(let data):
-                    if let data = data, let newImage = UIImage(data: data) {
-                        if !selectedImages.contains(where: { $0.pngData() == newImage.pngData() }) {
-                            DispatchQueue.main.async {
-                                selectedImages.append(newImage)
-                            }
-                        }
-                    }
-                case .failure:
-                    isPresentedError = true
+    private func handleSelectedPhotos() {
+        Task {
+            selectedImages.removeAll()
+            for item in selectedItems {
+                if let image: Image = try? await item.loadTransferable(type: Image.self) {
+                    selectedImages.append(image)
                 }
             }
         }
-        selectedItems.removeAll()
     }
 }
 
@@ -100,13 +98,13 @@ struct PhotoPickerView_Previews: PreviewProvider {
         @State private var isPresentedError: Bool = false
 
         var body: some View {
-            PhotoPickerView(selectedImages: $selectedImages, isPresentedError: $isPresentedError)
+            PhotoPickerView( isPresentedError: $isPresentedError)
         }
     }
 
     static var previews: some View {
         PreviewWrapper()
-            .preferredColorScheme(.light) // 또는 .dark
+            .preferredColorScheme(.dark)
             .previewLayout(.sizeThatFits)
             .padding()
     }
