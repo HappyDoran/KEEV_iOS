@@ -1,17 +1,9 @@
-//
-//  CustomAlertViewModifier.swift
-//  KEEV
-//
-//  Created by Doran on 10/25/24.
-//
-
 import SwiftUI
 import PhotosUI
 
 struct PhotoPickerView: View {
-    @State private var selectedItems =  [PhotosPickerItem]()
+    @State private var selectedItems = [PhotosPickerItem]()
     @State private var selectedImages = [Image]()
-    @Binding private var isPresentedError: Bool
     private let maxSelectedCount: Int = 5
     
     private var disabled: Bool {
@@ -20,10 +12,6 @@ struct PhotoPickerView: View {
     
     private var availableSelectedCount: Int {
         maxSelectedCount - selectedImages.count
-    }
-    
-    init(isPresentedError: Binding<Bool>){
-        self._isPresentedError = isPresentedError
     }
 
     var body: some View {
@@ -39,36 +27,50 @@ struct PhotoPickerView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .frame(width: 112, height: 112)
                             .foregroundColor(.gray800)
-                        VStack(spacing: 8){
+                        VStack(spacing: 8) {
                             Image(systemName: "camera.fill")
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 45, height: 29)
                                 .foregroundColor(.gray500)
                             
-                            HStack(spacing: 0){
-                                Text("\(selectedImages.count)").figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                            HStack(spacing: 0) {
+                                Text("\(selectedImages.count)")
+                                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                                     .foregroundColor(.gray300)
                                 
-                                Text(" / 5").figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                                Text(" / 5")
+                                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                                     .foregroundColor(.gray500)
                             }
                         }
                     }
-                    .onChange(of: selectedItems) { _, newValue in
+                    .onChange(of: selectedItems) { _, _ in
                         handleSelectedPhotos()
                     }
                 }
-                ForEach(0..<selectedImages.count, id: \.self) { i in
+
+                ForEach(selectedImages.indices, id: \.self) { index in
                     ZStack {
-                        selectedImages[i]
+                        selectedImages[index]
                             .resizable()
                             .scaledToFill()
                             .frame(width: 112, height: 112)
                             .cornerRadius(16)
-                        
+                            .overlay(
+                                Button(action: {
+                                    deleteImage(at: index)
+                                }) {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundColor(.gray300).opacity(0.7)
+                                        .font(.title)
+                                }
+                                .padding(8),
+                                alignment: .topTrailing
+                            )
                     }
                 }
+                
                 ForEach(0..<availableSelectedCount, id: \.self) { _ in
                     RoundedRectangle(cornerRadius: 16)
                         .frame(width: 112, height: 112)
@@ -90,6 +92,12 @@ extension PhotoPickerView {
             }
         }
     }
+    
+    private func deleteImage(at index: Int) {
+        guard index < selectedImages.count, index < selectedItems.count else { return }
+        selectedImages.remove(at: index)
+        selectedItems.remove(at: index)
+    }
 }
 
 struct PhotoPickerView_Previews: PreviewProvider {
@@ -98,7 +106,7 @@ struct PhotoPickerView_Previews: PreviewProvider {
         @State private var isPresentedError: Bool = false
 
         var body: some View {
-            PhotoPickerView( isPresentedError: $isPresentedError)
+            PhotoPickerView()
         }
     }
 
