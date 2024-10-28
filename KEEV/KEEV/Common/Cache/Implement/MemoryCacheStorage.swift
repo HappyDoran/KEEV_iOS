@@ -105,9 +105,7 @@ final class MemoryCacheStorage<Key, Object>: @unchecked Sendable where Key: AnyO
     /// - Returns: 값이 있으면 값, 없으면 `nil`을 반환합니다.
     /// - Author: newJunsung
     func fetch(for key: Key) -> Object? {
-        guard let object = storage.object(forKey: key) else { return nil }
-        
-        if object.isExpired {
+        guard let object = storage.object(forKey: key), !object.isExpired else {
             remove(for: key)
             return nil
         }
