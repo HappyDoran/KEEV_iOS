@@ -9,25 +9,6 @@ import Foundation
 
 extension Date {
     private static let dateFormatter: DateFormatter = DateFormatter()
-    
-    /// Date 타입의 날짜와 오늘 날짜 사이의 차이를 저장하는 계산 프로퍼티
-    ///
-    /// Date 타입의 날짜와 오늘 날짜 사이의 차이를 저장하는 계산 프로퍼티입니다.
-    ///
-    /// - Example:
-    /// ```swift
-    /// let date = Date()
-    /// if let difference = date.difference {
-    ///     print(difference)
-    /// }
-    /// ```
-    /// - Author: 라움
-    var difference: Int? {
-        let calendar = Calendar.current
-        guard let count = calendar.dateComponents([.day], from: self, to: Date()).day else { return nil }
-        
-        return count
-    }
 
     /// Date 타입의 객체를 사용자가 정한 형식의 문자열로 변환하는 함수
     ///
@@ -48,5 +29,30 @@ extension Date {
     func toString(format: String) -> String {
         Date.dateFormatter.dateFormat = format
         return Date.dateFormatter.string(from: self)
+    }
+    
+    /// Date 타입의 날짜와 인자로 받은 날짜 사이의 차이를 계산하는 함수
+    ///
+    /// - Parameters:
+    ///   - date: 날짜 차이를 계산하고 싶은 날짜
+    ///
+    /// Date 타입의 날짜와 인자로 받은 날짜 사이의 차이를 계산하는 함수입니다.
+    ///
+    /// - Returns: 날짜 차이 값을 옵셔널로 리턴
+    ///
+    /// - Example:
+    /// ```swift
+    /// let date = Date()
+    /// if let difference = date.difference {
+    ///     print(difference)
+    /// }
+    /// ```
+    ///
+    /// - Author: 라움
+    func difference(from date: Date) -> Int? {
+        let calendar = Calendar.current
+        guard let difference = calendar.dateComponents([.day], from: self, to: Date()).day else { return nil }
+        
+        return difference
     }
 }

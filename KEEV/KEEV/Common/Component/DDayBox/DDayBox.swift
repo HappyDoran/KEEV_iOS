@@ -20,7 +20,7 @@ struct DDayBox: View {
     }
     
     var body: some View {
-        if let difference = date.difference {
+        if let difference = date.difference(from: .now) {
             if difference < 0 {
                 Text("D\(difference)")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold)))
