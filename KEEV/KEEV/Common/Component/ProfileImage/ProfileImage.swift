@@ -19,7 +19,11 @@ import PhotosUI
 /// - Author: Doran
 struct ProfileImage: View {
     @State private var selectedItem: PhotosPickerItem? = nil
-    @State private var selectedImage: UIImage?
+    @Binding private var selectedImage: UIImage?
+    
+    init(selectedImage: Binding<UIImage?>) {
+        self._selectedImage = selectedImage
+    }
     
     var body: some View {
         PhotosPicker(selection: $selectedItem,
@@ -64,6 +68,3 @@ extension ProfileImage {
     }
 }
 
-#Preview {
-    ProfileImage()
-}

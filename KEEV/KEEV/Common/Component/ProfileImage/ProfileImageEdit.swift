@@ -13,9 +13,10 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct ProfileImageEdit: View {
+    @State private var sampleImage: UIImage? = UIImage(named: "sample")
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            ProfileImage()
+            ProfileImage(selectedImage: $sampleImage)
             ProfileImageCamera().padding(.all, 2)
                 
         }
