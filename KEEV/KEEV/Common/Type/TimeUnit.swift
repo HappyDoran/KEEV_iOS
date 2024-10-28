@@ -7,10 +7,10 @@
 
 import Foundation
 
-/// 디스크의 용량 단위를 나타내는 열거형
+/// 시간 단위를 나타내는 열거형
 ///
-/// 디스크의 용량을 나타냅니다.
-/// case로는 `bytes`, `kilobytes`, `megabytes`, `gigabytes`가 있습니다.
+/// 시간단위를 나타냅니다.
+/// case로는 `seconds`, `minutes`, `hours`, `days`가 있습니다.
 ///
 /// - Author: newJunsung
 enum TimeUnit {
