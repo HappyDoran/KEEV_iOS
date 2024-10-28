@@ -60,38 +60,40 @@ struct PhotoPickerView: View {
                     }
                 }
                 
-                // MARK: 이미지 뷰
-                ForEach(selectedImages.indices, id: \.self) { index in
-                    ZStack {
-                        Image(uiImage: selectedImages[index])
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 112, height: 112)
-                            .cornerRadius(16)
-                            .overlay(
-                                Button(action: {
-                                    deleteImage(at: index)
-                                }) {
-                                    Image(systemName: "xmark.circle.fill")
-                                        .foregroundColor(.gray300).opacity(0.7)
-                                        .font(.title)
-                                }
-                                .padding(8),
-                                alignment: .topTrailing
-                            )
+                // MARK: 이미지가 있을 때는 이미지, 이미지가 없을 때는 빈 사각형을 띄우는 뷰
+                ForEach(0..<maxSelectedCount, id: \.self) { index in
+                    if index < selectedImages.count {
+                        ZStack {
+                            Image(uiImage: selectedImages[index])
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 112, height: 112)
+                                .cornerRadius(16)
+                                .overlay(
+                                    Button(action: {
+                                        deleteImage(at: index)
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.gray.opacity(0.7))
+                                            .font(.title)
+                                    }
+                                        .padding(8),
+                                    alignment: .topTrailing
+                                )
+                        }
                     }
-                }
-                
-                // MARK: 이미지가 없을 때의 사각형 뷰
-                ForEach(0..<availableSelectedCount, id: \.self) { _ in
-                    RoundedRectangle(cornerRadius: 16)
-                        .frame(width: 112, height: 112)
-                        .foregroundColor(.gray900)
+                    else {
+                        RoundedRectangle(cornerRadius: 16)
+                            .frame(width: 112, height: 112)
+                            .foregroundColor(.gray900)
+                    }
                 }
             }
         }
     }
 }
+
+
 
 extension PhotoPickerView {
     // MARK: photoPicker에서 add 이벤트 완료 시 발생하는 함수
