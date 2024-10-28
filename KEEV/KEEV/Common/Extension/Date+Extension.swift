@@ -30,4 +30,29 @@ extension Date {
         Date.dateFormatter.dateFormat = format
         return Date.dateFormatter.string(from: self)
     }
+    
+    /// Date 타입의 날짜와 인자로 받은 날짜 사이의 차이를 계산하는 함수
+    ///
+    /// - Parameters:
+    ///   - date: 날짜 차이를 계산하고 싶은 날짜
+    ///
+    /// Date 타입의 날짜와 인자로 받은 날짜 사이의 차이를 계산하는 함수입니다.
+    ///
+    /// - Returns: 날짜 차이 값을 옵셔널로 리턴
+    ///
+    /// - Example:
+    /// ```swift
+    /// let date = Date()
+    /// if let difference = date.difference {
+    ///     print(difference)
+    /// }
+    /// ```
+    ///
+    /// - Author: 라움
+    func difference(from date: Date) -> Int? {
+        let calendar = Calendar.current
+        guard let difference = calendar.dateComponents([.day], from: self, to: Date()).day else { return nil }
+        
+        return difference
+    }
 }

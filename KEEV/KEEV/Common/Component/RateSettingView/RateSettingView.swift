@@ -39,8 +39,8 @@ struct RateSettingView: View {
     @State private var starWidth = CGFloat.zero
     @Binding private(set) var rating: Double
     
-    let spacing: CGFloat
     let maxRating: CGFloat
+    let spacing: CGFloat
     let image: (Double, Int) -> Image
     let brandColor: Color = .brand500
     
