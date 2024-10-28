@@ -14,7 +14,7 @@
 enum StorageUnit {
     /// 두 유닛을 더해줍니다.
     ///
-    /// 두 유닛의 case가 무엇이든 상관없이, 용량을 계산하여 bytes 열거형으로 나타냅니다.
+    /// 두 유닛의 case가 무엇이든 상관없이, 용량을 계산하여 `bytes` 열거형으로 나타냅니다.
     ///
     /// - Returns: StorageUnit.bytes
     /// - Author: newJunsung
@@ -24,7 +24,7 @@ enum StorageUnit {
     
     /// 두 유닛을 빼줍니다.
     ///
-    /// 두 유닛의 case가 무엇이든 상관없이, 용량을 계산하여 bytes 열거형으로 나타냅니다.
+    /// 두 유닛의 case가 무엇이든 상관없이, 용량을 계산하여 `bytes` 열거형으로 나타냅니다.
     ///
     /// - Returns: StorageUnit.bytes
     /// - Author: newJunsung
@@ -37,6 +37,7 @@ enum StorageUnit {
     case megabytes(of: UInt)
     case gigabytes(of: UInt)
     
+    /// 각 case들을 `bytes` 단위의 UInt로 바꿔서 보여주는 변수
     var toBytes: UInt {
         switch self {
         case .bytes(of: let bytes): return bytes
