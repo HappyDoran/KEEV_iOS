@@ -13,15 +13,15 @@ import PhotosUI
 /// - Author: Doran
 struct PhotoPickerView: View {
     @State private var selectedItems = [PhotosPickerItem]()
-    @State private var selectedImages = [Image]()
+    @Binding private var selectedImages: [UIImage]
     private let maxSelectedCount: Int = 5
-    
-    private var disabled: Bool {
-        selectedImages.count >= maxSelectedCount
-    }
     
     private var availableSelectedCount: Int {
         maxSelectedCount - selectedImages.count
+    }
+    
+    init(selectedImages: Binding<[UIImage]>) {
+        self._selectedImages = selectedImages
     }
 
     var body: some View {
@@ -63,7 +63,7 @@ struct PhotoPickerView: View {
                 // MARK: 이미지 뷰
                 ForEach(selectedImages.indices, id: \.self) { index in
                     ZStack {
-                        selectedImages[index]
+                        Image(uiImage: selectedImages[index])
                             .resizable()
                             .scaledToFill()
                             .frame(width: 112, height: 112)
@@ -99,8 +99,14 @@ extension PhotoPickerView {
         Task {
             selectedImages.removeAll()
             for item in selectedItems {
-                if let image: Image = try? await item.loadTransferable(type: Image.self) {
-                    selectedImages.append(image)
+                do {
+                    if let data = try await item.loadTransferable(type: Data.self) {
+                        if let newImage = UIImage(data: data) {
+                            selectedImages.append(newImage)
+                        }
+                    }
+                } catch {
+                    print(error.localizedDescription)
                 }
             }
         }
@@ -119,7 +125,7 @@ struct PhotoPickerView_Previews: PreviewProvider {
         @State private var isPresentedError: Bool = false
 
         var body: some View {
-            PhotoPickerView()
+            PhotoPickerView(selectedImages: $selectedImages)
         }
     }
 
@@ -130,3 +136,5 @@ struct PhotoPickerView_Previews: PreviewProvider {
             .padding()
     }
 }
+
+
