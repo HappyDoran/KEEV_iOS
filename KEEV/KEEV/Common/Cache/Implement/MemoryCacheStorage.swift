@@ -35,13 +35,14 @@ final class MemoryCacheStorage<Key, Object>: @unchecked Sendable where Key: AnyO
     /// - `cleanTerm`: 어느 정도의 시간 간격을 두고 캐시를 정리할지 결정하는 요소, 0이면 캐시를 정리하지 않습니다.
     init(configuration: Configuration) {
         let storage = NSCache<Key, CachableObject>()
-        storage.totalCostLimit = configuration.totalCostLimit
+        storage.totalCostLimit = Int(configuration.totalCostLimit.toBytes)
         storage.countLimit = configuration.countLimit
         
         self.storage = storage
         
-        if configuration.cleanTerm != 0 {
-            cleanTimer = .scheduledTimer(withTimeInterval: configuration.cleanTerm, repeats: true) { [weak self] _ in
+        let seconds = configuration.cleanTerm.toSeconds
+        if seconds > TimeInterval.zero {
+            cleanTimer = .scheduledTimer(withTimeInterval: seconds, repeats: true) { [weak self] _ in
                 self?.cleanExpiredObjects()
             }
         }
@@ -84,11 +85,17 @@ final class MemoryCacheStorage<Key, Object>: @unchecked Sendable where Key: AnyO
     /// `expiration`의 경우 `Optional<Date>`인데, 여기에 `nil`이 들어갈 경우, 유통기한이 없는 것입니다.
     ///
     /// - Author: newJunsung
-    func store(_ object: Object, until expiration: Date? = nil, for key: Key) {
+    func store(_ object: Object, until expiration: TimeUnit? = nil, for key: Key) {
         lock.lock()
         defer { lock.unlock() }
         
-        storage.setObject(CachableObject(object, expiration: expiration), forKey: key)
+        if let expiration {
+            let expiration = Date().addingTimeInterval(expiration.toSeconds)
+            storage.setObject(CachableObject(object, expiration: expiration), forKey: key)
+        } else {
+            storage.setObject(CachableObject(object, expiration: nil), forKey: key)
+        }
+        
         keys.insert(key)
     }
     
@@ -140,13 +147,11 @@ extension MemoryCacheStorage {
     /// 요소로는 `countLimit`, `totalCostLimit`, `cleanTerm`이 있습니다.
     ///
     /// - `countLimit`: (키, 값)을 몇 개까지 저장할 것인지를 결정하는 요소, 0이면 무제한 입니다.
-    /// - `totalCostLimit`: 저장소의 용량제한을 설정하는 요소, 0이면 무제한입니다.
-    /// - `cleanTerm`: 어느 정도의 시간 간격을 두고 캐시를 정리할지 결정하는 요소, 0이면 캐시를 정리하지 않습니다.
+    /// - `totalCostLimit`: 저장소의 용량제한을 설정하는 요소, 0보다 작으면 무제한입니다.
+    /// - `cleanTerm`: 어느 정도의 시간 간격을 두고 캐시를 정리할지 결정하는 요소, 0보다 작으면 캐시를 정리하지 않습니다.
     ///
     /// - Important: 각 속성에 대해 0이 의미하는 바는 무제한이라는 뜻입니다.
     ///
-    /// - ToDo: `totalCostLimit` 용량 단위(GB, MB, KB 등)별 열거형 만들기.
-    /// `cleanTerm` 시간 단위(초, 분, 시간, 날)별 열거형 만들기
     ///
     /// - Author: newJunsung
     struct Configuration {
@@ -155,11 +160,11 @@ extension MemoryCacheStorage {
         /// (키, 값)을 몇 개까지 저장할 것인지를 결정하는 요소, 0이면 무제한 입니다.
         let countLimit: Int
         
-        /// 저장소의 용량제한을 설정하는 요소, 0이면 무제한입니다.
-        let totalCostLimit: Int
+        /// 저장소의 용량제한을 설정하는 요소, 0보다 작으면 무제한입니다.
+        let totalCostLimit: StorageUnit
         
-        /// 어느 정도의 시간 간격을 두고 캐시를 정리할지 결정하는 요소, 0이면 캐시를 정리하지 않습니다.
-        let cleanTerm: TimeInterval
+        /// 어느 정도의 시간 간격을 두고 캐시를 정리할지 결정하는 요소, 0보다 작으면 캐시를 정리하지 않습니다.
+        let cleanTerm: TimeUnit
     }
 }
 
