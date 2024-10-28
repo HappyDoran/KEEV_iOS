@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 프로필 수정시 들어가는 뷰
+///
+/// 따로 만들어진 프로필 사진 첨부 뷰와 카메라 아이콘 뷰를 합쳐서 만들어 놓은 뷰입니다.
+///
+/// - Author: Doran
 struct ProfileImageEdit: View {
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
