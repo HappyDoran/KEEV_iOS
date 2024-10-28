@@ -49,7 +49,7 @@ struct PhotoPickerView: View {
                                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                                     .foregroundColor(.gray300)
                                 
-                                Text(" / 5")
+                                Text(" / \(maxSelectedCount)")
                                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                                     .foregroundColor(.gray500)
                             }
