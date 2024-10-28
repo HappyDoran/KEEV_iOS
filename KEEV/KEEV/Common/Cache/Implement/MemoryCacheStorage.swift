@@ -26,6 +26,13 @@ final class MemoryCacheStorage<Key, Object>: @unchecked Sendable where Key: AnyO
     
     // MARK: Initialization
     
+    /// Configuration을 바탕으로 `MemoryCacheStorage`를 생성합니다.
+    ///
+    /// 요소로는 `countLimit`, `totalCostLimit`, `cleanTerm`이 있습니다.
+    ///
+    /// - `countLimit`: (키, 값)을 몇 개까지 저장할 것인지를 결정하는 요소, 0이면 무제한 입니다.
+    /// - `totalCostLimit`: 저장소의 용량제한을 설정하는 요소, 0이면 무제한입니다.
+    /// - `cleanTerm`: 어느 정도의 시간 간격을 두고 캐시를 정리할지 결정하는 요소, 0이면 캐시를 정리하지 않습니다.
     init(configuration: Configuration) {
         let storage = NSCache<Key, CachableObject>()
         storage.totalCostLimit = configuration.totalCostLimit
@@ -40,9 +47,10 @@ final class MemoryCacheStorage<Key, Object>: @unchecked Sendable where Key: AnyO
         }
     }
     
-    // MARK: Private functions
+    // MARK: Internal functions
     
-    private func cleanExpiredObjects() {
+    /// 캐싱된 값들의 유통기한을 확인하여, 유통기한이 지난 값들은 삭제합니다.
+    func cleanExpiredObjects() {
         lock.lock()
         defer { lock.unlock() }
         
@@ -59,12 +67,23 @@ final class MemoryCacheStorage<Key, Object>: @unchecked Sendable where Key: AnyO
         }
     }
     
-    // MARK: Internal functions
-    
+    /// 캐싱된 키와 값이 있는지 확인합니다.
     func contains(for key: Key) -> Bool {
         keys.contains(key)
     }
     
+    /// 키와 값을 캐싱해두는 함수
+    ///
+    /// - Parameters:
+    ///   - object: 캐싱할 값
+    ///   - expiration: 유통기한, 기본값은 `nil`입니다.
+    ///   - key: 키
+    ///
+    /// 값과 유통기한, 그리고 키를 저장합니다.
+    ///
+    /// `expiration`의 경우 `Optional<Date>`인데, 여기에 `nil`이 들어갈 경우, 유통기한이 없는 것입니다.
+    ///
+    /// - Author: newJunsung
     func store(_ object: Object, until expiration: Date? = nil, for key: Key) {
         lock.lock()
         defer { lock.unlock() }
@@ -73,6 +92,18 @@ final class MemoryCacheStorage<Key, Object>: @unchecked Sendable where Key: AnyO
         keys.insert(key)
     }
     
+    /// 키와 관련된 캐시 값을 반환하는 함수
+    ///
+    /// - Parameters:
+    ///   - key: 키
+    ///
+    /// 키와 관련된 값을 찾아서 반환합니다.
+    ///
+    /// 만약 키에 해당하는 값이 없다면 키를 삭제 후, `nil`을 반환합니다.
+    /// - Important:만약 키에 해당하는 값이 있더라도 그 값의 유통기한이 지났다면, 키와 값을 삭제하고 `nil`을 반환합니다.
+    ///
+    /// - Returns: 값이 있으면 값, 없으면 `nil`을 반환합니다.
+    /// - Author: newJunsung
     func fetch(for key: Key) -> Object? {
         guard let object = storage.object(forKey: key) else { return nil }
         
@@ -84,6 +115,7 @@ final class MemoryCacheStorage<Key, Object>: @unchecked Sendable where Key: AnyO
         return object.object
     }
     
+    /// 캐싱된 키와 값을 삭제하는 함수.
     func remove(for key: Key) {
         lock.lock()
         defer { lock.unlock() }
@@ -92,6 +124,7 @@ final class MemoryCacheStorage<Key, Object>: @unchecked Sendable where Key: AnyO
         keys.remove(key)
     }
     
+    /// 캐싱된 키와 값 전부를 삭제합니다.
     func removeAll() {
         lock.lock()
         defer { lock.unlock() }
