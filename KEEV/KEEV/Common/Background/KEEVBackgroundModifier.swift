@@ -35,7 +35,7 @@ extension View {
     ///
     /// - Important: `ZStack`으로 내부가 구현되어 있어서, 뷰의 `modifier`들의 가장 마지막에 호출하는 것을 권장드립니다.
     /// - Author: newJunsung
-    func backgroundforKEEV() -> some View {
+    func backgroundForKEEV() -> some View {
         modifier(KEEVBackgroundModifier())
     }
 }
