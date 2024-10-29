@@ -8,15 +8,15 @@
 import Foundation
 import Security
 
+
 final class KeyChainUtility {
     static let shared = KeyChainUtility()
     
     private init() {}
-    private let service = Bundle.main.bundleIdentifier
-    private let account = "KEEV"
+    private let account = "user"
     
-    func create(_ data: Data) -> Bool {
-        guard let service = self.service else { return false }
+    @discardableResult
+    func create(_ data: Data, service: String) -> Bool {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -29,8 +29,7 @@ final class KeyChainUtility {
         return SecItemAdd(query as CFDictionary, nil) == errSecSuccess
     }
     
-    func read() -> Data? {
-        guard let service = self.service else { return nil }
+    func read(service: String) -> Data? {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -48,12 +47,14 @@ final class KeyChainUtility {
         return nil
     }
     
-    func update() {
+    func delete(service: String) {
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service,
+            kSecAttrAccount: account
+        ]
         
-    }
-    
-    func delete() {
-        
+        SecItemDelete(query as CFDictionary)
     }
 }
 
