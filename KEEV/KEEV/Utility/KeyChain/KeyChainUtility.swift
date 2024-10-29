@@ -16,11 +16,11 @@ final class KeyChainUtility {
     private let account = "KEEV"
     
     func create(_ data: Data) -> Bool {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service as Any,
-            kSecAttrAccount as String: account,
-            kSecValueData as String: data
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service as Any,
+            kSecAttrAccount: account,
+            kSecValueData: data
         ]
         
         SecItemDelete(query as CFDictionary)
@@ -29,12 +29,12 @@ final class KeyChainUtility {
     }
     
     func read() -> Data? {
-        let query: [String: Any] = [
-            kSecClass as String: kSecClassGenericPassword,
-            kSecAttrService as String: service as Any,
-            kSecAttrAccount as String: account,
-            kSecReturnData as String: kCFBooleanTrue!,
-            kSecMatchLimit as String: kSecMatchLimitOne
+        let query: [CFString: Any] = [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service as Any,
+            kSecAttrAccount: account,
+            kSecReturnData: kCFBooleanTrue!,
+            kSecMatchLimit: kSecMatchLimitOne
         ]
         
         var dataTypeRef: AnyObject?
@@ -54,3 +54,4 @@ final class KeyChainUtility {
         
     }
 }
+
