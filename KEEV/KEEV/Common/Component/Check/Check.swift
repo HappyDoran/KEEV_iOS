@@ -7,6 +7,15 @@
 
 import SwiftUI
 
+/// 프로필 수정을 완료했을 때 나오는 토스트 메시지의 아이콘
+///
+/// - Parameters:
+///   - checkColor: 체크 표시의 색상
+///
+///  디자이너의 의도대로라면 체크 아이콘이 뚫려있어서 뒤의 배경색이 보이는 느낌이라 checkColor를 파라미터로 받아서 적용하여 마치 뚫려보이는 것처럼 합니다.
+///
+///
+/// - Author: Doran
 struct Check: View {
     private var checkColor: Color
     
