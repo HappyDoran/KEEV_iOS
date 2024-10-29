@@ -16,9 +16,10 @@ final class KeyChainUtility {
     private let account = "KEEV"
     
     func create(_ data: Data) -> Bool {
+        guard let service = self.service else { return false }
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service as Any,
+            kSecAttrService: service,
             kSecAttrAccount: account,
             kSecValueData: data
         ]
@@ -29,9 +30,10 @@ final class KeyChainUtility {
     }
     
     func read() -> Data? {
+        guard let service = self.service else { return nil }
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service as Any,
+            kSecAttrService: service,
             kSecAttrAccount: account,
             kSecReturnData: kCFBooleanTrue!,
             kSecMatchLimit: kSecMatchLimitOne
