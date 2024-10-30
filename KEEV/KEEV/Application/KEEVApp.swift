@@ -11,7 +11,7 @@ import SwiftUI
 struct KEEVApp: App {
     var body: some Scene {
         WindowGroup {
-            EventView()
+            DummyView()
         }
     }
 }
