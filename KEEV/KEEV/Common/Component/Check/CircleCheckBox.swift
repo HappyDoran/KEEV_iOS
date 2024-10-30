@@ -87,9 +87,7 @@ fileprivate struct CheckedCircleView: View {
     
     var body: some View {
         Path { path in
-            path.move(to: startPoint)
-            path.addLine(to: middlePoint)
-            path.addLine(to: endPoint)
+            path.checkMark(startPoint: startPoint, middlePoint: middlePoint, endPoint: endPoint)
         }
         .stroke(Color.gray800, style: StrokeStyle(lineWidth: 2 / 20 * radius, lineCap: .round, lineJoin: .round))
         .background(

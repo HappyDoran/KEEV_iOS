@@ -121,8 +121,8 @@ struct RateSettingView: View {
 #Preview {
     RateSettingView(
         rating: .constant(3.5),
-        maxRating: 5,
-        spacing: 12
+        spacing: 12,
+        maxRating: 5
     ) { _, _ in
         Image(systemName: "star.fill")
     }
