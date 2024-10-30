@@ -92,4 +92,26 @@ extension View {
             someAction: someAction
         ))
     }
+    
+    /// 커스텀 액션 시트를 표시하는 ViewModifier를 적용하는 함수
+    ///
+    /// - Parameters:
+    ///   - isPresented: 액션 시트의 표시 여부를 제어하는 바인딩 변수
+    ///   - buttons: 버튼에 표시할 정보들이 담긴 CustomActionSheetButtonContent 배열
+    ///
+    /// CustomActionSheetButtonContent 배열을 넘겨줄 때 CustomActionSheetButtonPreset에 설정된 프리셋을 넘겨주시기 바랍니다.
+    ///
+    /// CustomActionSheetButtonPreset을 인자로 넘기는 것에 대한 예시입니다,
+    ///
+    /// ```swift
+    /// DummyView()
+    ///     .customActionSheet(isPresented: $showActionSheet, buttons: CustomActionSheetButtonPreset.setProfileImage.buttons())
+    /// ```
+    ///
+    /// - Returns: Custom된 ActionSheet 뷰
+    ///
+    /// - Author: 라움
+    func customActionSheet(isPresented: Binding<Bool>, buttons: [CustomActionSheetButtonContent]) -> some View {
+        modifier(CustomActionSheetModifier(isPresented: isPresented, buttons: buttons))
+    }
 }
