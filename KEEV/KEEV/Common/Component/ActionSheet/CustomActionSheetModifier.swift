@@ -71,7 +71,7 @@ struct CustomActionSheetModifier: ViewModifier {
             }
         }
         .ignoresSafeArea()
-        .animation(.linear(duration: 0.2), value: isPresented)
+        .animation(.snappy, value: isPresented)
         .onTapGesture {
             isPresented = false
         }

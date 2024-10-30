@@ -14,23 +14,14 @@ struct EventView: View {
     @State private var isLoading: Bool = false
     @State private var keyword: String = ""
     
-    @State private var showActionSheet: Bool = false
-    
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
-            
-            Button {
-                showActionSheet.toggle()
-            } label: {
-                Text("test")
-            }
         }
         .padding()
-        .customActionSheet(isPresented: $showActionSheet, buttons: CustomActionSheetButtonPreset.myVibe.buttons())
     }
 }
 
