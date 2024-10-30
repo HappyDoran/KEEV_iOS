@@ -70,6 +70,10 @@ struct CustomActionSheetModifier: ViewModifier {
                 .transition(.move(edge: .bottom))
             }
         }
+        .ignoresSafeArea()
         .animation(.linear(duration: 0.2), value: isPresented)
+        .onTapGesture {
+            isPresented = false
+        }
     }
 }

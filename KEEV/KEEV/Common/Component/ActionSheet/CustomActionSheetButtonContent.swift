@@ -18,7 +18,6 @@ enum CustomActionSheetButtonType: String {
     case delete = "trash.fill"
     case share = "square.and.arrow.up"
     case report = "light.beacon.max.fill"
-    case none
 }
 
 /// 액션 시트 버튼에 표시할 정보를 담고 있는 구조체
