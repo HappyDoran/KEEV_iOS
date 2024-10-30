@@ -1,5 +1,5 @@
 //
-//  CustomActionSheetButtonContent.swift
+//  SelectionButtonContent.swift
 //  KEEV
 //
 //  Created by Yune Cho on 10/30/24.
@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Note: 버튼 동작과 Symbol Image가 추가될 경우 여기에 추가바랍니다.
 /// - Author: 라움
-enum CustomActionSheetButtonType: String {
+enum SelectionButtonType: String {
     case modify = "pencil.line"
     case delete = "trash.fill"
     case share = "square.and.arrow.up"
@@ -30,26 +30,18 @@ enum CustomActionSheetButtonType: String {
 ///
 /// title - 버튼에 표시할 타이틀입니다.
 ///
-/// isFirst - 버튼 중 최상단에 위치한 버튼을 경우 cornerRadius 등의 UI적인 요소를 적용하기 위해서 받는 정보입니다.
-///
-/// isLast - 버튼 중 최하단에 위치한 버튼을 경우 cornerRadius 등의 UI적인 요소를 적용하기 위해서 받는 정보입니다.
-///
 /// action - 버튼을 탭했을 경우 수행할 동작입니다.
 ///
 /// - Author: 라움
-struct CustomActionSheetButtonContent: Identifiable {
+struct SelectionButtonContent: Identifiable {
     var id: String { title }
-    let type: CustomActionSheetButtonType
+    let type: SelectionButtonType
     let title: String
-    let isFirst: Bool
-    let isLast: Bool
     let action: (() -> Void)
     
-    init(type: CustomActionSheetButtonType, title: String, isFirst: Bool, isLast: Bool, action: @escaping () -> Void) {
+    init(type: SelectionButtonType, title: String, action: @escaping () -> Void) {
         self.type = type
         self.title = title
-        self.isFirst = isFirst
-        self.isLast = isLast
         self.action = action
     }
 }

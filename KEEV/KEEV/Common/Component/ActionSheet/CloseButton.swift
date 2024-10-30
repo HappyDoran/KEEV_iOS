@@ -1,5 +1,5 @@
 //
-//  CustomActionSheetCloseButton.swift
+//  CloseButton.swift
 //  KEEV
 //
 //  Created by Yune Cho on 10/29/24.
@@ -12,7 +12,7 @@ import SwiftUI
 /// 앱션 시트 최하단에 노출되는 액션 시트 닫기 버튼입니다.
 ///
 /// - Author: 라움
-struct CustomActionSheetCloseButton: View {
+struct CloseButton: View {
     @Binding var isPresented: Bool
     
     var body: some View {
@@ -32,5 +32,5 @@ struct CustomActionSheetCloseButton: View {
 }
 
 #Preview {
-    CustomActionSheetCloseButton(isPresented: .constant(true))
+    CloseButton(isPresented: .constant(true))
 }
