@@ -69,7 +69,6 @@ fileprivate struct ReverseCheckCircleView: View {
     }
     
     var body: some View {
-        Color.brand500
         Path { path in
             path.checkMark(startPoint: startPoint, middlePoint: middlePoint, endPoint: endPoint)
         }
