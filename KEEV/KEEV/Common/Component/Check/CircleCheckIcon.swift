@@ -1,5 +1,5 @@
 //
-//  Check.swift
+//  CircleCheckIcon.swift
 //  KEEV
 //
 //  Created by Doran on 10/28/24.
@@ -16,7 +16,7 @@ import SwiftUI
 ///
 ///
 /// - Author: Doran
-struct Check: View {
+struct CircleCheckIcon: View {
     private var checkColor: Color
     
     init(checkColor: Color) {
@@ -27,13 +27,13 @@ struct Check: View {
         GeometryReader { proxy in
             let frame = proxy.frame(in: .local)
             
-            CheckCircleView(frame: frame, checkColor: checkColor).position(x: frame.midX, y: frame.midY)
+            ReverseCheckCircleView(frame: frame, checkColor: checkColor).position(x: frame.midX, y: frame.midY)
             
         }
     }
 }
 
-fileprivate struct CheckCircleView: View {
+fileprivate struct ReverseCheckCircleView: View {
     let frame: CGRect
     let checkColor: Color
     
@@ -83,5 +83,5 @@ fileprivate struct CheckCircleView: View {
 }
 
 #Preview {
-    Check(checkColor: .brand500)
+    CircleCheckIcon(checkColor: .brand500)
 }
