@@ -38,11 +38,11 @@ extension KEEVActionSheet {
     /// - Author: 라움
     struct Modifier: ViewModifier {
         @Binding var isPresented: Bool
-        private let buttons: [SelectionButtonContent]
+        private let configurations: [any KEEVActionSheet.ButtonConfiguration]
         
-        init(isPresented: Binding<Bool>, buttons: [SelectionButtonContent]) {
+        init(isPresented: Binding<Bool>, configurations: [any KEEVActionSheet.ButtonConfiguration]) {
             self._isPresented = isPresented
-            self.buttons = buttons
+            self.configurations = configurations
         }
         
         /// Modifier가 적용된 새로운 뷰를 리턴하는 함수
@@ -64,7 +64,7 @@ extension KEEVActionSheet {
                         .opacity(0.7)
                         .ignoresSafeArea(.all)
                     
-                    KEEVActionSheet(isPresented: $isPresented, buttons: buttons)
+                    KEEVActionSheet(isPresented: $isPresented, configurations: configurations)
                         .padding(.horizontal, 16)
                         .padding(.top, 16)
                         .padding(.bottom, 44)

@@ -9,22 +9,22 @@ import SwiftUI
 
 struct KEEVActionSheet: View {
     @Binding var isPresented: Bool
-    let buttons: [SelectionButtonContent]
+    let configurations: [any Self.ButtonConfiguration]
     
     var body: some View {
         VStack(spacing: 16) {
             Spacer()
             
             VStack(spacing: 0) {
-                ForEach(Array(buttons.enumerated()), id: \.element.id) { index, button in
-                    if index == 0 && index == buttons.count - 1 {
-                        SelectionButton(button: button, isFirst: true, isLast: true)
+                ForEach(Array(configurations.enumerated()), id: \.element.id) { index, configuration in
+                    if index == 0 && index == configurations.count - 1 {
+                        SelectionButton(configuration: configuration, isFirst: true, isLast: true)
                     } else if index == 0 {
-                        SelectionButton(button: button, isFirst: true, isLast: false)
-                    } else if index == buttons.count - 1 {
-                        SelectionButton(button: button, isFirst: false, isLast: true)
+                        SelectionButton(configuration: configuration, isFirst: true, isLast: false)
+                    } else if index == configurations.count - 1 {
+                        SelectionButton(configuration: configuration, isFirst: false, isLast: true)
                     } else {
-                        SelectionButton(button: button, isFirst: false, isLast: false)
+                        SelectionButton(configuration: configuration, isFirst: false, isLast: false)
                     }
                 }
             }
@@ -70,10 +70,10 @@ extension KEEVActionSheet {
     }
     .actionSheetForKEEV(
         isPresented: $isPresented,
-        buttons: [
-            .init(type: .delete, title: "ㄹㄷㄹㄷ", action: {}),
-            .init(type: .report, title: "aaaa", action: {}),
-            .init(type: .share, title: "eeeee", action: {})
+        defaults: [
+            .delete(title: "ㄹㄷㄹㄷ", action: {}),
+            .report(title: "aaaa", action: {}),
+            .share(title: "eeeee", action: {})
         ]
     )
 }

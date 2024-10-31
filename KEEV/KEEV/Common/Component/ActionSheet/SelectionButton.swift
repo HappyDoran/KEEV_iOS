@@ -30,12 +30,6 @@ extension KEEVActionSheet {
             self.isLast = isLast
         }
         
-        init(default: KEEVActionSheet.DefaultConfiguration, isFirst: Bool, isLast: Bool) {
-            self.configuration = `default`
-            self.isFirst = isFirst
-            self.isLast = isLast
-        }
-        
         var body: some View {
             VStack(spacing: 0) {
                 Button(action: configuration.action) {
@@ -73,8 +67,4 @@ extension KEEVActionSheet {
             }
         }
     }
-}
-    
-#Preview {
-    KEEVActionSheet.SelectionButton(default: .share(title: "hihi") {}, isFirst: false, isLast: false)
 }

@@ -111,7 +111,21 @@ extension View {
     /// - Returns: Custom된 ActionSheet 뷰
     ///
     /// - Author: 라움
-    func actionSheetForKEEV(isPresented: Binding<Bool>, buttons: [KEEVActionSheet.SelectionButtonContent]) -> some View {
-        modifier(KEEVActionSheet.Modifier(isPresented: isPresented, buttons: buttons))
+    func actionSheetForKEEV(isPresented: Binding<Bool>, configurations: [any KEEVActionSheet.ButtonConfiguration]) -> some View {
+        modifier(
+            KEEVActionSheet.Modifier(
+                isPresented: isPresented,
+                configurations: configurations
+            )
+        )
+    }
+    
+    func actionSheetForKEEV(isPresented: Binding<Bool>, defaults: [KEEVActionSheet.DefaultConfiguration]) -> some View {
+        modifier(
+            KEEVActionSheet.Modifier(
+                isPresented: isPresented,
+                configurations: defaults
+            )
+        )
     }
 }
