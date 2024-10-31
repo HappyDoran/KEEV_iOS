@@ -20,21 +20,25 @@ extension KEEVActionSheet {
     /// - Note: 액션 시트 닫기 버튼은 CloseButton에 별도로 만들었습니다.
     /// - Author: 라움
     struct SelectionButton: View {
-        private let button: SelectionButtonContent
+        private let configuration: any KEEVActionSheet.ButtonConfiguration
         private let isFirst: Bool
         private let isLast: Bool
         
-        init(button: SelectionButtonContent, isFirst: Bool, isLast: Bool) {
-            self.button = button
+        init(configuration: any KEEVActionSheet.ButtonConfiguration, isFirst: Bool, isLast: Bool) {
+            self.configuration = configuration
+            self.isFirst = isFirst
+            self.isLast = isLast
+        }
+        
+        init(default: KEEVActionSheet.DefaultConfiguration, isFirst: Bool, isLast: Bool) {
+            self.configuration = `default`
             self.isFirst = isFirst
             self.isLast = isLast
         }
         
         var body: some View {
             VStack(spacing: 0) {
-                Button {
-                    button.action()
-                } label: {
+                Button(action: configuration.action) {
                     UnevenRoundedRectangle(
                         topLeadingRadius: isFirst ? 16 : 0,
                         bottomLeadingRadius: isLast ? 16 : 0,
@@ -45,14 +49,16 @@ extension KEEVActionSheet {
                     .foregroundStyle(.gray800)
                     .overlay(alignment: .leading) {
                         HStack(spacing: 8) {
-                            button.type.image
-                                .foregroundStyle(button.type.foregroundColor)
-                                .frame(width: 8, height: 24)
-                                .padding(.horizontal, 8)
+                            if let image = configuration.image {
+                                image
+                                    .foregroundStyle(configuration.color)
+                                    .frame(width: 8, height: 24)
+                                    .padding(.horizontal, 8)
+                            }
                             
-                            Text(button.title)
+                            Text(configuration.title)
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
-                                .foregroundStyle(button.type.foregroundColor)
+                                .foregroundStyle(configuration.color)
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 16)
@@ -70,5 +76,5 @@ extension KEEVActionSheet {
 }
     
 #Preview {
-    KEEVActionSheet.SelectionButton(button: KEEVActionSheet.SelectionButtonContent(type: .share, title: "바이브 공유하기", action: {}), isFirst: true, isLast: true)
+    KEEVActionSheet.SelectionButton(default: .share(title: "hihi") {}, isFirst: false, isLast: false)
 }
