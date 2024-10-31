@@ -13,8 +13,7 @@ import Foundation
 ///
 /// - Author: Doran
 enum EventRouter {
-    case getEvents(stdate: Date, eddate: Date, cpage: Int, rows:Int)
-    case getEventByKeyword(stdate: Date, eddate: Date, keyword: String, cpage: Int, rows:Int)
+    case getEvents
 }
 
 /// HTTPRequestable 프로토콜을 준수하기 위한 확장
@@ -30,46 +29,40 @@ extension EventRouter: HTTPRequestable {
     /// HTTP 메소드 반환
     var method: HTTPMethod {
         switch self {
-        case .getEvents, .getEventByKeyword :
+        case .getEvents :
                 .get
         }
     }
     
     /// 호스트 반환
     var host: String {
-        AppEnvironment.kopisBaseURL.host ?? "kopis.or.kr"
+        AppEnvironment.baseHost
     }
     
-    /// 포트를 반환, API 통신을 할때는 포트가 따로 필요 없으므로 nil
-    var port: Int? { nil }
+    /// 포트를 반환, API 통신을 할때는 포트가 따로 필요 없으므로 nil, 서버와 통신할 때는 포트번호 작성
+    var port: Int? {
+        8080
+    }
     
     /// 필수적으로 들어가는 경로 반환
-    var path: [String]? { ["openApi","restful","pblprfr"] }
+    var path: [String]? {
+        var path = ["event"]
+        
+        /// 상황에 따른 경로
+        switch self {
+        case .getEvents:
+            path.append("list")
+        }
+        return path
+    }
+    
     
     /// API 통신에 필요한 쿼리 반환
     var queryItems: [URLQueryItem]? {
         switch self {
-            /// 이벤트 전체 항목 가져오기
-        case .getEvents(let stdate, let eddate, let cpage, let rows):
-            return [
-                URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
-                URLQueryItem(name: "stdate", value: stdate.toString(format: "yyyyMMdd")),
-                URLQueryItem(name: "eddate", value: eddate.toString(format: "yyyyMMdd")),
-                URLQueryItem(name: "cpage", value: "\(cpage)"),
-                URLQueryItem(name: "rows", value: "\(rows)"),
-                URLQueryItem(name: "shcate", value: "CCCD")
-            ]
-            /// 검색어에 따라서 이벤트 항목 가져오기
-        case .getEventByKeyword(let stdate, let eddate, let keyword, let cpage, let rows):
-            return [
-                URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
-                URLQueryItem(name: "stdate", value: stdate.toString(format: "yyyyMMdd")),
-                URLQueryItem(name: "eddate", value: eddate.toString(format: "yyyyMMdd")),
-                URLQueryItem(name: "shprfnm", value: keyword),
-                URLQueryItem(name: "cpage", value: "\(cpage)"),
-                URLQueryItem(name: "rows", value: "\(rows)"),
-                URLQueryItem(name: "shcate", value: "CCCD")
-            ]
+        /// 이벤트 전체 항목 가져오기
+        case .getEvents:
+            return []
         }
     }
 }

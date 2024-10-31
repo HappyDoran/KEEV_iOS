@@ -19,4 +19,7 @@ struct AppEnvironment {
     
     /// KOPIS baseURL입니다.
     static let kopisBaseURL: URL = .init(string: "kopis.or.kr")!
+    
+    
+    static let baseHost: String = "localhost"
 }
