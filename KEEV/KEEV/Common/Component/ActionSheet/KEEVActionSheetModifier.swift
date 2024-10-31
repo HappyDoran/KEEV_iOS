@@ -5,12 +5,9 @@
 //  Created by Yune Cho on 10/29/24.
 //
 
-import Foundation
 import SwiftUI
 
-enum CustomActionSheet { }
-
-extension CustomActionSheet {
+extension KEEVActionSheet {
     /// Keev 내에서 사용되는 액션 시트
     ///
     /// Keev 내에서 사용되는 액션 시트입니다.
@@ -67,29 +64,11 @@ extension CustomActionSheet {
                         .opacity(0.7)
                         .ignoresSafeArea(.all)
                     
-                    VStack(spacing: 16) {
-                        Spacer()
-                        
-                        VStack(spacing: 0) {
-                            ForEach(Array(buttons.enumerated()), id: \.element.id) { index, button in
-                                if index == 0 && index == buttons.count - 1 {
-                                    SelectionButton(button: button, isFirst: true, isLast: true)
-                                } else if index == 0 {
-                                    SelectionButton(button: button, isFirst: true, isLast: false)
-                                } else if index == buttons.count - 1 {
-                                    SelectionButton(button: button, isFirst: false, isLast: true)
-                                } else {
-                                    SelectionButton(button: button, isFirst: false, isLast: false)
-                                }
-                            }
-                        }
-                        
-                        CloseButton(isPresented: $isPresented)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 16)
-                    .padding(.bottom, 44)
-                    .transition(.move(edge: .bottom))
+                    KEEVActionSheet(isPresented: $isPresented, buttons: buttons)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 16)
+                        .padding(.bottom, 44)
+                        .transition(.move(edge: .bottom))
                 }
             }
             .ignoresSafeArea()
