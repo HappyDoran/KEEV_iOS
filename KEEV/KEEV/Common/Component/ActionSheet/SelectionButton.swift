@@ -46,12 +46,13 @@ extension KEEVActionSheet {
                     .overlay(alignment: .leading) {
                         HStack(spacing: 8) {
                             button.type.image
+                                .foregroundStyle(button.type.foregroundColor)
                                 .frame(width: 8, height: 24)
                                 .padding(.horizontal, 8)
                             
                             Text(button.title)
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
-                                .foregroundStyle(button.type == .modify || button.type == .share ? .gray50 : .red500)
+                                .foregroundStyle(button.type.foregroundColor)
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 16)
