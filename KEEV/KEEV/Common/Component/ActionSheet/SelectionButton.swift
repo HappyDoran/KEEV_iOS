@@ -13,7 +13,7 @@ extension KEEVActionSheet {
     ///
     /// 액션 시트에 노출되는 버트입니다.
     ///
-    /// 버튼에 표시할 정보들이 담긴 ButtonConfiguration 프로토콜을 채택한 인자로 받아서 버튼을 표시합니다.
+    /// 버튼에 표시할 정보들이 담긴 KEEVButtonConfiguration 프로토콜을 채택한 인자로 받아서 버튼을 표시합니다.
     ///
     /// 버튼 중 최상단이거나 최하단일 경우에는 cornerRadius가 적용되도록 했고 버튼 타입에 따라 색상이 다르게 노출되도록 구현했습니다.
     ///

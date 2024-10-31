@@ -7,9 +7,29 @@
 
 import SwiftUI
 
+/// KEEV에서 사용되는 액션시트
+///
+/// `KEEVActionSheet`의 파라미터인 `configurations`는 `KEEVButtonConfiguration`을 채택한 타입의 배열을 넣을 수 있습니다.
+/// `KEEVButtonConfiguration`은 `KEEVActionSheet.ButtonConfiguration`을 채택했기 때문에 넣을 수 있습니다.
+///
+/// - Parameters:
+///     - `isPresented`: 액션 시트를 보여줄 지 결정하는 뷰.
+///     - `configurations`: 어떤 내용물들을 보여줄 지 결정하는 버튼에 대한 설정.
+///
+/// - Author: newJunsung
 struct KEEVActionSheet: View {
     @Binding var isPresented: Bool
     let configurations: [any KEEVButtonConfiguration]
+    
+    init(isPresented: Binding<Bool>, configurations: [any KEEVButtonConfiguration]) {
+        self._isPresented = isPresented
+        self.configurations = configurations
+    }
+    
+    init(isPresented: Binding<Bool>, defaults: [Self.ButtonConfiguration]) {
+        self._isPresented = isPresented
+        self.configurations = defaults
+    }
     
     var body: some View {
         VStack(spacing: 16) {

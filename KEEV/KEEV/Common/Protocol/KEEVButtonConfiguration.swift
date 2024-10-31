@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// KEEV에서 자주 사용되는 버튼을 기본 구현하기 위한 프로토콜
 protocol KEEVButtonConfiguration: Identifiable {
     var title: String { get }
     var image: Image? { get }

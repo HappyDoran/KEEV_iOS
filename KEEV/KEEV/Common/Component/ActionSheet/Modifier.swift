@@ -12,11 +12,11 @@ extension KEEVActionSheet {
     ///
     /// Keev 내에서 사용되는 액션 시트입니다.
     ///
-    /// 액션 시트의 표시 여부를 제어하는 바인딩 변수와 버튼에 표시할 정보들이 담긴 SelectionButtonContent 배열를 인자로 받아서 커스텀된 액션 시트를 보여줍니다.
+    /// 액션 시트의 표시 여부를 제어하는 바인딩 변수와 버튼에 표시할 정보들이 담긴 KEEVButtonConfiguration 프로토콜을 채택한 배열를 인자로 받아서 커스텀된 액션 시트를 보여줍니다.
     ///
-    /// SelectionButtonContent 배열을 넘겨줄 때 SelectionButtonPreset에 설정된 프리셋을 넘겨주시기 바랍니다.
+    /// KEEVButtonConfiguration 배열을 넘겨줄 때 액션 시트에 기본으로 구현된 ButtonConfiguration을 넘겨줄 수도 있습니다.
     ///
-    /// SelectionButtonPreset을 인자로 넘기는 것에 대한 예시입니다,
+    /// ButtonConfiguration의 custom 케이스 사용에 대한 예시입니다.
     ///
     /// ```swift
     /// VStack {
@@ -30,7 +30,7 @@ extension KEEVActionSheet {
     /// )
     /// ```
     ///
-    /// SelectionButtonPreset의 custom 케이스 사용에 대한 예시입니다.
+    /// KEEVButtonConfiguration을 채택한 타입을 담은 배열을 인자로 넘기는 것에 대한 예시입니다.
     ///
     ///```swift
     /// VStack {
@@ -48,7 +48,7 @@ extension KEEVActionSheet {
     /// )
     /// ```
     ///
-    /// - Note: SelectionButtonContent 배열을 넘겨줄 때 SelectionButtonPreset에 설정된 프리셋을 넘겨주시기 바랍니다.
+    /// - Note: 액션 시트의 ButtonConfiguration 배열을 넘겨줄 때 기본 설정인 전역 함수를 넘겨줄 수도 있습니다.
     /// - Author: 라움
     struct Modifier: ViewModifier {
         @Binding var isPresented: Bool
