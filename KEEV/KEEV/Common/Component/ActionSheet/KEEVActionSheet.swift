@@ -70,10 +70,10 @@ extension KEEVActionSheet {
     }
     .actionSheetForKEEV(
         isPresented: $isPresented,
-        defaults: [
-            .delete(title: "ㄹㄷㄹㄷ", action: {}),
-            .report(title: "aaaa", action: {}),
-            .share(title: "eeeee", action: {})
-        ]
+        defaults: .myComment(modifyHandler: {
+            
+        }, deleteHandler: {
+            
+        })
     )
 }

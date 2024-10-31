@@ -66,3 +66,61 @@ extension KEEVActionSheet.DefaultConfiguration: KEEVActionSheet.ButtonConfigurat
         }
     }
 }
+
+extension Array where Element == KEEVActionSheet.DefaultConfiguration {
+    typealias Configuration = KEEVActionSheet.DefaultConfiguration
+    
+    static func setProfileImage(
+        modifyHandler: @escaping () -> Void,
+        deleteHandler: @escaping () -> Void
+    ) -> [Configuration] {
+        [
+            .modify(title: "사진 선택", action: modifyHandler),
+            .delete(title: "프로필 사진 삭제", action: deleteHandler)
+        ]
+    }
+    
+    static func myVibe(
+        modifyHandler: @escaping () -> Void,
+        deleteHandler: @escaping () -> Void
+    ) -> [Configuration] {
+        [
+            .modify(title: "바이브 수정하기", action: modifyHandler),
+            .delete(title: "삭제하기", action: deleteHandler)
+        ]
+    }
+    
+    static func othersVibe(
+        shareHandler: @escaping () -> Void,
+        reportHandler: @escaping () -> Void
+    ) -> [Configuration] {
+        [
+            .share(title: "공유하기", action: shareHandler),
+            .report(title: "신고하기", action: reportHandler)
+        ]
+    }
+    
+    static func myComment(
+        modifyHandler: @escaping () -> Void,
+        deleteHandler: @escaping () -> Void
+    ) -> [Configuration] {
+        [
+            .modify(title: "바이브 수정하기", action: modifyHandler),
+            .delete(title: "삭제하기", action: deleteHandler)
+        ]
+    }
+    
+    static func othersComment(reportHandler: @escaping () -> Void) -> [Configuration] {
+        [.report(title: "신고하기", action: reportHandler)]
+    }
+    
+    static func concert(
+        shareHandler: @escaping () -> Void,
+        reportHandler: @escaping () -> Void
+    ) -> [Configuration] {
+        [
+            .share(title: "공유하기", action: shareHandler),
+            .report(title: "신고하기", action: reportHandler)
+        ]
+    }
+}
