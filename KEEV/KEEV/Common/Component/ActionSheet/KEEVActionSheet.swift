@@ -59,3 +59,21 @@ extension KEEVActionSheet {
         }
     }
 }
+
+#Preview {
+    @Previewable @State var isPresented = false
+    
+    VStack {
+        Button("hihi") {
+            isPresented = true
+        }
+    }
+    .actionSheetForKEEV(
+        isPresented: $isPresented,
+        buttons: [
+            .init(type: .delete, title: "ㄹㄷㄹㄷ", action: {}),
+            .init(type: .report, title: "aaaa", action: {}),
+            .init(type: .share, title: "eeeee", action: {})
+        ]
+    )
+}
