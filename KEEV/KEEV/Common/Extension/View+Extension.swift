@@ -97,21 +97,28 @@ extension View {
     ///
     /// - Parameters:
     ///   - isPresented: 액션 시트의 표시 여부를 제어하는 바인딩 변수
-    ///   - buttons: 버튼에 표시할 정보들이 담긴 SelectionButtonContent 배열
+    ///   - configurations: 버튼에 표시할 정보들이 담긴 ButtonConfiguration 프로토콜 배열
     ///
     /// SelectionContent 배열을 넘겨줄 때 SelectionButtonPreset에 설정된 프리셋을 넘겨주시기 바랍니다.
     ///
-    /// SelectionButtonPreset을 인자로 넘기는 것에 대한 예시입니다,
+    /// [any ButtonConfiguration]을 인자로 넘기는 것에 대한 예시입니다,
     ///
     /// ```swift
     /// DummyView()
-    ///     .customActionSheet(isPresented: $showActionSheet, buttons: SelectionButtonPreset.setProfileImage.buttons())
+    ///     .actionSheetForKEEV(
+    ///         isPresented: $isPresented,
+    ///         configurations: [
+    ///             KEEVActionSheet.DefaultConfiguration.delete(title: "hihi", action: {}),
+    ///             KEEVActionSheet.DefaultConfiguration.delete(title: "yoyo", action: {}),
+    ///             KEEVActionSheet.DefaultConfiguration.delete(title: "soso", action: {})
+    ///         ]
+    ///   )
     /// ```
     ///
     /// - Returns: Custom된 ActionSheet 뷰
     ///
     /// - Author: 라움
-    func actionSheetForKEEV(isPresented: Binding<Bool>, configurations: [any KEEVActionSheet.ButtonConfiguration]) -> some View {
+    func actionSheetForKEEV(isPresented: Binding<Bool>, configurations: [any KEEVButtonConfiguration]) -> some View {
         modifier(
             KEEVActionSheet.Modifier(
                 isPresented: isPresented,
@@ -120,7 +127,32 @@ extension View {
         )
     }
     
-    func actionSheetForKEEV(isPresented: Binding<Bool>, defaults: [KEEVActionSheet.DefaultConfiguration]) -> some View {
+    /// 커스텀 액션 시트를 표시하는 ViewModifier를 적용하는 함수
+    ///
+    /// - Parameters:
+    ///   - isPresented: 액션 시트의 표시 여부를 제어하는 바인딩 변수
+    ///   - configurations: 버튼에 표시할 정보들이 담긴 KEEVActionSheet.DefaultConfiguration 배열
+    ///
+    /// 배열을 넘겨줄 때 전역함수로 설정된 함수들을 대신 넘겨줄 수 있습니다.
+    ///
+    /// 전역함수를 인자로 넘기는 것에 대한 예시입니다,
+    ///
+    /// ```swift
+    /// VStack {
+    ///     Button("hihi") {
+    ///         isPresented = true
+    ///     }
+    /// }
+    /// .actionSheetForKEEV(
+    ///     isPresented: $isPresented,
+    ///     defaults: .myComment(modifyHandler: {}, deleteHandler: {})
+    /// )
+    /// ```
+    ///
+    /// - Returns: Custom된 ActionSheet 뷰
+    ///
+    /// - Author: newJunsung
+    func actionSheetForKEEV(isPresented: Binding<Bool>, defaults: [KEEVActionSheet.ButtonConfiguration]) -> some View {
         modifier(
             KEEVActionSheet.Modifier(
                 isPresented: isPresented,

@@ -8,20 +8,7 @@
 import SwiftUI
 
 extension KEEVActionSheet {
-    protocol ButtonConfiguration: Identifiable {
-        var title: String { get }
-        var image: Image? { get }
-        var color: Color { get }
-        var action: () -> Void { get }
-    }
-}
-
-extension KEEVActionSheet.ButtonConfiguration {
-    var id: String { title }
-}
-
-extension KEEVActionSheet {
-    enum DefaultConfiguration {
+    enum ButtonConfiguration {
         case modify(title: String, action: () -> Void)
         case share(title: String, action: () -> Void)
         case delete(title: String, action: () -> Void)
@@ -29,7 +16,7 @@ extension KEEVActionSheet {
     }
 }
 
-extension KEEVActionSheet.DefaultConfiguration: KEEVActionSheet.ButtonConfiguration {
+extension KEEVActionSheet.ButtonConfiguration: KEEVButtonConfiguration {
     var title: String {
         switch self {
         case .modify(let title, _): return title
@@ -48,7 +35,7 @@ extension KEEVActionSheet.DefaultConfiguration: KEEVActionSheet.ButtonConfigurat
         }
     }
     
-    var color: Color {
+    var mainColor: Color {
         switch self {
         case .modify: fallthrough
         case .share: return .gray300
@@ -56,6 +43,8 @@ extension KEEVActionSheet.DefaultConfiguration: KEEVActionSheet.ButtonConfigurat
         case .report: return .red500
         }
     }
+    
+    var subColor: Color? { nil }
     
     var action: () -> Void {
         switch self {
@@ -67,8 +56,8 @@ extension KEEVActionSheet.DefaultConfiguration: KEEVActionSheet.ButtonConfigurat
     }
 }
 
-extension Array where Element == KEEVActionSheet.DefaultConfiguration {
-    typealias Configuration = KEEVActionSheet.DefaultConfiguration
+extension Array where Element == KEEVActionSheet.ButtonConfiguration {
+    typealias Configuration = KEEVActionSheet.ButtonConfiguration
     
     static func setProfileImage(
         modifyHandler: @escaping () -> Void,

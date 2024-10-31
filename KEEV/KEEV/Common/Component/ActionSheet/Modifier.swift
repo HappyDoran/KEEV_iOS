@@ -19,30 +19,49 @@ extension KEEVActionSheet {
     /// SelectionButtonPreset을 인자로 넘기는 것에 대한 예시입니다,
     ///
     /// ```swift
-    /// DummyView()
-    ///     .customActionSheet(isPresented: $showActionSheet, buttons: SelectionButtonPreset.setProfileImage.buttons())
+    /// VStack {
+    ///     Text("fefe")
+    /// }
+    /// .modifier(
+    ///     KEEVActionSheet.Modifier(
+    ///         isPresented: $isPresented,
+    ///         defaults: .concert(shareHandler: {}, reportHandler: {})
+    ///     )
+    /// )
     /// ```
     ///
     /// SelectionButtonPreset의 custom 케이스 사용에 대한 예시입니다.
     ///
     ///```swift
-    /// DummyView()
-    ///     .customActionSheet(isPresented: $showActionSheet, buttons: SelectionButtonPreset.custom([
-    ///         SelectionButtonContent(type: .modify, title: "Rename", action: { print("Rename") }),
-    ///         SelectionButtonContent(type: .delete, title: "Delete", action: { print("Delete") }),
-    ///         SelectionButtonContent(type: .report, title: "Report", action: { print("Report") })
-    ///     ]).buttons())
+    /// VStack {
+    ///     Text("fefe")
+    /// }
+    /// .modifier(
+    ///     KEEVActionSheet.Modifier(
+    ///         isPresented: $isPresented,
+    ///         configurations: [
+    ///             KEEVActionSheet.DefaultConfiguration.delete(title: "hihi", action: {}),
+    ///             KEEVActionSheet.DefaultConfiguration.delete(title: "yoyo", action: {}),
+    ///             KEEVActionSheet.DefaultConfiguration.delete(title: "soso", action: {})
+    ///         ]
+    ///     )
+    /// )
     /// ```
     ///
     /// - Note: SelectionButtonContent 배열을 넘겨줄 때 SelectionButtonPreset에 설정된 프리셋을 넘겨주시기 바랍니다.
     /// - Author: 라움
     struct Modifier: ViewModifier {
         @Binding var isPresented: Bool
-        private let configurations: [any KEEVActionSheet.ButtonConfiguration]
+        private let configurations: [any KEEVButtonConfiguration]
         
-        init(isPresented: Binding<Bool>, configurations: [any KEEVActionSheet.ButtonConfiguration]) {
+        init(isPresented: Binding<Bool>, configurations: [any KEEVButtonConfiguration]) {
             self._isPresented = isPresented
             self.configurations = configurations
+        }
+        
+        init(isPresented: Binding<Bool>, defaults: [KEEVActionSheet.ButtonConfiguration]) {
+            self._isPresented = isPresented
+            self.configurations = defaults
         }
         
         /// Modifier가 적용된 새로운 뷰를 리턴하는 함수

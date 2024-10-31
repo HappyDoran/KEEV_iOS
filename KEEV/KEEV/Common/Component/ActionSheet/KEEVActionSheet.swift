@@ -9,7 +9,7 @@ import SwiftUI
 
 struct KEEVActionSheet: View {
     @Binding var isPresented: Bool
-    let configurations: [any Self.ButtonConfiguration]
+    let configurations: [any KEEVButtonConfiguration]
     
     var body: some View {
         VStack(spacing: 16) {
