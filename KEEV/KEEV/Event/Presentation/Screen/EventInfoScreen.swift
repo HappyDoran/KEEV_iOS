@@ -24,7 +24,7 @@ struct EventInfoScreen: View {
             VStack(){
                 HStack(spacing: 8) {
                     ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
-                        ThumbnailView(smallThumbnailEvent: event)
+                        ThumbnailCellView(smallThumbnailEvent: event)
                     }
                 }.padding(.horizontal, 16)
                 
@@ -45,7 +45,7 @@ struct EventInfoScreen: View {
                 ScrollView(.horizontal, showsIndicators: false){
                     HStack(spacing: 8) {
                         ForEach(events, id: \.self.id) { event in
-                            ThumbnailScrollView(bigThumbnailEvent: event)
+                            ThumbnailScrollCellView(bigThumbnailEvent: event)
                         }
                     }
                     .padding(.leading, 16)

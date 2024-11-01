@@ -15,7 +15,6 @@ import SwiftUI
 /// - Author: Doran
 struct EventCellView: View {
     private let eventCellEvent: ConcertDTO
-    @State var image:UIImage = UIImage()
     
     init(eventCellEvent: ConcertDTO) {
         self.eventCellEvent = eventCellEvent
@@ -37,7 +36,7 @@ struct EventCellView: View {
                 } placeholder: {
                     ProgressView()
                 }
-                .frame(width: 62)
+                .frame(width: 62, height: 90)
             }
             
             VStack(alignment: .leading, spacing: 0) {
@@ -52,9 +51,7 @@ struct EventCellView: View {
                 
                 // MARK: 기간
                 HStack(spacing: 0) {
-                    Text(eventCellEvent.startDate).figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400)
-                    Text("~").figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400)
-                    Text(eventCellEvent.endDate).figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400)
+                    Text("\(eventCellEvent.startDate)~\(eventCellEvent.endDate)").figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400)
                     Spacer()
                 }.padding(.top, 8)
                 

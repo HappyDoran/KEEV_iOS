@@ -1,5 +1,5 @@
 //
-//  TumbnailScrollView.swift
+//  ThumbnailScrollCellView.swift
 //  KEEV
 //
 //  Created by Doran on 11/1/24.
@@ -13,7 +13,7 @@ import SwiftUI
 ///   - ConcertDTO: 공연 정보를 담은 모델
 ///
 /// - Author: Doran
-struct ThumbnailScrollView: View {
+struct ThumbnailScrollCellView: View {
     private let bigThumbnailEvent: ConcertDTO
     
     init(bigThumbnailEvent: ConcertDTO) {
@@ -36,7 +36,7 @@ struct ThumbnailScrollView: View {
                 } placeholder: {
                     ProgressView()
                 }
-                .frame(width: 116)
+                .frame(width: 116, height: 160)
             }
             
             // MARK: 이벤트 제목
@@ -54,6 +54,6 @@ struct ThumbnailScrollView: View {
 
 #Preview {
     @Previewable let bigThumbnailEvent: ConcertDTO = ConcertDTO(id: "1", title: "Fiji Blue LIVE IN SEOUL 'The Glide Tour Asia'", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "올림픽공원 올림픽홀", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251881_241022_122743.jpg")
-    ThumbnailScrollView(bigThumbnailEvent: bigThumbnailEvent)
+    ThumbnailScrollCellView(bigThumbnailEvent: bigThumbnailEvent)
         .backgroundForKEEV()
 }
