@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HeaderView: View {
+    @State private var isPresented: Bool = false
+    
     var body: some View {
         HStack(spacing: 0) {
             Image("LogoImage")
@@ -17,11 +19,17 @@ struct HeaderView: View {
             
             Spacer()
             
-            Button(action: {}) {
+            Button(action: {
+                isPresented.toggle()
+            }) {
                 Image(systemName: "magnifyingglass")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
                     .font(.system(size: 20))
                     .foregroundColor(Color.gray100)
+            }
+            .fullScreenCover(isPresented: $isPresented){
+                Text("hello World!")
+                    .backgroundForKEEV()
             }
         }
         .padding(.horizontal, 16)
