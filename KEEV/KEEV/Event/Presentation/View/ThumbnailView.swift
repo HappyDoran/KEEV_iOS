@@ -8,15 +8,14 @@
 import SwiftUI
 
 struct ThumbnailView: View {
-    let before = "2024.12.13"
+    private let smallThumbnailEvent: ConcertDTO
     
-    let dateFormatter: DateFormatter = {
+    
+    private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy.MM.dd"
         return formatter
     }()
-    
-    private let smallThumbnailEvent: ConcertDTO
     
     init(smallThumbnailEvent: ConcertDTO) {
         self.smallThumbnailEvent = smallThumbnailEvent
@@ -43,6 +42,7 @@ struct ThumbnailView: View {
                 
             }
             // MARK: D-Day
+            
             DDayBox(date: dateFormatter.date(from: smallThumbnailEvent.startDate)!).padding(.top, 8)
             
             // MARK: 이벤트 제목
@@ -57,6 +57,9 @@ struct ThumbnailView: View {
         }
         .frame(width: 115)
     }
+}
+
+extension ThumbnailView {
 }
 
 #Preview {

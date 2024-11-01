@@ -57,15 +57,12 @@ struct EventCellView: View {
             }
             .frame(width: 241, height: 88)
         }
-        .onAppear{
-            print(eventCellEvent)
-        }
     }
 }
 
 #Preview {
     @Previewable let eventCellEvent: ConcertDTO =
-    ConcertDTO(id: "1", title: "AAA TOUR BY HYUKOH & \nSUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "올림픽공원 올림픽홀", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png\n        ")
+    ConcertDTO(id: "1", title: "AAA TOUR BY HYUKOH & \nSUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "올림픽공원 올림픽홀", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png")
     
     
     EventCellView(eventCellEvent: eventCellEvent)

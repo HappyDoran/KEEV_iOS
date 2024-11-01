@@ -16,7 +16,7 @@ struct EventInfoScreen: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading){
+            VStack(){
                 
                 HStack(spacing: 8) {
                     ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
@@ -25,7 +25,7 @@ struct EventInfoScreen: View {
                 }.padding(.horizontal, 16)
                 
                 
-                VStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 12) {
                     ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { index, event in
                         HStack(spacing: 8) {
                             Text("\(index + 1)")
@@ -68,7 +68,6 @@ extension EventInfoScreen {
                 )
                 DispatchQueue.main.async {
                     self.events = loadedEvents
-                    print(events)
                 }
             } catch {
                 DispatchQueue.main.async {
