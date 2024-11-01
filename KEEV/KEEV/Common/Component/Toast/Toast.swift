@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+/// ToastView에 들어갈 내용을 정의하는 구조체
+///
+/// - Note: 이 구조체는 `KEEVButtonConfiguration`을 채택하고 있지만, `action`으로 아무 것도 수행하지 않습니다.
+/// - Author: newJunsung
 struct Toast: KEEVButtonConfiguration {
     /// ToastView에 들어갈 내용
     let title: String
@@ -28,7 +32,7 @@ struct Toast: KEEVButtonConfiguration {
     }
 }
 
-struct ToastView: View {
+fileprivate struct ToastView: View {
     let toast: Toast
     
     var body: some View {
@@ -64,7 +68,13 @@ struct ToastView: View {
     }
 }
 
-extension ToastView {
+extension Toast {
+    /// 만든 Toast를 뷰에 보여주는 Modifier
+    ///
+    /// `toast`가 보여지고 나서 지정한 `duration`이 지나거나 뷰를 탭하면, 뷰가 사라집니다.
+    /// 이때, `toast`도 함께 `nil`이 됩니다.
+    ///
+    /// - Author: newJunsung
     struct Modifier: ViewModifier {
         @Binding var toast: Toast?
         @State private var task: Task<Void, Error>? = nil
@@ -112,5 +122,5 @@ extension ToastView {
             toast = Toast(title: "hi hi yoyoyo", mainColor: .green500, subColor: .white)
         }
     }
-    .modifier(ToastView.Modifier(toast: $toast, duration: .seconds(of: 2)))
+    .modifier(Toast.Modifier(toast: $toast, duration: .seconds(of: 2)))
 }
