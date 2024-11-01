@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+/// 횡스크롤에 들어갈 공연 썸네일을 나타내기 위한 뷰
+///
+/// - Parameters:
+///   - ConcertDTO: 공연 정보를 담은 모델
+///
+/// - Author: Doran
 struct ThumbnailScrollView: View {
     private let bigThumbnailEvent: ConcertDTO
     

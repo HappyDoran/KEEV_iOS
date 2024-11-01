@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 이벤트 정보에 표시될 뷰
+///
+/// PR이후에 삭제될 예정입니다. 어떤 느낌인지 확인 부탁드립니다.
+///
+/// - Author: Doran
 struct EventInfoScreen: View {
     @StateObject private var eventService = EventService()
     @State private var events: [ConcertDTO] = []
@@ -17,7 +22,6 @@ struct EventInfoScreen: View {
     var body: some View {
         ScrollView {
             VStack(){
-                
                 HStack(spacing: 8) {
                     ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
                         ThumbnailView(smallThumbnailEvent: event)

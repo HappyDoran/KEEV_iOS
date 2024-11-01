@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+/// 공연 셀을 나타내기 위한 뷰
+///
+/// - Parameters:
+///   - ConcertDTO: 공연 정보를 담은 모델
+///
+/// - Author: Doran
 struct EventCellView: View {
     private let eventCellEvent: ConcertDTO
     @State var image:UIImage = UIImage()

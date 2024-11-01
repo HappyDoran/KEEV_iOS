@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+/// D-Day가 들어간 공연 썸네일을 나타내기 위한 뷰
+///
+/// - Parameters:
+///   - ConcertDTO: 공연 정보를 담은 모델
+///
+/// - Author: Doran
 struct ThumbnailView: View {
     private let smallThumbnailEvent: ConcertDTO
     
@@ -41,8 +47,8 @@ struct ThumbnailView: View {
                 
                 
             }
-            // MARK: D-Day
-            
+            // MARK: D-Day Box
+            //이후 모델의 날짜 타입이 Date가 되면 dateFormatter는 없어집니다.
             DDayBox(date: dateFormatter.date(from: smallThumbnailEvent.startDate)!).padding(.top, 8)
             
             // MARK: 이벤트 제목
@@ -57,9 +63,6 @@ struct ThumbnailView: View {
         }
         .frame(width: 115)
     }
-}
-
-extension ThumbnailView {
 }
 
 #Preview {
