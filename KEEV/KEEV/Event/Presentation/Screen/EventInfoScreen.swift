@@ -78,12 +78,12 @@ extension EventInfoScreen {
                     page: 1,
                     rows: 10
                 )
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.events = loadedEvents
                     self.isLoading = false
                 }
             } catch {
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.error = error.localizedDescription
                     self.isLoading = false
                 }
@@ -101,12 +101,12 @@ extension EventInfoScreen {
                     page: 1,
                     rows: 5
                 )
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.events = loadedEvents
                     self.isLoading = false
                 }
             } catch {
-                DispatchQueue.main.async {
+                await MainActor.run {
                     self.error = error.localizedDescription
                     self.isLoading = false
                 }
