@@ -74,6 +74,8 @@ extension Toast {
     /// `toast`가 보여지고 나서 지정한 `duration`이 지나거나 뷰를 탭하면, 뷰가 사라집니다.
     /// 이때, `toast`도 함께 `nil`이 됩니다.
     ///
+    /// - Warning: 해당 수정자를 사용하게 되면 뷰 프레임의 최대 높이와 최대 너비 모두 `.infinity`가 됩니다.
+    ///
     /// - Author: newJunsung
     struct Modifier: ViewModifier {
         @Binding var toast: Toast?
