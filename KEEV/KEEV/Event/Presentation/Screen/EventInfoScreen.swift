@@ -21,36 +21,10 @@ struct EventInfoScreen: View {
     
     var body: some View {
         ScrollView {
-            VStack(){
-                HStack(spacing: 8) {
-                    ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
-                        ThumbnailCellView(smallThumbnailEvent: event)
-                    }
-                }.padding(.horizontal, 16)
-                
-                
-                VStack(alignment: .leading, spacing: 12) {
-                    ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { index, event in
-                        HStack(spacing: 8) {
-                            Text("\(index + 1)")
-                                .figmaFont(PretendardFont.title(style: .lg))
-                                .foregroundColor(index == 0 ? Color.brand500 : Color.gray700)
-                                .frame(width: 40, height: 40, alignment: .center)
-                            EventCellView(eventCellEvent: event)
-                        }
-                    }
-                }
-                .padding(.horizontal, 16)
-                
-                ScrollView(.horizontal, showsIndicators: false){
-                    HStack(spacing: 8) {
-                        ForEach(events, id: \.self.id) { event in
-                            ThumbnailScrollCellView(bigThumbnailEvent: event)
-                        }
-                    }
-                    .padding(.leading, 16)
-                }
-                
+            VStack {
+                thumbnailSectionView
+                eventListSectionView
+                horizontalScrollSectionView
             }
         }
         .onAppear {
@@ -60,9 +34,43 @@ struct EventInfoScreen: View {
 }
 
 extension EventInfoScreen {
+    private var thumbnailSectionView: some View {
+        HStack(spacing: 8) {
+            ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
+                ThumbnailCellView(smallThumbnailEvent: event)
+            }
+        }.padding(.horizontal, 16)
+    }
+    
+    private var eventListSectionView: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { index, event in
+                HStack(spacing: 8) {
+                    Text("\(index + 1)")
+                        .figmaFont(PretendardFont.title(style: .lg))
+                        .foregroundColor(index == 0 ? Color.brand500 : Color.gray700)
+                        .frame(width: 40, height: 40, alignment: .center)
+                    EventCellView(eventCellEvent: event)
+                }
+            }
+        }.padding(.horizontal, 16)
+    }
+    
+    private var horizontalScrollSectionView: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                ForEach(events, id: \.self.id) { event in
+                    ThumbnailScrollCellView(bigThumbnailEvent: event)
+                }
+            }.padding(.leading, 16)
+        }
+    }
+}
+
+extension EventInfoScreen {
     private func loadEventData() {
         isLoading = true
-        Task {
+        Task.detached {
             do {
                 let loadedEvents = try await eventService.loadEvents(
                     startDate: Calendar.current.date(from: DateComponents(year: 2024, month: 10, day: 4)) ?? Date(),
@@ -72,18 +80,19 @@ extension EventInfoScreen {
                 )
                 DispatchQueue.main.async {
                     self.events = loadedEvents
+                    self.isLoading = false
                 }
             } catch {
                 DispatchQueue.main.async {
                     self.error = error.localizedDescription
+                    self.isLoading = false
                 }
             }
-            isLoading = false
         }
     }
     private func loadEventDataByKeyword(keyword: String) {
         isLoading = true
-        Task {
+        Task.detached {
             do {
                 let loadedEvents = try await eventService.loadEventByKeyword(
                     startDate: Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 4)) ?? Date(),
@@ -94,13 +103,14 @@ extension EventInfoScreen {
                 )
                 DispatchQueue.main.async {
                     self.events = loadedEvents
+                    self.isLoading = false
                 }
             } catch {
                 DispatchQueue.main.async {
                     self.error = error.localizedDescription
+                    self.isLoading = false
                 }
             }
-            isLoading = false
         }
     }
 }
