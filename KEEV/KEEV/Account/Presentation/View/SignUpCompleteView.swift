@@ -23,26 +23,7 @@ struct SignUpCompleteView: View {
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                 .foregroundStyle(.gray300)
             
-            ZStack{
-                if profileImage != nil {
-                    Image(uiImage: profileImage!)
-                        .resizable()
-                        .frame(width: 140, height: 140)
-                        .scaledToFit()
-                        .clipShape(Circle())
-                }
-                else {
-                    Circle()
-                        .frame(width: 140,height: 140)
-                        .foregroundColor(.gray900)
-                    
-                    Image("ProfileImage")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 101.12, height: 114.5)
-                        .padding(.top, 25.9)
-                }
-            }
+            ProfileImage(profileImage: $profileImage, editable: false)
             .padding(.top, 100)
             .padding(.bottom, 12)
             

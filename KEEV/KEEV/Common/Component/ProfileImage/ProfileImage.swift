@@ -33,8 +33,7 @@ struct ProfileImage: View {
                     .frame(width: 140, height: 140)
                     .scaledToFit()
                     .clipShape(Circle())
-            }
-            else {
+            } else {
                 ZStack {
                     Circle()
                         .frame(width: 140,height: 140)

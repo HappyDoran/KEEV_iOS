@@ -22,6 +22,38 @@ struct SignUpScreen: View {
     @State private var showActionSheet = false
     @State private var showProfileImageEditSheet = false
     
+    var body: some View {
+        VStack {
+            SignUpIndicator(currentPage: $currentPage, progress: $progress)
+            
+            signUpProcess()
+                .padding(.top, 40)
+                .padding(.horizontal, 24)
+            
+            Spacer()
+            
+            signUpProcessButton()
+                .padding(.top, 12)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 42)
+        }
+        .backgroundForKEEV()
+        .actionSheetForKEEV(isPresented: $showActionSheet, defaults: .setProfileImage(modifyHandler: {
+            showProfileImageEditSheet = true
+        }, deleteHandler: {
+            profileImage = nil
+            showActionSheet = false
+        }))
+        .fullScreenCover(isPresented: $showProfileImageEditSheet) {
+            ProfileImageEdit(profileImage: $profileImage)
+                .onDisappear {
+                    showActionSheet = false
+                }
+        }
+    }
+}
+
+extension SignUpScreen {
     @ViewBuilder
     private func signUpProcess() -> some View {
         switch currentPage {
@@ -53,36 +85,6 @@ struct SignUpScreen: View {
                 // navigationRouter로 메인화면으로 가면 됩니다.
             }, style: .maxWidth)
             .sensoryFeedback(.success, trigger: currentPage)
-        }
-    }
-    
-    var body: some View {
-        VStack {
-            SignUpIndicator(currentPage: $currentPage, progress: $progress)
-            
-            signUpProcess()
-                .padding(.top, 40)
-                .padding(.horizontal, 24)
-            
-            Spacer()
-            
-            signUpProcessButton()
-                .padding(.top, 12)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 42)
-        }
-        .backgroundForKEEV()
-        .actionSheetForKEEV(isPresented: $showActionSheet, defaults: .setProfileImage(modifyHandler: {
-            showProfileImageEditSheet = true
-        }, deleteHandler: {
-            profileImage = nil
-            showActionSheet = false
-        }))
-        .fullScreenCover(isPresented: $showProfileImageEditSheet) {
-            ProfileImageEdit(profileImage: $profileImage)
-                .onDisappear {
-                    showActionSheet = false
-                }
         }
     }
 }
