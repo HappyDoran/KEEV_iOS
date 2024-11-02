@@ -22,10 +22,12 @@ struct EventInfoScreen: View {
     var body: some View {
         ScrollView {
             VStack {
-                thumbnailSectionView
-                eventListSectionView
+                MainHeader()
+                thumbnailSectionView.padding(.top, 16)
+                eventListSectionView.padding(.top, 48)
                 horizontalScrollSectionView
             }
+            .backgroundForKEEV()
         }
         .onAppear {
             loadEventData()

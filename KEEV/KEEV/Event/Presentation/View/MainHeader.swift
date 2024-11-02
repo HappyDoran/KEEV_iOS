@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HeaderView: View {
+struct MainHeader: View {
     @State private var isPresented: Bool = false
     
     var body: some View {
@@ -28,8 +28,8 @@ struct HeaderView: View {
                     .foregroundColor(Color.gray100)
             }
             .fullScreenCover(isPresented: $isPresented){
-                Text("hello World!")
-                    .backgroundForKEEV()
+                EventSearchScreen(isPresented: $isPresented)
+                
             }
         }
         .padding(.horizontal, 16)
@@ -37,6 +37,6 @@ struct HeaderView: View {
 }
 
 #Preview {
-    HeaderView()
+    MainHeader()
         .backgroundForKEEV()
 }
