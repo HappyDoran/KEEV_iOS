@@ -1,5 +1,5 @@
 //
-//  ThumbnailScrollCellView.swift
+//  BigEventThumbnailCell.swift
 //  KEEV
 //
 //  Created by Doran on 11/1/24.
@@ -13,11 +13,11 @@ import SwiftUI
 ///   - ConcertDTO: 공연 정보를 담은 모델
 ///
 /// - Author: Doran
-struct ThumbnailScrollCellView: View {
-    private let bigThumbnailEvent: ConcertDTO
+struct BigEventThumbnailCell: View {
+    private let event: ConcertDTO
     
-    init(bigThumbnailEvent: ConcertDTO) {
-        self.bigThumbnailEvent = bigThumbnailEvent
+    init(event: ConcertDTO) {
+        self.event = event
     }
     
     var body: some View {
@@ -28,7 +28,7 @@ struct ThumbnailScrollCellView: View {
                     .fill(Color.gray900)
                     .frame(width: 116, height: 160)
                 
-                AsyncImage(url: URL(string: bigThumbnailEvent.poster)) { image in
+                AsyncImage(url: URL(string: event.poster)) { image in
                     image
                         .resizable()
                         .scaledToFit()
@@ -40,7 +40,7 @@ struct ThumbnailScrollCellView: View {
             }
             
             // MARK: 이벤트 제목
-            Text(bigThumbnailEvent.title)
+            Text(event.title)
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 .foregroundColor(.gray300)
                 .multilineTextAlignment(.leading)
@@ -54,6 +54,6 @@ struct ThumbnailScrollCellView: View {
 
 #Preview {
     @Previewable let bigThumbnailEvent: ConcertDTO = ConcertDTO(id: "1", title: "Fiji Blue LIVE IN SEOUL 'The Glide Tour Asia'", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "올림픽공원 올림픽홀", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251881_241022_122743.jpg")
-    ThumbnailScrollCellView(bigThumbnailEvent: bigThumbnailEvent)
+    BigEventThumbnailCell(event: bigThumbnailEvent)
         .backgroundForKEEV()
 }

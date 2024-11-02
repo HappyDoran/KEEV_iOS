@@ -1,5 +1,5 @@
 //
-//  ThumbnailCellView.swift
+//  EventThumbnailCell.swift
 //  KEEV
 //
 //  Created by Doran on 11/1/24.
@@ -13,18 +13,11 @@ import SwiftUI
 ///   - ConcertDTO: 공연 정보를 담은 모델
 ///
 /// - Author: Doran
-struct ThumbnailCellView: View {
-    private let smallThumbnailEvent: ConcertDTO
+struct EventThumbnailCell: View {
+    private let event: ConcertDTO
     
-    
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy.MM.dd"
-        return formatter
-    }()
-    
-    init(smallThumbnailEvent: ConcertDTO) {
-        self.smallThumbnailEvent = smallThumbnailEvent
+    init(event: ConcertDTO) {
+        self.event = event
     }
     
     var body: some View {
@@ -35,7 +28,7 @@ struct ThumbnailCellView: View {
                     .fill(Color.gray900)
                     .frame(width: 117, height: 160)
                 
-                AsyncImage(url: URL(string: smallThumbnailEvent.poster)) { image in
+                AsyncImage(url: URL(string: event.poster)) { image in
                     image
                         .resizable()
                         .scaledToFit()
@@ -48,11 +41,11 @@ struct ThumbnailCellView: View {
                 
             }
             // MARK: D-Day Box
-            //이후 모델의 날짜 타입이 Date가 되면 dateFormatter는 없어집니다.
-            DDayBox(date: dateFormatter.date(from: smallThumbnailEvent.startDate)!).padding(.top, 8)
+            //이후 모델의 날짜 타입이 Date가 되면 수정될 예정입니다.
+            DDayBox(date: event.startDate.toDate(format: .yyyyMMDD)!).padding(.top, 8)
             
             // MARK: 이벤트 제목
-            Text(smallThumbnailEvent.title)
+            Text(event.title)
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 .foregroundColor(.gray300)
                 .multilineTextAlignment(.leading)
@@ -67,6 +60,6 @@ struct ThumbnailCellView: View {
 
 #Preview {
     @Previewable let smallThumbnailEvent: ConcertDTO = ConcertDTO(id : "1", title: "Fiji Blue LIVE IN SEOUL 'The Glide Tour Asia'", startDate: "2024.12.13", endDate: "2024.12.25", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")
-    ThumbnailCellView(smallThumbnailEvent: smallThumbnailEvent)
+    EventThumbnailCell(event: smallThumbnailEvent)
         .backgroundForKEEV()
 }

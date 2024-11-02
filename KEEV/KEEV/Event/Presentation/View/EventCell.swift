@@ -1,5 +1,5 @@
 //
-//  EventCellView.swift
+//  EventCell.swift
 //  KEEV
 //
 //  Created by Doran on 11/1/24.
@@ -13,11 +13,11 @@ import SwiftUI
 ///   - ConcertDTO: 공연 정보를 담은 모델
 ///
 /// - Author: Doran
-struct EventCellView: View {
-    private let eventCellEvent: ConcertDTO
+struct EventCell: View {
+    private let event: ConcertDTO
     
-    init(eventCellEvent: ConcertDTO) {
-        self.eventCellEvent = eventCellEvent
+    init(event: ConcertDTO) {
+        self.event = event
     }
     
     var body: some View {
@@ -28,7 +28,7 @@ struct EventCellView: View {
                     .fill(Color.gray900)
                     .frame(width: 64, height:90)
                 
-                AsyncImage(url: URL(string: eventCellEvent.poster)) { image in
+                AsyncImage(url: URL(string: event.poster)) { image in
                     image
                         .resizable()
                         .scaledToFit()
@@ -41,7 +41,7 @@ struct EventCellView: View {
             
             VStack(alignment: .leading, spacing: 0) {
                 // MARK: 이벤트 제목
-                Text(eventCellEvent.title)
+                Text(event.title)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
                     .foregroundColor(.gray100)
                     .multilineTextAlignment(.leading)
@@ -51,12 +51,12 @@ struct EventCellView: View {
                 
                 // MARK: 기간
                 HStack(spacing: 0) {
-                    Text("\(eventCellEvent.startDate)~\(eventCellEvent.endDate)").figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400)
+                    Text("\(event.startDate)~\(event.endDate)").figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400)
                     Spacer()
                 }.padding(.top, 8)
                 
                 // MARK: 장소
-                Text(eventCellEvent.place).figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400).padding(.top, 2)
+                Text(event.place).figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400).padding(.top, 2)
             }
             .frame(width: 241, height: 88)
         }
@@ -68,6 +68,6 @@ struct EventCellView: View {
     ConcertDTO(id: "1", title: "AAA TOUR BY HYUKOH & \nSUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "올림픽공원 올림픽홀", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png")
     
     
-    EventCellView(eventCellEvent: eventCellEvent)
+    EventCell(event: eventCellEvent)
         .backgroundForKEEV()
 }

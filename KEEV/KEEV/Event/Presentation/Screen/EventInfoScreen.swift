@@ -37,7 +37,7 @@ extension EventInfoScreen {
     private var thumbnailSectionView: some View {
         HStack(spacing: 8) {
             ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
-                ThumbnailCellView(smallThumbnailEvent: event)
+                EventThumbnailCell(event: event)
             }
         }.padding(.horizontal, 16)
     }
@@ -50,7 +50,7 @@ extension EventInfoScreen {
                         .figmaFont(PretendardFont.title(style: .lg))
                         .foregroundColor(index == 0 ? Color.brand500 : Color.gray700)
                         .frame(width: 40, height: 40, alignment: .center)
-                    EventCellView(eventCellEvent: event)
+                    EventCell(event: event)
                 }
             }
         }.padding(.horizontal, 16)
@@ -60,7 +60,7 @@ extension EventInfoScreen {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(events, id: \.self.id) { event in
-                    ThumbnailScrollCellView(bigThumbnailEvent: event)
+                    BigEventThumbnailCell(event: event)
                 }
             }.padding(.leading, 16)
         }
