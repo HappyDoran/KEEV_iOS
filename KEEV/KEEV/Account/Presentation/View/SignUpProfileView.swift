@@ -15,11 +15,9 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpProfileView: View {
-    @Binding var nickname: String
-    @Binding var profileImage: UIImage?
+    @ObservedObject var accountService: AccountService
     @Binding var showActionSheet: Bool
     
-    @State private var typedNickname = ""
     @State private var isInvalidNickname = false
     
     var body: some View {
@@ -36,7 +34,7 @@ struct SignUpProfileView: View {
             HStack {
                 Spacer()
                 
-                ProfileImage(profileImage: $profileImage, editable: true)
+                ProfileImage(profileImage: $accountService.profileImage, editable: true)
                     .onTapGesture {
                         showActionSheet = true
                     }
@@ -45,19 +43,18 @@ struct SignUpProfileView: View {
             }
             .padding(.vertical, 48)
             
-            SingleLineTextField(placeholder: "닉네임", text: $typedNickname, maxLength: 14)
+            SingleLineTextField(placeholder: "닉네임", text: $accountService.nickname, maxLength: 14)
                 .submitLabel(.done)
-                .onSubmit {
-                    if typedNickname.isValidNickname {
-                        nickname = typedNickname
+                .onChange(of: accountService.nickname, {
+                    if accountService.nickname.isValidNickname {
                         isInvalidNickname = false
                     } else {
                         isInvalidNickname = true
                     }
-                }
+                })
                 .padding(.bottom, 12)
             
-            if isInvalidNickname {
+            if !accountService.nickname.isEmpty && isInvalidNickname {
                 Text("특수문자가 포함되어 있습니다.")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
                     .foregroundStyle(.red500)
@@ -68,5 +65,5 @@ struct SignUpProfileView: View {
 }
 
 #Preview {
-    SignUpProfileView(nickname: .constant(""), profileImage: .constant(nil), showActionSheet: .constant(false))
+    SignUpProfileView(accountService: AccountService(), showActionSheet: .constant(false))
 }

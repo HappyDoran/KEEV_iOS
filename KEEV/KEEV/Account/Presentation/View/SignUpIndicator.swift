@@ -20,7 +20,15 @@ struct SignUpIndicator: View {
         VStack {
             HStack {
                 Button {
-                    // navigationRouter로 로그인 화면으로 돌아가면 됩니다.
+                    switch currentPage {
+                    case .email:
+                        // navigationRouter로 로그인 화면으로 돌아가면 됩니다.
+                        currentPage = .email
+                    case .profile:
+                        currentPage = .email
+                    case .complete:
+                        currentPage = .profile
+                    }
                 } label: {
                     Image(systemName: "chevron.backward")
                         .foregroundStyle(.gray300)

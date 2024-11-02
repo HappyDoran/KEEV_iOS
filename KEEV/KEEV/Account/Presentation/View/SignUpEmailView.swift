@@ -15,9 +15,8 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpEmailView: View {
-    @Binding var email: String
+    @ObservedObject var accountService: AccountService
     
-    @State private var typedEmail = ""
     @State private var isInvalidEmail = false
     
     var body: some View {
@@ -30,21 +29,20 @@ struct SignUpEmailView: View {
                 .figmaFont(PretendardFont.title(style: .lg))
                 .foregroundStyle(.gray100)
             
-            SingleLineTextField(placeholder: "keev@email.com", text: $typedEmail, keyboardType: .emailAddress)
+            SingleLineTextField(placeholder: "keev@email.com", text: $accountService.email, keyboardType: .emailAddress)
                 .submitLabel(.done)
                 .textInputAutocapitalization(.never)
-                .onSubmit {
-                    if typedEmail.isValidEmail {
-                        email = typedEmail
+                .onChange(of: accountService.email, {
+                    if accountService.email.isValidEmail {
                         isInvalidEmail = false
                     } else {
                         isInvalidEmail = true
                     }
-                }
+                })
                 .padding(.top, 24)
                 .padding(.bottom, 12)
             
-            if isInvalidEmail {
+            if !accountService.email.isEmpty && isInvalidEmail {
                 Text("이메일의 형식이 올바르지 않습니다!")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
                     .foregroundStyle(.red500)
@@ -55,5 +53,5 @@ struct SignUpEmailView: View {
 }
 
 #Preview {
-    SignUpEmailView(email: .constant(""))
+    SignUpEmailView(accountService: AccountService())
 }

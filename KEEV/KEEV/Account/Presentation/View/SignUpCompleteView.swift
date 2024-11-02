@@ -14,9 +14,7 @@ import Lottie
 ///
 /// - Author: 라움
 struct SignUpCompleteView: View {
-    @Binding var email: String
-    @Binding var nickname: String
-    @Binding var profileImage: UIImage?
+    @ObservedObject var accountService: AccountService
     
     var body: some View {
         ZStack {
@@ -30,16 +28,18 @@ struct SignUpCompleteView: View {
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                     .foregroundStyle(.gray300)
                 
-                ProfileImage(profileImage: $profileImage, editable: false)
+                ProfileImage(profileImage: $accountService.profileImage, editable: false)
                     .padding(.top, 100)
                     .padding(.bottom, 12)
                 
-                Text(nickname)
+                Text(accountService.nickname)
                     .figmaFont(PretendardFont.title(style: .sm))
+                    .foregroundStyle(.gray100)
                     .padding(.bottom, 4)
                 
-                Text(email)
+                Text(accountService.email)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
+                    .foregroundStyle(.gray300)
             }
             
             LottieView(animation: .named("SignUpCompleteLottie"))
@@ -51,5 +51,5 @@ struct SignUpCompleteView: View {
 }
 
 #Preview {
-    SignUpCompleteView(email: .constant("keev@email.com"), nickname: .constant("Keev"), profileImage: .constant(nil))
+    SignUpCompleteView(accountService: AccountService())
 }

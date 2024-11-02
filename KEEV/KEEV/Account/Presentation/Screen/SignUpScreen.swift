@@ -19,11 +19,10 @@ enum SignUpPage: Int {
 ///
 /// - Author: 라움
 struct SignUpScreen: View {
+    @StateObject private var accountService = AccountService()
+    
     @State private var currentPage: SignUpPage = .email
     @State private var progress = 1.0 / 3
-    @State private var email = ""
-    @State private var nickname = ""
-    @State private var profileImage: UIImage?
     @State private var showActionSheet = false
     @State private var showProfileImageEditSheet = false
     
@@ -45,15 +44,13 @@ struct SignUpScreen: View {
         .backgroundForKEEV()
         .actionSheetForKEEV(isPresented: $showActionSheet, defaults: .setProfileImage(modifyHandler: {
             showProfileImageEditSheet = true
+            showActionSheet = false
         }, deleteHandler: {
-            profileImage = nil
+            accountService.profileImage = nil
             showActionSheet = false
         }))
         .fullScreenCover(isPresented: $showProfileImageEditSheet) {
-            ProfileImageEdit(profileImage: $profileImage)
-                .onDisappear {
-                    showActionSheet = false
-                }
+            ProfileImageEdit(profileImage: $accountService.profileImage)
         }
     }
 }
@@ -70,11 +67,11 @@ extension SignUpScreen {
     private func signUpProcess() -> some View {
         switch currentPage {
         case .email:
-            SignUpEmailView(email: $email)
+            SignUpEmailView(accountService: accountService)
         case .profile:
-            SignUpProfileView(nickname: $nickname, profileImage: $profileImage, showActionSheet: $showActionSheet)
+            SignUpProfileView(accountService: accountService, showActionSheet: $showActionSheet)
         case .complete:
-            SignUpCompleteView(email: $email, nickname: $nickname, profileImage: $profileImage)
+            SignUpCompleteView(accountService: accountService)
         }
     }
     
@@ -91,12 +88,12 @@ extension SignUpScreen {
         case .email:
             CommonButton(title: "다음", action: {
                 currentPage = .profile
-            }, style: .maxWidth, disabled: email.isEmpty)
+            }, style: .maxWidth, disabled: accountService.email.isEmpty)
             .sensoryFeedback(.impact, trigger: currentPage)
         case .profile:
             CommonButton(title: "다음", action: {
                 currentPage = .complete
-            }, style: .maxWidth, disabled: nickname.isEmpty || profileImage == nil)
+            }, style: .maxWidth, disabled: accountService.nickname.isEmpty)
             .sensoryFeedback(.impact, trigger: currentPage)
         case .complete:
             CommonButton(title: "시작하기", action: {
