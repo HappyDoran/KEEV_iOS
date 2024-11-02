@@ -11,7 +11,8 @@ import SwiftUI
 struct KEEVApp: App {
     var body: some Scene {
         WindowGroup {
-            DummyView()
+//            DummyView()
+            SignUpScreen()
         }
     }
 }

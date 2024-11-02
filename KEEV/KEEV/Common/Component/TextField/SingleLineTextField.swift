@@ -54,7 +54,7 @@ struct SingleLineTextField: View {
                     
                     if let maxLength = maxLength {
                         Text("\(text.count) / \(maxLength)")
-                            .frame(width: 33, height: 17)
+                            .frame(height: 17)
                             .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                             .foregroundStyle(.gray700)
                     }
