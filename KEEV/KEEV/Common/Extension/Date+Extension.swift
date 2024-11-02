@@ -26,8 +26,8 @@ extension Date {
     /// print(formattedDate) // "20241019"
     /// ```
     /// - Author: Doran
-    func toString(format: DateFormat) -> String {
-        Date.dateFormatter.dateFormat = format.rawValue
+    func toString(format: String) -> String {
+        Date.dateFormatter.dateFormat = format
         return Date.dateFormatter.string(from: self)
     }
     

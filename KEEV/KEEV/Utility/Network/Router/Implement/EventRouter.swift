@@ -53,8 +53,8 @@ extension EventRouter: HTTPRequestable {
         case .getEvents(let stdate, let eddate, let cpage, let rows):
             return [
                 URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
-                URLQueryItem(name: "stdate", value: stdate.toString(format: .yyyyMMdd)),
-                URLQueryItem(name: "eddate", value: eddate.toString(format: .yyyyMMdd)),
+                URLQueryItem(name: "stdate", value: stdate.toString(format: "yyyyMMdd")),
+                URLQueryItem(name: "eddate", value: eddate.toString(format: "yyyyMMdd")),
                 URLQueryItem(name: "cpage", value: "\(cpage)"),
                 URLQueryItem(name: "rows", value: "\(rows)"),
                 URLQueryItem(name: "shcate", value: "CCCD")
@@ -63,8 +63,8 @@ extension EventRouter: HTTPRequestable {
         case .getEventByKeyword(let stdate, let eddate, let keyword, let cpage, let rows):
             return [
                 URLQueryItem(name: "service", value: AppEnvironment.kopisApiKey),
-                URLQueryItem(name: "stdate", value: stdate.toString(format: .yyyyMMdd)),
-                URLQueryItem(name: "eddate", value: eddate.toString(format: .yyyyMMdd)),
+                URLQueryItem(name: "stdate", value: stdate.toString(format: "yyyyMMdd")),
+                URLQueryItem(name: "eddate", value: eddate.toString(format: "yyyyMMdd")),
                 URLQueryItem(name: "shprfnm", value: keyword),
                 URLQueryItem(name: "cpage", value: "\(cpage)"),
                 URLQueryItem(name: "rows", value: "\(rows)"),

@@ -10,12 +10,6 @@ import Foundation
 /// Date 문자열 형태를 나열한 열거형
 ///
 /// - Author: Doran
-enum DateFormat: String {
-    case yyyyMMdd = "yyyyMMdd"
-    case yyyyMMDD = "yyyy.MM.dd"
-    case yyyyMMddWithDash = "yyyy-MM-dd"
-    case mmddyyyy = "MM/dd/yyyy"
-}
 
 extension String {
     static private let dateFormatter: DateFormatter = DateFormatter()
@@ -35,8 +29,8 @@ extension String {
     /// }
     /// ```
     /// - Author: Doran
-    func toDate(format: DateFormat) -> Date? {
-        String.dateFormatter.dateFormat = format.rawValue
+    func toDate(format: String) -> Date? {
+        String.dateFormatter.dateFormat = format
         return String.dateFormatter.date(from: self)
     }
 }
