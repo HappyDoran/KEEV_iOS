@@ -15,31 +15,24 @@ enum SignUpPage: Int {
 
 /// 회원가입 화면
 ///
-/// 회원가입 화면으로 최상단의 회원가입 인디케이터, 본문 뷰, 하단의 버튼으로 구성되어있습니다.
+/// 회원가입 화면으로 최상단의 회원가입 인디케이터, 본문 뷰로 구성되어있습니다.
 ///
 /// - Author: 라움
 struct SignUpScreen: View {
     @StateObject private var accountService = AccountService()
     
     @State private var currentPage: SignUpPage = .email
-    @State private var progress = 1.0 / 3
+    @State private var transitionDirection: Edge = .trailing
     @State private var showActionSheet = false
     @State private var showProfileImageEditSheet = false
     
     var body: some View {
         VStack {
-            SignUpIndicator(currentPage: $currentPage, progress: $progress)
+            SignUpIndicator(currentPage: $currentPage, transitionDirection: $transitionDirection)
             
             signUpProcess()
-                .padding(.top, 40)
-                .padding(.horizontal, 24)
-            
-            Spacer()
-            
-            signUpProcessButton()
-                .padding(.top, 12)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 42)
+                .transition(.asymmetric(insertion: .move(edge: transitionDirection), removal: .opacity))
+                .animation(.easeInOut, value: currentPage)
         }
         .backgroundForKEEV()
         .actionSheetForKEEV(isPresented: $showActionSheet, defaults: .setProfileImage(modifyHandler: {
@@ -67,40 +60,56 @@ extension SignUpScreen {
     private func signUpProcess() -> some View {
         switch currentPage {
         case .email:
-            SignUpEmailView(accountService: accountService)
+            VStack {
+                SignUpEmailView(accountService: accountService)
+                    .padding(.top, 40)
+                    .padding(.horizontal, 24)
+                
+                Spacer()
+                
+                CommonButton(title: "다음", action: {
+                    transitionDirection = .trailing
+                    currentPage = .profile
+                }, style: .maxWidth, disabled: accountService.email.isEmpty || !accountService.email.isValidEmail)
+                .sensoryFeedback(.impact, trigger: currentPage)
+                .padding(.top, 12)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 42)
+            }
         case .profile:
-            SignUpProfileView(accountService: accountService, showActionSheet: $showActionSheet)
+            VStack {
+                SignUpProfileView(accountService: accountService, showActionSheet: $showActionSheet)
+                    .padding(.top, 40)
+                    .padding(.horizontal, 24)
+                
+                Spacer()
+                
+                CommonButton(title: "다음", action: {
+                    transitionDirection = .trailing
+                    currentPage = .complete
+                }, style: .maxWidth, disabled: accountService.nickname.isEmpty || !accountService.nickname.isValidNickname)
+                .sensoryFeedback(.impact, trigger: currentPage)
+                .padding(.top, 12)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 42)
+            }
         case .complete:
-            SignUpCompleteView(accountService: accountService)
-        }
-    }
-    
-    /// 하단 버튼을 보여주는 뷰빌더 함수
-    ///
-    /// 회원가입 각 단계에 맞는 하단 버튼을 리턴하는 함수입니다.
-    ///
-    /// - Returns: 현재의 진행단계에 해당하는 버튼
-    ///
-    /// - Author: 라움
-    @ViewBuilder
-    private func signUpProcessButton() -> some View {
-        switch currentPage {
-        case .email:
-            CommonButton(title: "다음", action: {
-                currentPage = .profile
-            }, style: .maxWidth, disabled: accountService.email.isEmpty)
-            .sensoryFeedback(.impact, trigger: currentPage)
-        case .profile:
-            CommonButton(title: "다음", action: {
-                currentPage = .complete
-            }, style: .maxWidth, disabled: accountService.nickname.isEmpty)
-            .sensoryFeedback(.impact, trigger: currentPage)
-        case .complete:
-            CommonButton(title: "시작하기", action: {
-                // 시작하기 버튼을 탭했을 때 입력한 정보가 저장되도록 여기에 저장기능을 추가하면 됩니다.
-                // navigationRouter로 메인화면으로 가면 됩니다.
-            }, style: .maxWidth)
-            .sensoryFeedback(.success, trigger: currentPage)
+            VStack {
+                SignUpCompleteView(accountService: accountService)
+                    .padding(.top, 40)
+                    .padding(.horizontal, 24)
+                
+                Spacer()
+                
+                CommonButton(title: "시작하기", action: {
+                    // 시작하기 버튼을 탭했을 때 입력한 정보가 저장되도록 여기에 저장기능을 추가하면 됩니다.
+                    // navigationRouter로 메인화면으로 가면 됩니다.
+                }, style: .maxWidth)
+                .sensoryFeedback(.success, trigger: currentPage)
+                .padding(.top, 12)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 42)
+            }
         }
     }
 }

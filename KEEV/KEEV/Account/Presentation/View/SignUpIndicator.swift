@@ -14,15 +14,20 @@ import SwiftUI
 /// - Author: 라움
 struct SignUpIndicator: View {
     @Binding var currentPage: SignUpPage
-    @Binding var progress: Double
+    @Binding var transitionDirection: Edge
+    
+    @State private var progress: Double = 1.0 / 3
     
     var body: some View {
         VStack {
             HStack {
                 Button {
+                    transitionDirection = .leading
+                    
                     switch currentPage {
                     case .email:
                         // navigationRouter로 로그인 화면으로 돌아가면 됩니다.
+                        // 바로 아래 페이지 전환 코드는 임시로 작성해놓은겁니다.
                         currentPage = .email
                     case .profile:
                         currentPage = .email
@@ -67,5 +72,5 @@ struct SignUpIndicator: View {
 }
 
 #Preview {
-    SignUpIndicator(currentPage: .constant(.email), progress: .constant(0.33))
+    SignUpIndicator(currentPage: .constant(.email), transitionDirection: .constant(.leading))
 }

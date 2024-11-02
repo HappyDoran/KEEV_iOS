@@ -9,9 +9,9 @@ import Foundation
 import SwiftUI
 
 protocol AccountServiceProtocol: ObservableObject {
-    var email: String { get }
-    var nickname: String { get }
-    var profileImage: UIImage? { get }
-    var profileBackgroundImage: UIImage? { get }
-    var oneLineExplanation: String? { get }
+    var email: String { get set }
+    var nickname: String { get set }
+    var profileImage: UIImage? { get set }
+    var profileBackgroundImage: UIImage? { get set }
+    var oneLineExplanation: String? { get set }
 }
