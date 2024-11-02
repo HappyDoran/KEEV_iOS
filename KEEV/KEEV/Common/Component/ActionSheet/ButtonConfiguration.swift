@@ -59,7 +59,7 @@ extension KEEVActionSheet.ButtonConfiguration: KEEVButtonConfiguration {
     
     var subColor: Color? { nil }
     
-    var action: () -> Void {
+    var action: @MainActor () -> Void {
         switch self {
         case .modify(_, let action): return action
         case .share(_, let action): return action
