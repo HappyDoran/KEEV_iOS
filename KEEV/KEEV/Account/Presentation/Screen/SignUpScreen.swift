@@ -19,6 +19,8 @@ struct SignUpScreen: View {
     @State private var email = ""
     @State private var nickname = ""
     @State private var profileImage: UIImage?
+    @State private var showActionSheet = false
+    @State private var showProfileImageEditSheet = false
     
     @ViewBuilder
     private func signUpProcess() -> some View {
@@ -26,7 +28,7 @@ struct SignUpScreen: View {
         case .email:
             SignUpEmailView(email: $email)
         case .profile:
-            SignUpProfileView(nickname: $nickname, profileImage: $profileImage)
+            SignUpProfileView(nickname: $nickname, profileImage: $profileImage, showActionSheet: $showActionSheet)
         case .complete:
             SignUpCompleteView(email: $email, nickname: $nickname, profileImage: $profileImage)
         }
@@ -70,7 +72,18 @@ struct SignUpScreen: View {
                 .padding(.bottom, 42)
         }
         .backgroundForKEEV()
-        .ignoresSafeArea(edges: .bottom)
+        .actionSheetForKEEV(isPresented: $showActionSheet, defaults: .setProfileImage(modifyHandler: {
+            showProfileImageEditSheet = true
+        }, deleteHandler: {
+            profileImage = nil
+            showActionSheet = false
+        }))
+        .fullScreenCover(isPresented: $showProfileImageEditSheet) {
+            ProfileImageEdit(profileImage: $profileImage)
+                .onDisappear {
+                    showActionSheet = false
+                }
+        }
     }
 }
 

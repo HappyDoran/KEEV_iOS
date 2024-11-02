@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 /// 프로필 수정시 들어가는 뷰
 ///
@@ -13,18 +14,35 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct ProfileImageEdit: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    @State private var selectedItem: PhotosPickerItem? = nil
     @Binding var profileImage: UIImage?
     
-    @State private var showActionSheet = false
-    
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            ProfileImage(selectedImage: $profileImage)
-            
-            ProfileImageCamera()
-                .padding(.all, 2)
+        PhotosPicker("프로필 이미지 선택", selection: $selectedItem, photoLibrary: .shared())
+            .photosPickerStyle(.inline)
+            .onChange(of: selectedItem) {
+                handleSelectedPhoto()
+            }
+    }
+}
+
+extension ProfileImageEdit {
+    private func handleSelectedPhoto() {
+        Task {
+            profileImage = nil
+            do {
+                if let data = try await selectedItem?.loadTransferable(type: Data.self) {
+                    if let uiImage = UIImage(data: data) {
+                        self.profileImage = uiImage
+                    }
+                }
+            } catch {
+                print(error.localizedDescription)
+                profileImage = nil
+            }
         }
-        .frame(width: 140, height: 140)
     }
 }
 

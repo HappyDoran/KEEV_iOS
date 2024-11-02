@@ -25,6 +25,7 @@ struct SignUpEmailView: View {
             
             SingleLineTextField(placeholder: "keev@email.com", text: $typedEmail, keyboardType: .emailAddress)
                 .submitLabel(.done)
+                .textInputAutocapitalization(.never)
                 .onSubmit {
                     if typedEmail.isValidEmail {
                         email = typedEmail

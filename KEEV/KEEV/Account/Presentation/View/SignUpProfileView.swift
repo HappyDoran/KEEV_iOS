@@ -10,6 +10,7 @@ import SwiftUI
 struct SignUpProfileView: View {
     @Binding var nickname: String
     @Binding var profileImage: UIImage?
+    @Binding var showActionSheet: Bool
     
     @State private var typedNickname = ""
     @State private var isInvalidNickname = false
@@ -28,7 +29,10 @@ struct SignUpProfileView: View {
             HStack {
                 Spacer()
                 
-                ProfileImageEdit(profileImage: $profileImage)
+                ProfileImage(profileImage: $profileImage, editable: true)
+                    .onTapGesture {
+                        showActionSheet = true
+                    }
                 
                 Spacer()
             }
@@ -57,5 +61,5 @@ struct SignUpProfileView: View {
 }
 
 #Preview {
-    SignUpProfileView(nickname: .constant(""), profileImage: .constant(nil))
+    SignUpProfileView(nickname: .constant(""), profileImage: .constant(nil), showActionSheet: .constant(false))
 }

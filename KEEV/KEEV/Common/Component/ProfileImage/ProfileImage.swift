@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import PhotosUI
 
 /// PhotoPicker를 사용하여 프로필 사진을 첨부, 수정을 하는 구조체
 ///
@@ -18,52 +17,46 @@ import PhotosUI
 ///
 /// - Author: Doran
 struct ProfileImage: View {
-    @State private var selectedItem: PhotosPickerItem? = nil
-    @Binding private var selectedImage: UIImage?
+    @Binding private var profileImage: UIImage?
+    private let editable: Bool
     
-    init(selectedImage: Binding<UIImage?>) {
-        self._selectedImage = selectedImage
+    init(profileImage: Binding<UIImage?>, editable: Bool) {
+        self._profileImage = profileImage
+        self.editable = editable
     }
     
     var body: some View {
-        PhotosPicker(selection: $selectedItem,
-                     matching: .images,
-                     photoLibrary: .shared()){
-            ZStack{
-                if selectedImage != nil {
-                    Image(uiImage: selectedImage!)
+        ZStack(alignment: .bottomTrailing) {
+            if profileImage != nil {
+                Image(uiImage: profileImage!)
+                    .resizable()
+                    .frame(width: 140, height: 140)
+                    .scaledToFit()
+                    .clipShape(Circle())
+            }
+            else {
+                ZStack {
+                    Circle()
+                        .frame(width: 140,height: 140)
+                        .foregroundColor(.gray900)
+                    
+                    Image("ProfileImage")
                         .resizable()
-                        .frame(width: 140, height: 140)
                         .scaledToFit()
-                        .clipShape(Circle())
-                }
-                else {
-                    Circle().frame(width: 140,height: 140).foregroundColor(.gray900)
-                    Image("ProfileImage").resizable().scaledToFit().frame(width: 101.12,height: 114.5).padding(.top, 25.9)
+                        .frame(width: 101.12,height: 114.5)
+                        .padding(.top, 25.9)
                 }
             }
-            .onChange(of: selectedItem) {
-                handleSelectedPhoto()
+            
+            if editable {
+                ProfileImageCamera()
+                    .padding(.all, 2)
             }
         }
-        
+        .frame(width: 140, height: 140)
     }
 }
 
-extension ProfileImage {
-    private func handleSelectedPhoto() {
-        Task {
-            selectedImage = nil
-            do {
-                if let data = try await selectedItem?.loadTransferable(type: Data.self) {
-                    if let uiImage = UIImage(data: data) {
-                        self.selectedImage = uiImage
-                    }
-                }
-            } catch {
-                print(error.localizedDescription)
-                selectedImage = nil
-            }
-        }
-    }
+#Preview {
+    ProfileImage(profileImage: .constant(UIImage(named: "sample")), editable: true)
 }
