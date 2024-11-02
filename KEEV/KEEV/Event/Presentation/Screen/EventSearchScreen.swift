@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct EventSearchScreen: View {
+    @State private var searchText: String = ""
     @Binding private var isPresented: Bool
     
     init(isPresented: Binding<Bool>) {
@@ -17,10 +18,13 @@ struct EventSearchScreen: View {
     var body: some View {
         VStack(spacing: 0){
             SearchHeader(isPresented: $isPresented)
+            SearchField(text: $searchText)
+            Spacer()
         }
         .backgroundForKEEV()
     }
 }
+
 
 #Preview {
     EventSearchScreen(isPresented: .constant(false))

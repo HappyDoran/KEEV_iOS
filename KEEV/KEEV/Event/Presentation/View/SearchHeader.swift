@@ -27,6 +27,7 @@ struct SearchHeader: View {
                 }
             }
             .padding(.trailing, 16)
+            .frame(height: 48)
         }
     }
 }

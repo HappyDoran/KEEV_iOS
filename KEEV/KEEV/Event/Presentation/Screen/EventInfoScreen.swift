@@ -23,9 +23,9 @@ struct EventInfoScreen: View {
         ScrollView {
             VStack {
                 MainHeader()
-                thumbnailSectionView.padding(.top, 16)
-                eventListSectionView.padding(.top, 48)
-                horizontalScrollSectionView
+                thumbnailSection.padding(.top, 16)
+                eventListSection.padding(.top, 48)
+                horizontalScrollSection
             }
             .backgroundForKEEV()
         }
@@ -36,7 +36,7 @@ struct EventInfoScreen: View {
 }
 
 extension EventInfoScreen {
-    private var thumbnailSectionView: some View {
+    private var thumbnailSection: some View {
         HStack(spacing: 8) {
             ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
                 EventThumbnailCell(event: event)
@@ -44,7 +44,7 @@ extension EventInfoScreen {
         }.padding(.horizontal, 16)
     }
     
-    private var eventListSectionView: some View {
+    private var eventListSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { index, event in
                 HStack(spacing: 8) {
@@ -58,7 +58,7 @@ extension EventInfoScreen {
         }.padding(.horizontal, 16)
     }
     
-    private var horizontalScrollSectionView: some View {
+    private var horizontalScrollSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(events, id: \.self.id) { event in
