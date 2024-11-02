@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 회원가입 완료 뷰
+///
+/// 회원가입이 완료되었을 때 보여주는 뷰로 입력한 이메일, 닉네임, 프로필 사진과 함께 환영문구를 보여줍니다.
+///
+/// - Author: 라움
 struct SignUpCompleteView: View {
     @Binding var email: String
     @Binding var nickname: String

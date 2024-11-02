@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// 회원가입 이메일 입력 뷰
+///
+/// 회원가입 단계 중 유저의 이메일을 입력받는 뷰입니다.
+///
+/// 유저가 이메일을 입력하면 이메일 형식이 맞는지 확인하는 과정을 거칩니다.
+///
+/// - Author: 라움
 struct SignUpEmailView: View {
     @Binding var email: String
     

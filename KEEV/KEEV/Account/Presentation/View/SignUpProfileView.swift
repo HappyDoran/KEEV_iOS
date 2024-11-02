@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// 회원가입 프로필 정보 입력 뷰
+///
+/// 회원가입 단계 중 유저의 프로필 정보(닉네임, 프로필 이미지)를 입력받는 뷰입니다.
+///
+/// 닉네임에 특수문자가 포함되었는지 확인하는 과정을 거칩니다.
+///
+/// - Author: 라움
 struct SignUpProfileView: View {
     @Binding var nickname: String
     @Binding var profileImage: UIImage?

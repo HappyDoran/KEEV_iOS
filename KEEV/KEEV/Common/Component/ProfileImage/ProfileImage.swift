@@ -7,15 +7,14 @@
 
 import SwiftUI
 
-/// PhotoPicker를 사용하여 프로필 사진을 첨부, 수정을 하는 구조체
+/// 프로필 이미지를 보여주는 뷰
 ///
-/// - `selectedItem`:  picker에서 선택하는 Item, Picker에서 check되는 PhotosPickerItem 타입 변수
-/// - `selectedImage`: UI에서 실제로 보여지는 이미지 타입 배열
+/// - `profileImage`: 프로필 이미지
+/// - `editable`: 프로필 이미지 수정 가능 여부
+///`
+/// - Note: editable이 true일 경우 프로필 이미지와 우측 하단에 카메라 이미지를 함께 보여줍니다.
 ///
-/// - Note: picker에서 프로필 화면 클릭시 Picker가 열린다.
-/// nil이였던 selectedImage에 UIImage로 변환된 selectedItem이 복사된다.
-///
-/// - Author: Doran
+/// - Author: Doran, 라움
 struct ProfileImage: View {
     @Binding private var profileImage: UIImage?
     private let editable: Bool

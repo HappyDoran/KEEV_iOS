@@ -13,6 +13,11 @@ enum SignUpPage: Int {
     case complete = 3
 }
 
+/// 회원가입 화면
+///
+/// 회원가입 화면으로 최상단의 회원가입 인디케이터, 본문 뷰, 하단의 버튼으로 구성되어있습니다.
+///
+/// - Author: 라움
 struct SignUpScreen: View {
     @State private var currentPage: SignUpPage = .email
     @State private var progress = 1.0 / 3
@@ -54,6 +59,13 @@ struct SignUpScreen: View {
 }
 
 extension SignUpScreen {
+    /// 회원가입 단계의 본문을 보여주는 뷰빌더 함수
+    ///
+    /// 회원가입 각 단계에 맞는 본문 뷰를 리턴하는 함수입니다.
+    ///
+    /// - Returns: 현재의 진행단계에 해당하는 뷰
+    ///
+    /// - Author: 라움
     @ViewBuilder
     private func signUpProcess() -> some View {
         switch currentPage {
@@ -66,6 +78,13 @@ extension SignUpScreen {
         }
     }
     
+    /// 하단 버튼을 보여주는 뷰빌더 함수
+    ///
+    /// 회원가입 각 단계에 맞는 하단 버튼을 리턴하는 함수입니다.
+    ///
+    /// - Returns: 현재의 진행단계에 해당하는 버튼
+    ///
+    /// - Author: 라움
     @ViewBuilder
     private func signUpProcessButton() -> some View {
         switch currentPage {
