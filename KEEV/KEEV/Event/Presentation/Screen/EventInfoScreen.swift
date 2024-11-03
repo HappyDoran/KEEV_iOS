@@ -19,9 +19,9 @@ struct EventInfoScreen: View {
     @State private var isLoading: Bool = false
     
     var body: some View {
-        ScrollView {
-            VStack {
-                MainHeader()
+        VStack {
+            MainHeader()
+            ScrollView {
                 thumbnailSection.padding(.top, 16)
                 eventListSection.padding(.top, 48)
                 horizontalScrollSection

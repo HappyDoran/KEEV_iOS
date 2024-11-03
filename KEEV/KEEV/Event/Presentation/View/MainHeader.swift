@@ -33,6 +33,7 @@ struct MainHeader: View {
             }
         }
         .backgroundForKEEV()
+        .frame(height: 48)
         .padding(.horizontal, 16)
     }
 }
