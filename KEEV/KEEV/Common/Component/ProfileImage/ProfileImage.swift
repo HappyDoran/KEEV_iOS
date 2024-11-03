@@ -16,11 +16,11 @@ import SwiftUI
 ///
 /// - Author: Doran, 라움
 struct ProfileImage: View {
-    @Binding private var profileImage: UIImage?
+    private let profileImage: UIImage?
     private let editable: Bool
     
-    init(profileImage: Binding<UIImage?>, editable: Bool) {
-        self._profileImage = profileImage
+    init(profileImage: UIImage?, editable: Bool) {
+        self.profileImage = profileImage
         self.editable = editable
     }
     
@@ -56,5 +56,5 @@ struct ProfileImage: View {
 }
 
 #Preview {
-    ProfileImage(profileImage: .constant(UIImage(named: "sample")), editable: true)
+    ProfileImage(profileImage: UIImage(named: "sample"), editable: true)
 }

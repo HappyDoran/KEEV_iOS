@@ -28,16 +28,16 @@ struct SignUpCompleteView: View {
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                     .foregroundStyle(.gray300)
                 
-                ProfileImage(profileImage: $accountService.userProfile.profileImage, editable: false)
+                ProfileImage(profileImage: accountService.getProfileImage(), editable: false)
                     .padding(.top, 100)
                     .padding(.bottom, 12)
                 
-                Text(accountService.userProfile.nickname)
+                Text(accountService.getNickname())
                     .figmaFont(PretendardFont.title(style: .sm))
                     .foregroundStyle(.gray100)
                     .padding(.bottom, 4)
                 
-                Text(accountService.userProfile.email)
+                Text(accountService.getEmail())
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
                     .foregroundStyle(.gray300)
             }

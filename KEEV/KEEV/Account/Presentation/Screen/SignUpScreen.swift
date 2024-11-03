@@ -21,6 +21,9 @@ enum SignUpPage: Int {
 struct SignUpScreen: View {
     @StateObject private var accountService = AccountService()
     
+    @State private var typedEmail = ""
+    @State private var typedNickname = ""
+    @State private var selectedProfileImage: UIImage? = nil
     @State private var currentPage: SignUpPage = .email
     @State private var transitionDirection: Edge = .trailing
     @State private var showActionSheet = false
@@ -39,11 +42,11 @@ struct SignUpScreen: View {
             showProfileImageEditSheet = true
             showActionSheet = false
         }, deleteHandler: {
-            accountService.userProfile.profileImage = nil
+            selectedProfileImage = nil
             showActionSheet = false
         }))
         .fullScreenCover(isPresented: $showProfileImageEditSheet) {
-            ProfileImageEdit(profileImage: $accountService.userProfile.profileImage)
+            ProfileImageEdit(profileImage: $selectedProfileImage)
         }
     }
 }
@@ -61,16 +64,17 @@ extension SignUpScreen {
         switch currentPage {
         case .email:
             VStack {
-                SignUpEmailView(accountService: accountService)
+                SignUpEmailView(accountService: accountService, typedEmail: $typedEmail)
                     .padding(.top, 40)
                     .padding(.horizontal, 24)
                 
                 Spacer()
                 
                 CommonButton(title: "다음", action: {
+                    accountService.setEmail(typedEmail)
                     transitionDirection = .trailing
                     currentPage = .profile
-                }, style: .maxWidth, disabled: accountService.userProfile.email.isEmpty || !accountService.userProfile.email.isValidEmail)
+                }, style: .maxWidth, disabled: typedEmail.isEmpty || !typedEmail.isValidEmail)
                 .sensoryFeedback(.impact, trigger: currentPage)
                 .padding(.top, 12)
                 .padding(.horizontal, 16)
@@ -78,16 +82,18 @@ extension SignUpScreen {
             }
         case .profile:
             VStack {
-                SignUpProfileView(accountService: accountService, showActionSheet: $showActionSheet)
+                SignUpProfileView(accountService: accountService, typedNickname: $typedNickname, selectedProfileImage: $selectedProfileImage, showActionSheet: $showActionSheet)
                     .padding(.top, 40)
                     .padding(.horizontal, 24)
                 
                 Spacer()
                 
                 CommonButton(title: "다음", action: {
+                    accountService.setProfileImage(selectedProfileImage)
+                    accountService.setNickname(typedNickname)
                     transitionDirection = .trailing
                     currentPage = .complete
-                }, style: .maxWidth, disabled: accountService.userProfile.nickname.isEmpty || !accountService.userProfile.nickname.isValidNickname)
+                }, style: .maxWidth, disabled: typedNickname.isEmpty || !typedNickname.isValidNickname)
                 .sensoryFeedback(.impact, trigger: currentPage)
                 .padding(.top, 12)
                 .padding(.horizontal, 16)
