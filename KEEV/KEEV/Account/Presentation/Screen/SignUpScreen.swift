@@ -21,9 +21,6 @@ enum SignUpPage: Int {
 struct SignUpScreen: View {
     @StateObject private var accountService = AccountService()
     
-    @State private var typedEmail = ""
-    @State private var typedNickname = ""
-    @State private var selectedProfileImage: UIImage? = nil
     @State private var currentPage: SignUpPage = .email
     @State private var transitionDirection: Edge = .trailing
     @State private var showActionSheet = false
@@ -34,19 +31,30 @@ struct SignUpScreen: View {
             SignUpIndicator(currentPage: $currentPage, transitionDirection: $transitionDirection)
             
             signUpProcess()
-                .transition(.asymmetric(insertion: .move(edge: transitionDirection), removal: .opacity))
+                .transition(.asymmetric(
+                    insertion: .move(edge: transitionDirection),
+                    removal: .opacity)
+                )
                 .animation(.easeInOut, value: currentPage)
         }
         .backgroundForKEEV()
-        .actionSheetForKEEV(isPresented: $showActionSheet, defaults: .setProfileImage(modifyHandler: {
-            showProfileImageEditSheet = true
-            showActionSheet = false
-        }, deleteHandler: {
-            selectedProfileImage = nil
-            showActionSheet = false
-        }))
+        .actionSheetForKEEV(
+            isPresented: $showActionSheet,
+            defaults: .setProfileImage(
+                modifyHandler: {
+                    showProfileImageEditSheet = true
+                    showActionSheet = false
+                }, deleteHandler: {
+                    accountService.setProfileImage(nil)
+                    showActionSheet = false
+                }))
         .fullScreenCover(isPresented: $showProfileImageEditSheet) {
-            ProfileImageEdit(profileImage: $selectedProfileImage)
+            ProfileImageEdit(profileImage: Binding(
+                get: { accountService.getProfileImage() },
+                set: { image in
+                    accountService.setProfileImage(image)
+                })
+            )
         }
     }
 }
@@ -64,17 +72,21 @@ extension SignUpScreen {
         switch currentPage {
         case .email:
             VStack {
-                SignUpEmailView(accountService: accountService, typedEmail: $typedEmail)
+                SignUpEmailView(accountService: accountService)
                     .padding(.top, 40)
                     .padding(.horizontal, 24)
                 
                 Spacer()
                 
-                CommonButton(title: "다음", action: {
-                    accountService.setEmail(typedEmail)
-                    transitionDirection = .trailing
-                    currentPage = .profile
-                }, style: .maxWidth, disabled: typedEmail.isEmpty || !typedEmail.isValidEmail)
+                CommonButton(
+                    title: "다음",
+                    action: {
+                        transitionDirection = .trailing
+                        currentPage = .profile
+                    },
+                    style: .maxWidth,
+                    disabled: !accountService.checkEmailValidity(checkEmpty: true)
+                )
                 .sensoryFeedback(.impact, trigger: currentPage)
                 .padding(.top, 12)
                 .padding(.horizontal, 16)
@@ -82,18 +94,21 @@ extension SignUpScreen {
             }
         case .profile:
             VStack {
-                SignUpProfileView(accountService: accountService, typedNickname: $typedNickname, selectedProfileImage: $selectedProfileImage, showActionSheet: $showActionSheet)
+                SignUpProfileView(accountService: accountService, showActionSheet: $showActionSheet)
                     .padding(.top, 40)
                     .padding(.horizontal, 24)
                 
                 Spacer()
                 
-                CommonButton(title: "다음", action: {
-                    accountService.setProfileImage(selectedProfileImage)
-                    accountService.setNickname(typedNickname)
-                    transitionDirection = .trailing
-                    currentPage = .complete
-                }, style: .maxWidth, disabled: typedNickname.isEmpty || !typedNickname.isValidNickname)
+                CommonButton(
+                    title: "다음",
+                    action: {
+                        transitionDirection = .trailing
+                        currentPage = .complete
+                    },
+                    style: .maxWidth,
+                    disabled: !accountService.checkNicknameValidity(checkEmpty: true)
+                )
                 .sensoryFeedback(.impact, trigger: currentPage)
                 .padding(.top, 12)
                 .padding(.horizontal, 16)
@@ -107,10 +122,14 @@ extension SignUpScreen {
                 
                 Spacer()
                 
-                CommonButton(title: "시작하기", action: {
-                    // 시작하기 버튼을 탭했을 때 입력한 정보가 저장되도록 여기에 저장기능을 추가하면 됩니다.
-                    // navigationRouter로 메인화면으로 가면 됩니다.
-                }, style: .maxWidth)
+                CommonButton(
+                    title: "시작하기",
+                    action: {
+                        // 시작하기 버튼을 탭했을 때 입력한 정보가 저장되도록 여기에 저장기능을 추가하면 됩니다.
+                        // navigationRouter로 메인화면으로 가면 됩니다.
+                    },
+                    style: .maxWidth
+                )
                 .sensoryFeedback(.success, trigger: currentPage)
                 .padding(.top, 12)
                 .padding(.horizontal, 16)

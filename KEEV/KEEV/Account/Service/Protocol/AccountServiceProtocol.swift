@@ -23,12 +23,18 @@ protocol AccountServiceProtocol: ObservableObject {
     
     func getEmail() -> String
     func setEmail(_ email: String)
+    func checkEmailValidity(checkEmpty: Bool) -> Bool
+    
     func getNickname() -> String
     func setNickname(_ nickname: String)
+    func checkNicknameValidity(checkEmpty: Bool) -> Bool
+    
     func getProfileImage() -> UIImage?
     func setProfileImage(_ image: UIImage?)
+    
     func getBackgroundImage() -> UIImage?
     func setBackgroundImage(_ image: UIImage?)
+    
     func getDescription() -> String?
     func setDescription(_ description: String?)
 }

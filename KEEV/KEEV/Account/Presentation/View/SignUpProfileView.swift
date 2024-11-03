@@ -16,11 +16,7 @@ import SwiftUI
 /// - Author: 라움
 struct SignUpProfileView: View {
     @ObservedObject var accountService: AccountService
-    @Binding var typedNickname: String
-    @Binding var selectedProfileImage: UIImage?
     @Binding var showActionSheet: Bool
-    
-    @State private var isInvalidNickname = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -36,7 +32,7 @@ struct SignUpProfileView: View {
             HStack {
                 Spacer()
                 
-                ProfileImage(profileImage: selectedProfileImage, editable: true)
+                ProfileImage(profileImage: accountService.getProfileImage(), editable: true)
                     .onTapGesture {
                         showActionSheet = true
                     }
@@ -45,18 +41,20 @@ struct SignUpProfileView: View {
             }
             .padding(.vertical, 48)
             
-            SingleLineTextField(placeholder: "닉네임", text: $typedNickname, maxLength: 14)
-                .submitLabel(.done)
-                .onChange(of: typedNickname, {
-                    if typedNickname.isValidNickname {
-                        isInvalidNickname = false
-                    } else {
-                        isInvalidNickname = true
+            SingleLineTextField(
+                placeholder: "닉네임",
+                text: Binding(
+                    get: { accountService.getNickname() },
+                    set: { nickname in
+                        accountService.setNickname(nickname)
                     }
-                })
-                .padding(.bottom, 12)
+                ),
+                maxLength: 14
+            )
+            .submitLabel(.done)
+            .padding(.bottom, 12)
             
-            if !typedNickname.isEmpty && isInvalidNickname {
+            if !accountService.checkNicknameValidity(checkEmpty: false) {
                 Text("특수문자가 포함되어 있습니다.")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
                     .foregroundStyle(.red500)
@@ -67,5 +65,5 @@ struct SignUpProfileView: View {
 }
 
 #Preview {
-    SignUpProfileView(accountService: AccountService(), typedNickname: .constant(""), selectedProfileImage: .constant(nil), showActionSheet: .constant(false))
+    SignUpProfileView(accountService: AccountService(), showActionSheet: .constant(false))
 }

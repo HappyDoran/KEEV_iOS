@@ -16,9 +16,6 @@ import SwiftUI
 /// - Author: 라움
 struct SignUpEmailView: View {
     @ObservedObject var accountService: AccountService
-    @Binding var typedEmail: String
-    
-    @State private var isInvalidEmail = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -30,20 +27,21 @@ struct SignUpEmailView: View {
                 .figmaFont(PretendardFont.title(style: .lg))
                 .foregroundStyle(.gray100)
             
-            SingleLineTextField(placeholder: "keev@email.com", text: $typedEmail, keyboardType: .emailAddress)
-                .submitLabel(.done)
-                .textInputAutocapitalization(.never)
-                .onChange(of: typedEmail, {
-                    if typedEmail.isValidEmail {
-                        isInvalidEmail = false
-                    } else {
-                        isInvalidEmail = true
-                    }
-                })
-                .padding(.top, 24)
-                .padding(.bottom, 12)
+            SingleLineTextField(
+                placeholder: "keev@email.com",
+                text: Binding(
+                    get: { accountService.getEmail() },
+                    set: { email in
+                        accountService.setEmail(email)
+                    }),
+                keyboardType: .emailAddress
+            )
+            .submitLabel(.done)
+            .textInputAutocapitalization(.never)
+            .padding(.top, 24)
+            .padding(.bottom, 12)
             
-            if !typedEmail.isEmpty && isInvalidEmail {
+            if !accountService.checkEmailValidity(checkEmpty: false) {
                 Text("이메일의 형식이 올바르지 않습니다!")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
                     .foregroundStyle(.red500)
@@ -54,5 +52,5 @@ struct SignUpEmailView: View {
 }
 
 #Preview {
-    SignUpEmailView(accountService: AccountService(), typedEmail: .constant(""))
+    SignUpEmailView(accountService: AccountService())
 }
