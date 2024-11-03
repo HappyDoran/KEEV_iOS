@@ -32,6 +32,7 @@ struct MainHeader: View {
                 
             }
         }
+        .backgroundForKEEV()
         .padding(.horizontal, 16)
     }
 }

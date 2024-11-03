@@ -26,6 +26,7 @@ struct SearchField: View {
                     
                     TextField("", text: $text, prompt: Text("공연 이름 검색하기").foregroundStyle(.gray700))
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
+                        .accentColor(.brand500)
                         .foregroundStyle(.gray100)
                         .keyboardType(.default)
                         .padding(.leading, 14)
@@ -51,4 +52,5 @@ struct SearchField: View {
 
 #Preview {
     SearchField(text: .constant(""))
+        .backgroundForKEEV()
 }
