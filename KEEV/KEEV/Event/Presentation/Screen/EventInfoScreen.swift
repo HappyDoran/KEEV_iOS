@@ -31,6 +31,7 @@ struct EventInfoScreen: View {
         .onAppear {
             loadEventData()
         }
+        .backgroundForKEEV()
     }
 }
 
@@ -91,10 +92,35 @@ extension EventInfoScreen {
             }
         }
     }
+    
+    private func loadEventDataByKeyword(keyword: String) {
+        isLoading = true
+        Task.detached {
+            do {
+                let loadedEvents = try await eventService.loadEventByKeyword(
+                    startDate: Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 4)) ?? Date(),
+                    endDate: Date(),
+                    keyword: keyword,
+                    page: 1,
+                    rows: 5
+                )
+                await MainActor.run {
+                    self.events = loadedEvents
+                    self.isLoading = false
+                }
+            } catch {
+                await MainActor.run {
+                    self.error = error.localizedDescription
+                    self.isLoading = false
+                }
+            }
+        }
+    }
+    
 }
 
 
 #Preview {
     EventInfoScreen()
-        .backgroundForKEEV()
+//        .backgroundForKEEV()
 }

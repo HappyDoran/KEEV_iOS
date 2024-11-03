@@ -10,15 +10,20 @@ import SwiftUI
 struct EventSearchScreen: View {
     @StateObject private var eventService = EventService()
     @State private var searchText: String = ""
-    @State private var events: [ConcertDTO] = []
-    @State private var error: String? = nil
-    @State private var isLoading: Bool = false
-    @State private var keyword: String = ""
+    
+    @State private var events: [ConcertDTO] = [
+        ConcertDTO(id: "1", title: "example1", startDate: "2024. 10. 4", endDate: "2024. 10. 4", place: "C5", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg"),
+        ConcertDTO(id: "2", title: "example2", startDate: "2024. 10. 4", endDate: "2024. 10. 4", place: "C5", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png"),
+        ConcertDTO(id: "3", title: "example3", startDate: "2024. 10. 4", endDate: "2024. 10. 4", place: "C5", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg"),
+        ConcertDTO(id: "4", title: "example4", startDate: "2024. 10. 4", endDate: "2024. 10. 4", place: "C5", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")
+    ]
+    
     @State private var recentSearch: [RecentSearch] = [
         RecentSearch(term: "세상에서 제일 재밌는 공연", date: Date()),
         RecentSearch(term: "카모 콘서트", date: Date()),
         RecentSearch(term: "김준성 30주년 팬미팅", date: Date()),
-        RecentSearch(term: "부산 콘서트", date: Date())]
+        RecentSearch(term: "부산 콘서트", date: Date())
+    ]
     
     @Binding private var isPresented: Bool
     
@@ -32,9 +37,6 @@ struct EventSearchScreen: View {
             SearchField(text: $searchText)
             searchResults(searchText: searchText).padding(.horizontal, 16)
             Spacer()
-        }
-        .onChange(of: searchText) { _, newValue in
-            loadEventDataByKeyword(keyword: newValue)
         }
         .backgroundForKEEV()
     }
@@ -60,7 +62,6 @@ extension EventSearchScreen {
                     .padding(.top, 205)
             }
             else {
-                
                 ForEach(recentSearch, id: \.self.id) { recentSearchItem in
                     RecentSearchCell(search: recentSearchItem)
                 }
@@ -68,38 +69,15 @@ extension EventSearchScreen {
         }
         else {
             ScrollView {
-                ForEach(events, id: \.id) { event in
+                ForEach(events, id: \.self.id) { event in
                     SearchCell(event: event)
                 }
-            }
+            }.padding(.top, 12)
         }
     }
 }
 
 extension EventSearchScreen {
-    private func loadEventDataByKeyword(keyword: String) {
-        isLoading = true
-        Task.detached {
-            do {
-                let loadedEvents = try await eventService.loadEventByKeyword(
-                    startDate: Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 4)) ?? Date(),
-                    endDate: Date(),
-                    keyword: keyword,
-                    page: 1,
-                    rows: 5
-                )
-                await MainActor.run {
-                    self.events = loadedEvents
-                    self.isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.error = error.localizedDescription
-                    self.isLoading = false
-                }
-            }
-        }
-    }
 }
 
 
