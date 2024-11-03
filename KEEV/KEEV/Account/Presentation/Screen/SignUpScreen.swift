@@ -39,11 +39,11 @@ struct SignUpScreen: View {
             showProfileImageEditSheet = true
             showActionSheet = false
         }, deleteHandler: {
-            accountService.profileImage = nil
+            accountService.userProfile.profileImage = nil
             showActionSheet = false
         }))
         .fullScreenCover(isPresented: $showProfileImageEditSheet) {
-            ProfileImageEdit(profileImage: $accountService.profileImage)
+            ProfileImageEdit(profileImage: $accountService.userProfile.profileImage)
         }
     }
 }
@@ -70,7 +70,7 @@ extension SignUpScreen {
                 CommonButton(title: "다음", action: {
                     transitionDirection = .trailing
                     currentPage = .profile
-                }, style: .maxWidth, disabled: accountService.email.isEmpty || !accountService.email.isValidEmail)
+                }, style: .maxWidth, disabled: accountService.userProfile.email.isEmpty || !accountService.userProfile.email.isValidEmail)
                 .sensoryFeedback(.impact, trigger: currentPage)
                 .padding(.top, 12)
                 .padding(.horizontal, 16)
@@ -87,7 +87,7 @@ extension SignUpScreen {
                 CommonButton(title: "다음", action: {
                     transitionDirection = .trailing
                     currentPage = .complete
-                }, style: .maxWidth, disabled: accountService.nickname.isEmpty || !accountService.nickname.isValidNickname)
+                }, style: .maxWidth, disabled: accountService.userProfile.nickname.isEmpty || !accountService.userProfile.nickname.isValidNickname)
                 .sensoryFeedback(.impact, trigger: currentPage)
                 .padding(.top, 12)
                 .padding(.horizontal, 16)

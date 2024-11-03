@@ -34,7 +34,7 @@ struct SignUpProfileView: View {
             HStack {
                 Spacer()
                 
-                ProfileImage(profileImage: $accountService.profileImage, editable: true)
+                ProfileImage(profileImage: $accountService.userProfile.profileImage, editable: true)
                     .onTapGesture {
                         showActionSheet = true
                     }
@@ -43,10 +43,10 @@ struct SignUpProfileView: View {
             }
             .padding(.vertical, 48)
             
-            SingleLineTextField(placeholder: "닉네임", text: $accountService.nickname, maxLength: 14)
+            SingleLineTextField(placeholder: "닉네임", text: $accountService.userProfile.nickname, maxLength: 14)
                 .submitLabel(.done)
-                .onChange(of: accountService.nickname, {
-                    if accountService.nickname.isValidNickname {
+                .onChange(of: accountService.userProfile.nickname, {
+                    if accountService.userProfile.nickname.isValidNickname {
                         isInvalidNickname = false
                     } else {
                         isInvalidNickname = true
@@ -54,7 +54,7 @@ struct SignUpProfileView: View {
                 })
                 .padding(.bottom, 12)
             
-            if !accountService.nickname.isEmpty && isInvalidNickname {
+            if !accountService.userProfile.nickname.isEmpty && isInvalidNickname {
                 Text("특수문자가 포함되어 있습니다.")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
                     .foregroundStyle(.red500)

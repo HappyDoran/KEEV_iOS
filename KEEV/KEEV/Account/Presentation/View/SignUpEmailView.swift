@@ -29,11 +29,11 @@ struct SignUpEmailView: View {
                 .figmaFont(PretendardFont.title(style: .lg))
                 .foregroundStyle(.gray100)
             
-            SingleLineTextField(placeholder: "keev@email.com", text: $accountService.email, keyboardType: .emailAddress)
+            SingleLineTextField(placeholder: "keev@email.com", text: $accountService.userProfile.email, keyboardType: .emailAddress)
                 .submitLabel(.done)
                 .textInputAutocapitalization(.never)
-                .onChange(of: accountService.email, {
-                    if accountService.email.isValidEmail {
+                .onChange(of: accountService.userProfile.email, {
+                    if accountService.userProfile.email.isValidEmail {
                         isInvalidEmail = false
                     } else {
                         isInvalidEmail = true
@@ -42,7 +42,7 @@ struct SignUpEmailView: View {
                 .padding(.top, 24)
                 .padding(.bottom, 12)
             
-            if !accountService.email.isEmpty && isInvalidEmail {
+            if !accountService.userProfile.email.isEmpty && isInvalidEmail {
                 Text("이메일의 형식이 올바르지 않습니다!")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
                     .foregroundStyle(.red500)
