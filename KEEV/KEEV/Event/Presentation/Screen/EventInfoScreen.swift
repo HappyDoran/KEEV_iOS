@@ -17,7 +17,6 @@ struct EventInfoScreen: View {
     @State private var events: [ConcertDTO] = []
     @State private var error: String? = nil
     @State private var isLoading: Bool = false
-    @State private var keyword: String = ""
     
     var body: some View {
         ScrollView {
@@ -79,29 +78,6 @@ extension EventInfoScreen {
                     endDate: Date(),
                     page: 1,
                     rows: 10
-                )
-                await MainActor.run {
-                    self.events = loadedEvents
-                    self.isLoading = false
-                }
-            } catch {
-                await MainActor.run {
-                    self.error = error.localizedDescription
-                    self.isLoading = false
-                }
-            }
-        }
-    }
-    private func loadEventDataByKeyword(keyword: String) {
-        isLoading = true
-        Task.detached {
-            do {
-                let loadedEvents = try await eventService.loadEventByKeyword(
-                    startDate: Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 4)) ?? Date(),
-                    endDate: Date(),
-                    keyword: keyword,
-                    page: 1,
-                    rows: 5
                 )
                 await MainActor.run {
                     self.events = loadedEvents
