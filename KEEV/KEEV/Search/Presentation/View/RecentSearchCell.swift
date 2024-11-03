@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RecentSearchCell: View {
     var search: RecentSearch
+    var onDelete: () -> Void
     
     var body: some View {
         HStack(spacing: 0) {
@@ -22,7 +23,7 @@ struct RecentSearchCell: View {
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                 .foregroundColor(.gray500)
             
-            Button(action: {}){
+            Button(action: onDelete ){
                 Image(systemName: "xmark")
                     .resizable()
                     .scaledToFit()
@@ -37,6 +38,6 @@ struct RecentSearchCell: View {
 }
 
 #Preview {
-    RecentSearchCell(search: RecentSearch(term: "세상에서 제일 재밌는 공연", date: Date()))
+    RecentSearchCell(search: RecentSearch(term: "세상에서 제일 재밌는 공연", date: Date()), onDelete: {})
         .backgroundForKEEV()
 }

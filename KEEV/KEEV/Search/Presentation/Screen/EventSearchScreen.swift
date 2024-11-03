@@ -63,7 +63,11 @@ extension EventSearchScreen {
             }
             else {
                 ForEach(recentSearch, id: \.self.id) { recentSearchItem in
-                    RecentSearchCell(search: recentSearchItem)
+                    RecentSearchCell(search: recentSearchItem) {
+                        if let index = recentSearch.firstIndex(where: { $0.id == recentSearchItem.id }) {
+                            recentSearch.remove(at: index)
+                        }
+                    }
                 }
             }
         }
