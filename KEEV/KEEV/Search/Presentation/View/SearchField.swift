@@ -9,11 +9,11 @@ import SwiftUI
 
 struct SearchField: View {
     @Binding private var text: String
-    private let onSubmit: () -> Void
+    @Binding private var searchStatus: EventSearchStatus
     
-    init(text: Binding<String>, onSubmit: @escaping () -> Void) {
+    init(text: Binding<String>, searchStatus: Binding<EventSearchStatus>) {
         self._text = text
-        self.onSubmit = onSubmit
+        self._searchStatus = searchStatus
     }
     
     var body: some View {
@@ -36,14 +36,17 @@ struct SearchField: View {
                         .foregroundStyle(.gray100)
                         .keyboardType(.default)
                         .padding(.leading, 14)
+                        .onChange(of: text) { _,_ in
+                            searchStatus = .beforeSearch
+                        }
                         .onSubmit {
-                            onSubmit()
+                            searchStatus = .afterSearch
                         }
                     
                     if !text.isEmpty {
                         Button(action: {
                             text = ""
-                            
+                            searchStatus = .beforeSearch
                         }) {
                             Image(systemName: "xmark.circle.fill")
                                 .resizable()
@@ -61,6 +64,6 @@ struct SearchField: View {
 }
 
 #Preview {
-    SearchField(text: .constant(""), onSubmit: {})
+    SearchField(text: .constant(""), searchStatus: .constant(.beforeSearch))
         .backgroundForKEEV()
 }

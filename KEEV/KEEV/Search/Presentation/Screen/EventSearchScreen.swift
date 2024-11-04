@@ -31,9 +31,7 @@ struct EventSearchScreen: View {
     var body: some View {
         VStack(spacing: 0){
             SearchHeader(isPresented: $isPresented)
-            SearchField(text: $searchText, onSubmit: {
-                eventSearchStatus = .afterSearch
-            })
+            SearchField(text: $searchText,searchStatus: $eventSearchStatus)
             switch eventSearchStatus {
             case .beforeSearch:
                 SearchBefore(text: $searchText).padding(.horizontal, 16)
