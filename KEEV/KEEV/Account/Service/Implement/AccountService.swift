@@ -20,7 +20,7 @@ import SwiftUI
 /// - Author: 라움
 class AccountService: AccountServiceProtocol {
     /// 회원가입 과정에서의 사용자 정보가 담기는 UserProfile 구조체입니다.
-    @Published private(set) var userProfile: UserProfile = UserProfile()
+    private(set) var userProfile: UserProfile = UserProfile()
     
     /// 사용자의 프로필을 리턴하는 함수
     ///
