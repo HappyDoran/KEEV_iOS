@@ -44,7 +44,7 @@ struct EventSearchScreen: View {
             case .beforeSearch:
                 
                 // MARK: 검색 결과가 나오기 전의 뷰
-                SearchBefore(text: $searchText).padding(.horizontal, 16)
+                SearchBefore(text: $searchText, searchStatus: $eventSearchStatus).padding(.horizontal, 16)
             case .afterSearch:
                 
                 // MARK: 검색 결과가 나온 후의 뷰

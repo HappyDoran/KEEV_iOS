@@ -25,9 +25,11 @@ struct SearchBefore: View {
     ]
     
     @Binding private var text: String
+    @Binding private var searchStatus: EventSearchStatus
     
-    init(text: Binding<String>) {
+    init(text: Binding<String>, searchStatus: Binding<EventSearchStatus>) {
         self._text = text
+        self._searchStatus = searchStatus
     }
     
     var body: some View {
@@ -85,7 +87,10 @@ extension SearchBefore {
     // MARK: 최근 검색어 리스트
     private var recentSearch: some View {
         ForEach(recentKeywords, id: \.self.id) { recentSearchItem in
-            RecentSearchCell(search: recentSearchItem, onClick: {print("SearchResult로 이동")}) {
+            RecentSearchCell(search: recentSearchItem, onClick: {
+                searchStatus = .afterSearch
+                print("SearchResult로 이동")
+            }) {
                 if let index = recentKeywords.firstIndex(where: { $0.id == recentSearchItem.id }) {
                     recentKeywords.remove(at: index)
                 }
@@ -106,6 +111,6 @@ extension SearchBefore {
 }
 
 #Preview {
-    SearchBefore(text: .constant(""))
+    SearchBefore(text: .constant(""), searchStatus: .constant(.beforeSearch))
         .backgroundForKEEV()
 }
