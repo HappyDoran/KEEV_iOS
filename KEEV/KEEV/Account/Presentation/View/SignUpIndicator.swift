@@ -21,22 +21,21 @@ struct SignUpIndicator: View {
     var body: some View {
         VStack {
             HStack {
-                Button {
-                    transitionDirection = .leading
-                    
-                    switch currentPage {
-                    case .email:
-                        // navigationRouter로 로그인 화면으로 돌아가면 됩니다.
-                        // 바로 아래 페이지 전환 코드는 임시로 작성해놓은겁니다.
-                        currentPage = .email
-                    case .profile:
-                        currentPage = .email
-                    case .complete:
-                        currentPage = .profile
+                if currentPage != .complete {
+                    Button {
+                        transitionDirection = .leading
+                        
+                        if currentPage == .email {
+                            // navigationRouter로 로그인 화면으로 돌아가면 됩니다.
+                            // 바로 아래 페이지 전환 코드는 임시로 작성해놓은겁니다.
+                            currentPage = .email
+                        } else if currentPage == .profile {
+                            currentPage = .email
+                        }
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                            .foregroundStyle(.gray300)
                     }
-                } label: {
-                    Image(systemName: "chevron.backward")
-                        .foregroundStyle(.gray300)
                 }
                 
                 Spacer()

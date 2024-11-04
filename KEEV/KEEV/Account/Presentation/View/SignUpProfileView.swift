@@ -15,7 +15,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpProfileView: View {
-    @ObservedObject var accountService: AccountService
+    @Binding var userProfile: UserProfile
     @Binding var showActionSheet: Bool
     
     var body: some View {
@@ -32,7 +32,7 @@ struct SignUpProfileView: View {
             HStack {
                 Spacer()
                 
-                ProfileImage(profileImage: accountService.getProfileImage(), editable: true)
+                ProfileImage(profileImage: userProfile.profileImage, editable: true)
                     .onTapGesture {
                         showActionSheet = true
                     }
@@ -43,18 +43,13 @@ struct SignUpProfileView: View {
             
             SingleLineTextField(
                 placeholder: "닉네임",
-                text: Binding(
-                    get: { accountService.getNickname() },
-                    set: { nickname in
-                        accountService.setNickname(nickname)
-                    }
-                ),
+                text: $userProfile.nickname,
                 maxLength: 14
             )
             .submitLabel(.done)
             .padding(.bottom, 12)
             
-            if !accountService.checkNicknameValidity(checkEmpty: false) {
+            if !userProfile.checkNicknameValidity(checkEmpty: false) {
                 Text("특수문자가 포함되어 있습니다.")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
                     .foregroundStyle(.red500)
@@ -65,5 +60,5 @@ struct SignUpProfileView: View {
 }
 
 #Preview {
-    SignUpProfileView(accountService: AccountService(), showActionSheet: .constant(false))
+    SignUpProfileView(userProfile: .constant(UserProfile()), showActionSheet: .constant(false))
 }

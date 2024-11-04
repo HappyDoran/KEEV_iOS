@@ -21,6 +21,7 @@ enum SignUpPage: Int {
 struct SignUpScreen: View {
     @StateObject private var accountService = AccountService()
     
+    @State private var userProfile: UserProfile = UserProfile()
     @State private var currentPage: SignUpPage = .email
     @State private var transitionDirection: Edge = .trailing
     @State private var showActionSheet = false
@@ -45,16 +46,11 @@ struct SignUpScreen: View {
                     showProfileImageEditSheet = true
                     showActionSheet = false
                 }, deleteHandler: {
-                    accountService.setProfileImage(nil)
+                    userProfile.profileImage = nil
                     showActionSheet = false
                 }))
         .fullScreenCover(isPresented: $showProfileImageEditSheet) {
-            ProfileImageEdit(profileImage: Binding(
-                get: { accountService.getProfileImage() },
-                set: { image in
-                    accountService.setProfileImage(image)
-                })
-            )
+            ProfileImageEdit(profileImage: $userProfile.profileImage)
         }
     }
 }
@@ -72,7 +68,7 @@ extension SignUpScreen {
         switch currentPage {
         case .email:
             VStack {
-                SignUpEmailView(accountService: accountService)
+                SignUpEmailView(userProfile: $userProfile)
                     .padding(.top, 40)
                     .padding(.horizontal, 24)
                 
@@ -85,7 +81,7 @@ extension SignUpScreen {
                         currentPage = .profile
                     },
                     style: .maxWidth,
-                    disabled: !accountService.checkEmailValidity(checkEmpty: true)
+                    disabled: !userProfile.checkEmailValidity(checkEmpty: true)
                 )
                 .sensoryFeedback(.impact, trigger: currentPage)
                 .padding(.top, 12)
@@ -94,7 +90,7 @@ extension SignUpScreen {
             }
         case .profile:
             VStack {
-                SignUpProfileView(accountService: accountService, showActionSheet: $showActionSheet)
+                SignUpProfileView(userProfile: $userProfile, showActionSheet: $showActionSheet)
                     .padding(.top, 40)
                     .padding(.horizontal, 24)
                 
@@ -103,11 +99,13 @@ extension SignUpScreen {
                 CommonButton(
                     title: "다음",
                     action: {
+                        accountService.setUserProfile(newUserProfile: userProfile)
+                        
                         transitionDirection = .trailing
                         currentPage = .complete
                     },
                     style: .maxWidth,
-                    disabled: !accountService.checkNicknameValidity(checkEmpty: true)
+                    disabled: !userProfile.checkNicknameValidity(checkEmpty: true)
                 )
                 .sensoryFeedback(.impact, trigger: currentPage)
                 .padding(.top, 12)
@@ -125,7 +123,6 @@ extension SignUpScreen {
                 CommonButton(
                     title: "시작하기",
                     action: {
-                        // 시작하기 버튼을 탭했을 때 입력한 정보가 저장되도록 여기에 저장기능을 추가하면 됩니다.
                         // navigationRouter로 메인화면으로 가면 됩니다.
                     },
                     style: .maxWidth
