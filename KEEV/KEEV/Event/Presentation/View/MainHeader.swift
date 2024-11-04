@@ -9,9 +9,11 @@ import SwiftUI
 
 /// 이벤트 정보, 홈화면에 들어가는 헤더
 ///
+/// 돋보기 버튼 클릭시 풀스크린 시트가 올라가면서 EventSearchScreen이 생성됩니다.
+///
 /// - Author: Doran
 struct MainHeader: View {
-    @State private var isPresented: Bool = false
+    @State private var isPresented: Bool = false //시트의 유무를 나타내는 Bool 타입 변수
     
     var body: some View {
         // MARK: 로고 이미지

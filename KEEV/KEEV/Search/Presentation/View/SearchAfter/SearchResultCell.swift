@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// 검색 결과를 보여주는 셀뷰
+///
+/// - Parameters:
+///   - event: 불러온 이벤트
+///   - onClick: 해당 이벤트 클릭시 발생하는 함수
+///
+/// - Author: Doran
 struct SearchResultCell: View {
     private let event: ConcertDTO
     private let onClick: () -> Void
@@ -17,7 +24,7 @@ struct SearchResultCell: View {
     }
     
     var body: some View {
-        Button(action: {}){
+        Button(action: onClick ){
             HStack(spacing: 16){
                 // MARK: 포스터
                 ZStack {
@@ -66,7 +73,6 @@ struct SearchResultCell: View {
                 }
             }
         }
-//        .frame(width: 353, height: 72)
     }
 }
 

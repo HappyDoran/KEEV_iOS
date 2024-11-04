@@ -7,6 +7,15 @@
 
 import SwiftUI
 
+/// 검색어 입력란
+///
+/// - Parameters:
+///   - text: 검색한 텍스트
+///   - searchStatus: 검색어 입력란의 상태를 나열하는 열거형
+///
+/// 검색을 완료했는지(onSubmit), 검색어가 비어있는지에 따라 searchStatus값이 변동
+///
+/// - Author: Doran
 struct SearchField: View {
     @Binding private var text: String
     @Binding private var searchStatus: EventSearchStatus

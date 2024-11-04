@@ -9,8 +9,6 @@ import SwiftUI
 
 /// 이벤트 정보에 표시될 스크린
 ///
-/// PR이후에 삭제될 예정입니다. 어떤 느낌인지 확인 부탁드립니다.
-///
 /// - Author: Doran
 struct EventInfoScreen: View {
     @StateObject private var eventService = EventService()
@@ -36,6 +34,7 @@ struct EventInfoScreen: View {
 }
 
 extension EventInfoScreen {
+    // MARK: 이벤트 썸네일 뷰
     private var thumbnailSection: some View {
         HStack(spacing: 8) {
             ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
@@ -44,6 +43,7 @@ extension EventInfoScreen {
         }.padding(.horizontal, 16)
     }
     
+    // MARK: 이벤트 리스트 뷰
     private var eventListSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { index, event in
@@ -58,6 +58,7 @@ extension EventInfoScreen {
         }.padding(.horizontal, 16)
     }
     
+    // MARK: 이벤트 횡스크롤 썸네일 뷰
     private var horizontalScrollSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {

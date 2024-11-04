@@ -9,6 +9,12 @@ import SwiftUI
 
 /// 검색 결과가 나오기 전에 나타나는 뷰
 ///
+/// - Parameters:
+///   - text: 검색한 텍스트
+///
+/// 검색하는 텍스트 필드가 어떤 상태인지에 따른 뷰 관리
+/// 최근 검색어가 보관되어 있는 모델에 어떠한 값이 있는지(비어 있는지, 값이 있는지)에 따른 뷰 관리
+///
 /// - Author: Doran
 struct SearchBefore: View {
     @State private var events: [ConcertDTO] = [
@@ -100,6 +106,6 @@ extension SearchBefore {
 }
 
 #Preview {
-    SearchBefore(text: .constant("asd"))
+    SearchBefore(text: .constant(""))
         .backgroundForKEEV()
 }

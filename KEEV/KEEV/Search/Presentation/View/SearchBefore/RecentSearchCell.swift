@@ -9,6 +9,11 @@ import SwiftUI
 
 /// 최근 검색한 검색어를 보여주는 셀뷰
 ///
+/// - Parameters:
+///   - search: 최근 검색한 텍스트와 검색한 날짜를 담고 있는 모델
+///   - onClick: 셀 클릭시 발생하는 함수
+///   - onDelete: 셀 삭제시 발생하는 함수
+///
 /// - Author: Doran
 struct RecentSearchCell: View {
     private let search: RecentSearch
@@ -23,6 +28,7 @@ struct RecentSearchCell: View {
     
     var body: some View {
         HStack(spacing: 0) {
+            // MARK: 최근 검색한 텍스트
             Button(action: onClick ){
                 Text(search.term)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
@@ -35,6 +41,7 @@ struct RecentSearchCell: View {
                     .foregroundColor(.gray500)
             }
             
+            // MARK: 최근 검색한 텍스트 지우기
             Button(action: onDelete ){
                 Image(systemName: "xmark")
                     .resizable()
