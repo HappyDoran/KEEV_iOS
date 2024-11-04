@@ -28,7 +28,7 @@ extension SearchAfter {
                     Text("\(events.count)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                         .foregroundColor(.gray100)
-                    Text("건의 검색 결과")
+                    Text(" 건의 검색 결과")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                         .foregroundColor(.gray500)
                 }
