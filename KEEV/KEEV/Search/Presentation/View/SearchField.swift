@@ -49,7 +49,9 @@ struct SearchField: View {
                             searchStatus = .beforeSearch
                         }
                         .onSubmit {
-                            searchStatus = .afterSearch
+                            if !text.isEmpty {
+                                searchStatus = .afterSearch
+                            }
                         }
                     
                     if !text.isEmpty {
