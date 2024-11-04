@@ -13,7 +13,6 @@ import SwiftUI
 /// - Author: Doran
 struct EventSearchScreen: View {
     @State private var searchText: String = ""
-    @State private var searchStatus: EventSearchStatus = .beforeSearch
     
     @Binding private var isPresented: Bool
     
