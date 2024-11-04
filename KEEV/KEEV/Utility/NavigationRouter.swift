@@ -24,9 +24,10 @@ class NavigationRouter: ObservableObject {
     ///
     /// - Note: 뷰 작업 완료되면 case 추가해줘야 합니다.
     /// - Author: 라움
-    enum Route {
+    enum Route: Hashable {
         case dummyScreen
         case dummyView
+        case EventDetail(event: ConcertDTO)
     }
     
     /// 뷰를 빌드해주는 ViewBuilder 함수
@@ -47,6 +48,8 @@ class NavigationRouter: ObservableObject {
             DummyScreen()
         case .dummyView:
             DummyView()
+        case .EventDetail(let event):
+            EventCell(event: event)
         }
     }
     

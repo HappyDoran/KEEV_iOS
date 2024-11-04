@@ -35,7 +35,7 @@ struct EventSearchScreen: View {
         VStack(spacing: 0){
             SearchHeader(isPresented: $isPresented)
             SearchField(text: $searchText)
-            searchResults(searchText: searchText).padding(.horizontal, 16)
+            search(searchText: searchText).padding(.horizontal, 16)
             Spacer()
         }
         .backgroundForKEEV()
@@ -44,7 +44,7 @@ struct EventSearchScreen: View {
 
 extension EventSearchScreen {
     @ViewBuilder
-    private func searchResults(searchText: String) -> some View {
+    private func search(searchText: String) -> some View {
         if searchText == "" {
             HStack(spacing: 0) {
                 Text("최근 검색어")
