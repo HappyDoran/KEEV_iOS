@@ -22,15 +22,44 @@ class AccountService: AccountServiceProtocol {
     /// 회원가입 과정에서의 사용자 정보가 담기는 UserProfile 구조체입니다.
     private(set) var userProfile: UserProfile = UserProfile()
     
-    /// 사용자의 프로필을 리턴하는 함수
+    /// 사용자 이메일을 리턴하는 연산 프로퍼티
     ///
-    /// 사용자의 프로필을 리턴하는 함수입니다.
-    ///
-    /// - Returns: 사용자의 프로필
-    ///
+    /// 사용자 이메일을 리턴하는 연산 프로퍼티입니다.
     /// - Author: 라움
-    func getUserProfile() -> UserProfile {
-        return userProfile
+    var email: String {
+        return userProfile.email
+    }
+    
+    /// 사용자 닉네임을 리턴하는 연산 프로퍼티
+    ///
+    /// 사용자 닉네임을 리턴하는 연산 프로퍼티입니다.
+    /// - Author: 라움
+    var nickname: String {
+        return userProfile.nickname
+    }
+    
+    /// 사용자 프로필 사진을 리턴하는 연산 프로퍼티
+    ///
+    /// 사용자 프로필 사진을 리턴하는 연산 프로퍼티입니다.
+    /// - Author: 라움
+    var profileImage: UIImage? {
+        return userProfile.profileImage
+    }
+    
+    /// 사용자 배경 이미지를 리턴하는 연산 프로퍼티
+    ///
+    /// 사용자 배경 이미지를 리턴하는 연산 프로퍼티입니다.
+    /// - Author: 라움
+    var backgroundImage: UIImage? {
+        return userProfile.backgroundImage
+    }
+    
+    /// 사용자 한 줄 소개를 리턴하는 연산 프로퍼티
+    ///
+    /// 사용자 한 줄 소개를 리턴하는 연산 프로퍼티입니다.
+    /// - Author: 라움
+    var description: String? {
+        return userProfile.description
     }
     
     /// 사용자의 프로필을 새로운 프로필로 업데이트하는 함수
@@ -41,62 +70,43 @@ class AccountService: AccountServiceProtocol {
     /// 사용자의 프로필을 새로운 프로필로 업데이트하는 함수입니다.
     ///
     /// - Author: 라움
-    func setUserProfile(newUserProfile: UserProfile) {
+    func setUserProfile(_ newUserProfile: UserProfile) {
         userProfile = newUserProfile
     }
     
-    /// 사용자의 이메일을 리턴하는 함수
+    /// 입력된 이메일의 형식이 타당한지 확인하는 함수
     ///
-    /// 사용자의 이메일을 리턴하는 함수입니다.
+    /// 입력된 이메일의 형식이 타당한지 확인하는 함수입니다.
     ///
-    /// - Returns: 사용자의 이메일
+    /// - Throws: 이메일 형식이 타당하지 않을 경우 에러를 throw
     ///
     /// - Author: 라움
-    func getEmail() -> String {
-        return userProfile.email
+    func checkEmailValidity() throws {
+        if userProfile.email.isEmpty {
+            throw AccountError.empty
+        } else if !userProfile.email.isValidEmail  {
+            throw AccountError.inValidEmail
+        }
     }
     
-    /// 사용자의 닉네임을 리턴하는 함수
+    /// 입력된 닉네임이 타당한지 확인하는 함수
     ///
-    /// 사용자의 닉네임을 리턴하는 함수입니다.
+    /// 입력된 닉네임이 타당한지 확인하는 함수입니다.
     ///
-    /// - Returns: 사용자의 닉네임
-    ///
-    /// - Author: 라움
-    func getNickname() -> String {
-        return userProfile.nickname
-    }
-    
-    /// 사용자의 프로필 사진을 리턴하는 함수
-    ///
-    /// 사용자의 프로필 사진을 리턴하는 함수입니다.
-    ///
-    /// - Returns: 사용자의 프로필 사진
+    /// - Throws: 닉네임 형식이 타당하지 않을 경우 에러를 throw
     ///
     /// - Author: 라움
-    func getProfileImage() -> UIImage? {
-        return userProfile.profileImage
+    func checkNicknameValidity() throws {
+        if userProfile.email.isEmpty {
+            throw AccountError.empty
+        } else if !userProfile.nickname.isValidNickname {
+            throw AccountError.inValidNickname
+        }
     }
-    
-    /// 사용자의 배경 이미지를 리턴하는 함수
-    ///
-    /// 사용자의 배경 이미지를 리턴하는 함수입니다.
-    ///
-    /// - Returns: 사용자의 배경 이미지
-    ///
-    /// - Author: 라움
-    func getBackgroundImage() -> UIImage? {
-        return userProfile.backgroundImage
-    }
-    
-    /// 사용자의 한 줄 소개를 리턴하는 함수
-    ///
-    /// 사용자의 한 줄 소개를 리턴하는 함수입니다.
-    ///
-    /// - Returns: 사용자의 한 줄 소개
-    ///
-    /// - Author: 라움
-    func getDescription() -> String? {
-        return userProfile.description
-    }
+}
+
+enum AccountError: String, Error {
+    case empty = ""
+    case inValidEmail = "이메일의 형식이 올바르지 않습니다!"
+    case inValidNickname = "특수문자가 포함되어 있습니다."
 }

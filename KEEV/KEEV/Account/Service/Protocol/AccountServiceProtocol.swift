@@ -20,13 +20,13 @@ import SwiftUI
 /// - Author: 라움
 protocol AccountServiceProtocol: ObservableObject {
     var userProfile: UserProfile { get }
+    var email: String { get }
+    var nickname: String { get }
+    var profileImage: UIImage? { get }
+    var backgroundImage: UIImage? { get }
+    var description: String? { get }
     
-    func getUserProfile() -> UserProfile
-    func setUserProfile(newUserProfile: UserProfile)
-    
-    func getEmail() -> String
-    func getNickname() -> String
-    func getProfileImage() -> UIImage?
-    func getBackgroundImage() -> UIImage?
-    func getDescription() -> String?
+    func setUserProfile(_ newUserProfile: UserProfile)
+    func checkEmailValidity() throws
+    func checkNicknameValidity() throws
 }

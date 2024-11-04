@@ -67,71 +67,25 @@ extension SignUpScreen {
     private func signUpProcess() -> some View {
         switch currentPage {
         case .email:
-            VStack {
-                SignUpEmailView(userProfile: $userProfile)
-                    .padding(.top, 40)
-                    .padding(.horizontal, 24)
-                
-                Spacer()
-                
-                CommonButton(
-                    title: "다음",
-                    action: {
-                        transitionDirection = .trailing
-                        currentPage = .profile
-                    },
-                    style: .maxWidth,
-                    disabled: !userProfile.checkEmailValidity(checkEmpty: true)
-                )
-                .sensoryFeedback(.impact, trigger: currentPage)
-                .padding(.top, 12)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 42)
-            }
+            SignUpEmailView(
+                accountService: accountService,
+                userProfile: $userProfile,
+                currentPage: $currentPage,
+                transitionDirection: $transitionDirection
+            )
         case .profile:
-            VStack {
-                SignUpProfileView(userProfile: $userProfile, showActionSheet: $showActionSheet)
-                    .padding(.top, 40)
-                    .padding(.horizontal, 24)
-                
-                Spacer()
-                
-                CommonButton(
-                    title: "다음",
-                    action: {
-                        accountService.setUserProfile(newUserProfile: userProfile)
-                        
-                        transitionDirection = .trailing
-                        currentPage = .complete
-                    },
-                    style: .maxWidth,
-                    disabled: !userProfile.checkNicknameValidity(checkEmpty: true)
-                )
-                .sensoryFeedback(.impact, trigger: currentPage)
-                .padding(.top, 12)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 42)
-            }
+            SignUpProfileView(
+                accountService: accountService,
+                userProfile: $userProfile,
+                showActionSheet: $showActionSheet,
+                currentPage: $currentPage,
+                transitionDirection: $transitionDirection
+            )
         case .complete:
-            VStack {
-                SignUpCompleteView(accountService: accountService)
-                    .padding(.top, 40)
-                    .padding(.horizontal, 24)
-                
-                Spacer()
-                
-                CommonButton(
-                    title: "시작하기",
-                    action: {
-                        // navigationRouter로 메인화면으로 가면 됩니다.
-                    },
-                    style: .maxWidth
-                )
-                .sensoryFeedback(.success, trigger: currentPage)
-                .padding(.top, 12)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 42)
-            }
+            SignUpCompleteView(
+                accountService: accountService,
+                currentPage: $currentPage
+            )
         }
     }
 }

@@ -15,38 +15,83 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpEmailView: View {
+    @ObservedObject var accountService: AccountService
     @Binding var userProfile: UserProfile
+    @Binding var currentPage: SignUpPage
+    @Binding var transitionDirection: Edge
+    
+    @State private var errorMessage: String? = nil
+    @State private var disableButton = true
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("반가워요!")
-                .figmaFont(PretendardFont.title(style: .lg))
-                .foregroundStyle(.brand500)
-            
-            Text("이메일을 알려주세요")
-                .figmaFont(PretendardFont.title(style: .lg))
-                .foregroundStyle(.gray100)
-            
-            SingleLineTextField(
-                placeholder: "keev@email.com",
-                text: $userProfile.email,
-                keyboardType: .emailAddress
-            )
-            .submitLabel(.done)
-            .textInputAutocapitalization(.never)
-            .padding(.top, 24)
-            .padding(.bottom, 12)
-            
-            if !userProfile.checkEmailValidity(checkEmpty: false) {
-                Text("이메일의 형식이 올바르지 않습니다!")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                    .foregroundStyle(.red500)
-                    .padding(.horizontal, 20)
+        VStack {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("반가워요!")
+                    .figmaFont(PretendardFont.title(style: .lg))
+                    .foregroundStyle(.brand500)
+                
+                Text("이메일을 알려주세요")
+                    .figmaFont(PretendardFont.title(style: .lg))
+                    .foregroundStyle(.gray100)
+                
+                SingleLineTextField(
+                    placeholder: "keev@email.com",
+                    text: $userProfile.email,
+                    keyboardType: .emailAddress
+                )
+                .submitLabel(.done)
+                .textInputAutocapitalization(.never)
+                .onChange(of: userProfile.email, {
+                    do {
+                        accountService.setUserProfile(userProfile)
+                        try accountService.checkEmailValidity()
+                        errorMessage = nil
+                        disableButton = false
+                    } catch let error as AccountError {
+                        errorMessage = error.rawValue
+                        disableButton = true
+                    } catch {
+                        errorMessage = error.localizedDescription
+                        disableButton = true
+                    }
+                })
+                .padding(.top, 24)
+                .padding(.bottom, 12)
+                
+                if let errorMessage {
+                    Text(errorMessage)
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
+                        .foregroundStyle(.red500)
+                        .padding(.horizontal, 20)
+                }
             }
+            .padding(.top, 40)
+            .padding(.horizontal, 24)
+            
+            Spacer()
+            
+            CommonButton(
+                title: "다음",
+                action: {
+                    transitionDirection = .trailing
+                    currentPage = .profile
+                },
+                style: .maxWidth,
+                disabled: disableButton
+            )
+            .sensoryFeedback(.impact, trigger: currentPage)
+            .padding(.top, 12)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 42)
         }
     }
 }
 
 #Preview {
-    SignUpEmailView(userProfile: .constant(UserProfile()))
+    SignUpEmailView(
+        accountService: AccountService(),
+        userProfile: .constant(UserProfile()),
+        currentPage: .constant(.email),
+        transitionDirection: .constant(.leading)
+    )
 }

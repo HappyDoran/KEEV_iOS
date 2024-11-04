@@ -15,50 +15,98 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpProfileView: View {
+    @ObservedObject var accountService: AccountService
     @Binding var userProfile: UserProfile
     @Binding var showActionSheet: Bool
+    @Binding var currentPage: SignUpPage
+    @Binding var transitionDirection: Edge
+    
+    @State private var errorMessage: String? = nil
+    @State private var disableButton = true
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            Text("프로필을 설정해주세요")
-                .figmaFont(PretendardFont.title(style: .lg))
-                .foregroundStyle(.gray100)
-                .padding(.bottom, 12)
-            
-            Text("닉네임과 프로필 이미지는 프로필탭에서 변경이 가능합니다")
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                .foregroundStyle(.gray400)
-            
-            HStack {
-                Spacer()
+        VStack {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("프로필을 설정해주세요")
+                    .figmaFont(PretendardFont.title(style: .lg))
+                    .foregroundStyle(.gray100)
+                    .padding(.bottom, 12)
                 
-                ProfileImage(profileImage: userProfile.profileImage, editable: true)
-                    .onTapGesture {
-                        showActionSheet = true
+                Text("닉네임과 프로필 이미지는 프로필탭에서 변경이 가능합니다")
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                    .foregroundStyle(.gray400)
+                
+                HStack {
+                    Spacer()
+                    
+                    ProfileImage(profileImage: userProfile.profileImage, editable: true)
+                        .onTapGesture {
+                            showActionSheet = true
+                        }
+                    
+                    Spacer()
+                }
+                .padding(.vertical, 48)
+                
+                SingleLineTextField(
+                    placeholder: "닉네임",
+                    text: $userProfile.nickname,
+                    maxLength: 14
+                )
+                .submitLabel(.done)
+                .onChange(of: userProfile.nickname, {
+                    do {
+                        accountService.setUserProfile(userProfile)
+                        try accountService.checkNicknameValidity()
+                        errorMessage = nil
+                        disableButton = false
+                    } catch let error as AccountError {
+                        errorMessage = error.rawValue
+                        disableButton = true
+                    } catch {
+                        errorMessage = error.localizedDescription
+                        disableButton = true
                     }
+                })
+                .padding(.bottom, 12)
                 
-                Spacer()
+                if let errorMessage {
+                    Text(errorMessage)
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
+                        .foregroundStyle(.red500)
+                        .padding(.horizontal, 20)
+                }
             }
-            .padding(.vertical, 48)
+            .padding(.top, 40)
+            .padding(.horizontal, 24)
             
-            SingleLineTextField(
-                placeholder: "닉네임",
-                text: $userProfile.nickname,
-                maxLength: 14
+            Spacer()
+            
+            CommonButton(
+                title: "다음",
+                action: {
+                    accountService.setUserProfile(userProfile)
+                    
+                    transitionDirection = .trailing
+                    currentPage = .complete
+                },
+                style: .maxWidth,
+                disabled: disableButton
             )
-            .submitLabel(.done)
-            .padding(.bottom, 12)
-            
-            if !userProfile.checkNicknameValidity(checkEmpty: false) {
-                Text("특수문자가 포함되어 있습니다.")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                    .foregroundStyle(.red500)
-                    .padding(.horizontal, 20)
-            }
+            .sensoryFeedback(.impact, trigger: currentPage)
+            .padding(.top, 12)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 42)
         }
     }
 }
 
 #Preview {
-    SignUpProfileView(userProfile: .constant(UserProfile()), showActionSheet: .constant(false))
+    SignUpProfileView(
+        accountService: AccountService(),
+        userProfile: .constant(UserProfile()),
+        showActionSheet: .constant(false),
+        currentPage: .constant(.profile),
+        transitionDirection: .constant(.leading)
+    )
 }
