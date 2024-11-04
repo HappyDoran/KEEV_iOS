@@ -7,10 +7,14 @@
 
 import SwiftUI
 
+/// 이벤트 정보, 홈화면에 들어가는 헤더
+///
+/// - Author: Doran
 struct MainHeader: View {
     @State private var isPresented: Bool = false
     
     var body: some View {
+        // MARK: 로고 이미지
         HStack(spacing: 0) {
             Image("LogoImage")
                 .resizable()
@@ -19,6 +23,7 @@ struct MainHeader: View {
             
             Spacer()
             
+            // MARK: 검색 시트 위로 올리는 버튼
             Button(action: {
                 isPresented.toggle()
             }) {

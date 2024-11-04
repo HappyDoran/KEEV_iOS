@@ -9,21 +9,21 @@ import SwiftUI
 
 struct SearchCell: View {
     private let event: ConcertDTO
+    private let onClick: () -> Void
     
-    init(event: ConcertDTO) {
+    init(event: ConcertDTO, onClick: @escaping ()-> Void){
         self.event = event
+        self.onClick = onClick
     }
     
     var body: some View {
-        Button(action: {
-        }){
+        Button(action: onClick ){
             HStack(spacing: 12){
                 // MARK: 포스터
                 ZStack {
                     RoundedRectangle(cornerRadius: 6)
                         .fill(Color.gray900)
                         .frame(width: 48, height: 64)
-                    
                     
                     AsyncImage(url: URL(string: event.poster)) { image in
                         image
@@ -60,12 +60,12 @@ struct SearchCell: View {
                         .padding(.top, 2)
                 }
             }
-            .frame(width: 353, height: 72)
+            .frame(height: 72)
         }
     }
 }
 
 #Preview {
-    SearchCell(event: ConcertDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png"))
+    SearchCell(event: ConcertDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png"), onClick: {})
         .backgroundForKEEV()
 }
