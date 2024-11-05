@@ -30,12 +30,36 @@ class AccountService: AccountServiceProtocol {
         return userProfile.email
     }
     
+    /// 이메일 형식을 확인하는 프로퍼티
+    ///
+    /// 정규표현식과 비교하여 입력한 이메일이 이메일 형식과 맞는지 유효성을 확인합니다.
+    ///
+    /// 이메일 형식이 맞으면 true, 아니면 false 값을 리턴합니다.
+    ///
+    /// - Author: 라움
+    var isValidEmail: Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: self.email)
+    }
+    
     /// 사용자 닉네임을 리턴하는 연산 프로퍼티
     ///
     /// 사용자 닉네임을 리턴하는 연산 프로퍼티입니다.
     /// - Author: 라움
     var nickname: String {
         return userProfile.nickname
+    }
+    
+    /// 닉네임에 특수문자가 포함되어있는지 확인하는 프로퍼티
+    ///
+    /// 정규표현식과 비교하여 입력한 닉네임에 특수문자가 포함되어있는지 유효성을 확인합니다.
+    ///
+    /// 특수문자가 포함되어있지 않으면 true, 포함되어 있으면 false를 리턴합니다.
+    ///
+    /// - Author: 라움
+    var isValidNickname: Bool {
+        let nicknameRegex = "^[ㄱ-ㅎ가-힣A-Za-z0-9]{1,}$"
+        return NSPredicate(format: "SELF MATCHES %@", nicknameRegex).evaluate(with: self.nickname)
     }
     
     /// 사용자 프로필 사진을 리턴하는 연산 프로퍼티
@@ -84,7 +108,7 @@ class AccountService: AccountServiceProtocol {
     func checkEmailValidity() throws {
         if userProfile.email.isEmpty {
             throw AccountError.empty
-        } else if !userProfile.email.isValidEmail  {
+        } else if !isValidEmail {
             throw AccountError.inValidEmail
         }
     }
@@ -99,7 +123,7 @@ class AccountService: AccountServiceProtocol {
     func checkNicknameValidity() throws {
         if userProfile.email.isEmpty {
             throw AccountError.empty
-        } else if !userProfile.nickname.isValidNickname {
+        } else if !isValidNickname {
             throw AccountError.inValidNickname
         }
     }

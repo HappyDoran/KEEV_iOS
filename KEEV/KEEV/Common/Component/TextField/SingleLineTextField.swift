@@ -45,6 +45,7 @@ struct SingleLineTextField: View {
                     TextField("", text: $text, prompt: Text(placeholder).foregroundStyle(.gray700))
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
                         .foregroundStyle(.gray100)
+                        .tint(.brand500)
                         .keyboardType(keyboardType)
                         .onChange(of: text, {
                             if let maxLength = maxLength {

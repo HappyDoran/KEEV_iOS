@@ -21,7 +21,9 @@ import SwiftUI
 protocol AccountServiceProtocol: ObservableObject {
     var userProfile: UserProfile { get }
     var email: String { get }
+    var isValidEmail: Bool { get }
     var nickname: String { get }
+    var isValidNickname: Bool { get }
     var profileImage: UIImage? { get }
     var backgroundImage: UIImage? { get }
     var description: String? { get }
