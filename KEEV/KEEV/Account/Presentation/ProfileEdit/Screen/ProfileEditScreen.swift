@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+/// 프로필 수정 화면
+///
+/// 프로필 화면에서 프로필 수정 버튼을 탭할 시에 fullScreenCover로 열리는 프로필 수정 화면입니다.
+///
+/// - ToDo: 닫기 버튼을 탭할 시에 나오는 커스텀 알럿 수정 후 해당하는 코드 부분을 수정해야합니다.
+/// - Author: 라움
 struct ProfileEditScreen: View {
     @StateObject private var accountService = AccountService()
     

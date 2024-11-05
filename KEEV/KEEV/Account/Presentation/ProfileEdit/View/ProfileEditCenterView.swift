@@ -7,6 +7,14 @@
 
 import SwiftUI
 
+/// 프로필 사진, 닉네임, 한 줄 소개를 수정할 수 있는 뷰
+///
+/// 프로필 내용 중 프로필 사진, 닉네임, 한 줄 소개를 수정할 수 있는 뷰입니다.
+///
+/// 프로필 사진을 탭할 시 프로필 사진 수정에 대한 액션시트가 열립니다.
+///
+/// - Note: 액션시트에 대한 modifier는 ProfileEditScreen에 추가되어있습니다.
+/// - Author: 라움
 struct ProfileEditCenterView: View {
     @ObservedObject var accountService: AccountService
     @Binding var newProfile: UserProfile

@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 프로필 수정 화면의 상단 바
+///
+/// 닫기 버튼과 프로필 수정 타이틀이 있는 프로필 수정 화면 상단 바입니다.
+///
+/// - Author: 라움
 struct ProfileEditTopView: View {
     @Binding var showCloseAlert: Bool
     
