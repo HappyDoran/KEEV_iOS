@@ -31,16 +31,15 @@ struct ProfileEditScreen: View {
             VStack {
                 ProfileEditTopView(showCloseAlert: $showCloseAlert)
                     .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                
-                Spacer()
+                    .padding(.top, 8)
+                    .padding(.bottom, 16)
                 
                 ProfileEditCenterView(
                     accountService: accountService,
                     newProfile: $newProfile,
                     showProfileImageActionSheet: $showProfileImageActionSheet,
                     disableButton: $disableButton)
-                    .padding(.horizontal, 24)
+                .padding(.horizontal, 24)
                 
                 Spacer()
                 
@@ -60,6 +59,7 @@ struct ProfileEditScreen: View {
         .onAppear {
             originalProfile = accountService.userProfile
             newProfile = originalProfile
+            print(disableButton)
         }
         .backgroundForKEEV()
         .actionSheetForKEEV(

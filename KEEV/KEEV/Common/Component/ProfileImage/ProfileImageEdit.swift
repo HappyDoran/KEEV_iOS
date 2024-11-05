@@ -44,6 +44,7 @@ struct ProfileImageEdit: View {
     var body: some View {
         PhotosPicker("프로필 이미지 선택", selection: $selectedItem, photoLibrary: .shared())
             .photosPickerStyle(.inline)
+            .tint(.brand500)
             .onChange(of: selectedItem) {
                 handleSelectedPhoto()
             }

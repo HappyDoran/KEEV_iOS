@@ -17,14 +17,14 @@ struct ProfileEditBackgroundView: View {
                 Image(uiImage: background)
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 282)
+                    .frame(height: 202)
                     .clipped()
                     .onTapGesture {
                         showBackgroundActionSheet = true
                     }
             } else {
                 Color.gray800
-                    .frame(height: 282)
+                    .frame(height: 202)
                     .onTapGesture {
                         showBackgroundActionSheet = true
                     }

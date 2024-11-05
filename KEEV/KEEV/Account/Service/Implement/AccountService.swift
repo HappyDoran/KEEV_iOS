@@ -121,7 +121,7 @@ class AccountService: AccountServiceProtocol {
     ///
     /// - Author: 라움
     func checkNicknameValidity() throws {
-        if userProfile.email.isEmpty {
+        if userProfile.nickname.isEmpty {
             throw AccountError.empty
         } else if !isValidNickname {
             throw AccountError.inValidNickname
