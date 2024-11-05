@@ -21,10 +21,6 @@ struct ProfileEditCenterView: View {
                 Spacer()
                 
                 ProfileImage(profileImage: newProfile.profileImage, editable: true)
-                    .overlay(content: {
-                        Circle()
-                            
-                    })
                     .onTapGesture {
                         showProfileImageActionSheet = true
                     }

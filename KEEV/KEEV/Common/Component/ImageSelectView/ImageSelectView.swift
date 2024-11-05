@@ -1,5 +1,5 @@
 //
-//  ProfileImageEdit.swift
+//  ImageSelectView.swift
 //  KEEV
 //
 //  Created by Doran on 10/28/24.
@@ -8,11 +8,11 @@
 import SwiftUI
 import PhotosUI
 
-/// 프로필 수정시 나오는 PhotosPicker
+/// 프로필 사진이나 배경사진을 선택할 때 나오는 PhotosPicker
 ///
-/// - `profileImage`: 프로필 이미지
+/// - `image`: 프로필 이미지
 ///
-/// 프로필 이미지 수정 시 sheet 혹은 fullScreenCover로 나오는 PhotosPicker입니다.
+/// 프로필 사진이나 배경사진 수정 시 sheet 혹은 fullScreenCover로 나오는 PhotosPicker입니다.
 ///
 /// 사용방법은 아래와 같습니다.
 ///
@@ -21,13 +21,13 @@ import PhotosUI
 /// ```swift
 /// VStack { ... }
 /// .actionSheetForKEEV(isPresented: $showActionSheet, defaults: .setProfileImage(modifyHandler: {
-/// showProfileImageEditSheet = true
+/// showImageSelectSheet = true
 /// }, deleteHandler: {
 /// profileImage = nil
 /// showActionSheet = false
 /// }))
-/// .fullScreenCover(isPresented: $showProfileImageEditSheet) {
-/// ProfileImageEdit(profileImage: $profileImage)
+/// .fullScreenCover(isPresented: $showImageSelectSheet) {
+/// ImageSelectView(image: $profileImage)
 ///     .onDisappear {
 ///         showActionSheet = false
 ///     }
@@ -35,14 +35,14 @@ import PhotosUI
 /// ```
 ///
 /// - Author: Doran, 라움
-struct ProfileImageEdit: View {
+struct ImageSelectView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var selectedItem: PhotosPickerItem? = nil
-    @Binding var profileImage: UIImage?
+    @Binding var image: UIImage?
     
     var body: some View {
-        PhotosPicker("프로필 이미지 선택", selection: $selectedItem, photoLibrary: .shared())
+        PhotosPicker("이미지 선택", selection: $selectedItem, photoLibrary: .shared())
             .photosPickerStyle(.inline)
             .tint(.brand500)
             .onChange(of: selectedItem) {
@@ -51,24 +51,24 @@ struct ProfileImageEdit: View {
     }
 }
 
-extension ProfileImageEdit {
+extension ImageSelectView {
     private func handleSelectedPhoto() {
         Task {
-            profileImage = nil
+            image = nil
             do {
                 if let data = try await selectedItem?.loadTransferable(type: Data.self) {
                     if let uiImage = UIImage(data: data) {
-                        self.profileImage = uiImage
+                        self.image = uiImage
                     }
                 }
             } catch {
                 print(error.localizedDescription)
-                profileImage = nil
+                image = nil
             }
         }
     }
 }
 
 #Preview {
-    ProfileImageEdit(profileImage: .constant(UIImage(named: "sample")))
+    ImageSelectView(image: .constant(UIImage(named: "sample")))
 }

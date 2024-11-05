@@ -15,9 +15,8 @@ struct ProfileEditScreen: View {
     @State private var originalProfile = UserProfile()
     @State private var newProfile = UserProfile()
     @State private var showProfileImageActionSheet = false
-    @State private var showProfileImageEditSheet = false
     @State private var showBackgroundActionSheet = false
-    @State private var showBackgroundEditSheet = false
+    @State private var showImageSelectSheet = false
     @State private var showCloseAlert = false
     @State private var disableButton = true
     
@@ -66,27 +65,27 @@ struct ProfileEditScreen: View {
             isPresented: $showProfileImageActionSheet,
             defaults: .setProfileImage(
                 modifyHandler: {
-                    showProfileImageEditSheet = true
+                    showImageSelectSheet = true
                     showProfileImageActionSheet = false
                 }, deleteHandler: {
                     newProfile.profileImage = nil
                     showProfileImageActionSheet = false
                 }))
-        .fullScreenCover(isPresented: $showProfileImageEditSheet) {
-            ProfileImageEdit(profileImage: $newProfile.profileImage)
+        .fullScreenCover(isPresented: $showImageSelectSheet) {
+            ImageSelectView(image: $newProfile.profileImage)
         }
         .actionSheetForKEEV(
             isPresented: $showBackgroundActionSheet,
             defaults: .setBackgroundImage(
                 modifyHandler: {
-                    showBackgroundEditSheet = true
+                    showImageSelectSheet = true
                     showBackgroundActionSheet = false
                 }, deleteHandler: {
                     newProfile.backgroundImage = nil
                     showBackgroundActionSheet = false
                 }))
-        .fullScreenCover(isPresented: $showBackgroundEditSheet) {
-            ProfileImageEdit(profileImage: $newProfile.backgroundImage)
+        .fullScreenCover(isPresented: $showImageSelectSheet) {
+            ImageSelectView(image: $newProfile.backgroundImage)
         }
         .customAlert(
             isPresented: $showCloseAlert,

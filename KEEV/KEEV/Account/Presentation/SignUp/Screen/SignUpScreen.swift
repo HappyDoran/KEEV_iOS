@@ -25,7 +25,7 @@ struct SignUpScreen: View {
     @State private var currentPage: SignUpPage = .email
     @State private var transitionDirection: Edge = .trailing
     @State private var showActionSheet = false
-    @State private var showProfileImageEditSheet = false
+    @State private var showImageSelectSheet = false
     
     var body: some View {
         VStack {
@@ -43,14 +43,14 @@ struct SignUpScreen: View {
             isPresented: $showActionSheet,
             defaults: .setProfileImage(
                 modifyHandler: {
-                    showProfileImageEditSheet = true
+                    showImageSelectSheet = true
                     showActionSheet = false
                 }, deleteHandler: {
                     userProfile.profileImage = nil
                     showActionSheet = false
                 }))
-        .fullScreenCover(isPresented: $showProfileImageEditSheet) {
-            ProfileImageEdit(profileImage: $userProfile.profileImage)
+        .fullScreenCover(isPresented: $showImageSelectSheet) {
+            ImageSelectView(image: $userProfile.profileImage)
         }
     }
 }
