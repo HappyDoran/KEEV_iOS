@@ -9,7 +9,7 @@
 ///
 /// 타입, 프로토콜에 대한 인스턴스를 저장하고 불러옵니다.
 ///
-/// - Note: 해당 인스턴스들을 타입을 키 값으로 하여 딕셔너리로 관리하고 있습니다.
+/// - Note: 해당 인스턴스들을 타입을 키 값으로 하여 딕셔너리로 관리하고 있습니다. 혹시나 의존성을 등록하는 과정에서 특정 프로퍼티에 DIContainer의 요소를 쓰고 있나 확인해주세요. `register`를 하는 순서에 따라 앱이 크러시가 날 수도 안 날 수도 있습니다.
 /// - Author: newJunsung
 final class DIContainer {
     private var container: [String: Any] = [:]
