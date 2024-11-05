@@ -8,6 +8,6 @@
 import SwiftUI
 
 protocol EventServiceProtocol: ObservableObject {
-    func loadEvents(startDate: Date, endDate: Date, page: Int, rows: Int) async throws -> [ConcertDTO]
-    func loadEventByKeyword(startDate: Date, endDate: Date, keyword: String, page: Int, rows: Int) async throws -> [ConcertDTO]
+    func loadEvents(startDate: Date, endDate: Date, page: Int, rows: Int) async throws -> [EventDTO]
+    func loadEventByKeyword(startDate: Date, endDate: Date, keyword: String, page: Int, rows: Int) async throws -> [EventDTO]
 }

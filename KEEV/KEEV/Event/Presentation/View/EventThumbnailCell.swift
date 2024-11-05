@@ -14,9 +14,9 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventThumbnailCell: View {
-    private let event: ConcertDTO
+    private let event: EventDTO
     
-    init(event: ConcertDTO) {
+    init(event: EventDTO) {
         self.event = event
     }
     
@@ -59,7 +59,7 @@ struct EventThumbnailCell: View {
 }
 
 #Preview {
-    @Previewable let smallThumbnailEvent: ConcertDTO = ConcertDTO(id : "1", title: "Fiji Blue LIVE IN SEOUL 'The Glide Tour Asia'", startDate: "2024.12.13", endDate: "2024.12.25", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")
+    @Previewable let smallThumbnailEvent: EventDTO = EventDTO(id : "1", title: "Fiji Blue LIVE IN SEOUL 'The Glide Tour Asia'", startDate: "2024.12.13", endDate: "2024.12.25", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")
     EventThumbnailCell(event: smallThumbnailEvent)
         .backgroundForKEEV()
 }

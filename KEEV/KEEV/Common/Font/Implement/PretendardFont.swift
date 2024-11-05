@@ -225,6 +225,7 @@ extension PretendardFont.BodyStyle {
     /// - Todo: 디자인 팀과 상의해서 letterSpace 정해지면 리팩토링하기.
     /// - Author: newJunsung
     enum BodySize: FontSizeable, LineHeightable, LetterSpaceable {
+        case xlarge
         /// size: 17, lineHeight: 24, letterSpace: 0
         case large
         /// size: 16, lineHeight: 22, letterSpace: 0
@@ -240,6 +241,7 @@ extension PretendardFont.BodyStyle {
         
         var fontSize: CGFloat {
             switch self {
+            case .xlarge: 20
             case .large: 17
             case .medium: 16
             case .base: 15
@@ -251,6 +253,7 @@ extension PretendardFont.BodyStyle {
         
         var lineHeight: CGFloat {
             switch self {
+            case .xlarge: 22
             case .large: 24
             case .medium: 22
             case .base: 21
@@ -262,6 +265,7 @@ extension PretendardFont.BodyStyle {
         
         var letterSpace: CGFloat {
             switch self {
+            case .xlarge: 0
             case .large: 0
             case .medium: 0
             case .base: 0

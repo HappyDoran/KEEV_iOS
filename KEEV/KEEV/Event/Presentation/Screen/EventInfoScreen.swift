@@ -7,42 +7,43 @@
 
 import SwiftUI
 
-/// 이벤트 정보에 표시될 뷰
-///
-/// PR이후에 삭제될 예정입니다. 어떤 느낌인지 확인 부탁드립니다.
+/// 이벤트 정보에 표시될 스크린
 ///
 /// - Author: Doran
 struct EventInfoScreen: View {
     @StateObject private var eventService = EventService()
-    @State private var events: [ConcertDTO] = []
+    @State private var events: [EventDTO] = []
     @State private var error: String? = nil
     @State private var isLoading: Bool = false
-    @State private var keyword: String = ""
     
     var body: some View {
-        ScrollView {
-            VStack {
-                thumbnailSectionView
-                eventListSectionView
-                horizontalScrollSectionView
+        VStack {
+            MainHeader()
+            ScrollView {
+                thumbnailSection.padding(.top, 16).padding(.horizontal, 16)
+                eventListSection.padding(.top, 48).padding(.horizontal, 16)
+                horizontalScrollSection.padding(.leading, 16)
             }
         }
         .onAppear {
             loadEventData()
         }
+        .backgroundForKEEV()
     }
 }
 
 extension EventInfoScreen {
-    private var thumbnailSectionView: some View {
+    // MARK: 이벤트 썸네일 뷰
+    private var thumbnailSection: some View {
         HStack(spacing: 8) {
-            ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
-                EventThumbnailCell(event: event)
+            ForEach(0..<min(events.count, 3), id: \.self) { index in
+                EventThumbnailCell(event: events[index])
             }
-        }.padding(.horizontal, 16)
+        }
     }
     
-    private var eventListSectionView: some View {
+    // MARK: 이벤트 리스트 뷰
+    private var eventListSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { index, event in
                 HStack(spacing: 8) {
@@ -53,16 +54,17 @@ extension EventInfoScreen {
                     EventCell(event: event)
                 }
             }
-        }.padding(.horizontal, 16)
+        }
     }
     
-    private var horizontalScrollSectionView: some View {
+    // MARK: 이벤트 횡스크롤 썸네일 뷰
+    private var horizontalScrollSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                ForEach(events, id: \.self.id) { event in
+                ForEach(events) { event in
                     BigEventThumbnailCell(event: event)
                 }
-            }.padding(.leading, 16)
+            }
         }
     }
 }
@@ -90,6 +92,7 @@ extension EventInfoScreen {
             }
         }
     }
+    
     private func loadEventDataByKeyword(keyword: String) {
         isLoading = true
         Task.detached {
@@ -113,6 +116,7 @@ extension EventInfoScreen {
             }
         }
     }
+    
 }
 
 
