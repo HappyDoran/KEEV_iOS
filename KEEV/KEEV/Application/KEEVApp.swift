@@ -9,6 +9,10 @@ import SwiftUI
 
 @main
 struct KEEVApp: App {
+    init() {
+        AppEnvironment.setupDependency()
+    }
+    
     var body: some Scene {
         WindowGroup {
             DummyView()
