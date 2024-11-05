@@ -21,10 +21,6 @@ import Security
 /// - Note: 해당 클래스는 shared 를 사용하여 싱글톤으로 구현되어 있습니다.
 /// - Author: Doran
 final class TokenKeyChainUtility {
-    static let shared = TokenKeyChainUtility()
-    
-    private init() {}
-    
     private static let applicationLabel = Bundle.main.bundleIdentifier ?? "com.HMHZ.KEEV"
     
     /// KeyChain에 데이터를 저장하는 함수
