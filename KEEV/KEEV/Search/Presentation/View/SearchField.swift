@@ -64,8 +64,7 @@ struct SearchField: View {
                         }
                     }
                 }
-                .padding(.vertical, 16)
-                .padding(.horizontal, 16)
+                .padding(16)
             }
     }
 }

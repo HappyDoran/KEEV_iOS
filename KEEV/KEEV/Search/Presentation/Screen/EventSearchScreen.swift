@@ -86,7 +86,6 @@ extension EventSearchScreen {
     }
 }
 
-
 #Preview {
     EventSearchScreen(isPresented: .constant(false))
         .backgroundForKEEV()

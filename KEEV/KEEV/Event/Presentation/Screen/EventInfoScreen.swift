@@ -24,7 +24,6 @@ struct EventInfoScreen: View {
                 eventListSection.padding(.top, 48).padding(.horizontal, 16)
                 horizontalScrollSection.padding(.leading, 16)
             }
-            .backgroundForKEEV()
         }
         .onAppear {
             loadEventData()
