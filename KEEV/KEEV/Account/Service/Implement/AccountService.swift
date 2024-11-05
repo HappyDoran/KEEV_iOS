@@ -82,7 +82,7 @@ class AccountService: AccountServiceProtocol {
     ///
     /// 사용자 한 줄 소개를 리턴하는 연산 프로퍼티입니다.
     /// - Author: 라움
-    var description: String? {
+    var description: String {
         return userProfile.description
     }
     

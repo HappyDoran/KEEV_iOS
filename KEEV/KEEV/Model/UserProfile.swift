@@ -25,5 +25,5 @@ struct UserProfile {
     /// 사용자 배경 이미지
     var backgroundImage: UIImage?
     /// 사용자 한 줄 소개
-    var description: String?
+    var description: String = ""
 }
