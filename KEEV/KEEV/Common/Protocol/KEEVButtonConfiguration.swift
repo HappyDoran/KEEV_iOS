@@ -13,7 +13,7 @@ protocol KEEVButtonConfiguration: Identifiable {
     var image: Image? { get }
     var mainColor: Color { get }
     var subColor: Color? { get }
-    var action: () -> Void { get }
+    var action: @MainActor () -> Void { get }
 }
 
 extension KEEVButtonConfiguration {

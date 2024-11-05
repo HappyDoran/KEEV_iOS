@@ -26,7 +26,7 @@ enum EventRouter {
 extension EventRouter: HTTPRequestable {
     /// http scheme 반환
     var scheme: String { "http" }
-    
+
     /// HTTP 메소드 반환
     var method: HTTPMethod {
         switch self {
@@ -34,18 +34,18 @@ extension EventRouter: HTTPRequestable {
                 .get
         }
     }
-    
+
     /// 호스트 반환
     var host: String {
         AppEnvironment.kopisBaseURL.host ?? "kopis.or.kr"
     }
-    
+
     /// 포트를 반환, API 통신을 할때는 포트가 따로 필요 없으므로 nil
     var port: Int? { nil }
-    
+
     /// 필수적으로 들어가는 경로 반환
     var path: [String]? { ["openApi","restful","pblprfr"] }
-    
+
     /// API 통신에 필요한 쿼리 반환
     var queryItems: [URLQueryItem]? {
         switch self {

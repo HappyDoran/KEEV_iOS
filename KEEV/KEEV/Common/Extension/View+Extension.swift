@@ -160,4 +160,31 @@ extension View {
             )
         )
     }
+    
+    /// KEEV 앱에서 보여주는 Toast
+    ///
+    /// - Parameters:
+    ///   - toast: toast를 통해 표현하고 싶은 내용을 담습니다.
+    ///   - duration: 이 Toast를 얼만큼의 단위 시간동안 보여줄지 결정합니다.
+    ///
+    /// 사용 예시는 아래와 같습니다.
+    /// ```swift
+    /// VStack {
+    ///     Button("hi") {
+    ///         toast = .init(title: "gogogogo", mainColor: .blue200, subColor: .white)
+    ///     }
+    ///     Text("Hello World")
+    /// }
+    /// .toast(with: $toast, for: .seconds(of: 1))
+    /// ```
+    ///
+    /// - Note: 바인딩된 `Toast`는 뷰가 사라지고 나서 `nil`이 됩니다.
+    /// - Warning: 해당 수정자를 사용하게 되면 뷰 프레임의 최대 높이와 최대 너비 모두 `.infinity`가 됩니다.
+    ///
+    /// - Author: newJunsung
+    func toast(with toast: Binding<Toast?>, for duration: TimeUnit) -> some View {
+        modifier(
+            Toast.Modifier(toast: toast, duration: duration)
+        )
+    }
 }
