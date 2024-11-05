@@ -13,6 +13,8 @@ import Foundation
 ///
 /// - Author: 라움
 struct AppEnvironment {
+    static let diContainer: DIContainer = .init()
+    
     /// KOPIS API Key입니다.
     /// KOPIS_API_KEY에 대한 value는 Secret.xcconfig에 저장되어있습니다.
     static let kopisApiKey = Bundle.main.infoDictionary?["KOPIS_API_KEY"] as? String ?? ""
@@ -20,4 +22,12 @@ struct AppEnvironment {
     /// KOPIS baseURL입니다.
     static let kopisBaseURL: URL = .init(string: "kopis.or.kr")!
     
+    static func setupDependency() {
+        diContainer.register(UIImageCache.init(configuration: .init(countLimit: 0, totalCostLimit: .megabytes(of: 16), cleanTerm: .seconds(of: 0))), for: UIImageCache.self)
+        diContainer.register(TokenKeyChainUtility.init(), for: TokenKeyChainUtility.self)
+        diContainer.register(NetworkUtility(), for: NetworkUtility.self)
+        
+        diContainer.register(AccountService(), for: (any AccountServiceProtocol).self)
+        diContainer.register(EventService(), for: (any EventServiceProtocol).self)
+    }
 }
