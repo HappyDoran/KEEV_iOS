@@ -90,7 +90,7 @@ extension KEEVActionSheet {
                         .transition(.move(edge: .bottom))
                 }
             }
-            .ignoresSafeArea()
+            .ignoresSafeArea(edges: .bottom)
             .animation(.snappy, value: isPresented)
             .onTapGesture {
                 isPresented = false

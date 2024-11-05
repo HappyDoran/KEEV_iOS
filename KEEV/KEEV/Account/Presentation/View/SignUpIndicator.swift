@@ -1,0 +1,75 @@
+//
+//  SignUpIndicator.swift
+//  KEEV
+//
+//  Created by Yune Cho on 10/31/24.
+//
+
+import SwiftUI
+
+/// 회원가입 화면 상단 인디케이터
+///
+/// 회원가입 화면 상단에 위치하며 회원가입 단계와 진행도를 보여주는 인디케이터입니다.
+///
+/// - Author: 라움
+struct SignUpIndicator: View {
+    @Binding var currentPage: SignUpPage
+    @Binding var transitionDirection: Edge
+    
+    @State private var progress: Double = 1.0 / 3
+    
+    var body: some View {
+        VStack {
+            HStack {
+                if currentPage != .complete {
+                    Button {
+                        transitionDirection = .leading
+                        
+                        if currentPage == .email {
+                            // navigationRouter로 로그인 화면으로 돌아가면 됩니다.
+                            // 바로 아래 페이지 전환 코드는 임시로 작성해놓은겁니다.
+                            currentPage = .email
+                        } else if currentPage == .profile {
+                            currentPage = .email
+                        }
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                            .foregroundStyle(.gray300)
+                    }
+                }
+                
+                Spacer()
+                
+                Capsule()
+                    .frame(width: 60, height: 21)
+                    .foregroundStyle(.brand500)
+                    .opacity(0.2)
+                    .overlay {
+                        HStack(spacing: 0) {
+                            Text("\(currentPage.rawValue)")
+                                .foregroundStyle(.brand400)
+                            
+                            Text(" / 3")
+                                .foregroundStyle(.brand500)
+                                .opacity(0.5)
+                        }
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
+                    }
+            }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 16)
+            
+            ProgressView(value: progress)
+                .tint(.brand500)
+                .background(.gray800)
+                .animation(.easeInOut, value: progress)
+        }
+        .onChange(of: currentPage) {
+            progress = Double(currentPage.rawValue) / 3
+        }
+    }
+}
+
+#Preview {
+    SignUpIndicator(currentPage: .constant(.email), transitionDirection: .constant(.leading))
+}

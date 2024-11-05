@@ -25,7 +25,7 @@ class NavigationRouter: ObservableObject {
     /// - Note: 뷰 작업 완료되면 case 추가해줘야 합니다.
     /// - Author: 라움
     enum Route {
-        case dummyScreen
+        case signUpScreen
         case dummyView
     }
     
@@ -43,8 +43,8 @@ class NavigationRouter: ObservableObject {
     @ViewBuilder
     func view(for route: Route) -> some View {
         switch route {
-        case .dummyScreen:
-            DummyScreen()
+        case .signUpScreen:
+            SignUpScreen()
         case .dummyView:
             DummyView()
         }
