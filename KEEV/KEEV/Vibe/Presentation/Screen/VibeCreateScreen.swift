@@ -8,19 +8,18 @@
 import SwiftUI
 
 struct VibeCreateScreen: View {
-    @State private var showingFirst = false
-    @State private var showingSecond = false
-
+    @State private var isPresented = false
+    
     var body: some View {
-        VStack {
-            Text("")
-            Button("공연을 선택해주세요") {
-                showingFirst = true
-            }
+        VStack(spacing: 0) {
+            VibeHeader()
+            EventSelectCell(isPresented: $isPresented).padding(.top, 16).padding(.horizontal, 16)
+            Spacer()
         }
-        .fullScreenCover(isPresented: $showingFirst) {
-            SearchScreen(isPresented: $showingFirst, searchContent: .vibe)
+        .fullScreenCover(isPresented: $isPresented) {
+            SearchScreen(isPresented: $isPresented, searchContent: .vibe)
         }
+        .backgroundForKEEV()
     }
 }
 
