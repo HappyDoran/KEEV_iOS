@@ -24,7 +24,8 @@ struct SearchHeader: View {
     
     var body: some View {
         ZStack {
-            Text("검색").figmaFont(PretendardFont.title(style: .xs)).foregroundColor(.gray100)
+            Text("검색")
+                .figmaFont(PretendardFont.title(style: .xs)).foregroundColor(.gray100)
             
             // MARK: 검색 시트 아래로 내리는 버튼
             HStack {
@@ -32,7 +33,9 @@ struct SearchHeader: View {
                 Button(action: {
                     isPresented.toggle()
                 }) {
-                    Text("취소").figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular))).foregroundColor(.brand500)
+                    Text("취소")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular)))
+                        .foregroundColor(.brand500)
                 }
             }
             .padding(.trailing, 16)

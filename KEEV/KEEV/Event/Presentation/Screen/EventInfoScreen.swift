@@ -12,7 +12,7 @@ import SwiftUI
 /// - Author: Doran
 struct EventInfoScreen: View {
     @StateObject private var eventService = EventService()
-    @State private var events: [ConcertDTO] = []
+    @State private var events: [EventDTO] = []
     @State private var error: String? = nil
     @State private var isLoading: Bool = false
     
@@ -20,9 +20,9 @@ struct EventInfoScreen: View {
         VStack {
             MainHeader()
             ScrollView {
-                thumbnailSection.padding(.top, 16)
-                eventListSection.padding(.top, 48)
-                horizontalScrollSection
+                thumbnailSection.padding(.top, 16).padding(.horizontal, 16)
+                eventListSection.padding(.top, 48).padding(.horizontal, 16)
+                horizontalScrollSection.padding(.leading, 16)
             }
             .backgroundForKEEV()
         }
@@ -40,7 +40,7 @@ extension EventInfoScreen {
             ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
                 EventThumbnailCell(event: event)
             }
-        }.padding(.horizontal, 16)
+        }
     }
     
     // MARK: 이벤트 리스트 뷰
@@ -55,17 +55,17 @@ extension EventInfoScreen {
                     EventCell(event: event)
                 }
             }
-        }.padding(.horizontal, 16)
+        }
     }
     
     // MARK: 이벤트 횡스크롤 썸네일 뷰
     private var horizontalScrollSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                ForEach(events, id: \.self.id) { event in
+                ForEach(events) { event in
                     BigEventThumbnailCell(event: event)
                 }
-            }.padding(.leading, 16)
+            }
         }
     }
 }
@@ -123,5 +123,5 @@ extension EventInfoScreen {
 
 #Preview {
     EventInfoScreen()
-//        .backgroundForKEEV()
+        .backgroundForKEEV()
 }

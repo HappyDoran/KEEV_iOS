@@ -14,9 +14,9 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventCell: View {
-    private let event: ConcertDTO
+    private let event: EventDTO
     
-    init(event: ConcertDTO) {
+    init(event: EventDTO) {
         self.event = event
     }
     
@@ -26,7 +26,7 @@ struct EventCell: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray900)
-                    .frame(width: 64, height:90)
+                    .frame(width: 64, height: 90)
                 
                 AsyncImage(url: URL(string: event.poster)) { image in
                     image
@@ -51,12 +51,16 @@ struct EventCell: View {
                 
                 // MARK: 기간
                 HStack(spacing: 0) {
-                    Text("\(event.startDate)~\(event.endDate)").figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400)
+                    Text("\(event.startDate)~\(event.endDate)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                        .foregroundColor(.gray400)
                     Spacer()
                 }.padding(.top, 8)
                 
                 // MARK: 장소
-                Text(event.place).figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))).foregroundColor(.gray400).padding(.top, 2)
+                Text(event.place)
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                    .foregroundColor(.gray400).padding(.top, 2)
             }
             .frame(width: 241, height: 88)
         }
@@ -64,8 +68,8 @@ struct EventCell: View {
 }
 
 #Preview {
-    @Previewable let eventCellEvent: ConcertDTO =
-    ConcertDTO(id: "1", title: "AAA TOUR BY HYUKOH & \nSUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "올림픽공원 올림픽홀", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png")
+    @Previewable let eventCellEvent: EventDTO =
+    EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & \nSUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "올림픽공원 올림픽홀", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png")
     
     
     EventCell(event: eventCellEvent)

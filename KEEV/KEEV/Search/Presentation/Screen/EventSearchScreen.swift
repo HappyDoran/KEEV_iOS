@@ -14,6 +14,7 @@ import SwiftUI
 /// - Author: Doran
 enum EventSearchStatus {
     case beforeSearch
+    case searching
     case afterSearch
 }
 
@@ -27,6 +28,8 @@ struct EventSearchScreen: View {
     @State private var searchText: String = ""
     @State private var eventSearchStatus: EventSearchStatus = .beforeSearch
     
+    @FocusState private var searchFieldFocus: Bool
+    
     @Binding private var isPresented: Bool
     
     init(isPresented: Binding<Bool>) {
@@ -39,21 +42,47 @@ struct EventSearchScreen: View {
             SearchHeader(isPresented: $isPresented)
             
             // MARK: 검색창
-            SearchField(text: $searchText,searchStatus: $eventSearchStatus)
+            SearchField(text: $searchText,searchStatus: $eventSearchStatus, isFocused: $searchFieldFocus)
+            
             switch eventSearchStatus {
-            case .beforeSearch:
-                
                 // MARK: 검색 결과가 나오기 전의 뷰
-                SearchBefore(text: $searchText, searchStatus: $eventSearchStatus).padding(.horizontal, 16)
-            case .afterSearch:
+            case .beforeSearch:
+                SearchBeforeView(text: $searchText, isFocused: $searchFieldFocus)
+                    .padding(.horizontal, 16)
+                
+                // MARK: 텍스트 필드에 검색을 하는 중인 뷰
+            case .searching:
+                SearchingView()
                 
                 // MARK: 검색 결과가 나온 후의 뷰
-                SearchAfter().padding(.horizontal, 16)
+            case .afterSearch:
+                SearchAfterView()
+                    .padding(.horizontal, 16)
             }
-            
             Spacer()
         }
+        .onChange(of: [searchFieldFocus, searchText.isEmpty]) {
+            eventSearchStatus = searchCase()
+        }
         .backgroundForKEEV()
+    }
+}
+
+extension EventSearchScreen {
+    // MARK: 검색을 하는 과정을 표현한 함수
+    private func searchCase()-> EventSearchStatus {
+        if !searchFieldFocus && searchText.isEmpty {
+            return .beforeSearch
+        }
+        else if searchFieldFocus && searchText.isEmpty {
+            return .beforeSearch
+        }
+        else if searchFieldFocus && !searchText.isEmpty {
+            return .searching
+        }
+        else {
+            return .afterSearch
+        }
     }
 }
 

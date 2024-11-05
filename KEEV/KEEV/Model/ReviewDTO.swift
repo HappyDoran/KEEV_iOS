@@ -16,7 +16,7 @@ struct ReviewDTO: Codable, Identifiable {
     /// 리뷰 고유 ID
     var id : String { concert.id }
     /// 공연 데이터
-    let concert: ConcertDTO
+    let concert: EventDTO
     /// 사용자가 올린 이미지
     let image: [String]
     /// 사용자가 작성한 텍스트

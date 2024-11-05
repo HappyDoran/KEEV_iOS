@@ -14,7 +14,7 @@ import Foundation
 /// - Author: Doran
 class EventXMLParser: NSObject, XMLParserDelegate {
     // MARK: 현재 XML 문서들을 읽을 때 현재 읽고 있는 필드들과 반환할 리스트를 담을 변수 선언
-    private var events: [ConcertDTO] = []
+    private var events: [EventDTO] = []
     private var currentElement = ""
     private var currentID = ""
     private var currentTitle = ""
@@ -29,7 +29,7 @@ class EventXMLParser: NSObject, XMLParserDelegate {
     /// - Returns: 파싱된 공연 정보를 담고 있는 `ConcertDTO` 배열.
     ///
     /// - Author: Doran
-    func parse(_ data: Data) -> [ConcertDTO] {
+    func parse(_ data: Data) -> [EventDTO] {
         let parser = XMLParser(data: data)
         parser.delegate = self
         parser.parse()
@@ -75,17 +75,17 @@ class EventXMLParser: NSObject, XMLParserDelegate {
     /// - Author: Doran
     func parser(_ parser: XMLParser, foundCharacters string: String){
         switch currentElement {
-        case ConcertDTO.CodingKeys.id.rawValue:
+        case EventDTO.CodingKeys.id.rawValue:
             currentID += string
-        case ConcertDTO.CodingKeys.title.rawValue:
+        case EventDTO.CodingKeys.title.rawValue:
             currentTitle += string
-        case ConcertDTO.CodingKeys.startDate.rawValue:
+        case EventDTO.CodingKeys.startDate.rawValue:
             currentStartDate += string
-        case ConcertDTO.CodingKeys.endDate.rawValue:
+        case EventDTO.CodingKeys.endDate.rawValue:
             currentEndDate += string
-        case ConcertDTO.CodingKeys.place.rawValue:
+        case EventDTO.CodingKeys.place.rawValue:
             currentPlace += string
-        case ConcertDTO.CodingKeys.poster.rawValue:
+        case EventDTO.CodingKeys.poster.rawValue:
             currentPoster += string
         default:
             break
@@ -103,7 +103,7 @@ class EventXMLParser: NSObject, XMLParserDelegate {
     /// - Author: Doran
     func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?){
         if elementName == "db" {
-            let event = ConcertDTO(id: currentID, title: currentTitle, startDate: currentStartDate, endDate: currentEndDate, place: currentPlace, poster: currentPoster)
+            let event = EventDTO(id: currentID, title: currentTitle, startDate: currentStartDate, endDate: currentEndDate, place: currentPlace, poster: currentPoster)
             events.append(event)
         }
     }

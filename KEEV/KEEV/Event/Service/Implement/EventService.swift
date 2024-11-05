@@ -28,7 +28,7 @@ class EventService: EventServiceProtocol {
     /// - Returns: 이벤트 목록 [ConcertDTO]
     ///
     /// - Author: Doran
-    func loadEvents(startDate: Date, endDate: Date, page: Int, rows: Int) async throws -> [ConcertDTO] {
+    func loadEvents(startDate: Date, endDate: Date, page: Int, rows: Int) async throws -> [EventDTO] {
         /// getEvent router 생성
         let router = EventRouter.getEvents(
             stdate: startDate,
@@ -54,7 +54,7 @@ class EventService: EventServiceProtocol {
     /// - Returns: 이벤트 목록 [ConcertDTO]
     ///
     /// - Author: Doran
-    func loadEventByKeyword(startDate: Date, endDate: Date, keyword: String, page: Int, rows: Int) async throws -> [ConcertDTO] {
+    func loadEventByKeyword(startDate: Date, endDate: Date, keyword: String, page: Int, rows: Int) async throws -> [EventDTO] {
         let router = EventRouter.getEventByKeyword(
             stdate: startDate,
             eddate: endDate,
@@ -82,7 +82,7 @@ extension EventService {
     /// - Returns: 이벤트 목록 [ConcertDTO]
     ///
     /// - Author: Doran
-    private func loadEventsInternal(router: EventRouter) async throws -> [ConcertDTO] {
+    private func loadEventsInternal(router: EventRouter) async throws -> [EventDTO] {
         let data: Data = try await networkUtility.xmlRequest(router: router)
         let events = xmlParser.parse(data)
         return events

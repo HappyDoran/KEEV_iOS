@@ -19,10 +19,12 @@ import SwiftUI
 struct SearchField: View {
     @Binding private var text: String
     @Binding private var searchStatus: EventSearchStatus
+    private var isFocused: FocusState<Bool>.Binding
     
-    init(text: Binding<String>, searchStatus: Binding<EventSearchStatus>) {
+    init(text: Binding<String>, searchStatus: Binding<EventSearchStatus>, isFocused: FocusState<Bool>.Binding){
         self._text = text
         self._searchStatus = searchStatus
+        self.isFocused = isFocused
     }
     
     var body: some View {
@@ -41,18 +43,12 @@ struct SearchField: View {
                     
                     TextField("", text: $text, prompt: Text("공연 이름 검색하기").foregroundStyle(.gray700))
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
+                        .focused(isFocused)
                         .accentColor(.brand500)
                         .foregroundStyle(.gray100)
                         .keyboardType(.default)
                         .padding(.leading, 14)
-                        .onChange(of: text) { _,_ in
-                            searchStatus = .beforeSearch
-                        }
-                        .onSubmit {
-                            if !text.isEmpty {
-                                searchStatus = .afterSearch
-                            }
-                        }
+
                     
                     if !text.isEmpty {
                         Button(action: {
@@ -75,6 +71,6 @@ struct SearchField: View {
 }
 
 #Preview {
-    SearchField(text: .constant(""), searchStatus: .constant(.beforeSearch))
+    SearchField(text: .constant(""), searchStatus: .constant(.beforeSearch), isFocused:  FocusState<Bool>().projectedValue)
         .backgroundForKEEV()
 }

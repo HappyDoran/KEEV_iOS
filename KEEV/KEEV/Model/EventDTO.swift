@@ -12,7 +12,7 @@ import Foundation
 ///  공연에 대한 데이터를 받을 구조체입니다.
 ///
 /// - Author: Doran
-struct ConcertDTO: Codable, Hashable {
+struct EventDTO: Codable, Hashable, Identifiable {
     /// 공연 고유 ID
     let id: String
     /// 공연 이름
