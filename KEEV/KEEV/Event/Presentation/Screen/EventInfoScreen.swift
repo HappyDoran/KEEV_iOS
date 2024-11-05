@@ -36,8 +36,8 @@ extension EventInfoScreen {
     // MARK: 이벤트 썸네일 뷰
     private var thumbnailSection: some View {
         HStack(spacing: 8) {
-            ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { _, event in
-                EventThumbnailCell(event: event)
+            ForEach(0..<min(events.count, 3), id: \.self) { index in
+                EventThumbnailCell(event: events[index])
             }
         }
     }

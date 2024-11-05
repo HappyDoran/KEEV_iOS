@@ -12,7 +12,6 @@ struct KEEVApp: App {
     var body: some Scene {
         WindowGroup {
             DummyView()
-//            EventInfoScreen()
         }
     }
 }
