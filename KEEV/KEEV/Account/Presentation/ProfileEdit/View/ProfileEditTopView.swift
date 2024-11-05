@@ -15,13 +15,15 @@ struct ProfileEditTopView: View {
             Button {
                 showCloseAlert = true
             } label: {
-                VStack(alignment: .leading) {
+                HStack {
                     Image(systemName: "xmark")
                         .fontWeight(.semibold)
                         .foregroundStyle(.gray100)
+                    
+                    Spacer()
                 }
+                .frame(width: 58, height: 32)
             }
-            .frame(width: 58, height: 32)
             
             Spacer()
             

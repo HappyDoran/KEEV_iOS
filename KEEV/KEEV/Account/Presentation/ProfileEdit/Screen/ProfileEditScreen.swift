@@ -15,8 +15,9 @@ struct ProfileEditScreen: View {
     @State private var originalProfile = UserProfile()
     @State private var newProfile = UserProfile()
     @State private var showProfileImageActionSheet = false
+    @State private var showProfileImageSelectSheet = false
     @State private var showBackgroundActionSheet = false
-    @State private var showImageSelectSheet = false
+    @State private var showBackgroundImageSelectSheet = false
     @State private var showCloseAlert = false
     @State private var disableButton = true
     
@@ -65,26 +66,26 @@ struct ProfileEditScreen: View {
             isPresented: $showProfileImageActionSheet,
             defaults: .setProfileImage(
                 modifyHandler: {
-                    showImageSelectSheet = true
+                    showProfileImageSelectSheet = true
                     showProfileImageActionSheet = false
                 }, deleteHandler: {
                     newProfile.profileImage = nil
                     showProfileImageActionSheet = false
                 }))
-        .fullScreenCover(isPresented: $showImageSelectSheet) {
+        .fullScreenCover(isPresented: $showProfileImageSelectSheet) {
             ImageSelectView(image: $newProfile.profileImage)
         }
         .actionSheetForKEEV(
             isPresented: $showBackgroundActionSheet,
             defaults: .setBackgroundImage(
                 modifyHandler: {
-                    showImageSelectSheet = true
+                    showBackgroundImageSelectSheet = true
                     showBackgroundActionSheet = false
                 }, deleteHandler: {
                     newProfile.backgroundImage = nil
                     showBackgroundActionSheet = false
                 }))
-        .fullScreenCover(isPresented: $showImageSelectSheet) {
+        .fullScreenCover(isPresented: $showBackgroundImageSelectSheet) {
             ImageSelectView(image: $newProfile.backgroundImage)
         }
         .customAlert(

@@ -30,7 +30,7 @@ struct SignUpCompleteView: View {
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                         .foregroundStyle(.gray300)
                     
-                    ProfileImage(profileImage: accountService.profileImage, editable: false)
+                    ProfileImage(profileImage: accountService.profileImage, size: 140, editable: false)
                         .padding(.top, 100)
                         .padding(.bottom, 12)
                     

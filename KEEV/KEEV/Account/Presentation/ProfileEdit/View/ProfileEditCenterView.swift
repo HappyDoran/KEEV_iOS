@@ -20,7 +20,7 @@ struct ProfileEditCenterView: View {
             HStack {
                 Spacer()
                 
-                ProfileImage(profileImage: newProfile.profileImage, editable: true)
+                ProfileImage(profileImage: newProfile.profileImage, size: 140, editable: true, strokeWidth: 4, strokeColor: .gray950)
                     .onTapGesture {
                         showProfileImageActionSheet = true
                     }

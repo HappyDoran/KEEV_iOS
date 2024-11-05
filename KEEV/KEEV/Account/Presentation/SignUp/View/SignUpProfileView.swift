@@ -39,7 +39,7 @@ struct SignUpProfileView: View {
                 HStack {
                     Spacer()
                     
-                    ProfileImage(profileImage: userProfile.profileImage, editable: true)
+                    ProfileImage(profileImage: userProfile.profileImage, size: 140, editable: true)
                         .onTapGesture {
                             showActionSheet = true
                         }
