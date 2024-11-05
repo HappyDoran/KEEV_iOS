@@ -22,11 +22,20 @@ struct AppEnvironment {
     /// KOPIS baseURL입니다.
     static let kopisBaseURL: URL = .init(string: "kopis.or.kr")!
     
+    /// 앱에서 사용하는 유틸리티와 서비스의 인스턴스를 `DIContainer`에 등록합니다.
+    ///
+    /// - Important: 유틸리티를 먼저 regist해주시고 서비스를 나중에 regist해주세요!
+    ///
+    /// - Author: newJunsung
     static func setupDependency() {
+        // 주의!: 서비스와 유틸리티의 순서를 뒤바꾸면 앱이 터질 수 있습니다.
+        
+        // Utility(유틸리티는 해당 구역에 작성해주시면 됩니다.)
         diContainer.register(UIImageCache.init(configuration: .init(countLimit: 0, totalCostLimit: .megabytes(of: 16), cleanTerm: .seconds(of: 0))), for: UIImageCache.self)
         diContainer.register(TokenKeyChainUtility.init(), for: TokenKeyChainUtility.self)
         diContainer.register(NetworkUtility(), for: NetworkUtility.self)
         
+        // Service(서비스는 해당 구역에 작성해주시면 됩니다.)
         diContainer.register(AccountService(), for: (any AccountServiceProtocol).self)
         diContainer.register(EventService(), for: (any EventServiceProtocol).self)
     }
