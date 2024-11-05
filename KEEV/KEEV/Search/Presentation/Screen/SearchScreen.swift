@@ -24,22 +24,28 @@ enum EventSearchStatus {
 ///   - isPresented: 시트가 올라와있는지 아닌지를 판별하는 Bool 타입 변수
 ///
 /// - Author: Doran
-struct EventSearchScreen: View {
+struct SearchScreen: View {
     @State private var searchText: String = ""
     @State private var eventSearchStatus: EventSearchStatus = .beforeSearch
-    
     @FocusState private var searchFieldFocus: Bool
     
     @Binding private var isPresented: Bool
+    var searchContent: SearchContent
     
-    init(isPresented: Binding<Bool>) {
+    init(isPresented: Binding<Bool>, searchContent: SearchContent) {
         self._isPresented = isPresented
+        self.searchContent = searchContent
     }
     
     var body: some View {
         VStack(spacing: 0){
             // MARK: 헤더
-            SearchHeader(isPresented: $isPresented)
+            switch searchContent {
+            case .event:
+                SearchHeader(title: "검색",isPresented: $isPresented)
+            case .vibe:
+                SearchHeader(title: "공연 찾기",isPresented: $isPresented)
+            }
             
             // MARK: 검색창
             SearchField(text: $searchText,searchStatus: $eventSearchStatus, isFocused: $searchFieldFocus)
@@ -47,16 +53,21 @@ struct EventSearchScreen: View {
             switch eventSearchStatus {
                 // MARK: 검색 결과가 나오기 전의 뷰
             case .beforeSearch:
-                SearchBeforeView(text: $searchText, isFocused: $searchFieldFocus)
-                    .padding(.horizontal, 16)
+                switch searchContent {
+                case .event:
+                    SearchBeforeView(text: $searchText, isFocused: $searchFieldFocus)
+                        .padding(.horizontal, 16)
+                case .vibe:
+                    EmptyView()
+                }
                 
                 // MARK: 텍스트 필드에 검색을 하는 중인 뷰
             case .searching:
-                SearchingView()
+                SearchingView(isPresented: $isPresented, searchContent: searchContent)
                 
                 // MARK: 검색 결과가 나온 후의 뷰
             case .afterSearch:
-                SearchAfterView()
+                SearchAfterView(isPresented: $isPresented, searchContent: searchContent)
                     .padding(.horizontal, 16)
             }
             Spacer()
@@ -68,7 +79,7 @@ struct EventSearchScreen: View {
     }
 }
 
-extension EventSearchScreen {
+extension SearchScreen {
     // MARK: 검색을 하는 과정을 표현한 함수
     private func searchCase()-> EventSearchStatus {
         if !searchFieldFocus && searchText.isEmpty {
@@ -87,6 +98,6 @@ extension EventSearchScreen {
 }
 
 #Preview {
-    EventSearchScreen(isPresented: .constant(false))
+    SearchScreen(isPresented: .constant(false), searchContent: .event)
         .backgroundForKEEV()
 }

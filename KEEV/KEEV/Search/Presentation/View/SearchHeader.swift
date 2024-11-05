@@ -16,15 +16,17 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct SearchHeader: View {
+    var title: String
     @Binding private var isPresented: Bool
     
-    init(isPresented: Binding<Bool>) {
+    init(title: String, isPresented: Binding<Bool>) {
+        self.title = title
         self._isPresented = isPresented
     }
     
     var body: some View {
         ZStack {
-            Text("검색")
+            Text(title)
                 .figmaFont(PretendardFont.title(style: .xs)).foregroundColor(.gray100)
             
             // MARK: 검색 시트 아래로 내리는 버튼
@@ -45,6 +47,6 @@ struct SearchHeader: View {
 }
 
 #Preview {
-    SearchHeader(isPresented: .constant(false))
+    SearchHeader(title: "검색", isPresented: .constant(false))
         .backgroundForKEEV()
 }

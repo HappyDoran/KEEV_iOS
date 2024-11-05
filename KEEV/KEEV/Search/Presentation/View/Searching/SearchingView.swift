@@ -11,6 +11,14 @@ struct SearchingView: View {
     @State private var events: [EventDTO] = [
         EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 4", place: "C5", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")]
     
+    @Binding private var isPresented: Bool
+    var searchContent: SearchContent
+    
+    init(isPresented: Binding<Bool>, searchContent: SearchContent) {
+        self._isPresented = isPresented
+        self.searchContent = searchContent
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             searching
@@ -24,7 +32,12 @@ extension SearchingView {
         ScrollView {
             ForEach(events) { event in
                 SearchCell(event: event){
-                    print("EventDetail로 이동")
+                    switch searchContent{
+                    case .event:
+                        print("searchResult 이동")
+                    case .vibe:
+                        isPresented.toggle()
+                    }
                 }
             }
         }.padding(.top, 12)
@@ -32,5 +45,5 @@ extension SearchingView {
 }
 
 #Preview {
-    SearchingView()
+    SearchingView(isPresented: .constant(true), searchContent: .event).backgroundForKEEV()
 }

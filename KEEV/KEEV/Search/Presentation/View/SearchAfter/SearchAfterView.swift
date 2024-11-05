@@ -16,6 +16,14 @@ struct SearchAfterView: View {
     @State private var events: [EventDTO] = [
         EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png")]
     
+    @Binding private var isPresented: Bool
+    var searchContent: SearchContent
+    
+    init(isPresented: Binding<Bool>, searchContent: SearchContent) {
+        self._isPresented = isPresented
+        self.searchContent = searchContent
+    }
+    
     var body: some View {
         VStack(spacing: 0){
             recentSearchHeader
@@ -48,7 +56,12 @@ extension SearchAfterView {
         ScrollView {
             ForEach(events) { event in
                 SearchResultCell(event: event){
-                    print("EventDetail로 이동")
+                    switch searchContent{
+                    case .event:
+                        print("EventDetail 이동")
+                    case .vibe:
+                        isPresented.toggle()
+                    }
                 }
             }
         }
@@ -56,5 +69,5 @@ extension SearchAfterView {
 }
 
 #Preview {
-    SearchAfterView().backgroundForKEEV()
+    SearchAfterView(isPresented: .constant(true), searchContent: .event).backgroundForKEEV()
 }

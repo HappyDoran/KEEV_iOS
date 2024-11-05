@@ -17,9 +17,6 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct SearchBeforeView: View {
-    @State private var events: [EventDTO] = [
-        EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 4", place: "C5", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")]
-    
     @State private var recentKeywords: [RecentSearch] = [
         RecentSearch(term: "세상에서 제일 재밌는 공연", date: Date())
     ]

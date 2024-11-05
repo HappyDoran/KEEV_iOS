@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum SearchContent {
+    case event
+    case vibe
+}
+
 /// 이벤트 정보에 표시될 스크린
 ///
 /// - Author: Doran
