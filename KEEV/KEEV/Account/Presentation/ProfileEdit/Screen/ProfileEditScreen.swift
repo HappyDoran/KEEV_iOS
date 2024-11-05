@@ -47,6 +47,7 @@ struct ProfileEditScreen: View {
                     title: "수정 완료",
                     action: {
                         accountService.setUserProfile(newProfile)
+                        dismiss()
                     },
                     style: .maxWidth,
                     disabled: disableButton
@@ -59,7 +60,6 @@ struct ProfileEditScreen: View {
         .onAppear {
             originalProfile = accountService.userProfile
             newProfile = originalProfile
-            print(disableButton)
         }
         .backgroundForKEEV()
         .actionSheetForKEEV(
@@ -94,6 +94,7 @@ struct ProfileEditScreen: View {
             message: "",
             closeText: "아니요",
             closeAction: {
+                accountService.setUserProfile(originalProfile)
                 dismiss()
             },
             someText: "예",
