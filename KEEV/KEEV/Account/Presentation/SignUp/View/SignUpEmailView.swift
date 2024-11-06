@@ -42,21 +42,10 @@ struct SignUpEmailView: View {
                 .submitLabel(.done)
                 .textInputAutocapitalization(.never)
                 .onChange(of: userProfile.email, {
-                    do {
-                        accountService.setUserProfile(userProfile)
-                        try accountService.checkEmailValidity()
-                        errorMessage = nil
-                        disableButton = false
-                    } catch let error as AccountError {
-                        errorMessage = error.rawValue
-                        disableButton = true
-                    } catch {
-                        errorMessage = error.localizedDescription
-                        disableButton = true
-                    }
+                    validityTest()
                 })
                 .padding(.top, 24)
-                .padding(.bottom, 12)
+                .padding(.bottom, 8)
                 
                 if let errorMessage {
                     Text(errorMessage)
@@ -83,6 +72,23 @@ struct SignUpEmailView: View {
             .padding(.top, 12)
             .padding(.horizontal, 16)
             .padding(.bottom, 42)
+        }
+    }
+}
+
+extension SignUpEmailView {
+    private func validityTest() {
+        do {
+            accountService.setUserProfile(userProfile)
+            try accountService.checkEmailValidity()
+            errorMessage = nil
+            disableButton = false
+        } catch let error as AccountError {
+            errorMessage = error.rawValue
+            disableButton = true
+        } catch {
+            errorMessage = error.localizedDescription
+            disableButton = true
         }
     }
 }

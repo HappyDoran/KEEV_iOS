@@ -21,7 +21,7 @@ struct ProfileEditCenterView: View {
     @Binding var showProfileImageActionSheet: Bool
     @Binding var disableButton: Bool
     
-    @State private var errorMessage: String? = nil
+    @State private var errorMessage = ""
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -49,29 +49,14 @@ struct ProfileEditCenterView: View {
             )
             .submitLabel(.done)
             .onChange(of: newProfile.nickname, {
-                do {
-                    accountService.setUserProfile(newProfile)
-                    try accountService.checkNicknameValidity()
-                    errorMessage = nil
-                    disableButton = false
-                } catch let error as AccountError {
-                    errorMessage = error.rawValue
-                    disableButton = true
-                } catch {
-                    errorMessage = error.localizedDescription
-                    disableButton = true
-                }
+                validityTest()
             })
             
-            if let errorMessage {
-                if errorMessage != "" {
-                    Text(errorMessage)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                        .foregroundStyle(.red500)
-                        .padding(.horizontal, 20)
-                        .padding(.top, 12)
-                }
-            }
+            Text(errorMessage)
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
+                .foregroundStyle(.red500)
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
             
             Text("한 줄 소개")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
@@ -85,6 +70,23 @@ struct ProfileEditCenterView: View {
                 maxLength: 20
             )
             .submitLabel(.done)
+        }
+    }
+}
+
+extension ProfileEditCenterView {
+    private func validityTest() {
+        do {
+            accountService.setUserProfile(newProfile)
+            try accountService.checkNicknameValidity()
+            errorMessage = ""
+            disableButton = false
+        } catch let error as AccountError {
+            errorMessage = error.rawValue
+            disableButton = true
+        } catch {
+            errorMessage = error.localizedDescription
+            disableButton = true
         }
     }
 }
