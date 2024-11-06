@@ -66,7 +66,7 @@ struct PhotoPickerView: View {
                                         deleteImage(at: index)
                                     }) {
                                         Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(.gray.opacity(0.7))
+                                            .foregroundColor(.white.opacity(0.8))
                                             .font(.title)
                                     }
                                         .padding(8),

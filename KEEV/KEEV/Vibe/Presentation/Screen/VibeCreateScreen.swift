@@ -21,6 +21,8 @@ struct VibeCreateScreen: View {
     @State private var selectedImages: [UIImage] = []
     private let maxSelectedCount: Int = 5
     
+    @State private var comment: String = ""
+    
     
     var body: some View {
         VStack(spacing: 0) {
@@ -40,6 +42,8 @@ struct VibeCreateScreen: View {
                 photoPickerSection
                 
                 Rectangle().fill(Color.gray800).frame(height: 1)
+                
+                commentSection
             }
             else {
                 EventSelectCell(isPresented: $isPresented)
@@ -53,6 +57,7 @@ struct VibeCreateScreen: View {
         .fullScreenCover(isPresented: $isPresented) {
             SearchScreen(selectedEvent: $selectedEvent, searchContent: .vibe)
         }
+        .edgesIgnoringSafeArea(.bottom)
         .backgroundForKEEV()
     }
 }
@@ -71,6 +76,14 @@ extension VibeCreateScreen {
             .frame(maxWidth: .infinity)
             .background(Color.gray900)
     }
+    
+    private var commentSection: some View {
+        VibeCommentCell(comment: $comment)
+            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.gray900)
+    }
+    
 }
 
 #Preview {
