@@ -29,7 +29,7 @@ struct SignUpProfileView: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text("프로필을 설정해주세요")
                     .figmaFont(PretendardFont.title(style: .lg))
-                    .foregroundStyle(.gray100)
+                    .foregroundStyle(.gray50)
                     .padding(.bottom, 12)
                 
                 Text("닉네임과 프로필 이미지는 프로필탭에서 변경이 가능합니다")

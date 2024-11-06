@@ -36,7 +36,7 @@ struct SignUpCompleteView: View {
                     
                     Text(accountService.nickname)
                         .figmaFont(PretendardFont.title(style: .sm))
-                        .foregroundStyle(.gray100)
+                        .foregroundStyle(.gray50)
                         .padding(.bottom, 4)
                     
                     Text(accountService.email)

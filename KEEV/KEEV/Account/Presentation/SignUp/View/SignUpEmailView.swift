@@ -32,7 +32,7 @@ struct SignUpEmailView: View {
                 
                 Text("이메일을 알려주세요")
                     .figmaFont(PretendardFont.title(style: .lg))
-                    .foregroundStyle(.gray100)
+                    .foregroundStyle(.gray50)
                 
                 SingleLineTextField(
                     placeholder: "keev@email.com",
