@@ -18,7 +18,13 @@ struct CommentSheetView: View {
         ZStack {
             Color.gray800
                 .ignoresSafeArea(.all, edges: .all)
-            CommentHeader()
+            VStack(spacing: 0){
+                CommentHeader()
+                    .padding(.top, 12)
+                ScrollView {
+                    CommentSheetBody(comment: $comment)
+                }
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ struct VibeCommentCell: View {
         }
         .sheet(isPresented: $isShownSheet){
             CommentSheetView(comment: $comment)
+                .presentationDragIndicator(.visible)
         }
     }
 }
