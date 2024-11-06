@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct VibeCommentCell: View {
+    @State var isShownSheet = false
     @Binding private var comment: String
     
     init(comment: Binding<String>) {
@@ -17,12 +18,17 @@ struct VibeCommentCell: View {
     var body: some View {
         VStack(spacing: 0){
             commentHeader
-            Button(action: {}){
+            Button(action: {
+                isShownSheet.toggle()
+            }){
                 commentBody
                     .padding(.top, 12)
                     .frame(minHeight: 158)
                     .fixedSize(horizontal: false, vertical: true)
             }
+        }
+        .sheet(isPresented: $isShownSheet){
+            CommentSheetView(comment: $comment)
         }
     }
 }
