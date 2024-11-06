@@ -50,73 +50,90 @@ import SwiftUI
 ///
 /// - Note: 제일 바깥쪽 컨테이너에 motifier로 사용해야 합니다.
 ///
-/// - Author: Doran
+/// - Author: Doran, 라움
 struct CustomAlertViewModifier: ViewModifier {
     @Binding var isPresented: Bool
     private let title: String
     private let message: String
-    private let closeText: String
-    private let closeAction: (() -> Void)
+    private let firstButtonText: String
+    private let firstButtonStyle: AlertButtonStyle
+    private let firstButtonAction: (() -> Void)
+    private let secondButtonText: String?
+    private let secondButtonStyle: AlertButtonStyle?
+    private let secondButtonAction: (() -> Void)?
     
-    private let someText: String?
-    private let someAction: (() -> Void)?
-
-    init(isPresented: Binding<Bool>, title: String, message: String, closeText: String, closeAction: @escaping () -> Void, someText: String? = nil, someAction: (() -> Void)? = nil) {
+    init(isPresented: Binding<Bool>, title: String = "", message: String = "", firstButtonText: String, firstButtonStyle: AlertButtonStyle, firstButtonAction: @escaping () -> Void, secondButtonText: String? = nil, secondButtonStyle: AlertButtonStyle? = nil, secondButtonAction: (() -> Void)? = nil) {
         self._isPresented = isPresented
         self.title = title
         self.message = message
-        self.closeText = closeText
-        self.closeAction = closeAction
-        self.someText = someText
-        self.someAction = someAction
+        self.firstButtonText = firstButtonText
+        self.firstButtonStyle = firstButtonStyle
+        self.firstButtonAction = firstButtonAction
+        self.secondButtonText = secondButtonText
+        self.secondButtonStyle = secondButtonStyle
+        self.secondButtonAction = secondButtonAction
     }
 
     func body(content: Content) -> some View {
         ZStack {
             content
+            
             if isPresented {
-                Color.black.opacity(0.7)
+                Color.black
+                    .opacity(0.7)
                     .edgesIgnoringSafeArea(.all)
+                    .onTapGesture {
+                        isPresented = false
+                    }
                 
-                // brandColor500 - black
-                // grayColor300 - orange
-                // grayColor800 - pink
                 VStack(spacing: 0) {
-                    Text(title)
-                        .figmaFont(PretendardFont.title(style: .xs)).foregroundColor(.black)
-                        .padding(.top, 20)
+                    if !title.isEmpty {
+                        Text(title)
+                            .figmaFont(PretendardFont.title(style: .xs))
+                            .foregroundColor(.gray100)
+                    }
                     
-                    Text(message)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium))).foregroundColor(.orange)
-                        .multilineTextAlignment(.center)
-                        .lineSpacing(2)
-                        .padding(.top, 12)
+                    if !message.isEmpty {
+                        Text(message)
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                            .foregroundColor(.gray300)
+                            .multilineTextAlignment(.center)
+                            .lineSpacing(2)
+                            .padding(.top, title.isEmpty ? 0 : 12)
+                    }
                     
                     HStack(spacing: 8) {
-                        CommonButton(title: closeText,
-                                     action: {
-                            closeAction()
-                            isPresented.toggle()
-                        }, style: .alert(isActive: false))
-                        
-                        if let someText = someText, let someAction = someAction {
-                            CommonButton(title: someText,
-                                         action: {
-                                someAction()
+                        CommonButton(
+                            title: firstButtonText,
+                            action: {
+                                firstButtonAction()
                                 isPresented.toggle()
-                            }, style: .alert(isActive: true))
+                            },
+                            style: .alert(type: firstButtonStyle)
+                        )
+                        
+                        if let secondButtonText = secondButtonText, let secondButtonStyle = secondButtonStyle, let secondButtonAction = secondButtonAction {
+                            CommonButton(
+                                title: secondButtonText,
+                                action: {
+                                    secondButtonAction()
+                                    isPresented.toggle()
+                                },
+                                style: .alert(type: secondButtonStyle)
+                            )
                         }
                     }
-                    .padding(.top, 20)
-                    
-                    Spacer()
+                    .padding(.top, 16)
                 }
-                .padding(.horizontal, 20)
-                .frame(width: 310, height: 189)
-                .background(Color.pink)
+                .padding(.all, 20)
+                .frame(width: 310)
+                .background(Color.gray800)
                 .cornerRadius(16)
                 .zIndex(1)
+                .transition(.scale)
             }
         }
+        .animation(.snappy(duration: 0.3), value: isPresented)
+        .sensoryFeedback(.warning, trigger: isPresented)
     }
 }

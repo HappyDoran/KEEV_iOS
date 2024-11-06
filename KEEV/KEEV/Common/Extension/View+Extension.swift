@@ -80,16 +80,18 @@ extension View {
     ///
     /// - Returns: Custom된 alert 뷰
     ///
-    /// - Author: Doran
-    func customAlert(isPresented: Binding<Bool>, title: String, message: String, closeText: String, closeAction: @escaping () -> Void, someText: String? = nil, someAction: (() -> Void)? = nil) -> some View {
+    /// - Author: Doran, 라움
+    func customAlert(isPresented: Binding<Bool>, title: String = "", message: String = "", firstButtonText: String, firstButtonStyle: AlertButtonStyle, firstButtonAction: @escaping () -> Void, secondButtonText: String? = nil, secondButtonStyle: AlertButtonStyle? = nil, secondButtonAction: (() -> Void)? = nil) -> some View {
         modifier(CustomAlertViewModifier(
             isPresented: isPresented,
             title: title,
             message: message,
-            closeText: closeText,
-            closeAction: closeAction,
-            someText: someText,
-            someAction: someAction
+            firstButtonText: firstButtonText,
+            firstButtonStyle: firstButtonStyle,
+            firstButtonAction: firstButtonAction,
+            secondButtonText: secondButtonText,
+            secondButtonStyle: secondButtonStyle,
+            secondButtonAction: secondButtonAction
         ))
     }
     
