@@ -20,13 +20,13 @@ import SwiftUI
 ///  }.customAlert(isPresented: $showAlert,
 ///                title: "잠깐!",
 ///                message: "공연을 변경하면 작성하던 내용이 사라집니다.\n다른 공연을 선택하시겠어요?",
-///                isPresented: $showAlert,
-///                closeText: "취소",
-///                closeAction: {print("취소")}
+///                firstButtonText: "확인",
+///                firstButtonStyle: .active,
+///                firstButtonAction: {print("확인")}
 ///  )
 /// ```
 ///
-/// `someText`와 `someAction`의 경우에는 옵셔널 타입이기 때문에 모달에서 이루어지는 특별한 액션이 있는 경우 추가로 넣어서 사용하면 됩니다.
+/// `secondButtonText`, `secondButtonStyle`과 `secondButtonAction`의 경우에는 옵셔널 타입이기 때문에 모달에서 이루어지는 특별한 액션이 있는 경우 추가로 넣어서 사용하면 됩니다.
 ///
 /// 사용 예시는 아래와 같습니다.
 /// ```swift
@@ -40,11 +40,12 @@ import SwiftUI
 ///  }.customAlert(isPresented: $showAlert,
 ///                title: "잠깐!",
 ///                message: "공연을 변경하면 작성하던 내용이 사라집니다.\n다른 공연을 선택하시겠어요?",
-///                isPresented: $showAlert,
-///                closeText: "취소",
-///                closeAction: {print("취소")},
-///                someText: "공연 변경",
-///                someAction: {print("공연 변경")}
+///                firstButtonText: "취소",
+///                firstButtonStyle: .normal,
+///                firstButtonAction: {print("취소")},
+///                secondButtonText: "공연 변경",
+///                secondButtonStyle: .active,
+///                secondAction: {print("공연 변경")}
 ///  )
 /// ```
 ///

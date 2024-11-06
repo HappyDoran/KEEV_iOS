@@ -29,13 +29,15 @@ extension View {
     /// 커스텀 경고창을 표시하는 ViewModifier를 적용하는 함수
     ///
     /// - Parameters:
+    ///   - isPresented: 알림의 표시 여부를 제어하는 바인딩 변수
     ///   - title: 알림의 제목
     ///   - message: 알림의 메시지
-    ///   - isPresented: 알림의 표시 여부를 제어하는 바인딩 변수
-    ///   - leftButtonText: 왼쪽 버튼의 텍스트
-    ///   - rightButtonText: 오른쪽 버튼의 텍스트
-    ///   - leftAction: 왼쪽 버튼 클릭 시 실행될 액션
-    ///   - rightAction: 오른쪽 버튼 클릭 시 실행될 액션
+    ///   - firstButtonText: 왼쪽 버튼의 텍스트
+    ///   - firstButtonStyle: 왼쪽 버튼의 스타일
+    ///   - firstButtonAction: 왼쪽 버튼 클릭 시 실행될 액션
+    ///   - secondButtonText: 오른쪽 버튼의 텍스트
+    ///   - secondButtonStyle: 오른쪽 버튼의 스타일
+    ///   - secondAction: 오른쪽 버튼 클릭 시 실행될 액션
     ///
     /// customAlert를 사용하여 사용자 지정 경고창을 만듭니다.
     /// 기본적인 사용 예시는 아래와 같습니다.
@@ -50,13 +52,13 @@ extension View {
     ///  }.customAlert(isPresented: $showAlert,
     ///                title: "잠깐!",
     ///                message: "공연을 변경하면 작성하던 내용이 사라집니다.\n다른 공연을 선택하시겠어요?",
-    ///                isPresented: $showAlert,
-    ///                closeText: "취소",
-    ///                closeAction: {print("취소")}
+    ///                firstButtonText: "확인",
+    ///                firstButtonStyle: .active,
+    ///                firstButtonAction: {print("확인")}
     ///  )
     /// ```
     ///
-    /// `someText`와 `someAction`의 경우에는 옵셔널 타입이기 때문에 모달에서 이루어지는 특별한 액션이 있는 경우 추가로 넣어서 사용하면 됩니다.
+    /// `secondButtonText`, `secondButtonStyle`과 `secondButtonAction`의 경우에는 옵셔널 타입이기 때문에 모달에서 이루어지는 특별한 액션이 있는 경우 추가로 넣어서 사용하면 됩니다.
     ///
     /// 사용 예시는 아래와 같습니다.
     /// ```swift
@@ -70,11 +72,12 @@ extension View {
     ///  }.customAlert(isPresented: $showAlert,
     ///                title: "잠깐!",
     ///                message: "공연을 변경하면 작성하던 내용이 사라집니다.\n다른 공연을 선택하시겠어요?",
-    ///                isPresented: $showAlert,
-    ///                closeText: "취소",
-    ///                closeAction: {print("취소")},
-    ///                someText: "공연 변경",
-    ///                someAction: {print("공연 변경")}
+    ///                firstButtonText: "취소",
+    ///                firstButtonStyle: .normal,
+    ///                firstButtonAction: {print("취소")},
+    ///                secondButtonText: "공연 변경",
+    ///                secondButtonStyle: .active,
+    ///                secondAction: {print("공연 변경")}
     ///  )
     /// ```
     ///

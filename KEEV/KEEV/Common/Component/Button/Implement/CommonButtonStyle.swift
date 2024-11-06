@@ -9,7 +9,7 @@ import SwiftUI
 
 /// 프로젝트에서 전반적으로 사용되는 버튼들을 정의하기 위한 열거형
 ///
-/// `alert`의 경우에는 `isActive(어떠한 액션 발생과 취소의 구분)`  라는 bool타입 상수를 통해서 backgroundColor 상태가 달라집니다.
+/// `alert`의 경우에는 `type(알럿 버튼 타입)`이라는 AlertButtonStyle 타입 상수를 통해서 backgroundColor 상태가 달라집니다.
 ///
 /// - Author: Doran
 enum CommonButtonStyle {
