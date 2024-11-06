@@ -8,6 +8,12 @@
 import SwiftUI
 
 struct VibeRatingCell: View {
+    @Binding private var rating: Double
+    
+    init(rating: Binding<Double>) {
+        self._rating = rating
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             Text("공연의 만족도를 선택해주세요")
@@ -15,7 +21,7 @@ struct VibeRatingCell: View {
                 .foregroundColor(.gray50)
             
             RateSettingView(
-                rating: .constant(3.5),
+                rating: $rating,
                 maxRating: 5,
                 spacing: 12
             ) { _, _ in
@@ -24,12 +30,9 @@ struct VibeRatingCell: View {
             .frame(height: 48)
             .padding(.top, 8)
         }
-        .frame(height: 141)
-        .frame(maxWidth: .infinity)
-        .background(Color.gray900)
     }
 }
 
 #Preview {
-    VibeRatingCell().backgroundForKEEV()
+    VibeRatingCell(rating: .constant(3.5)).backgroundForKEEV()
 }
