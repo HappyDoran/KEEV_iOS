@@ -8,14 +8,15 @@
 import SwiftUI
 
 struct SearchingView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var events: [EventDTO] = [
         EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 4", place: "C5", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")]
     
-    @Binding private var isPresented: Bool
+    @Binding private var selectedEvent: EventDTO?
     var searchContent: SearchContent
     
-    init(isPresented: Binding<Bool>, searchContent: SearchContent) {
-        self._isPresented = isPresented
+    init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent) {
+        self._selectedEvent = selectedEvent
         self.searchContent = searchContent
     }
     
@@ -36,7 +37,8 @@ extension SearchingView {
                     case .event:
                         print("searchResult 이동")
                     case .vibe:
-                        isPresented.toggle()
+                        selectedEvent = event
+                        dismiss()
                     }
                 }
             }
@@ -45,5 +47,5 @@ extension SearchingView {
 }
 
 #Preview {
-    SearchingView(isPresented: .constant(true), searchContent: .event).backgroundForKEEV()
+    SearchingView(searchContent: .event).backgroundForKEEV()
 }

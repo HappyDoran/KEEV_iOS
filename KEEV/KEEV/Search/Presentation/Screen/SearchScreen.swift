@@ -29,11 +29,11 @@ struct SearchScreen: View {
     @State private var eventSearchStatus: EventSearchStatus = .beforeSearch
     @FocusState private var searchFieldFocus: Bool
     
-    @Binding private var isPresented: Bool
+    @Binding private var selectedEvent: EventDTO?
     var searchContent: SearchContent
     
-    init(isPresented: Binding<Bool>, searchContent: SearchContent) {
-        self._isPresented = isPresented
+    init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent) {
+        self._selectedEvent = selectedEvent
         self.searchContent = searchContent
     }
     
@@ -42,9 +42,9 @@ struct SearchScreen: View {
             // MARK: 헤더
             switch searchContent {
             case .event:
-                SearchHeader(title: "검색",isPresented: $isPresented)
+                SearchHeader(title: "검색")
             case .vibe:
-                SearchHeader(title: "공연 찾기",isPresented: $isPresented)
+                SearchHeader(title: "공연 찾기")
             }
             
             // MARK: 검색창
@@ -63,11 +63,11 @@ struct SearchScreen: View {
                 
                 // MARK: 텍스트 필드에 검색을 하는 중인 뷰
             case .searching:
-                SearchingView(isPresented: $isPresented, searchContent: searchContent)
+                SearchingView(selectedEvent: $selectedEvent, searchContent: searchContent)
                 
                 // MARK: 검색 결과가 나온 후의 뷰
             case .afterSearch:
-                SearchAfterView(isPresented: $isPresented, searchContent: searchContent)
+                SearchAfterView(selectedEvent: $selectedEvent, searchContent: searchContent)
                     .padding(.horizontal, 16)
             }
             Spacer()
@@ -98,6 +98,6 @@ extension SearchScreen {
 }
 
 #Preview {
-    SearchScreen(isPresented: .constant(false), searchContent: .event)
+    SearchScreen(searchContent: .event)
         .backgroundForKEEV()
 }

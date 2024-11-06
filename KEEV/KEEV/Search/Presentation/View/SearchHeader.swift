@@ -16,12 +16,11 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct SearchHeader: View {
+    @Environment(\.dismiss) private var dismiss
     var title: String
-    @Binding private var isPresented: Bool
     
-    init(title: String, isPresented: Binding<Bool>) {
+    init(title: String) {
         self.title = title
-        self._isPresented = isPresented
     }
     
     var body: some View {
@@ -33,7 +32,7 @@ struct SearchHeader: View {
             HStack {
                 Spacer()
                 Button(action: {
-                    isPresented.toggle()
+                    dismiss()
                 }) {
                     Text("취소")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular)))
@@ -47,6 +46,6 @@ struct SearchHeader: View {
 }
 
 #Preview {
-    SearchHeader(title: "검색", isPresented: .constant(false))
+    SearchHeader(title: "검색")
         .backgroundForKEEV()
 }

@@ -138,5 +138,3 @@ struct PhotoPickerView_Previews: PreviewProvider {
             .padding()
     }
 }
-
-
