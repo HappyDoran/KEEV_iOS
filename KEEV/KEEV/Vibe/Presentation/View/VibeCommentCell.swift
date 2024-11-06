@@ -17,11 +17,12 @@ struct VibeCommentCell: View {
     var body: some View {
         VStack(spacing: 0){
             commentHeader
-            
-            commentBody
-                .padding(.top, 12)
-                .frame(minHeight: 158)
-                .fixedSize(horizontal: false, vertical: true)
+            Button(action: {}){
+                commentBody
+                    .padding(.top, 12)
+                    .frame(minHeight: 158)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
         }
     }
 }
@@ -47,7 +48,6 @@ extension VibeCommentCell {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
                 .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
         }
-        
     }
 }
 

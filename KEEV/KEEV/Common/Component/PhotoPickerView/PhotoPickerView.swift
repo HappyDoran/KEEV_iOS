@@ -67,7 +67,7 @@ struct PhotoPickerView: View {
                                     }) {
                                         Image(systemName: "xmark.circle.fill")
                                             .foregroundColor(.white.opacity(0.8))
-                                            .font(.title)
+                                            .frame(width: 20, height: 20)
                                     }
                                         .padding(8),
                                     alignment: .topTrailing

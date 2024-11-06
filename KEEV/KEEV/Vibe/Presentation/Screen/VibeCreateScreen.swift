@@ -12,8 +12,8 @@ struct VibeCreateScreen: View {
     @State private var isPresented = false
     
     // MARK: 이벤트 정보, 선택한 사진, 점수
-    @State private var selectedEvent: EventDTO? = EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png")
-//    @State private var selectedEvent: EventDTO? = nil
+//    @State private var selectedEvent: EventDTO? = EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png")
+    @State private var selectedEvent: EventDTO? = nil
     
     @State private var rating: Double = 0
     
