@@ -28,7 +28,7 @@ struct ProfileEditCenterView: View {
             HStack {
                 Spacer()
                 
-                ProfileImage(profileImage: newProfile.profileImage, size: 140, editable: true, strokeWidth: 4, strokeColor: .gray950)
+                ProfileImage(profileImage: newProfile.profileImage, size: 128, editable: true, strokeWidth: 4, strokeColor: .gray950)
                     .onTapGesture {
                         showProfileImageActionSheet = true
                     }
@@ -45,18 +45,13 @@ struct ProfileEditCenterView: View {
             SingleLineTextField(
                 placeholder: "닉네임",
                 text: $newProfile.nickname,
-                maxLength: 14
+                maxLength: 14,
+                errorMessage: $errorMessage
             )
             .submitLabel(.done)
             .onChange(of: newProfile.nickname, {
                 validityTest()
             })
-            
-            Text(errorMessage)
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                .foregroundStyle(.red500)
-                .padding(.horizontal, 20)
-                .padding(.top, 8)
             
             Text("한 줄 소개")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))

@@ -21,7 +21,7 @@ struct SignUpProfileView: View {
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
     
-    @State private var errorMessage: String? = nil
+    @State private var errorMessage = ""
     @State private var disableButton = true
     
     var body: some View {
@@ -39,32 +39,27 @@ struct SignUpProfileView: View {
                 HStack {
                     Spacer()
                     
-                    ProfileImage(profileImage: userProfile.profileImage, size: 140, editable: true)
+                    ProfileImage(profileImage: userProfile.profileImage, size: 128, editable: true)
                         .onTapGesture {
                             showActionSheet = true
                         }
                     
                     Spacer()
                 }
-                .padding(.vertical, 48)
+                .padding(.top, 32)
+                .padding(.bottom, 24)
                 
                 SingleLineTextField(
                     placeholder: "닉네임",
                     text: $userProfile.nickname,
-                    maxLength: 14
+                    maxLength: 14,
+                    errorMessage: $errorMessage
                 )
                 .submitLabel(.done)
                 .onChange(of: userProfile.nickname, {
                     validityTest()
                 })
                 .padding(.bottom, 8)
-                
-                if let errorMessage {
-                    Text(errorMessage)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                        .foregroundStyle(.red500)
-                        .padding(.horizontal, 20)
-                }
             }
             .padding(.top, 40)
             .padding(.horizontal, 24)
@@ -95,7 +90,7 @@ extension SignUpProfileView {
         do {
             accountService.setUserProfile(userProfile)
             try accountService.checkNicknameValidity()
-            errorMessage = nil
+            errorMessage = ""
             disableButton = false
         } catch let error as AccountError {
             errorMessage = error.rawValue

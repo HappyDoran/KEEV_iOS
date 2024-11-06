@@ -20,7 +20,7 @@ struct SignUpEmailView: View {
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
     
-    @State private var errorMessage: String? = nil
+    @State private var errorMessage = ""
     @State private var disableButton = true
     
     var body: some View {
@@ -37,7 +37,8 @@ struct SignUpEmailView: View {
                 SingleLineTextField(
                     placeholder: "keev@email.com",
                     text: $userProfile.email,
-                    keyboardType: .emailAddress
+                    keyboardType: .emailAddress,
+                    errorMessage: $errorMessage
                 )
                 .submitLabel(.done)
                 .textInputAutocapitalization(.never)
@@ -46,13 +47,6 @@ struct SignUpEmailView: View {
                 })
                 .padding(.top, 24)
                 .padding(.bottom, 8)
-                
-                if let errorMessage {
-                    Text(errorMessage)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                        .foregroundStyle(.red500)
-                        .padding(.horizontal, 20)
-                }
             }
             .padding(.top, 40)
             .padding(.horizontal, 24)
@@ -81,7 +75,7 @@ extension SignUpEmailView {
         do {
             accountService.setUserProfile(userProfile)
             try accountService.checkEmailValidity()
-            errorMessage = nil
+            errorMessage = ""
             disableButton = false
         } catch let error as AccountError {
             errorMessage = error.rawValue

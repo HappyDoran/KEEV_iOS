@@ -38,7 +38,7 @@ struct ProfileEditScreen: View {
                 ProfileEditTopView(showCloseAlert: $showCloseAlert)
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
-                    .padding(.bottom, 16)
+                    .padding(.bottom, 36)
                 
                 ProfileEditCenterView(
                     accountService: accountService,
