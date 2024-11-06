@@ -38,8 +38,8 @@ struct ProfileImage: View {
             if profileImage != nil {
                 Image(uiImage: profileImage!)
                     .resizable()
+                    .scaledToFill()
                     .frame(width: size, height: size)
-                    .scaledToFit()
                     .clipShape(Circle())
                     .overlay {
                         if let strokeWidth, let strokeColor {

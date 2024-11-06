@@ -38,7 +38,7 @@ struct ProfileEditCenterView: View {
             
             Text("닉네임")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
-                .foregroundStyle(.gray500)
+                .foregroundStyle(.gray300)
                 .padding(.top, 24)
                 .padding(.bottom, 12)
             
@@ -75,7 +75,7 @@ struct ProfileEditCenterView: View {
             
             Text("한 줄 소개")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
-                .foregroundStyle(.gray500)
+                .foregroundStyle(.gray300)
                 .padding(.top, 24)
                 .padding(.bottom, 12)
             

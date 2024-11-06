@@ -27,12 +27,20 @@ struct ProfileEditBackgroundView: View {
                     .scaledToFill()
                     .frame(height: 202)
                     .clipped()
+                    .overlay(content: {
+                        Color.black
+                            .opacity(0.2)
+                    })
                     .onTapGesture {
                         showBackgroundActionSheet = true
                     }
             } else {
                 Color.gray800
                     .frame(height: 202)
+                    .overlay(content: {
+                        Color.black
+                            .opacity(0.2)
+                    })
                     .onTapGesture {
                         showBackgroundActionSheet = true
                     }

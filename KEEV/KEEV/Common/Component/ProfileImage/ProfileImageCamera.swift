@@ -23,12 +23,12 @@ struct ProfileImageCamera: View {
     
     var body: some View {
         Circle()
-            .frame(width: size * 0.2, height: size * 0.2)
+            .frame(width: size * 0.24, height: size * 0.24)
             .foregroundColor(.brand500)
             .overlay{
                 Image(systemName: "camera.fill")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall3, bodyWeight: .medium)))
-                    .foregroundColor(.white)
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .medium)))
+                    .foregroundColor(.gray50)
             }
     }
 }

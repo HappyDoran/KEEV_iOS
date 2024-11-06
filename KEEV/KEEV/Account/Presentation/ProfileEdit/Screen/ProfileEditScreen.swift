@@ -62,6 +62,7 @@ struct ProfileEditScreen: View {
                 .padding(.horizontal, 16)
                 .padding(.bottom, 42)
             }
+            .ignoresSafeArea(.keyboard)
         }
         .onAppear {
             originalProfile = accountService.userProfile
