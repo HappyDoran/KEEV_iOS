@@ -26,36 +26,47 @@ struct VibeCreateScreen: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            VibeHeader()
+            VibeHeader(selectedEvent: selectedEvent, rating: rating).padding(.horizontal, 16)
             
             if let event = selectedEvent {
-                ScrollView {
-                    VStack(spacing: 0) {
-                        Spacer()
-                        VibeEventCell(event: event){
-                            isPresented.toggle()
+                VStack(spacing: 0){
+                    VibeEventCell(event: event){
+                        isPresented.toggle()
+                    }
+                    .padding(EdgeInsets(top: 28, leading: 16, bottom: 36, trailing: 16))
+                    
+                    ScrollView {
+                        VStack(spacing : 0) {
+                            ratingSection
+                            Rectangle().fill(.gray800).frame(height: 1)
+                            
+                            photoPickerSection
+                            Rectangle().fill(.gray800).frame(height: 1)
+                            
+                            commentSection
                         }
-                        .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
                     }
-                    .backgroundForKEEV()
-                        
-                    VStack(spacing : 0) {
-                        ratingSection
-                        Rectangle().fill(.gray800).frame(height: 1)
-                        
-                        photoPickerSection
-                        Rectangle().fill(.gray800).frame(height: 1)
-                        
-                        commentSection
-                    }
+                    .background(Color.gray900)
                 }
-                .background(VStack(spacing: .zero) { Color.gray950; Color.gray900 })
-                
             }
+            
             else {
                 EventSelectCell(isPresented: $isPresented)
-                    .padding(.top, 16)
-                    .padding(.horizontal, 16)
+                    .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
+                VStack(spacing : 0) {
+                    ratingSection
+
+                    Rectangle().fill(.gray800).frame(height: 1)
+                    
+                    photoPickerSection
+
+                    Rectangle().fill(.gray800).frame(height: 1)
+                    
+                    commentSection
+
+                }
+                .opacity(selectedEvent == nil ? 0.2 : 1)
+                .disabled(selectedEvent == nil)
                 
             }
             
@@ -73,25 +84,16 @@ extension VibeCreateScreen {
     private var ratingSection: some View {
         VibeRatingCell(rating: $rating)
             .frame(maxWidth: .infinity)
-            .background(Color.gray900)
     }
     
     private var photoPickerSection: some View {
         VibePhotoPickerCell(selectedItems: $selectedItems, selectedImages: $selectedImages, maxSelectedCount: maxSelectedCount)
             .frame(maxWidth: .infinity)
-            .background(Color.gray900)
     }
     
     private var commentSection: some View {
-        ZStack {
-            Color.gray900
-            VStack(spacing: 0) {
-                VibeCommentCell(comment: $comment)
-                    .padding(.horizontal, 16)
-                Spacer()
-            }
-        }
-        .frame(maxHeight: .infinity)
+        VibeCommentCell(comment: $comment)
+            .padding(.horizontal, 16)
     }
 }
 

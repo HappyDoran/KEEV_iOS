@@ -74,9 +74,11 @@ struct RateSettingView: View {
         stars.overlay(
             GeometryReader { geometry in
                 HStack {
-                    Rectangle()
-                        .foregroundStyle(brandColor)
-                        .frame(width: x)
+                    if x > 0 {
+                        Rectangle()
+                            .foregroundStyle(brandColor)
+                            .frame(maxWidth: x)
+                    }
                     Spacer()
                 }
                 .onAppear { initialSetting(from: geometry.size) }

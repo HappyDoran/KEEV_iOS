@@ -9,13 +9,16 @@ import SwiftUI
 
 struct CommentSheetBody: View {
     @Binding private var comment: String
+    private var isFocused: FocusState<Bool>.Binding
     
-    init(comment: Binding<String>) {
+    init(comment: Binding<String>, isFocused: FocusState<Bool>.Binding) {
         self._comment = comment
+        self.isFocused = isFocused
     }
     
     var body: some View {
         TextEditor(text: $comment)
+            .focused(isFocused)
             .scrollContentBackground(.hidden)
             .background(.clear)
             .foregroundColor(.gray50)
@@ -36,6 +39,6 @@ struct CommentSheetBody: View {
     ZStack {
         Color.gray800
             .ignoresSafeArea(.all, edges: .all)
-        CommentSheetBody(comment: .constant(""))
+        CommentSheetBody(comment: .constant(""), isFocused:  FocusState<Bool>().projectedValue)
     }
 }

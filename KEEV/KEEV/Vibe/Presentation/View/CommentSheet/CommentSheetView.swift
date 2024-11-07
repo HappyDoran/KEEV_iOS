@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct CommentSheetView: View {
+    @FocusState private var textEditorFocus: Bool
     @Binding private var comment: String
     
     init(comment: Binding<String>) {
@@ -22,7 +23,10 @@ struct CommentSheetView: View {
                 CommentHeader()
                     .padding(.top, 12)
                 ScrollView {
-                    CommentSheetBody(comment: $comment)
+                    CommentSheetBody(comment: $comment, isFocused: $textEditorFocus)
+                }
+                .onTapGesture {
+                    textEditorFocus = true
                 }
             }
         }

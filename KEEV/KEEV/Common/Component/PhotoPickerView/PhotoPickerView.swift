@@ -25,7 +25,7 @@ struct PhotoPickerView: View {
         self._selectedImages = selectedImages
         self.maxSelectedCount = maxSelectedCount
     }
-
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
@@ -89,10 +89,9 @@ extension PhotoPickerView {
             selectedImages.removeAll()
             for item in selectedItems {
                 do {
-                    if let data = try await item.loadTransferable(type: Data.self) {
-                        if let newImage = UIImage(data: data) {
-                            selectedImages.append(newImage)
-                        }
+                    if let data = try await item.loadTransferable(type: Data.self)
+                        , let newImage = UIImage(data: data) {
+                        selectedImages.append(newImage)   
                     }
                 } catch {
                     print(error.localizedDescription)
