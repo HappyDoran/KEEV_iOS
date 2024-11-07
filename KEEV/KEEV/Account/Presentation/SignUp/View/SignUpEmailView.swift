@@ -76,9 +76,6 @@ extension SignUpEmailView {
             try accountService.checkEmailValidity(email)
             errorMessage = ""
             disableButton = false
-        } catch let error as AccountError {
-            errorMessage = error.rawValue
-            disableButton = true
         } catch {
             errorMessage = error.localizedDescription
             disableButton = true

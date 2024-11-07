@@ -142,7 +142,20 @@ class AccountService: AccountServiceProtocol {
 }
 
 enum AccountError: String, Error {
-    case empty = ""
-    case inValidEmail = "이메일의 형식이 올바르지 않습니다!"
-    case inValidNickname = "특수문자가 포함되어 있습니다."
+    case empty
+    case inValidEmail
+    case inValidNickname
+}
+
+extension AccountError : LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .empty:
+            return ""
+        case .inValidEmail:
+            return "이메일의 형식이 올바르지 않습니다."
+        case .inValidNickname:
+            return "특수문자가 포함되어 있습니다."
+        }
+    }
 }

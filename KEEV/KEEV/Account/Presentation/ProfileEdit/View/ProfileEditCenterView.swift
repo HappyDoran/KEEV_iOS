@@ -75,9 +75,6 @@ extension ProfileEditCenterView {
             try accountService.checkNicknameValidity(nickname)
             errorMessage = ""
             disableButton = false
-        } catch let error as AccountError {
-            errorMessage = error.rawValue
-            disableButton = true
         } catch {
             errorMessage = error.localizedDescription
             disableButton = true
