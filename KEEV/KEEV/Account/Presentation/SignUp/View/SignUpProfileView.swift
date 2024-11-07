@@ -21,15 +21,17 @@ struct SignUpProfileView: View {
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
     
-    @State private var errorMessage: String? = nil
+    @State private var errorMessage = ""
     @State private var disableButton = true
+    
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         VStack {
             VStack(alignment: .leading, spacing: 0) {
                 Text("프로필을 설정해주세요")
                     .figmaFont(PretendardFont.title(style: .lg))
-                    .foregroundStyle(.gray100)
+                    .foregroundStyle(.gray50)
                     .padding(.bottom, 12)
                 
                 Text("닉네임과 프로필 이미지는 프로필탭에서 변경이 가능합니다")
@@ -39,43 +41,29 @@ struct SignUpProfileView: View {
                 HStack {
                     Spacer()
                     
-                    ProfileImage(profileImage: userProfile.profileImage, editable: true)
+                    ProfileImage(profileImage: userProfile.profileImage, size: 128, editable: true)
                         .onTapGesture {
+                            isFocused = false
                             showActionSheet = true
                         }
                     
                     Spacer()
                 }
-                .padding(.vertical, 48)
+                .padding(.top, 32)
+                .padding(.bottom, 24)
                 
                 SingleLineTextField(
                     placeholder: "닉네임",
                     text: $userProfile.nickname,
-                    maxLength: 14
+                    maxLength: 14,
+                    errorMessage: $errorMessage
                 )
                 .submitLabel(.done)
+                .focused($isFocused)
                 .onChange(of: userProfile.nickname, {
-                    do {
-                        accountService.setUserProfile(userProfile)
-                        try accountService.checkNicknameValidity()
-                        errorMessage = nil
-                        disableButton = false
-                    } catch let error as AccountError {
-                        errorMessage = error.rawValue
-                        disableButton = true
-                    } catch {
-                        errorMessage = error.localizedDescription
-                        disableButton = true
-                    }
+                    validityTest(userProfile.nickname)
                 })
-                .padding(.bottom, 12)
-                
-                if let errorMessage {
-                    Text(errorMessage)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                        .foregroundStyle(.red500)
-                        .padding(.horizontal, 20)
-                }
+                .padding(.bottom, 8)
             }
             .padding(.top, 40)
             .padding(.horizontal, 24)
@@ -97,6 +85,19 @@ struct SignUpProfileView: View {
             .padding(.top, 12)
             .padding(.horizontal, 16)
             .padding(.bottom, 42)
+        }
+    }
+}
+
+extension SignUpProfileView {
+    private func validityTest(_ nickname: String) {
+        do {
+            try accountService.checkNicknameValidity(nickname)
+            errorMessage = ""
+            disableButton = false
+        } catch {
+            errorMessage = error.localizedDescription
+            disableButton = true
         }
     }
 }

@@ -20,7 +20,7 @@ struct SignUpEmailView: View {
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
     
-    @State private var errorMessage: String? = nil
+    @State private var errorMessage = ""
     @State private var disableButton = true
     
     var body: some View {
@@ -32,38 +32,21 @@ struct SignUpEmailView: View {
                 
                 Text("이메일을 알려주세요")
                     .figmaFont(PretendardFont.title(style: .lg))
-                    .foregroundStyle(.gray100)
+                    .foregroundStyle(.gray50)
                 
                 SingleLineTextField(
                     placeholder: "keev@email.com",
                     text: $userProfile.email,
-                    keyboardType: .emailAddress
+                    keyboardType: .emailAddress,
+                    errorMessage: $errorMessage
                 )
                 .submitLabel(.done)
                 .textInputAutocapitalization(.never)
                 .onChange(of: userProfile.email, {
-                    do {
-                        accountService.setUserProfile(userProfile)
-                        try accountService.checkEmailValidity()
-                        errorMessage = nil
-                        disableButton = false
-                    } catch let error as AccountError {
-                        errorMessage = error.rawValue
-                        disableButton = true
-                    } catch {
-                        errorMessage = error.localizedDescription
-                        disableButton = true
-                    }
+                    validityTest(userProfile.email)
                 })
                 .padding(.top, 24)
-                .padding(.bottom, 12)
-                
-                if let errorMessage {
-                    Text(errorMessage)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                        .foregroundStyle(.red500)
-                        .padding(.horizontal, 20)
-                }
+                .padding(.bottom, 8)
             }
             .padding(.top, 40)
             .padding(.horizontal, 24)
@@ -83,6 +66,19 @@ struct SignUpEmailView: View {
             .padding(.top, 12)
             .padding(.horizontal, 16)
             .padding(.bottom, 42)
+        }
+    }
+}
+
+extension SignUpEmailView {
+    private func validityTest(_ email: String) {
+        do {
+            try accountService.checkEmailValidity(email)
+            errorMessage = ""
+            disableButton = false
+        } catch {
+            errorMessage = error.localizedDescription
+            disableButton = true
         }
     }
 }

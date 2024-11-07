@@ -24,9 +24,12 @@ protocol AccountServiceProtocol: ObservableObject {
     var nickname: String { get }
     var profileImage: UIImage? { get }
     var backgroundImage: UIImage? { get }
-    var description: String? { get }
+    var description: String { get }
     
     func setUserProfile(_ newUserProfile: UserProfile)
-    func checkEmailValidity() throws
-    func checkNicknameValidity() throws
+    
+    func isValidEmail(_ email: String) -> Bool
+    func checkEmailValidity(_ email: String) throws
+    func isValidNickname(_ nickname: String) -> Bool
+    func checkNicknameValidity(_ nickname: String) throws
 }

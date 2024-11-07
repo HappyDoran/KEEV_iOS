@@ -89,6 +89,24 @@ extension Array where Element == KEEVActionSheet.ButtonConfiguration {
         ]
     }
     
+    /// 프로필 배경사진을 설정할 때 사용하는 액션시트의 프리셋
+    ///
+    /// - Parameters:
+    ///   - modifyHandler: 배경사진 선택을 눌렀을 때 수행되는 함수.
+    ///   - deleteHandler: 배경사진 삭제를 눌렀을 때 수행되는 함수
+    ///
+    /// - Returns: .modify(배경사진 선택)와 .delete(배경사진 삭제)로 구성된 배열
+    /// - Author: 라움
+    static func setBackgroundImage(
+        modifyHandler: @escaping () -> Void,
+        deleteHandler: @escaping () -> Void
+    ) -> [Element] {
+        [
+            .modify(title: "배경사진 선택", action: modifyHandler),
+            .delete(title: "배경사진 삭제", action: deleteHandler)
+        ]
+    }
+    
     /// 프로필 사진을 설정할 때 사용하는 액션시트의 프리셋
     ///
     /// - Parameters:
