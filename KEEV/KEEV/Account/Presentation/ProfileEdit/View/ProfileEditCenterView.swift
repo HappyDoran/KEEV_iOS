@@ -16,8 +16,7 @@ import SwiftUI
 /// - Note: 액션시트에 대한 modifier는 ProfileEditScreen에 추가되어있습니다.
 /// - Author: 라움
 struct ProfileEditCenterView: View {
-    @ObservedObject var accountService: AccountService
-    @Binding var newProfile: UserProfile
+    @Binding var userProfile: UserProfile
     @Binding var showProfileImageActionSheet: Bool
     @Binding var disableButton: Bool
     
@@ -28,7 +27,7 @@ struct ProfileEditCenterView: View {
             HStack {
                 Spacer()
                 
-                ProfileImage(profileImage: newProfile.profileImage, size: 128, editable: true, strokeWidth: 4, strokeColor: .gray950)
+                ProfileImage(profileImage: userProfile.profileImage, size: 128, editable: true, strokeWidth: 4, strokeColor: .gray950)
                     .onTapGesture {
                         showProfileImageActionSheet = true
                     }
@@ -44,13 +43,13 @@ struct ProfileEditCenterView: View {
             
             SingleLineTextField(
                 placeholder: "닉네임",
-                text: $newProfile.nickname,
+                text: $userProfile.nickname,
                 maxLength: 14,
                 errorMessage: $errorMessage
             )
             .submitLabel(.done)
-            .onChange(of: newProfile.nickname, {
-                validityTest()
+            .onChange(of: userProfile.nickname, {
+                validityTest(userProfile.nickname)
             })
             
             Text("한 줄 소개")
@@ -61,7 +60,7 @@ struct ProfileEditCenterView: View {
             
             SingleLineTextField(
                 placeholder: "한 줄 소개를 입력해주세요.",
-                text: $newProfile.description,
+                text: $userProfile.description,
                 maxLength: 20
             )
             .submitLabel(.done)
@@ -70,10 +69,9 @@ struct ProfileEditCenterView: View {
 }
 
 extension ProfileEditCenterView {
-    private func validityTest() {
+    private func validityTest(_ nickname: String) {
         do {
-            accountService.setUserProfile(newProfile)
-            try accountService.checkNicknameValidity()
+            try AccountService.checkNicknameValidity(nickname)
             errorMessage = ""
             disableButton = false
         } catch let error as AccountError {
@@ -88,8 +86,7 @@ extension ProfileEditCenterView {
 
 #Preview {
     ProfileEditCenterView(
-        accountService: AccountService(),
-        newProfile: .constant(UserProfile()),
+        userProfile: .constant(UserProfile()),
         showProfileImageActionSheet: .constant(false),
         disableButton: .constant(false)
     )

@@ -18,8 +18,7 @@ struct ProfileEditScreen: View {
     
     @Environment(\.dismiss) private var dismiss
     
-    @State private var originalProfile = UserProfile()
-    @State private var newProfile = UserProfile()
+    @State private var userProfile = UserProfile()
     @State private var showProfileImageActionSheet = false
     @State private var showProfileImageSelectSheet = false
     @State private var showBackgroundActionSheet = false
@@ -30,7 +29,7 @@ struct ProfileEditScreen: View {
     var body: some View {
         ZStack {
             ProfileEditBackgroundView(
-                newProfile: $newProfile,
+                backgroundImage: userProfile.backgroundImage,
                 showBackgroundActionSheet: $showBackgroundActionSheet
             )
             
@@ -41,8 +40,7 @@ struct ProfileEditScreen: View {
                     .padding(.bottom, 36)
                 
                 ProfileEditCenterView(
-                    accountService: accountService,
-                    newProfile: $newProfile,
+                    userProfile: $userProfile,
                     showProfileImageActionSheet: $showProfileImageActionSheet,
                     disableButton: $disableButton)
                 .padding(.horizontal, 24)
@@ -52,7 +50,7 @@ struct ProfileEditScreen: View {
                 CommonButton(
                     title: "수정 완료",
                     action: {
-                        accountService.setUserProfile(newProfile)
+                        accountService.setUserProfile(userProfile)
                         dismiss()
                     },
                     style: .maxWidth,
@@ -65,8 +63,7 @@ struct ProfileEditScreen: View {
             .ignoresSafeArea(.keyboard)
         }
         .onAppear {
-            originalProfile = accountService.userProfile
-            newProfile = originalProfile
+            userProfile = accountService.userProfile
         }
         .backgroundForKEEV()
         .actionSheetForKEEV(
@@ -76,11 +73,11 @@ struct ProfileEditScreen: View {
                     showProfileImageSelectSheet = true
                     showProfileImageActionSheet = false
                 }, deleteHandler: {
-                    newProfile.profileImage = nil
+                    userProfile.profileImage = nil
                     showProfileImageActionSheet = false
                 }))
         .fullScreenCover(isPresented: $showProfileImageSelectSheet) {
-            ImageSelectView(image: $newProfile.profileImage)
+            ImageSelectView(image: $userProfile.profileImage)
         }
         .actionSheetForKEEV(
             isPresented: $showBackgroundActionSheet,
@@ -89,11 +86,11 @@ struct ProfileEditScreen: View {
                     showBackgroundImageSelectSheet = true
                     showBackgroundActionSheet = false
                 }, deleteHandler: {
-                    newProfile.backgroundImage = nil
+                    userProfile.backgroundImage = nil
                     showBackgroundActionSheet = false
                 }))
         .fullScreenCover(isPresented: $showBackgroundImageSelectSheet) {
-            ImageSelectView(image: $newProfile.backgroundImage)
+            ImageSelectView(image: $userProfile.backgroundImage)
         }
         .customAlert(
             isPresented: $showCloseAlert,
@@ -101,12 +98,12 @@ struct ProfileEditScreen: View {
             message: "",
             closeText: "아니요",
             closeAction: {
-                accountService.setUserProfile(originalProfile)
+                accountService.setUserProfile(userProfile)
                 dismiss()
             },
             someText: "예",
             someAction: {
-                accountService.setUserProfile(newProfile)
+                accountService.setUserProfile(userProfile)
                 dismiss()
             }
         )

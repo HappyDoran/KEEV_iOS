@@ -16,13 +16,18 @@ import SwiftUI
 /// - Note: 액션시트에 대한 modifier는 ProfileEditScreen에 추가되어있습니다.
 /// - Author: 라움
 struct ProfileEditBackgroundView: View {
-    @Binding var newProfile: UserProfile
+    private let backgroundImage: UIImage?
     @Binding var showBackgroundActionSheet: Bool
+    
+    init(backgroundImage: UIImage?, showBackgroundActionSheet: Binding<Bool>) {
+        self.backgroundImage = backgroundImage
+        self._showBackgroundActionSheet = showBackgroundActionSheet
+    }
     
     var body: some View {
         VStack {
-            if let background = newProfile.backgroundImage {
-                Image(uiImage: background)
+            if let backgroundImage {
+                Image(uiImage: backgroundImage)
                     .resizable()
                     .scaledToFill()
                     .frame(height: 202)
@@ -54,7 +59,7 @@ struct ProfileEditBackgroundView: View {
 
 #Preview {
     ProfileEditBackgroundView(
-        newProfile: .constant(UserProfile()),
+        backgroundImage: nil,
         showBackgroundActionSheet: .constant(false)
     )
 }

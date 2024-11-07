@@ -30,36 +30,12 @@ class AccountService: AccountServiceProtocol {
         return userProfile.email
     }
     
-    /// 이메일 형식을 확인하는 프로퍼티
-    ///
-    /// 정규표현식과 비교하여 입력한 이메일이 이메일 형식과 맞는지 유효성을 확인합니다.
-    ///
-    /// 이메일 형식이 맞으면 true, 아니면 false 값을 리턴합니다.
-    ///
-    /// - Author: 라움
-    var isValidEmail: Bool {
-        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: self.email)
-    }
-    
     /// 사용자 닉네임을 리턴하는 연산 프로퍼티
     ///
     /// 사용자 닉네임을 리턴하는 연산 프로퍼티입니다.
     /// - Author: 라움
     var nickname: String {
         return userProfile.nickname
-    }
-    
-    /// 닉네임에 특수문자가 포함되어있는지 확인하는 프로퍼티
-    ///
-    /// 정규표현식과 비교하여 입력한 닉네임에 특수문자가 포함되어있는지 유효성을 확인합니다.
-    ///
-    /// 특수문자가 포함되어있지 않으면 true, 포함되어 있으면 false를 리턴합니다.
-    ///
-    /// - Author: 라움
-    var isValidNickname: Bool {
-        let nicknameRegex = "^[ㄱ-ㅎ가-힣A-Za-z0-9]{1,}$"
-        return NSPredicate(format: "SELF MATCHES %@", nicknameRegex).evaluate(with: self.nickname)
     }
     
     /// 사용자 프로필 사진을 리턴하는 연산 프로퍼티
@@ -98,32 +74,68 @@ class AccountService: AccountServiceProtocol {
         userProfile = newUserProfile
     }
     
+    /// 이메일 형식을 확인하는 static 함수
+    ///
+    /// - Parameters:
+    ///   - email: 형식을 확인할 이메일
+    ///
+    /// 정규표현식과 비교하여 입력한 이메일이 이메일 형식과 맞는지 유효성을 확인합니다.
+    ///
+    /// - Returns: 이메일 형식이 맞으면 true, 아니면 false 값을 리턴합니다.
+    ///
+    /// - Author: 라움
+    static func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
+    }
+    
     /// 입력된 이메일의 형식이 타당한지 확인하는 함수
+    ///
+    /// - Parameters:
+    ///   - email: 형식을 확인할 이메일
     ///
     /// 입력된 이메일의 형식이 타당한지 확인하는 함수입니다.
     ///
     /// - Throws: 이메일 형식이 타당하지 않을 경우 에러를 throw
     ///
     /// - Author: 라움
-    func checkEmailValidity() throws {
-        if userProfile.email.isEmpty {
+    static func checkEmailValidity(_ email: String) throws {
+        if email.isEmpty {
             throw AccountError.empty
-        } else if !isValidEmail {
+        } else if !isValidEmail(email) {
             throw AccountError.inValidEmail
         }
     }
+        
+    /// 닉네임에 특수문자가 포함되어있는지 확인하는 프로퍼티
+    ///
+    /// - Parameters:
+    ///   - nickname: 특수문자가 포함되어있는지 확인할 닉네임
+    ///
+    /// 정규표현식과 비교하여 입력한 닉네임에 특수문자가 포함되어있는지 유효성을 확인합니다.
+    ///
+    /// - Returns: 특수문자가 포함되어있지 않으면 true, 포함되어 있으면 false를 리턴합니다.
+    ///
+    /// - Author: 라움
+    static func isValidNickname(_ nickname: String) -> Bool {
+        let nicknameRegex = "^[ㄱ-ㅎ가-힣A-Za-z0-9]{1,}$"
+        return NSPredicate(format: "SELF MATCHES %@", nicknameRegex).evaluate(with: nickname)
+    }
     
     /// 입력된 닉네임이 타당한지 확인하는 함수
+    ///
+    /// - Parameters:
+    ///   - nickname: 특수문자가 포함되어있는지 확인할 닉네임
     ///
     /// 입력된 닉네임이 타당한지 확인하는 함수입니다.
     ///
     /// - Throws: 닉네임 형식이 타당하지 않을 경우 에러를 throw
     ///
     /// - Author: 라움
-    func checkNicknameValidity() throws {
-        if userProfile.nickname.isEmpty {
+    static func checkNicknameValidity(_ nickname: String) throws {
+        if nickname.isEmpty {
             throw AccountError.empty
-        } else if !isValidNickname {
+        } else if !isValidNickname(nickname) {
             throw AccountError.inValidNickname
         }
     }

@@ -57,7 +57,7 @@ struct SignUpProfileView: View {
                 )
                 .submitLabel(.done)
                 .onChange(of: userProfile.nickname, {
-                    validityTest()
+                    validityTest(userProfile.nickname)
                 })
                 .padding(.bottom, 8)
             }
@@ -86,10 +86,9 @@ struct SignUpProfileView: View {
 }
 
 extension SignUpProfileView {
-    private func validityTest() {
+    private func validityTest(_ nickname: String) {
         do {
-            accountService.setUserProfile(userProfile)
-            try accountService.checkNicknameValidity()
+            try AccountService.checkNicknameValidity(nickname)
             errorMessage = ""
             disableButton = false
         } catch let error as AccountError {

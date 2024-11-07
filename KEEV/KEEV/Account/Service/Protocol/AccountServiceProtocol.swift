@@ -21,14 +21,15 @@ import SwiftUI
 protocol AccountServiceProtocol: ObservableObject {
     var userProfile: UserProfile { get }
     var email: String { get }
-    var isValidEmail: Bool { get }
     var nickname: String { get }
-    var isValidNickname: Bool { get }
     var profileImage: UIImage? { get }
     var backgroundImage: UIImage? { get }
     var description: String { get }
     
     func setUserProfile(_ newUserProfile: UserProfile)
-    func checkEmailValidity() throws
-    func checkNicknameValidity() throws
+    
+    static func isValidEmail(_ email: String) -> Bool
+    static func checkEmailValidity(_ email: String) throws
+    static func isValidNickname(_ nickname: String) -> Bool
+    static func checkNicknameValidity(_ nickname: String) throws
 }
