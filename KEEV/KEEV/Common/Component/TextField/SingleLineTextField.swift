@@ -33,6 +33,8 @@ struct SingleLineTextField: View {
     private let maxLength: Int?
     @Binding var errorMessage: String
     
+    @FocusState private var isFocused: Bool
+    
     init(placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, maxLength: Int? = nil, errorMessage: Binding<String> = .constant("")) {
         self.placeholder = placeholder
         self._text = text
@@ -44,8 +46,8 @@ struct SingleLineTextField: View {
     var body: some View {
         VStack(alignment: .leading) {
             RoundedRectangle(cornerRadius: 16)
-                .stroke(lineWidth: 1.5)
-                .foregroundStyle(errorMessage.isEmpty ? .gray100 : .red500)
+                .stroke(lineWidth: 1)
+                .foregroundStyle(isFocused ? (errorMessage.isEmpty ? .gray300 : .red500) : .gray700)
                 .frame(height: 56)
                 .overlay {
                     HStack(spacing: 8) {
@@ -54,6 +56,7 @@ struct SingleLineTextField: View {
                             .foregroundStyle(.gray100)
                             .tint(.brand500)
                             .keyboardType(keyboardType)
+                            .focused($isFocused)
                             .onChange(of: text, {
                                 if let maxLength = maxLength {
                                     text = String(text.prefix(maxLength))
