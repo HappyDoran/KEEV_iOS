@@ -24,6 +24,8 @@ struct SignUpProfileView: View {
     @State private var errorMessage = ""
     @State private var disableButton = true
     
+    @FocusState private var isFocused: Bool
+    
     var body: some View {
         VStack {
             VStack(alignment: .leading, spacing: 0) {
@@ -41,6 +43,7 @@ struct SignUpProfileView: View {
                     
                     ProfileImage(profileImage: userProfile.profileImage, size: 128, editable: true)
                         .onTapGesture {
+                            isFocused = false
                             showActionSheet = true
                         }
                     
@@ -56,6 +59,7 @@ struct SignUpProfileView: View {
                     errorMessage: $errorMessage
                 )
                 .submitLabel(.done)
+                .focused($isFocused)
                 .onChange(of: userProfile.nickname, {
                     validityTest(userProfile.nickname)
                 })

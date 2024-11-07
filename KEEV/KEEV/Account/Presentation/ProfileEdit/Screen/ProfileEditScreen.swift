@@ -26,15 +26,18 @@ struct ProfileEditScreen: View {
     @State private var showCloseAlert = false
     @State private var disableButton = true
     
+    @FocusState private var isFocused: Bool
+    
     var body: some View {
         ZStack {
             ProfileEditBackgroundView(
                 backgroundImage: userProfile.backgroundImage,
-                showBackgroundActionSheet: $showBackgroundActionSheet
+                showBackgroundActionSheet: $showBackgroundActionSheet,
+                isFocused: $isFocused
             )
             
             VStack {
-                ProfileEditTopView(showCloseAlert: $showCloseAlert)
+                ProfileEditTopView(showCloseAlert: $showCloseAlert, isFocused: $isFocused)
                     .padding(.horizontal, 16)
                     .padding(.top, 8)
                     .padding(.bottom, 36)
@@ -43,7 +46,9 @@ struct ProfileEditScreen: View {
                     accountService: accountService,
                     userProfile: $userProfile,
                     showProfileImageActionSheet: $showProfileImageActionSheet,
-                    disableButton: $disableButton)
+                    disableButton: $disableButton,
+                    isFocused: $isFocused
+                )
                 .padding(.horizontal, 24)
                 
                 Spacer()

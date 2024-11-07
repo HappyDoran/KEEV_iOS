@@ -18,10 +18,12 @@ import SwiftUI
 struct ProfileEditBackgroundView: View {
     private let backgroundImage: UIImage?
     @Binding var showBackgroundActionSheet: Bool
+    var isFocused: FocusState<Bool>.Binding
     
-    init(backgroundImage: UIImage?, showBackgroundActionSheet: Binding<Bool>) {
+    init(backgroundImage: UIImage?, showBackgroundActionSheet: Binding<Bool>, isFocused: FocusState<Bool>.Binding) {
         self.backgroundImage = backgroundImage
         self._showBackgroundActionSheet = showBackgroundActionSheet
+        self.isFocused = isFocused
     }
     
     var body: some View {
@@ -37,6 +39,7 @@ struct ProfileEditBackgroundView: View {
                             .opacity(0.2)
                     })
                     .onTapGesture {
+                        isFocused.wrappedValue = false
                         showBackgroundActionSheet = true
                     }
             } else {
@@ -47,6 +50,7 @@ struct ProfileEditBackgroundView: View {
                             .opacity(0.2)
                     })
                     .onTapGesture {
+                        isFocused.wrappedValue = false
                         showBackgroundActionSheet = true
                     }
             }
@@ -58,8 +62,11 @@ struct ProfileEditBackgroundView: View {
 }
 
 #Preview {
+    @Previewable @FocusState var isFocused: Bool
+    
     ProfileEditBackgroundView(
         backgroundImage: nil,
-        showBackgroundActionSheet: .constant(false)
+        showBackgroundActionSheet: .constant(false),
+        isFocused: $isFocused
     )
 }

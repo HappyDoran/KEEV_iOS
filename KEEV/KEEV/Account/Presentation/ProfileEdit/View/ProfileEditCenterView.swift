@@ -20,6 +20,7 @@ struct ProfileEditCenterView: View {
     @Binding var userProfile: UserProfile
     @Binding var showProfileImageActionSheet: Bool
     @Binding var disableButton: Bool
+    var isFocused: FocusState<Bool>.Binding
     
     @State private var errorMessage = ""
     
@@ -30,6 +31,7 @@ struct ProfileEditCenterView: View {
                 
                 ProfileImage(profileImage: userProfile.profileImage, size: 128, editable: true, strokeWidth: 4, strokeColor: .gray950)
                     .onTapGesture {
+                        isFocused.wrappedValue = false
                         showProfileImageActionSheet = true
                     }
                 
@@ -49,6 +51,7 @@ struct ProfileEditCenterView: View {
                 errorMessage: $errorMessage
             )
             .submitLabel(.done)
+            .focused(isFocused)
             .onChange(of: userProfile.nickname, {
                 validityTest(userProfile.nickname)
             })
@@ -65,6 +68,7 @@ struct ProfileEditCenterView: View {
                 maxLength: 20
             )
             .submitLabel(.done)
+            .focused(isFocused)
         }
     }
 }
@@ -83,10 +87,13 @@ extension ProfileEditCenterView {
 }
 
 #Preview {
+    @Previewable @FocusState var isFocused: Bool
+    
     ProfileEditCenterView(
         accountService: AccountService(),
         userProfile: .constant(UserProfile()),
         showProfileImageActionSheet: .constant(false),
-        disableButton: .constant(false)
+        disableButton: .constant(false),
+        isFocused: $isFocused
     )
 }

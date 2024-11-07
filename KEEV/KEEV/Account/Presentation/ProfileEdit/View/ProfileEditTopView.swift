@@ -14,10 +14,12 @@ import SwiftUI
 /// - Author: 라움
 struct ProfileEditTopView: View {
     @Binding var showCloseAlert: Bool
+    var isFocused: FocusState<Bool>.Binding
     
     var body: some View {
         HStack {
             Button {
+                isFocused.wrappedValue = false
                 showCloseAlert = true
             } label: {
                 HStack {
@@ -46,5 +48,7 @@ struct ProfileEditTopView: View {
 }
 
 #Preview {
-    ProfileEditTopView(showCloseAlert: .constant(false))
+    @Previewable @FocusState var isFocused: Bool
+    
+    ProfileEditTopView(showCloseAlert: .constant(false), isFocused: $isFocused)
 }
