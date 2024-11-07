@@ -6,7 +6,13 @@
 //
 
 import SwiftUI
-
+/// VibeCreateScreen 헤더 셀
+///
+/// - Parameters:
+///   - selectedEvent: 선택한 이벤트 여부에 따른 완료 버튼 유무 표시
+///   - rating: 만족도 점수에 따른 완료 버튼 활성화
+///
+/// - Author: Doran
 struct VibeHeader: View {
     @Environment(\.dismiss) private var dismiss
     
@@ -33,6 +39,7 @@ struct VibeHeader: View {
                         .foregroundColor(.gray100)
                 }
                 Spacer()
+                
                 
                 if selectedEvent != nil {
                     Button(action: {

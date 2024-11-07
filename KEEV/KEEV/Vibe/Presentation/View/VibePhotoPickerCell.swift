@@ -8,6 +8,14 @@
 import SwiftUI
 import PhotosUI
 
+/// 사진 선택 셀
+///
+/// - Parameters:
+///   - selectedItems: PhotosPicker에서 선택된 아이템
+///   - selectedImages: 선택된 이미지
+///   - maxSelectedCount: 최대 사진 갯수
+///
+/// - Author: Doran
 struct VibePhotoPickerCell: View {
     @Binding private var selectedItems: [PhotosPickerItem]
     @Binding private var selectedImages: [UIImage]
@@ -21,8 +29,10 @@ struct VibePhotoPickerCell: View {
     
     var body: some View {
         VStack(spacing: 0){
+            // MARK: 헤더, 사진 갯수 표시
             photoHeader.padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
             
+            // MARK: 사진 선택 영역
             PhotoPickerView(selectedItems: $selectedItems, selectedImages: $selectedImages, maxSelectedCount: maxSelectedCount)
                 .padding(EdgeInsets(top: 12, leading: 16, bottom: 16, trailing: 0))
         }

@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+/// 이벤트 선택 버튼 셀
+///
+/// - Parameters:
+///   - isPresented: 시트 여부 Bool 타입
+///
+/// - Author: Doran
 struct EventSelectCell: View {
     @Binding private var isPresented: Bool
     

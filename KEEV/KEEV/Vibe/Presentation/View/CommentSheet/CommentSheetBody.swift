@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// 코멘트 시트 바디 뷰
+///
+/// - Parameters:
+///   - comment: 코멘트 텍스트
+///   - isFocused: 텍스트 에디터 포커싱 여부
+///
+/// - Author: Doran
 struct CommentSheetBody: View {
     @Binding private var comment: String
     private var isFocused: FocusState<Bool>.Binding
@@ -17,8 +24,11 @@ struct CommentSheetBody: View {
     }
     
     var body: some View {
+        
+        // MARK: 코멘트 남기는 영역
         TextEditor(text: $comment)
             .focused(isFocused)
+            .accentColor(.brand500)
             .scrollContentBackground(.hidden)
             .background(.clear)
             .foregroundColor(.gray50)

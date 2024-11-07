@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// 선택한 이벤트가 표시되는 셀
+///
+/// - Parameters:
+///   - event: 선택한 이벤트
+///   - onClick: 변경 텍스트 클릭시 발생하는 함수
+///
+/// - Author: Doran
 struct VibeEventCell: View {
     private let event: EventDTO
     private let onClick: () -> Void
