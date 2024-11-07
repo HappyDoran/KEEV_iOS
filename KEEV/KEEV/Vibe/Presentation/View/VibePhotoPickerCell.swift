@@ -21,11 +21,10 @@ struct VibePhotoPickerCell: View {
     
     var body: some View {
         VStack(spacing: 0){
-            photoHeader.padding(.horizontal, 16)
+            photoHeader.padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
             
             PhotoPickerView(selectedItems: $selectedItems, selectedImages: $selectedImages, maxSelectedCount: maxSelectedCount)
-                .padding(.top, 12)
-                .padding(.leading, 16)
+                .padding(EdgeInsets(top: 12, leading: 16, bottom: 16, trailing: 0))
         }
     }
 }

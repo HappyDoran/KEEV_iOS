@@ -19,6 +19,7 @@ struct VibeRatingCell: View {
             Text("공연의 만족도를 선택해주세요")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                 .foregroundColor(.gray50)
+                .padding(.top, 32)
             
             RateSettingView(
                 rating: $rating,
@@ -29,6 +30,7 @@ struct VibeRatingCell: View {
             }
             .frame(height: 48)
             .padding(.top, 8)
+            .padding(.bottom, 40)
         }
     }
 }

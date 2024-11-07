@@ -17,7 +17,7 @@ struct VibeCommentCell: View {
     
     var body: some View {
         VStack(spacing: 0){
-            commentHeader
+            commentHeader.padding(.top, 16)
             Button(action: {
                 isShownSheet.toggle()
             }){
