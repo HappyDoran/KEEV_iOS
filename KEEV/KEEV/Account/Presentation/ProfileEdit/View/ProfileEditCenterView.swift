@@ -16,6 +16,7 @@ import SwiftUI
 /// - Note: 액션시트에 대한 modifier는 ProfileEditScreen에 추가되어있습니다.
 /// - Author: 라움
 struct ProfileEditCenterView: View {
+    @ObservedObject var accountService: AccountService
     @Binding var userProfile: UserProfile
     @Binding var showProfileImageActionSheet: Bool
     @Binding var disableButton: Bool
@@ -71,7 +72,7 @@ struct ProfileEditCenterView: View {
 extension ProfileEditCenterView {
     private func validityTest(_ nickname: String) {
         do {
-            try AccountService.checkNicknameValidity(nickname)
+            try accountService.checkNicknameValidity(nickname)
             errorMessage = ""
             disableButton = false
         } catch let error as AccountError {
@@ -86,6 +87,7 @@ extension ProfileEditCenterView {
 
 #Preview {
     ProfileEditCenterView(
+        accountService: AccountService(),
         userProfile: .constant(UserProfile()),
         showProfileImageActionSheet: .constant(false),
         disableButton: .constant(false)

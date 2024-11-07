@@ -84,7 +84,7 @@ class AccountService: AccountServiceProtocol {
     /// - Returns: 이메일 형식이 맞으면 true, 아니면 false 값을 리턴합니다.
     ///
     /// - Author: 라움
-    static func isValidEmail(_ email: String) -> Bool {
+    func isValidEmail(_ email: String) -> Bool {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
     }
@@ -99,7 +99,7 @@ class AccountService: AccountServiceProtocol {
     /// - Throws: 이메일 형식이 타당하지 않을 경우 에러를 throw
     ///
     /// - Author: 라움
-    static func checkEmailValidity(_ email: String) throws {
+    func checkEmailValidity(_ email: String) throws {
         if email.isEmpty {
             throw AccountError.empty
         } else if !isValidEmail(email) {
@@ -117,7 +117,7 @@ class AccountService: AccountServiceProtocol {
     /// - Returns: 특수문자가 포함되어있지 않으면 true, 포함되어 있으면 false를 리턴합니다.
     ///
     /// - Author: 라움
-    static func isValidNickname(_ nickname: String) -> Bool {
+    func isValidNickname(_ nickname: String) -> Bool {
         let nicknameRegex = "^[ㄱ-ㅎ가-힣A-Za-z0-9]{1,}$"
         return NSPredicate(format: "SELF MATCHES %@", nicknameRegex).evaluate(with: nickname)
     }
@@ -132,7 +132,7 @@ class AccountService: AccountServiceProtocol {
     /// - Throws: 닉네임 형식이 타당하지 않을 경우 에러를 throw
     ///
     /// - Author: 라움
-    static func checkNicknameValidity(_ nickname: String) throws {
+    func checkNicknameValidity(_ nickname: String) throws {
         if nickname.isEmpty {
             throw AccountError.empty
         } else if !isValidNickname(nickname) {

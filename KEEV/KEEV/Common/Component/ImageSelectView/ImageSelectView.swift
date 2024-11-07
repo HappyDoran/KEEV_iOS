@@ -36,8 +36,6 @@ import PhotosUI
 ///
 /// - Author: Doran, 라움
 struct ImageSelectView: View {
-    @Environment(\.dismiss) private var dismiss
-    
     @State private var selectedItem: PhotosPickerItem? = nil
     @Binding var image: UIImage?
     
@@ -56,10 +54,8 @@ extension ImageSelectView {
         Task {
             image = nil
             do {
-                if let data = try await selectedItem?.loadTransferable(type: Data.self) {
-                    if let uiImage = UIImage(data: data) {
-                        self.image = uiImage
-                    }
+                if let data = try await selectedItem?.loadTransferable(type: Data.self), let uiImage = UIImage(data: data) {
+                    self.image = uiImage
                 }
             } catch {
                 print(error.localizedDescription)

@@ -40,6 +40,7 @@ struct ProfileEditScreen: View {
                     .padding(.bottom, 36)
                 
                 ProfileEditCenterView(
+                    accountService: accountService,
                     userProfile: $userProfile,
                     showProfileImageActionSheet: $showProfileImageActionSheet,
                     disableButton: $disableButton)

@@ -15,6 +15,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpEmailView: View {
+    @ObservedObject var accountService: AccountService
     @Binding var userProfile: UserProfile
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
@@ -72,7 +73,7 @@ struct SignUpEmailView: View {
 extension SignUpEmailView {
     private func validityTest(_ email: String) {
         do {
-            try AccountService.checkEmailValidity(email)
+            try accountService.checkEmailValidity(email)
             errorMessage = ""
             disableButton = false
         } catch let error as AccountError {
@@ -87,6 +88,7 @@ extension SignUpEmailView {
 
 #Preview {
     SignUpEmailView(
+        accountService: AccountService(),
         userProfile: .constant(UserProfile()),
         currentPage: .constant(.email),
         transitionDirection: .constant(.leading)

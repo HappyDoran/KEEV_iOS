@@ -68,6 +68,7 @@ extension SignUpScreen {
         switch currentPage {
         case .email:
             SignUpEmailView(
+                accountService: accountService,
                 userProfile: $userProfile,
                 currentPage: $currentPage,
                 transitionDirection: $transitionDirection

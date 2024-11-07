@@ -28,8 +28,8 @@ protocol AccountServiceProtocol: ObservableObject {
     
     func setUserProfile(_ newUserProfile: UserProfile)
     
-    static func isValidEmail(_ email: String) -> Bool
-    static func checkEmailValidity(_ email: String) throws
-    static func isValidNickname(_ nickname: String) -> Bool
-    static func checkNicknameValidity(_ nickname: String) throws
+    func isValidEmail(_ email: String) -> Bool
+    func checkEmailValidity(_ email: String) throws
+    func isValidNickname(_ nickname: String) -> Bool
+    func checkNicknameValidity(_ nickname: String) throws
 }

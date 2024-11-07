@@ -88,7 +88,7 @@ struct SignUpProfileView: View {
 extension SignUpProfileView {
     private func validityTest(_ nickname: String) {
         do {
-            try AccountService.checkNicknameValidity(nickname)
+            try accountService.checkNicknameValidity(nickname)
             errorMessage = ""
             disableButton = false
         } catch let error as AccountError {
