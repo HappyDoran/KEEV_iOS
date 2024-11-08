@@ -17,7 +17,7 @@ import SwiftUI
 /// - Author: Doran
 struct SearchHeader: View {
     @Environment(\.dismiss) private var dismiss
-    var title: String
+    private let title: String
     
     init(title: String) {
         self.title = title
@@ -31,9 +31,7 @@ struct SearchHeader: View {
             // MARK: 검색 시트 아래로 내리는 버튼
             HStack {
                 Spacer()
-                Button(action: {
-                    dismiss()
-                }) {
+                Button(action: { dismiss() }) {
                     Text("취소")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular)))
                         .foregroundColor(.brand500)

@@ -14,7 +14,7 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct VibeCommentCell: View {
-    @State var isPresented = false
+    @State private var isPresented = false
     @Binding private var comment: String
     
     init(comment: Binding<String>) {

@@ -30,7 +30,8 @@ struct SearchScreen: View {
     @FocusState private var searchFieldFocus: Bool
     
     @Binding private var selectedEvent: EventDTO?
-    var searchContent: SearchContent
+    
+    private let searchContent: SearchContent
     
     init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent) {
         self._selectedEvent = selectedEvent
@@ -40,12 +41,7 @@ struct SearchScreen: View {
     var body: some View {
         VStack(spacing: 0){
             // MARK: 헤더
-            switch searchContent {
-            case .event:
-                SearchHeader(title: "검색")
-            case .vibe:
-                SearchHeader(title: "공연 찾기")
-            }
+            SearchHeader(title: searchContent.title)
             
             // MARK: 검색창
             SearchField(text: $searchText,searchStatus: $eventSearchStatus, isFocused: $searchFieldFocus)
@@ -53,28 +49,27 @@ struct SearchScreen: View {
             switch eventSearchStatus {
                 // MARK: 검색 결과가 나오기 전의 뷰
             case .beforeSearch:
-                switch searchContent {
-                case .event:
-                    SearchBeforeView(text: $searchText, isFocused: $searchFieldFocus)
-                        .padding(.horizontal, 16)
-                case .vibe:
-                    EmptyView()
-                }
+                SearchBeforeView(text: $searchText, isFocused: $searchFieldFocus)
+                    .padding(.horizontal, 16)
                 
                 // MARK: 텍스트 필드에 검색을 하는 중인 뷰
             case .searching:
-                SearchingView(selectedEvent: $selectedEvent, searchContent: searchContent)
+                SearchingView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                    handleSearching()
+                }
                 
                 // MARK: 검색 결과가 나온 후의 뷰
             case .afterSearch:
-                SearchAfterView(selectedEvent: $selectedEvent, searchContent: searchContent)
-                    .padding(.horizontal, 16)
+                SearchAfterView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                    handleAfterSearch()
+                }.padding(.horizontal, 16)
             }
             Spacer()
         }
         .onChange(of: [searchFieldFocus, searchText.isEmpty]) {
             eventSearchStatus = searchCase()
         }
+        
         .backgroundForKEEV()
     }
 }
@@ -93,6 +88,24 @@ extension SearchScreen {
         }
         else {
             return .afterSearch
+        }
+    }
+    
+    private func handleSearching() {
+        switch searchContent {
+        case .event:
+            print("searchResult 이동")
+        case .vibe:
+            print("글쓰기 이동")
+        }
+    }
+    
+    private func handleAfterSearch() {
+        switch searchContent {
+        case .event:
+            print("Event Detail 이동")
+        case .vibe:
+            print("글쓰기 이동")
         }
     }
 }

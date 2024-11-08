@@ -14,10 +14,12 @@ struct SearchingView: View {
     
     @Binding private var selectedEvent: EventDTO?
     var searchContent: SearchContent
+    private let onClick: () -> Void
     
-    init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent) {
+    init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent,onClick: @escaping ()-> Void) {
         self._selectedEvent = selectedEvent
         self.searchContent = searchContent
+        self.onClick = onClick
     }
     
     var body: some View {
@@ -33,13 +35,9 @@ extension SearchingView {
         ScrollView {
             ForEach(events) { event in
                 SearchCell(event: event){
-                    switch searchContent{
-                    case .event:
-                        print("searchResult 이동")
-                    case .vibe:
-                        selectedEvent = event
-                        dismiss()
-                    }
+                    selectedEvent = event
+                    dismiss()
+                    onClick()
                 }
             }
         }.padding(.top, 12)
@@ -47,5 +45,6 @@ extension SearchingView {
 }
 
 #Preview {
-    SearchingView(searchContent: .event).backgroundForKEEV()
+    SearchingView(searchContent: .event, onClick: {})
+        .backgroundForKEEV()
 }

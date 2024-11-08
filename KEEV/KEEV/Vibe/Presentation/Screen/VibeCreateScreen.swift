@@ -30,7 +30,8 @@ struct VibeCreateScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             // MARK: 헤더
-            VibeHeader(selectedEvent: selectedEvent, rating: rating).padding(.horizontal, 16)
+            VibeHeader(selectedEvent: selectedEvent, rating: rating)
+                .padding(.horizontal, 16)
             
             if let event = selectedEvent {
                 VStack(spacing: 0){
