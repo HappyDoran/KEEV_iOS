@@ -238,6 +238,10 @@ extension PretendardFont.BodyStyle {
         case xsmall2
         /// size: 11, lineHeight: 13, letterSpace: 0
         case xsmall3
+        /// size: 10, lineHeight: 12, letterSpace: 0
+        case xsmall4
+        
+        
         
         var fontSize: CGFloat {
             switch self {
@@ -248,6 +252,7 @@ extension PretendardFont.BodyStyle {
             case .xsmall: 13
             case .xsmall2: 12
             case .xsmall3: 11
+            case .xsmall4: 10
             }
         }
         
@@ -260,6 +265,7 @@ extension PretendardFont.BodyStyle {
             case .xsmall: 17
             case .xsmall2: 15
             case .xsmall3: 13
+            case .xsmall4: 12
             }
         }
         
@@ -272,6 +278,7 @@ extension PretendardFont.BodyStyle {
             case .xsmall: 0
             case .xsmall2: 0
             case .xsmall3: 0
+            case .xsmall4: 0
             }
         }
     }
