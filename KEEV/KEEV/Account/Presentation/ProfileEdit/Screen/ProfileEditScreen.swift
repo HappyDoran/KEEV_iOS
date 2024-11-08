@@ -101,14 +101,14 @@ struct ProfileEditScreen: View {
         .customAlert(
             isPresented: $showCloseAlert,
             title: "변경된 정보를 저장하시겠습니까?",
-            message: "",
-            closeText: "아니요",
-            closeAction: {
-                accountService.setUserProfile(userProfile)
+            firstButtonText: "아니요",
+            firstButtonStyle: .normal,
+            firstButtonAction: {
                 dismiss()
             },
-            someText: "예",
-            someAction: {
+            secondButtonText: "예",
+            secondButtonStyle: .active,
+            secondButtonAction: {
                 accountService.setUserProfile(userProfile)
                 dismiss()
             }
