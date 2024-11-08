@@ -1,0 +1,62 @@
+//
+//  ReportListView.swift
+//  KEEV
+//
+//  Created by Yune Cho on 11/8/24.
+//
+
+import SwiftUI
+
+struct ReportListView: View {
+    private let reportType: ReportType
+    @Binding var selectedCase: String
+    
+    init(reportType: ReportType, selectedCase: Binding<String>) {
+        self.reportType = reportType
+        self._selectedCase = selectedCase
+    }
+    
+    @State private var typedReport = ""
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(reportType.rawValue)
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
+                .foregroundStyle(.gray500)
+                .padding(.bottom, 12)
+            
+            ForEach(reportType.reportList, id: \.self) { title in
+                ReportListCell(title: title, selectedCase: $selectedCase)
+                
+                Divider()
+            }
+            
+            ReportListCell(title: "기타", selectedCase: $selectedCase)
+            
+            if selectedCase.hasPrefix("기타") {
+                SingleLineTextField(placeholder: reportType.etcReportPlaceholder, text: $typedReport)
+                    .submitLabel(.done)
+                    .onSubmit {
+                        setETCReportCase()
+                    }
+                    .padding(.bottom, 16)
+            }
+            
+            Divider()
+        }
+    }
+}
+
+extension ReportListView {
+    private func setETCReportCase() {
+        if typedReport.isEmpty {
+            selectedCase = "기타"
+        } else {
+            selectedCase = "기타: \(typedReport)"
+        }
+    }
+}
+
+#Preview {
+    ReportListView(reportType: .event, selectedCase: .constant(""))
+}
