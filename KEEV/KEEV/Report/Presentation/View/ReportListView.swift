@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 신고 화면에 나타나는 신고 내용들의 리스트를 보여주는 뷰
+///
+/// 신고 화면에 나타나는 신고 내용들의 리스트를 보여주는 뷰입니다.
+///
+/// - Author: 라움
 struct ReportListView: View {
     private let reportType: ReportType
     @Binding var selectedCase: String

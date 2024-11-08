@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 신고하기 화면의 각 신고 내용에 해당하는 Cell
+///
+/// 신고하기 화면의 각 신고 내용에 해당하는 Cell입니다.
+///
+/// - Author: 라움
 struct ReportListCell: View {
     private let title: String
     @Binding var selectedCase: String

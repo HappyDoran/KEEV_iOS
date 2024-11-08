@@ -10,15 +10,7 @@ import SwiftUI
 struct DummyView: View {
     
     var body: some View {
-//        Text("Hello World")
-        NavigationStack {
-            NavigationLink {
-                ReportScreen(reportType: .vibe)
-            } label: {
-                Text("신고하기")
-            }
-        }
-        .tint(.gray100)
+        Text("Hello World")
     }
 }
 

@@ -7,6 +7,25 @@
 
 import SwiftUI
 
+/// 신고하기 화면
+///
+/// 신고하기 화면이며 네비게이션으로 화면이 전환되어야합니다.
+///
+/// 사용방법은 아래와 같습니다.
+///
+/// ```swift
+/// NavigationStack {
+///     NavigationLink {
+///         ReportScreen(reportType: .vibe)
+///     } label: {
+///         Text("신고하기")
+///     }
+/// }
+/// .tint(.gray100)
+/// ```
+///
+/// - Note: 신고하기를 사용하는 뷰 위치에 따라 reportType을 event, vibe, user, comment 중에서 고르면 됩니다.
+/// - Author: 라움
 struct ReportScreen: View {
     private let reportType: ReportType
     
