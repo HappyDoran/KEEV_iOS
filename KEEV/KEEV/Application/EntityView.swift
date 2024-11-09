@@ -14,13 +14,12 @@ struct EntityView: View {
     
     init() {
         let appearance = UITabBarAppearance()
-        let tabBar = UITabBar()
+        
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor(.gray950)
         appearance.shadowColor = UIColor(.gray500)
         
-        tabBar.standardAppearance = appearance;
-        
+        UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance
     }
     
