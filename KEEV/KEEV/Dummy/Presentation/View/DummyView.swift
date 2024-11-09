@@ -10,7 +10,13 @@ import SwiftUI
 struct DummyView: View {
     
     var body: some View {
-        Text("Hello World")
+//        Text("Hello World")
+        NavigationStack {
+            NavigationLink("설정") {
+                SettingScreen()
+            }
+        }
+        .tint(.gray100)
     }
 }
 
