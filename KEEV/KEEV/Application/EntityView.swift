@@ -7,10 +7,16 @@
 
 import SwiftUI
 
+/// TabBar가 포함된 뷰(.tabItem이 포함된 경우)
+///
+/// 탭바의 배경색, 탭바의 구분선을 UITabBarAppearance()를 사용하여 구현
+///
+/// - Note: 탭바의 아이템과 구분선 사이의 padding, 탭바의 이미자와, 텍스트 사이의 padding을 넣고싶었지만 label쪽 커스텀이 빡세보입니다.
+///
+/// - Author: Doran
 struct EntityView: View {
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
-    @State private var oldSelectedItem = TabbedItem.info.rawValue
     
     init() {
         let appearance = UITabBarAppearance()
@@ -44,12 +50,10 @@ struct EntityView: View {
             }
             .accentColor(.brand500)
         }
-        .onChange(of: selectedItem) { _, newValue in
+        .onChange(of: selectedItem) { oldValue, newValue in
             if newValue == TabbedItem.write.rawValue {
                 isPresented = true
-                selectedItem = oldSelectedItem
-            } else {
-                oldSelectedItem = newValue
+                selectedItem = oldValue
             }
         }
         .sheet(isPresented: $isPresented) {

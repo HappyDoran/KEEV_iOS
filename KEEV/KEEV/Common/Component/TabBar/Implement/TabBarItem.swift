@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// TabBar에 들어가는 아이템들을 정의하기 위한 열거형
+///
+///  아이템의 이름, 아이템 이미지, 아이템 라벨을 정의
+///
+/// - Author: Doran
 enum TabbedItem: String, CaseIterable{
     case info = "info"
     case write = "write"

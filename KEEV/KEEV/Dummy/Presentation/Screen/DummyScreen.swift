@@ -7,10 +7,14 @@
 
 import SwiftUI
 
+/// TabBar가 포함된 뷰(.tabItem이 포함되지 않은 경우)
+///
+/// 탭바의 아이템, 구분선을 커스텀으로 구현
+///
+/// - Author: Doran
 struct DummyScreen: View {
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
-    @State private var oldSelectedItem = TabbedItem.info.rawValue
     
     var body: some View {
         NavigationStack {
@@ -28,12 +32,10 @@ struct DummyScreen: View {
                     }
                     .toolbar(.hidden, for: .tabBar)
                 }
-                .onChange(of: selectedItem) { _, newValue in
+                .onChange(of: selectedItem) { oldValue, newValue in
                     if newValue == TabbedItem.write.rawValue {
                         isPresented = true
-                        selectedItem = oldSelectedItem
-                    } else {
-                        oldSelectedItem = newValue
+                        selectedItem = oldValue
                     }
                 }
                 .sheet(isPresented: $isPresented) {
@@ -72,7 +74,7 @@ struct DummyScreen: View {
 }
 
 extension DummyScreen{
-    func CustomTabItem(tabbItem: TabbedItem, isActive: Bool) -> some View{
+    private func CustomTabItem(tabbItem: TabbedItem, isActive: Bool) -> some View{
         HStack(spacing: 10){
             Spacer()
             VStack(alignment: .center, spacing : 0){
