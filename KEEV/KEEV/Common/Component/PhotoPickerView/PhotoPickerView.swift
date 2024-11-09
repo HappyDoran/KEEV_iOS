@@ -35,21 +35,16 @@ struct PhotoPickerView: View {
                     matching: .images,
                     photoLibrary: PHPhotoLibrary.shared()
                 ) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 16)
-                            .frame(width: 100, height: 100)
-                            .foregroundColor(.gray800)
-                        VStack(spacing: 8) {
+                    RoundedRectangle(cornerRadius: 16)
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(.gray800)
+                        .overlay{
                             Image(systemName: "plus")
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 32, height: 32)
                                 .foregroundColor(.gray500)
                         }
-                    }
-                    .onChange(of: selectedItems) { _, _ in
-                        handleSelectedPhotos()
-                    }
                 }
                 
                 // MARK: 이미지가 있을 때는 이미지, 이미지가 없을 때는 빈 사각형을 띄우는 뷰
@@ -76,6 +71,9 @@ struct PhotoPickerView: View {
                     }
                 }
             }
+        }
+        .onChange(of: selectedItems) { _, _ in
+            handleSelectedPhotos()
         }
     }
 }

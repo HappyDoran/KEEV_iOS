@@ -53,17 +53,16 @@ extension VibeCommentCell {
     }
     
     private var commentBody: some View {
-        ZStack{
-            RoundedRectangle(cornerRadius: 12)
-                .foregroundColor(.gray800)
-            
-            Text(comment == "" ? "공연의 감상을 자유롭게 작성해주세요." : comment)
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                .foregroundColor(comment == "" ? .gray500 : .gray50)
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
-        }
+        RoundedRectangle(cornerRadius: 12)
+            .foregroundColor(.gray800)
+            .overlay{
+                Text(comment == "" ? "공연의 감상을 자유롭게 작성해주세요." : comment)
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
+                    .foregroundColor(comment == "" ? .gray500 : .gray50)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
+            }
     }
 }
 
