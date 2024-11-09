@@ -35,7 +35,7 @@ struct MainHeader: View {
                     .foregroundColor(Color.gray100)
             }
             .fullScreenCover(isPresented: $isPresented){
-                EventSearchScreen(isPresented: $isPresented)
+                SearchScreen(searchContent: .event)
                 
             }
         }

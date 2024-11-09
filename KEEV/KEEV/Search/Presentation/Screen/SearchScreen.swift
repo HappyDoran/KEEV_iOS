@@ -24,22 +24,24 @@ enum EventSearchStatus {
 ///   - isPresented: 시트가 올라와있는지 아닌지를 판별하는 Bool 타입 변수
 ///
 /// - Author: Doran
-struct EventSearchScreen: View {
+struct SearchScreen: View {
     @State private var searchText: String = ""
     @State private var eventSearchStatus: EventSearchStatus = .beforeSearch
-    
     @FocusState private var searchFieldFocus: Bool
     
-    @Binding private var isPresented: Bool
+    @Binding private var selectedEvent: EventDTO?
     
-    init(isPresented: Binding<Bool>) {
-        self._isPresented = isPresented
+    private let searchContent: SearchContent
+    
+    init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent) {
+        self._selectedEvent = selectedEvent
+        self.searchContent = searchContent
     }
     
     var body: some View {
         VStack(spacing: 0){
             // MARK: 헤더
-            SearchHeader(isPresented: $isPresented)
+            SearchHeader(title: searchContent.title)
             
             // MARK: 검색창
             SearchField(text: $searchText,searchStatus: $eventSearchStatus, isFocused: $searchFieldFocus)
@@ -52,23 +54,27 @@ struct EventSearchScreen: View {
                 
                 // MARK: 텍스트 필드에 검색을 하는 중인 뷰
             case .searching:
-                SearchingView()
+                SearchingView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                    handleSearching()
+                }
                 
                 // MARK: 검색 결과가 나온 후의 뷰
             case .afterSearch:
-                SearchAfterView()
-                    .padding(.horizontal, 16)
+                SearchAfterView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                    handleAfterSearch()
+                }.padding(.horizontal, 16)
             }
             Spacer()
         }
         .onChange(of: [searchFieldFocus, searchText.isEmpty]) {
             eventSearchStatus = searchCase()
         }
+        
         .backgroundForKEEV()
     }
 }
 
-extension EventSearchScreen {
+extension SearchScreen {
     // MARK: 검색을 하는 과정을 표현한 함수
     private func searchCase()-> EventSearchStatus {
         if !searchFieldFocus && searchText.isEmpty {
@@ -84,9 +90,27 @@ extension EventSearchScreen {
             return .afterSearch
         }
     }
+    
+    private func handleSearching() {
+        switch searchContent {
+        case .event:
+            print("searchResult 이동")
+        case .vibe:
+            print("글쓰기 이동")
+        }
+    }
+    
+    private func handleAfterSearch() {
+        switch searchContent {
+        case .event:
+            print("Event Detail 이동")
+        case .vibe:
+            print("글쓰기 이동")
+        }
+    }
 }
 
 #Preview {
-    EventSearchScreen(isPresented: .constant(false))
+    SearchScreen(searchContent: .event)
         .backgroundForKEEV()
 }

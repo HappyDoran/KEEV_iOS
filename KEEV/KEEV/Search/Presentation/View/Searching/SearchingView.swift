@@ -8,8 +8,19 @@
 import SwiftUI
 
 struct SearchingView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var events: [EventDTO] = [
         EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 4", place: "C5", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")]
+    
+    @Binding private var selectedEvent: EventDTO?
+    var searchContent: SearchContent
+    private let onClick: () -> Void
+    
+    init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent,onClick: @escaping ()-> Void) {
+        self._selectedEvent = selectedEvent
+        self.searchContent = searchContent
+        self.onClick = onClick
+    }
     
     var body: some View {
         VStack(spacing: 0) {
@@ -24,7 +35,9 @@ extension SearchingView {
         ScrollView {
             ForEach(events) { event in
                 SearchCell(event: event){
-                    print("EventDetail로 이동")
+                    selectedEvent = event
+                    dismiss()
+                    onClick()
                 }
             }
         }.padding(.top, 12)
@@ -32,5 +45,6 @@ extension SearchingView {
 }
 
 #Preview {
-    SearchingView()
+    SearchingView(searchContent: .event, onClick: {})
+        .backgroundForKEEV()
 }

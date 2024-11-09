@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+enum SearchContent {
+    case event
+    case vibe
+    
+    var title: String {
+        switch self {
+        case .event: return "검색"
+        case .vibe: return "공연 찾기"
+        }
+    }
+}
+
 /// 이벤트 정보에 표시될 스크린
 ///
 /// - Author: Doran

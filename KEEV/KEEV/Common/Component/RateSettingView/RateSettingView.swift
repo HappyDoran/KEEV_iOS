@@ -64,6 +64,7 @@ struct RateSettingView: View {
                 image(rating, index)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
+                    .foregroundColor(.gray700)
             }
         }
             .onTapGesture(count: 1, coordinateSpace: .local) { point in
@@ -73,9 +74,11 @@ struct RateSettingView: View {
         stars.overlay(
             GeometryReader { geometry in
                 HStack {
-                    Rectangle()
-                        .foregroundStyle(brandColor)
-                        .frame(width: x)
+                    if x > 0 {
+                        Rectangle()
+                            .foregroundStyle(brandColor)
+                            .frame(maxWidth: x)
+                    }
                     Spacer()
                 }
                 .onAppear { initialSetting(from: geometry.size) }

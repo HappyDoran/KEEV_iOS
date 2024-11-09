@@ -12,18 +12,20 @@ import PhotosUI
 ///  Image의 수에 따라서 빈 RoundRectangle이 Image로 바뀌는 형식으로 구현되었다.
 /// - Author: Doran
 struct PhotoPickerView: View {
-    @State private var selectedItems = [PhotosPickerItem]()
+    @Binding private var selectedItems: [PhotosPickerItem]
     @Binding private var selectedImages: [UIImage]
-    private let maxSelectedCount: Int = 5
+    private let maxSelectedCount: Int
     
     private var availableSelectedCount: Int {
         maxSelectedCount - selectedImages.count
     }
     
-    init(selectedImages: Binding<[UIImage]>) {
+    init(selectedItems: Binding<[PhotosPickerItem]>, selectedImages: Binding<[UIImage]>, maxSelectedCount: Int) {
+        self._selectedItems = selectedItems
         self._selectedImages = selectedImages
+        self.maxSelectedCount = maxSelectedCount
     }
-
+    
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack {
@@ -33,31 +35,16 @@ struct PhotoPickerView: View {
                     matching: .images,
                     photoLibrary: PHPhotoLibrary.shared()
                 ) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 16)
-                            .frame(width: 112, height: 112)
-                            .foregroundColor(.gray800)
-                        VStack(spacing: 8) {
-                            Image(systemName: "camera.fill")
+                    RoundedRectangle(cornerRadius: 16)
+                        .frame(width: 100, height: 100)
+                        .foregroundColor(.gray800)
+                        .overlay{
+                            Image(systemName: "plus")
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 45, height: 29)
+                                .frame(width: 32, height: 32)
                                 .foregroundColor(.gray500)
-                            
-                            HStack(spacing: 0) {
-                                Text("\(selectedItems.count)")
-                                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                                    .foregroundColor(.gray300)
-                                
-                                Text(" / \(maxSelectedCount)")
-                                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                                    .foregroundColor(.gray500)
-                            }
                         }
-                    }
-                    .onChange(of: selectedItems) { _, _ in
-                        handleSelectedPhotos()
-                    }
                 }
                 
                 // MARK: 이미지가 있을 때는 이미지, 이미지가 없을 때는 빈 사각형을 띄우는 뷰
@@ -67,28 +54,26 @@ struct PhotoPickerView: View {
                             Image(uiImage: selectedImages[index])
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 112, height: 112)
+                                .frame(width: 100, height: 100)
                                 .cornerRadius(16)
                                 .overlay(
                                     Button(action: {
                                         deleteImage(at: index)
                                     }) {
                                         Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(.gray.opacity(0.7))
-                                            .font(.title)
+                                            .foregroundColor(.white.opacity(0.8))
+                                            .frame(width: 20, height: 20)
                                     }
                                         .padding(8),
                                     alignment: .topTrailing
                                 )
                         }
                     }
-                    else {
-                        RoundedRectangle(cornerRadius: 16)
-                            .frame(width: 112, height: 112)
-                            .foregroundColor(.gray900)
-                    }
                 }
             }
+        }
+        .onChange(of: selectedItems) { _, _ in
+            handleSelectedPhotos()
         }
     }
 }
@@ -102,10 +87,9 @@ extension PhotoPickerView {
             selectedImages.removeAll()
             for item in selectedItems {
                 do {
-                    if let data = try await item.loadTransferable(type: Data.self) {
-                        if let newImage = UIImage(data: data) {
-                            selectedImages.append(newImage)
-                        }
+                    if let data = try await item.loadTransferable(type: Data.self)
+                        , let newImage = UIImage(data: data) {
+                        selectedImages.append(newImage)   
                     }
                 } catch {
                     print(error.localizedDescription)
@@ -123,11 +107,12 @@ extension PhotoPickerView {
 
 struct PhotoPickerView_Previews: PreviewProvider {
     struct PreviewWrapper: View {
+        @State private var selectedItems: [PhotosPickerItem] = []
         @State private var selectedImages: [UIImage] = []
         @State private var isPresentedError: Bool = false
 
         var body: some View {
-            PhotoPickerView(selectedImages: $selectedImages)
+            PhotoPickerView(selectedItems: $selectedItems, selectedImages: $selectedImages, maxSelectedCount: 5)
         }
     }
 
@@ -135,8 +120,5 @@ struct PhotoPickerView_Previews: PreviewProvider {
         PreviewWrapper()
             .preferredColorScheme(.dark)
             .previewLayout(.sizeThatFits)
-            .padding()
     }
 }
-
-
