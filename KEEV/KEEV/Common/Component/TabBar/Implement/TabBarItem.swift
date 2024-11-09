@@ -5,6 +5,8 @@
 //  Created by Doran on 11/8/24.
 //
 
+import SwiftUI
+
 enum TabbedItem: String, CaseIterable{
     case info = "info"
     case write = "write"
@@ -29,6 +31,14 @@ enum TabbedItem: String, CaseIterable{
             return "plus.app"
         case .profile:
             return "person.fill"
+        }
+    }
+    
+    static func label(for item: TabbedItem) -> some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: 20)
+            Image(systemName: item.iconName)
+            Text(item.title)
         }
     }
 }
