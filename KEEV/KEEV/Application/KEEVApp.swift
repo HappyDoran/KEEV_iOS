@@ -15,7 +15,7 @@ struct KEEVApp: App {
     
     var body: some Scene {
         WindowGroup {
-//            EntityView()
+
             DummyView()
         }
     }
