@@ -17,9 +17,10 @@ struct EntityView: View {
         let tabBar = UITabBar()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = UIColor(.gray950)
-        appearance.shadowColor = UIColor(.gray600)
+        appearance.shadowColor = UIColor(.gray500)
         
         tabBar.standardAppearance = appearance;
+        
         UITabBar.appearance().scrollEdgeAppearance = appearance
     }
     
