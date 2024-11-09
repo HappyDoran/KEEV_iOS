@@ -36,9 +36,9 @@ enum TabbedItem: String, CaseIterable{
     
     static func label(for item: TabbedItem) -> some View {
         VStack(spacing: 0) {
-            Spacer(minLength: 20)
             Image(systemName: item.iconName)
             Text(item.title)
         }
+        .environment(\.symbolVariants, .none)
     }
 }
