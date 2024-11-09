@@ -14,7 +14,7 @@ import SwiftUI
 /// - Author: 라움
 struct ReportListCell: View {
     private let title: String
-    @Binding var selectedCase: String
+    @Binding private var selectedCase: String
     
     init(title: String, selectedCase: Binding<String>) {
         self.title = title
