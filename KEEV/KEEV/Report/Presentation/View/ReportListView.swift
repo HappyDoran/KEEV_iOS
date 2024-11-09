@@ -45,10 +45,13 @@ struct ReportListView: View {
                         setETCReportCase()
                     }
                     .padding(.bottom, 16)
+                    .transition(.scale)
             }
             
             Divider()
+                .transition(.slide)
         }
+        .animation(.bouncy, value: selectedCase)
     }
 }
 
