@@ -9,8 +9,8 @@ import SwiftUI
 
 struct EntityView: View {
     @State private var isPresented = false
-    @State private var selectedItem = "info"
-    @State private var oldSelectedItem = "info"
+    @State private var selectedItem = TabbedItem.info.rawValue
+    @State private var oldSelectedItem = TabbedItem.info.rawValue
     
     init() {
         let appearance = UITabBarAppearance()
