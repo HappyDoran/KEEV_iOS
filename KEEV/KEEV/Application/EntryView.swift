@@ -1,5 +1,5 @@
 //
-//  EntityView.swift
+//  EntryView.swift
 //  KEEV
 //
 //  Created by Doran on 11/9/24.
@@ -14,7 +14,7 @@ import SwiftUI
 /// - Note: 탭바의 아이템과 구분선 사이의 padding, 탭바의 이미자와, 텍스트 사이의 padding을 넣고싶었지만 label쪽 커스텀이 빡세보입니다.
 ///
 /// - Author: Doran
-struct EntityView: View {
+struct EntryView: View {
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
     
@@ -63,5 +63,5 @@ struct EntityView: View {
 }
 
 #Preview {
-    EntityView()
+    EntryView()
 }
