@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+/// 설정 화면
+///
+/// KEEV 앱의 설정 화면입니다.
+///
+/// 앱의 현재 버전 / 공지사항 / 서비스 이용약관 / 개인정보 처리방침 확인이 가능합니다.
+///
+/// 피드백 및 문의사항 전송을 위해 애플 기본 메일앱으로 연결됩니다.
+///
+/// 로그아웃 및 회원탈퇴를 해당 화면에서 할 수 있습니다.
+///
+/// - Todo: 로그아웃 및 회원탈퇴 기능이 구현되면 각 기능의 customAlert 내에 주석이 작성된 부분에 기능을 추가해야합니다.
+/// - Author: 라움
 struct SettingScreen: View {
     private let settingService = SettingService()
     
@@ -73,10 +85,10 @@ struct SettingScreen: View {
         .toolbarRole(.editor)
         .backgroundForKEEV()
         .fullScreenCover(isPresented: $showTermsOfUse, content: {
-            DocumentView(title: "서비스 이용약관", termsOfUse: settingService.termsOfUse)
+            DocumentView(title: "서비스 이용약관", text: settingService.termsOfUse)
         })
         .fullScreenCover(isPresented: $showPrivacyPolicy, content: {
-            DocumentView(title: "개인정보 처리방침", termsOfUse: settingService.privacyPolicy)
+            DocumentView(title: "개인정보 처리방침", text: settingService.privacyPolicy)
         })
         .customAlert(
             isPresented: $showLogoutAlert,

@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// 공지사항 뷰의 각 셀
+///
+/// KEEV 공지사항 뷰의 각 공지사항 셀들에 대한 구현입니다.
+///
+/// 각 셀을 DisclosureGroup으로 구현하여 탭을 통해 본문을 열었다가 닫을 수 있습니다.
+///
+/// - Author: 라움
 struct NoticeCell: View {
     private let notice: Notice
     

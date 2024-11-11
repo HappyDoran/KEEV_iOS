@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// FullScreenCover로 나타나는 뷰의 상단 툴바
+///
+/// FullScreenCover로 나타나는 뷰의 상단 닫기 버튼과 타이틀을 표시하는 뷰입니다.
+///
+/// - Author: 라움
 struct FullScreenCoverTopView: View {
     private let title: String
     

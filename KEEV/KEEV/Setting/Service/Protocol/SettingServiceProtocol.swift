@@ -8,6 +8,11 @@
 import Foundation
 import SwiftUI
 
+/// SettingService를 구현하기 위한 프로토콜
+///
+/// SettingService를 구현하기 위한 프로토콜입니다.
+///
+/// - Author: 라움
 protocol SettingServiceProtocol {
     var version: String { get }
     var notices: [Notice] { get }

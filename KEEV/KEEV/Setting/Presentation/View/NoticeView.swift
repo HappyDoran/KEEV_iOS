@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 공지사항을 보여주는 뷰
+///
+/// KEEV의 공지사항들을 보여주는 뷰입니다.
+///
+/// - Author: 라움
 struct NoticeView: View {
     private let settingService: SettingService
     
