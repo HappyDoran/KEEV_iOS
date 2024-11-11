@@ -8,30 +8,52 @@
 import SwiftUI
 
 struct TermsOfUseView: View {
-    @Environment(\.dismiss) private var dismiss
+    @State private var termsOfUse = ""
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("여기에 서비스 이용약관을 보여줄겁니다.")
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                        .figmaFont(PretendardFont.title(style: .xs))
-                        .foregroundStyle(.gray100)
-                }
-            }
+            FullScreenCoverTopView(title: "서비스 이용약관")
             
-            ToolbarItem(placement: .principal) {
-                Text("서비스 이용약관")
-                    .figmaFont(PretendardFont.title(style: .xs))
-                    .foregroundStyle(.gray100)
+            if termsOfUse.isEmpty {
+                Spacer()
+                HStack {
+                    Spacer()
+                    ProgressView()
+                        .tint(.brand500)
+                    Spacer()
+                }
+                Spacer()
+            } else {
+                ScrollView {
+                    Text(termsOfUse)
+                }
+                .foregroundStyle(.gray500)
+                .padding(.horizontal, 16)
             }
         }
         .backgroundForKEEV()
+        .onAppear {
+            let detachedTask = Task.detached(priority: .background) {
+                do {
+                    try await loadData()
+                } catch {
+                    print("서비스 이용약관을 불러오는 중에 오류가 발생했습니다.")
+                }
+            }
+            detachedTask.cancel()
+        }
+    }
+}
+
+extension TermsOfUseView {
+    private func loadData() async throws {
+        let filepath = Bundle.main.url(forResource: "TermsOfUse", withExtension: "txt")!
+        
+        do {
+            try termsOfUse = String(contentsOf: filepath, encoding: .utf8)
+        } catch {
+            throw error
+        }
     }
 }
 

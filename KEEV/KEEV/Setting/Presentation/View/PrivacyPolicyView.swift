@@ -8,30 +8,52 @@
 import SwiftUI
 
 struct PrivacyPolicyView: View {
-    @Environment(\.dismiss) private var dismiss
+    @State private var privacyPolicy = ""
     
     var body: some View {
-        VStack {
-            Text("여기에 개인정보 처리방침을 보여줄겁니다.")
-        }
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark")
-                        .figmaFont(PretendardFont.title(style: .xs))
-                        .foregroundStyle(.gray100)
-                }
-            }
+        VStack(alignment: .leading) {
+            FullScreenCoverTopView(title: "개인정보 처리방침")
             
-            ToolbarItem(placement: .principal) {
-                Text("개인정보 처리방침")
-                    .figmaFont(PretendardFont.title(style: .xs))
-                    .foregroundStyle(.gray100)
+            if privacyPolicy.isEmpty {
+                Spacer()
+                HStack {
+                    Spacer()
+                    ProgressView()
+                        .tint(.brand500)
+                    Spacer()
+                }
+                Spacer()
+            } else {
+                ScrollView {
+                    Text(privacyPolicy)
+                }
+                .foregroundStyle(.gray500)
+                .padding(.horizontal, 16)
             }
         }
         .backgroundForKEEV()
+        .onAppear {
+            let detachedTask = Task.detached {
+                do {
+                    try await loadData()
+                } catch {
+                    print("개인정보 처리방침을 불러오는 중에 오류가 발생했습니다.")
+                }
+            }
+            detachedTask.cancel()
+        }
+    }
+}
+
+extension PrivacyPolicyView {
+    private func loadData() async throws {
+        let filepath = Bundle.main.url(forResource: "PrivacyPolicy", withExtension: "txt")!
+        
+        do {
+            try privacyPolicy = String(contentsOf: filepath, encoding: .utf8)
+        } catch {
+            throw error
+        }
     }
 }
 
