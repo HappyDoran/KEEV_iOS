@@ -17,6 +17,19 @@ import SwiftUI
 ///
 /// 로그아웃 및 회원탈퇴를 해당 화면에서 할 수 있습니다.
 ///
+/// 사용방법은 아래와 같습니다.
+///
+/// ```swift
+/// NavigationStack {
+///     NavigationLink {
+///         SettingScreen()
+///     } label: {
+///         Text("설정")
+///     }
+/// }
+/// .tint(.gray100)
+/// ```
+///
 /// - Todo: 로그아웃 및 회원탈퇴 기능이 구현되면 각 기능의 customAlert 내에 주석이 작성된 부분에 기능을 추가해야합니다.
 /// - Author: 라움
 struct SettingScreen: View {

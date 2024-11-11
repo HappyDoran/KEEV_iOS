@@ -71,10 +71,8 @@ class SettingService: SettingServiceProtocol {
     ///
     /// - Author: 라움
     func send(openURL: OpenURLAction) {
-        let email = "hmhz.studio@gmail.com"
-        let subject = "제목을 입력해주세요."
-        let body = "\n\n여러분의 피드백은 더 나은 KEEV 개발에 활용됩니다."
-        let urlString = "mailto:\(email)?subject=\(subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")&body=\(body.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")"
+        let feedbackEmail = FeedbackEmail()
+        let urlString = "mailto:\(feedbackEmail.email)?subject=\(feedbackEmail.subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")&body=\(feedbackEmail.body.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")"
         
         guard let url = URL(string: urlString) else { return }
         openURL(url) { accepted in
@@ -82,5 +80,16 @@ class SettingService: SettingServiceProtocol {
                 print("ERROR: 현재 기기는 이메일을 지원하지 않습니다.")
             }
         }
+    }
+    
+    /// 피드백 및 문의사항을 보내기 위한 이메일 주소와 템플릿
+    ///
+    /// 피드백 및 문의사항을 보내기 위한 이메일 주소와 템플릿입니다.
+    ///
+    /// - Author: 라움
+    private struct FeedbackEmail {
+        let email = "hmhz.studio@gmail.com"
+        let subject = "제목을 입력해주세요."
+        let body = "\n\n여러분의 피드백은 더 나은 KEEV 개발에 활용됩니다."
     }
 }
