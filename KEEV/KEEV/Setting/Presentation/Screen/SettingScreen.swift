@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SettingScreen: View {
-    let version: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+    private let settingService = SettingService()
     
     @Environment(\.openURL) var openURL
     
@@ -20,16 +20,16 @@ struct SettingScreen: View {
     var body: some View {
         NavigationStack {
             VStack {
-                SettingCell(title: "현재 버전 \(version)", titleColor: .gray500)
+                SettingCell(title: "현재 버전 \(settingService.version)", titleColor: .gray500)
                 
                 NavigationLink {
-                    NoticeView()
+                    NoticeView(settingService: settingService)
                 } label: {
                     SettingCell(title: "공지사항")
                 }
                 
                 Button {
-                    send(openURL: openURL)
+                    settingService.send(openURL: openURL)
                 } label: {
                     SettingCell(title: "피드백 및 문의사항")
                 }
@@ -73,10 +73,10 @@ struct SettingScreen: View {
         .toolbarRole(.editor)
         .backgroundForKEEV()
         .fullScreenCover(isPresented: $showTermsOfUse, content: {
-            TermsOfUseView()
+            DocumentView(title: "서비스 이용약관", termsOfUse: settingService.termsOfUse)
         })
         .fullScreenCover(isPresented: $showPrivacyPolicy, content: {
-            PrivacyPolicyView()
+            DocumentView(title: "개인정보 처리방침", termsOfUse: settingService.privacyPolicy)
         })
         .customAlert(
             isPresented: $showLogoutAlert,
@@ -103,22 +103,6 @@ struct SettingScreen: View {
                 // 회원탈퇴 기능 추가해야합니다.
             }
         )
-    }
-}
-
-extension SettingScreen {
-    private func send(openURL: OpenURLAction) {
-        let email = "hmhz.studio@gmail.com"
-        let subject = "제목을 입력해주세요."
-        let body = "\n\n여러분의 피드백은 더 나은 KEEV 개발에 활용됩니다."
-        let urlString = "mailto:\(email)?subject=\(subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")&body=\(body.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")"
-        
-        guard let url = URL(string: urlString) else { return }
-        openURL(url) { accepted in
-            if !accepted {
-                print("ERROR: 현재 기기는 이메일을 지원하지 않습니다.")
-            }
-        }
     }
 }
 
