@@ -13,15 +13,15 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct NoticeView: View {
-    private let settingService: SettingService
+    private let notices: [Notice]
     
-    init(settingService: SettingService) {
-        self.settingService = settingService
+    init(notices: [Notice]) {
+        self.notices = notices
     }
     
     var body: some View {
         ScrollView {
-            ForEach(settingService.notices) { notice in
+            ForEach(notices) { notice in
                 NoticeCell(notice: notice)
             }
         }
@@ -39,6 +39,6 @@ struct NoticeView: View {
 
 #Preview {
     NavigationStack {
-        NoticeView(settingService: SettingService())
+        NoticeView(notices: [])
     }
 }

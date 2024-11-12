@@ -16,11 +16,11 @@ import Foundation
 /// - Author: 라움
 struct Notice: Identifiable {
     /// 공지사항 ID
-    var id: UUID = UUID()
+    let id: UUID = UUID()
     /// 공지사항 제목
-    var title: String
+    let title: String
     /// 공지 날짜
-    var date: Date
+    let date: Date
     /// 공지사항 본문
-    var content: String
+    let content: String
 }

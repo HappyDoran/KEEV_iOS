@@ -14,10 +14,9 @@ import SwiftUI
 ///
 /// - Author: 라움
 protocol SettingServiceProtocol {
-    var version: String { get }
     var notices: [Notice] { get }
-    var termsOfUse: String { get }
-    var privacyPolicy: String { get }
     
     func send(openURL: OpenURLAction)
+    func termsOfUse() -> String
+    func privacyPolicy() -> String
 }

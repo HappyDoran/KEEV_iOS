@@ -33,7 +33,7 @@ import SwiftUI
 /// - Todo: 로그아웃 및 회원탈퇴 기능이 구현되면 각 기능의 customAlert 내에 주석이 작성된 부분에 기능을 추가해야합니다.
 /// - Author: 라움
 struct SettingScreen: View {
-    private let settingService = SettingService()
+    @Injected private var settingService: any SettingServiceProtocol
     
     @Environment(\.openURL) var openURL
     
@@ -45,10 +45,10 @@ struct SettingScreen: View {
     var body: some View {
         NavigationStack {
             VStack {
-                SettingCell(title: "현재 버전 \(settingService.version)", titleColor: .gray500)
+                SettingCell(title: "현재 버전 \(AppEnvironment.version)", titleColor: .gray500)
                 
                 NavigationLink {
-                    NoticeView(settingService: settingService)
+                    NoticeView(notices: settingService.notices)
                 } label: {
                     SettingCell(title: "공지사항")
                 }
@@ -98,10 +98,10 @@ struct SettingScreen: View {
         .toolbarRole(.editor)
         .backgroundForKEEV()
         .fullScreenCover(isPresented: $showTermsOfUse, content: {
-            DocumentView(title: "서비스 이용약관", text: settingService.termsOfUse)
+            DocumentView(title: "서비스 이용약관", text: settingService.termsOfUse())
         })
         .fullScreenCover(isPresented: $showPrivacyPolicy, content: {
-            DocumentView(title: "개인정보 처리방침", text: settingService.privacyPolicy)
+            DocumentView(title: "개인정보 처리방침", text: settingService.privacyPolicy())
         })
         .customAlert(
             isPresented: $showLogoutAlert,
