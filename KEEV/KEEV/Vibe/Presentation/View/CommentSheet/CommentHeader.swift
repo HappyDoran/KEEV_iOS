@@ -12,6 +12,16 @@ import SwiftUI
 /// - Note: 버튼의 액션 (취소 버튼의 액션)이 아직 구현되지 않았습니다. Alert 수정 후 반영하여 구현할 예정입니다.
 /// - Author: Doran
 struct CommentHeader: View {
+    @Binding private var comment: String
+    @Binding private var typedComment: String
+    @Binding private var showCancleAlert: Bool
+    
+    init(comment: Binding<String>, typedComment: Binding<String>, showCancleAlert: Binding<Bool>) {
+        self._comment = comment
+        self._typedComment = typedComment
+        self._showCancleAlert = showCancleAlert
+    }
+    
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -22,7 +32,11 @@ struct CommentHeader: View {
             // MARK: 검색 시트 아래로 내리는 버튼들
             HStack {
                 Button(action: {
-                    
+                    if comment == typedComment {
+                        dismiss()
+                    } else {
+                        showCancleAlert = true
+                    }
                 }) {
                     Text("취소")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
@@ -32,6 +46,7 @@ struct CommentHeader: View {
                 Spacer()
                 
                 Button(action: {
+                    comment = typedComment.trimmingCharacters(in: .whitespacesAndNewlines)
                     dismiss()
                 }) {
                     Text("저장")
@@ -49,6 +64,6 @@ struct CommentHeader: View {
     ZStack {
         Color.gray800
             .ignoresSafeArea(.all, edges: .all)
-        CommentHeader()
+        CommentHeader(comment: .constant(""), typedComment: .constant(""), showCancleAlert: .constant(false))
     }
 }

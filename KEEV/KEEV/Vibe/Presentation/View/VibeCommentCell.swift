@@ -11,14 +11,19 @@ import SwiftUI
 ///
 /// - Parameters:
 ///   - comment: CommentSheetView에서 입력 받은 Text를 표시해주는 필드
+///   - showCancelAlert: 코멘트 작성 취소 선택 시 나오는 알럿 노출 여부
 ///
 /// - Author: Doran
 struct VibeCommentCell: View {
     @State private var isPresented = false
     @Binding private var comment: String
+    @Binding private var showCancelAlert: Bool
+    @State private var typedComment = ""
     
-    init(comment: Binding<String>) {
+    init(comment: Binding<String>, showCancelAlert: Binding<Bool>) {
         self._comment = comment
+        self._showCancelAlert = showCancelAlert
+        self.typedComment = comment.wrappedValue
     }
     
     var body: some View {
@@ -26,18 +31,19 @@ struct VibeCommentCell: View {
             // MARK: 헤더
             commentHeader.padding(.top, 16)
             Button(action: {
+                typedComment = comment
                 isPresented.toggle()
             }){
                 // MARK: CommentSheetView를 띄우는 버튼 및 Comment가 표시되는 영역
                 commentBody
                     .padding(.top, 12)
                     .frame(minHeight: 158)
-                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .sheet(isPresented: $isPresented){
-            CommentSheetView(comment: $comment)
+            CommentSheetView(comment: $comment, typedComment: $typedComment, showCancleAlert: $showCancelAlert)
                 .presentationDragIndicator(.visible)
+                .interactiveDismissDisabled(comment != typedComment)
         }
     }
 }
@@ -53,19 +59,20 @@ extension VibeCommentCell {
     }
     
     private var commentBody: some View {
-        RoundedRectangle(cornerRadius: 12)
-            .foregroundColor(.gray800)
-            .overlay{
-                Text(comment == "" ? "공연의 감상을 자유롭게 작성해주세요." : comment)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                    .foregroundColor(comment == "" ? .gray500 : .gray50)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                    .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
+        Text(comment.isEmpty ? "공연의 감상을 자유롭게 작성해주세요." : comment)
+            .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
+            .foregroundColor(comment.isEmpty ? .gray500 : .gray50)
+            .multilineTextAlignment(.leading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
+            .background {
+                RoundedRectangle(cornerRadius: 12)
+                    .foregroundColor(.gray800)
             }
     }
 }
 
 #Preview {
-    VibeCommentCell(comment: .constant("")).backgroundForKEEV()
+    VibeCommentCell(comment: .constant(""), showCancelAlert: .constant(false))
+        .backgroundForKEEV()
 }

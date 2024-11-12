@@ -14,6 +14,8 @@ import PhotosUI
 ///
 /// - Author: Doran
 struct VibeCreateScreen: View {
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var isPresented = false
     
     @State private var selectedEvent: EventDTO? = nil
@@ -25,12 +27,13 @@ struct VibeCreateScreen: View {
     private let maxSelectedCount: Int = 5
     
     @State private var comment: String = ""
-    
+    @State private var showCancelAlert = false
+    @State private var showExitAlert = false
     
     var body: some View {
         VStack(spacing: 0) {
             // MARK: 헤더
-            VibeHeader(selectedEvent: selectedEvent, rating: rating)
+            VibeHeader(selectedEvent: selectedEvent, rating: rating, showExitAlert: $showExitAlert)
                 .padding(.horizontal, 16)
             
             if let event = selectedEvent {
@@ -60,9 +63,9 @@ struct VibeCreateScreen: View {
             }
             
             else {
-                
                 EventSelectCell(isPresented: $isPresented)
                     .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
+                
                 VStack(spacing : 0) {
                     ratingSection
 
@@ -77,7 +80,6 @@ struct VibeCreateScreen: View {
                 }
                 .opacity(selectedEvent == nil ? 0.2 : 1)
                 .disabled(selectedEvent == nil)
-                
             }
             
             Spacer()
@@ -85,6 +87,19 @@ struct VibeCreateScreen: View {
         .fullScreenCover(isPresented: $isPresented) {
             SearchScreen(selectedEvent: $selectedEvent, searchContent: .vibe)
         }
+        .customAlert(
+            isPresented: $showExitAlert,
+            title: "정말로 나가시겠어요?",
+            message: "작성 중인 내용은 저장되지 않아요.",
+            firstButtonText: "나가기",
+            firstButtonStyle: .destructive,
+            firstButtonAction: {
+                dismiss()
+            },
+            secondButtonText: "계속 작성",
+            secondButtonStyle: .normal,
+            secondButtonAction: { }
+        )
         .edgesIgnoringSafeArea(.bottom)
         .backgroundForKEEV()
     }
@@ -102,8 +117,9 @@ extension VibeCreateScreen {
     }
     
     private var commentSection: some View {
-        VibeCommentCell(comment: $comment)
+        VibeCommentCell(comment: $comment, showCancelAlert: $showCancelAlert)
             .padding(.horizontal, 16)
+            .padding(.bottom, 69)
     }
 }
 
