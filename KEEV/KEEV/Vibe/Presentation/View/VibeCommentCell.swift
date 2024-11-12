@@ -11,6 +11,7 @@ import SwiftUI
 ///
 /// - Parameters:
 ///   - comment: CommentSheetView에서 입력 받은 Text를 표시해주는 필드
+///   - showCancelAlert: 코멘트 작성 취소 선택 시 나오는 알럿 노출 여부
 ///
 /// - Author: Doran
 struct VibeCommentCell: View {
@@ -19,9 +20,9 @@ struct VibeCommentCell: View {
     @Binding private var showCancelAlert: Bool
     @State private var typedComment = ""
     
-    init(comment: Binding<String>, showCancleAlert: Binding<Bool>) {
+    init(comment: Binding<String>, showCancelAlert: Binding<Bool>) {
         self._comment = comment
-        self._showCancelAlert = showCancleAlert
+        self._showCancelAlert = showCancelAlert
         self.typedComment = comment.wrappedValue
     }
     
@@ -72,6 +73,6 @@ extension VibeCommentCell {
 }
 
 #Preview {
-    VibeCommentCell(comment: .constant(""), showCancleAlert: .constant(false))
+    VibeCommentCell(comment: .constant(""), showCancelAlert: .constant(false))
         .backgroundForKEEV()
 }

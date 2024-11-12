@@ -117,7 +117,7 @@ extension VibeCreateScreen {
     }
     
     private var commentSection: some View {
-        VibeCommentCell(comment: $comment, showCancleAlert: $showCancelAlert)
+        VibeCommentCell(comment: $comment, showCancelAlert: $showCancelAlert)
             .padding(.horizontal, 16)
             .padding(.bottom, 69)
     }

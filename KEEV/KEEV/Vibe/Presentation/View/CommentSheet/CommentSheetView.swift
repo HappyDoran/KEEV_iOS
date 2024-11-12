@@ -12,6 +12,8 @@ import SwiftUI
 /// - Parameters:
 ///   - textEditorFocus: 텍스트 에디터 포커싱 여부
 ///   - comment: 유저가 남긴 코멘트
+///   - typedComment: TextEditor에 입력된 텍스트
+///   - showCancelAlert: 코멘트 작성 취소 선택 시 나오는 알럿 노출 여부
 ///
 /// - Note: FocusState를 사용하여 텍스트 에디터 영역이 아닌 다른 시트의 영역을 터치해도 입력이 가능하게 하였습니다.
 /// - Author: Doran

@@ -11,6 +11,7 @@ import SwiftUI
 ///
 /// - Parameters:
 ///   - comment: 코멘트 텍스트
+///   - typedComment: TextEditor에 입력된 텍스트
 ///   - isFocused: 텍스트 에디터 포커싱 여부
 ///
 /// - Author: Doran

@@ -13,21 +13,9 @@ struct KEEVApp: App {
         AppEnvironment.setupDependency()
     }
     
-    @State private var showScreen = false
-    
     var body: some Scene {
         WindowGroup {
-//            EntryView()
-            VStack {
-                Button {
-                    showScreen.toggle()
-                } label: {
-                    Text("Show Screen")
-                }
-                .fullScreenCover(isPresented: $showScreen) {
-                    VibeCreateScreen()
-                }
-            }
+            EntryView()
         }
     }
 }
