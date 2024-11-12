@@ -63,7 +63,7 @@ struct CommentSheetView: View {
             secondButtonText: "저장",
             secondButtonStyle: .active,
             secondButtonAction: {
-                comment = typedComment
+                comment = typedComment.trimmingCharacters(in: .whitespacesAndNewlines)
                 typedComment = ""
                 dismiss()
             }

@@ -46,7 +46,7 @@ struct CommentHeader: View {
                 Spacer()
                 
                 Button(action: {
-                    comment = typedComment
+                    comment = typedComment.trimmingCharacters(in: .whitespacesAndNewlines)
                     dismiss()
                 }) {
                     Text("저장")
