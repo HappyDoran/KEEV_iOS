@@ -17,7 +17,7 @@ import Foundation
 ///
 /// - Note: `==`의 기준을 '서로의 `id`가 같은가?'로 했습니다. 또한 hash의 기준 또한 `id`입니다.
 /// - Author: newJunsung
-struct SimpleEventDTO: Codable, Identifiable, Hashable {
+struct SimpleEventDTO: Decodable, Identifiable, Hashable {
     /// 이벤트의 ID
     let id: String
     /// 이벤트의 이름
