@@ -44,13 +44,60 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
     let description: String?
     
     /// 이벤트에 대한 상세 설명 이미지
-    let descriptionImagesURLStrings: [String]?
+    let descriptionImagesURLStrings: [String]
     
     /// 장소
     let place: PlaceDTO
     
     /// 이벤트 참여 아티스트
     let artists: [SimpleArtistDTO]
+}
+
+extension DetailEventDTO {
+    /// 상세 설명 이미지가 있고 상세 설명 텍스트가 없는 경우
+    static let dummy0 = DetailEventDTO(
+        id: "1321321",
+        name: "Best of Fujii Kaze 2020-2024 ASIA TOUR in SEOUL",
+        types: [.init(id: 1, name: "콘서트"), .init(id: 2, name: "내한")],
+        genres: [.init(id: 1, name: "J-POP")],
+        createdDate: .startOfDay(year: 2024, month: 09, day: 25),
+        startDate: .startOfDay(year: 2024, month: 12, day: 14),
+        endDate: .startOfDay(year: 2024, month: 12, day: 14),
+        startTime: Date.startOfDay(year: 2024, month: 12, day: 14).addingTimeInterval(TimeInterval(3600 * 19)),
+        posterURLString: "https://image.toast.com/aaaaab/ticketlink/TKL_2/m(19).jpg",
+        description: nil,
+        descriptionImagesURLStrings: ["http://image.toast.com/aaaaab/ticketlink/TKL_4/kaze_info_0913.jpg"],
+        place: .init(id: 2313, name: "고척 스카이돔", address: "서울특별시 구로구 경인로 430", contry: "대한민국", latitude: 37.498333, longitude: 126.866667),
+        artists: [.init(id: 19970614, name: "후지이 카제", profileImageURLString: "https://i.namu.wiki/i/9RIQJx-tv1hv1KhBK63FT6cYCP392Kotd9EBBHmmbA-TENCTFnoNeuAzsyvwa_h-38W3Sk-Dt6Jx9Be-XhHi55A2_yi8_UPnwiEjmzMCbAuN2KhZbp4YTaGAPFDDGwaeX7eTyrj7MaXFJkpu911Ck9tKtkNMp4Sq0HOzFBmMVC0.webp")]
+    )
+    
+    /// 상세 설명 텍스트가 있고 경우, 상세 설명 이미지가 없는 경우
+    static let dummy1 = DetailEventDTO(
+        id: "1321321",
+        name: "Best of Fujii Kaze 2020-2024 ASIA TOUR in SEOUL",
+        types: [.init(id: 1, name: "콘서트"), .init(id: 2, name: "내한")],
+        genres: [.init(id: 1, name: "J-POP")],
+        createdDate: .startOfDay(year: 2024, month: 09, day: 25),
+        startDate: .startOfDay(year: 2024, month: 12, day: 14),
+        endDate: .startOfDay(year: 2024, month: 12, day: 14),
+        startTime: Date.startOfDay(year: 2024, month: 12, day: 14).addingTimeInterval(TimeInterval(3600 * 19)),
+        posterURLString: "https://image.toast.com/aaaaab/ticketlink/TKL_2/m(19).jpg",
+        description: """
+취소일자에 따라 아래와 같이 취소수수료가 부과됩니다. 예매일 기준보다 관람일 기준이 우선 적용됩니다.
+단, 예매 당일 밤 12시 이전 취소 시에는 취소수수료가 없으며 예매수수료도 환불됩니다. (취소기한 내에 한함)
+
+예매후 7일 이내 : 취소수수료 없음
+예매후 8일 ~ 관람일 10일 전 : 뮤지컬/콘서트/클래식 등 공연 장당 4,000원, 연극/전시 등 입장권 장당 2,000원
+(단, 최대 티켓금액의 10% 이내)
+관람일 9일 전 ~ 7일 전 : 티켓금액의 10%
+관람일 6일 전 ~ 3일 전 : 티켓금액의 20%
+관람일 2일 전 ~ 1일 전 : 티켓금액의 30%
+공연 취소 시 : 없음
+""",
+        descriptionImagesURLStrings: [],
+        place: .init(id: 2313, name: "고척 스카이돔", address: "서울특별시 구로구 경인로 430", contry: "대한민국", latitude: 37.498333, longitude: 126.866667),
+        artists: [.init(id: 19970614, name: "후지이 카제", profileImageURLString: "https://i.namu.wiki/i/9RIQJx-tv1hv1KhBK63FT6cYCP392Kotd9EBBHmmbA-TENCTFnoNeuAzsyvwa_h-38W3Sk-Dt6Jx9Be-XhHi55A2_yi8_UPnwiEjmzMCbAuN2KhZbp4YTaGAPFDDGwaeX7eTyrj7MaXFJkpu911Ck9tKtkNMp4Sq0HOzFBmMVC0.webp")]
+    )
 }
 
 struct EventTypeDTO: Decodable, Hashable, Identifiable {
