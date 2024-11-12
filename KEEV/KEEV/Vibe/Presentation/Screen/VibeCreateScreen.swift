@@ -63,9 +63,9 @@ struct VibeCreateScreen: View {
             }
             
             else {
-                
                 EventSelectCell(isPresented: $isPresented)
                     .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
+                
                 VStack(spacing : 0) {
                     ratingSection
 
@@ -80,7 +80,6 @@ struct VibeCreateScreen: View {
                 }
                 .opacity(selectedEvent == nil ? 0.2 : 1)
                 .disabled(selectedEvent == nil)
-                
             }
             
             Spacer()
@@ -120,6 +119,7 @@ extension VibeCreateScreen {
     private var commentSection: some View {
         VibeCommentCell(comment: $comment, showCancleAlert: $showCancelAlert)
             .padding(.horizontal, 16)
+            .padding(.bottom, 69)
     }
 }
 
