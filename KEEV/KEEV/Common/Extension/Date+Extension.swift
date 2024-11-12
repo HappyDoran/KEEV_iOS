@@ -9,6 +9,30 @@ import Foundation
 
 extension Date {
     static private let dateFormatter: DateFormatter = DateFormatter()
+    static private let calendar = Calendar.current
+    
+    /// 특정 날의 시작점을 Date로 바꿔주는 함수
+    ///
+    /// - Parameters:
+    ///   - year: 년
+    ///   - month: 월
+    ///   - day: 일
+    ///
+    /// 년, 월, 일을 입력하면 그 날의 0시 0분을 Date로 반환하는 함수입니다.
+    ///
+    /// - Returns: 지정한 날의 0시 0분을 변환한 Date
+    /// - Author: newJunsung
+    static func startOfDay(year: Int, month: Int, day: Int) -> Date {
+        var components = DateComponents()
+        components.year = year
+        components.month = month
+        components.day = day
+        components.hour = 0
+        components.minute = 0
+        components.second = 0
+        components.nanosecond = 0
+        return Date.calendar.date(from: components)!
+    }
     
     /// Date 타입의 객체를 사용자가 정한 형식의 문자열로 변환하는 함수
     ///
@@ -50,8 +74,7 @@ extension Date {
     ///
     /// - Author: 라움
     func difference(from date: Date) -> Int? {
-        let calendar = Calendar.current
-        guard let difference = calendar.dateComponents([.day], from: self, to: Date()).day else { return nil }
+        guard let difference = Date.calendar.dateComponents([.day], from: self, to: Date()).day else { return nil }
         
         return difference
     }
