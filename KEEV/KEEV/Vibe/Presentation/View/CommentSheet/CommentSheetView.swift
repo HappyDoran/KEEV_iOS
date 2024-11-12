@@ -43,7 +43,7 @@ struct CommentSheetView: View {
                     CommentSheetBody(comment: $comment, typedComment: $typedComment, isFocused: $textEditorFocus)
                 }
                 .onTapGesture {
-                    textEditorFocus = true
+                    textEditorFocus.toggle()
                 }
             }
         }
