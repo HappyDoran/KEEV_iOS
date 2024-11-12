@@ -18,31 +18,60 @@ import SwiftUI
 struct CommentSheetView: View {
     @FocusState private var textEditorFocus: Bool
     @Binding private var comment: String
+    @Binding private var typedComment: String
+    @Binding private var showCancelAlert: Bool
     
-    init(comment: Binding<String>) {
+    init(comment: Binding<String>, typedComment: Binding<String>, showCancleAlert: Binding<Bool>) {
         self._comment = comment
+        self._typedComment = typedComment
+        self._showCancelAlert = showCancleAlert
     }
+    
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ZStack {
             Color.gray800
                 .ignoresSafeArea(.all, edges: .all)
             VStack(spacing: 0){
-                
                 // MARK: 헤더
-                CommentHeader()
+                CommentHeader(comment: $comment, typedComment: $typedComment, showCancleAlert: $showCancelAlert)
                     .padding(.top, 12)
+                
                 ScrollView {
-                    
                     // MARK: 코멘트 남기는 영역. 터치시, 텍스트 에디터에 포커싱
-                    CommentSheetBody(comment: $comment, isFocused: $textEditorFocus)
+                    CommentSheetBody(comment: $comment, typedComment: $typedComment, isFocused: $textEditorFocus)
                 }
                 .onTapGesture {
                     textEditorFocus = true
                 }
             }
         }
+        .onChange(of: showCancelAlert, {
+            textEditorFocus = false
+        })
+        .customAlert(
+            isPresented: $showCancelAlert,
+            title: "작성중인 글을 저장할까요?",
+            message: "취소 선택 시 작성된 글은 저장되지 않습니다.",
+            firstButtonText: "취소",
+            firstButtonStyle: .normal,
+            firstButtonAction: {
+                typedComment = ""
+                dismiss()
+            },
+            secondButtonText: "저장",
+            secondButtonStyle: .active,
+            secondButtonAction: {
+                comment = typedComment
+                typedComment = ""
+                dismiss()
+            }
+        )
     }
 }
 
-#Preview { CommentSheetView(comment: .constant("")).backgroundForKEEV() }
+#Preview {
+    CommentSheetView(comment: .constant(""), typedComment: .constant(""), showCancleAlert: .constant(false))
+        .backgroundForKEEV()
+}

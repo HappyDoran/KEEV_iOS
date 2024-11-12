@@ -11,18 +11,21 @@ import SwiftUI
 /// - Parameters:
 ///   - selectedEvent: 선택한 이벤트 여부에 따른 완료 버튼 유무 표시
 ///   - rating: 만족도 점수에 따른 완료 버튼 활성화
+///   - showExitAlert: 글쓰기 화면에서 X버튼 선택 시의 알럿 노출 여부
 ///
 /// - Author: Doran
 struct VibeHeader: View {
-    @Environment(\.dismiss) private var dismiss
-    
     private let selectedEvent: EventDTO?
     private let rating: Double
+    @Binding private var showExitAlert: Bool
     
-    init(selectedEvent: EventDTO?, rating: Double) {
+    init(selectedEvent: EventDTO?, rating: Double, showExitAlert: Binding<Bool>) {
         self.selectedEvent = selectedEvent
         self.rating = rating
+        self._showExitAlert = showExitAlert
     }
+    
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ZStack {
@@ -32,7 +35,7 @@ struct VibeHeader: View {
             // MARK: 검색 시트 아래로 내리는 버튼
             HStack {
                 Button(action: {
-                    dismiss()
+                    showExitAlert = true
                 }) {
                     Image(systemName: "xmark")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
@@ -43,7 +46,7 @@ struct VibeHeader: View {
                 
                 if selectedEvent != nil {
                     Button(action: {
-                        
+                        dismiss()
                     }){
                         ZStack {
                             RoundedRectangle(cornerRadius: 16)
@@ -66,7 +69,11 @@ struct VibeHeader: View {
 }
 
 #Preview {
-    VibeHeader(selectedEvent: EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png"), rating: 0.0)
-        .backgroundForKEEV()
+    VibeHeader(selectedEvent:
+                EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png"),
+               rating: 0.0,
+               showExitAlert: .constant(false)
+    )
+    .backgroundForKEEV()
 }
 

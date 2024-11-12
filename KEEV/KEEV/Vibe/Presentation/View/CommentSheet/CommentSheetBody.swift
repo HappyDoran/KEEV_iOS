@@ -16,17 +16,19 @@ import SwiftUI
 /// - Author: Doran
 struct CommentSheetBody: View {
     @Binding private var comment: String
+    @Binding private var typedComment: String
     private var isFocused: FocusState<Bool>.Binding
     
-    init(comment: Binding<String>, isFocused: FocusState<Bool>.Binding) {
+    init(comment: Binding<String>, typedComment: Binding<String>, isFocused: FocusState<Bool>.Binding) {
         self._comment = comment
+        self._typedComment = typedComment
         self.isFocused = isFocused
     }
     
     var body: some View {
         
         // MARK: 코멘트 남기는 영역
-        TextEditor(text: $comment)
+        TextEditor(text: $typedComment)
             .focused(isFocused)
             .accentColor(.brand500)
             .scrollContentBackground(.hidden)
@@ -36,12 +38,16 @@ struct CommentSheetBody: View {
             .frame(minHeight: 158)
             .overlay(alignment: .topLeading) {
                 Text("공연의 감상을 자유롭게 작성해주세요.")
-                    .foregroundStyle(comment.isEmpty ? .gray : .clear)
+                    .foregroundStyle(typedComment.isEmpty ? .gray : .clear)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
                     .padding(.top, 10)
                     .padding(.leading,3)
             }
             .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
+            .submitLabel(.done)
+            .onSubmit {
+                isFocused.wrappedValue.toggle()
+            }
     }
 }
 
@@ -49,6 +55,6 @@ struct CommentSheetBody: View {
     ZStack {
         Color.gray800
             .ignoresSafeArea(.all, edges: .all)
-        CommentSheetBody(comment: .constant(""), isFocused:  FocusState<Bool>().projectedValue)
+        CommentSheetBody(comment: .constant(""), typedComment: .constant(""), isFocused:  FocusState<Bool>().projectedValue)
     }
 }

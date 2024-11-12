@@ -16,9 +16,13 @@ import SwiftUI
 struct VibeCommentCell: View {
     @State private var isPresented = false
     @Binding private var comment: String
+    @Binding private var showCancelAlert: Bool
+    @State private var typedComment = ""
     
-    init(comment: Binding<String>) {
+    init(comment: Binding<String>, showCancleAlert: Binding<Bool>) {
         self._comment = comment
+        self._showCancelAlert = showCancleAlert
+        self.typedComment = comment.wrappedValue
     }
     
     var body: some View {
@@ -26,6 +30,7 @@ struct VibeCommentCell: View {
             // MARK: 헤더
             commentHeader.padding(.top, 16)
             Button(action: {
+                typedComment = comment
                 isPresented.toggle()
             }){
                 // MARK: CommentSheetView를 띄우는 버튼 및 Comment가 표시되는 영역
@@ -36,8 +41,9 @@ struct VibeCommentCell: View {
             }
         }
         .sheet(isPresented: $isPresented){
-            CommentSheetView(comment: $comment)
+            CommentSheetView(comment: $comment, typedComment: $typedComment, showCancleAlert: $showCancelAlert)
                 .presentationDragIndicator(.visible)
+                .interactiveDismissDisabled(comment != typedComment)
         }
     }
 }
@@ -67,5 +73,6 @@ extension VibeCommentCell {
 }
 
 #Preview {
-    VibeCommentCell(comment: .constant("")).backgroundForKEEV()
+    VibeCommentCell(comment: .constant(""), showCancleAlert: .constant(false))
+        .backgroundForKEEV()
 }
