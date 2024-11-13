@@ -11,7 +11,6 @@ import Foundation
 /// - Author:   Doran
 struct NetworkUtility {
     private let session: URLSession
-    private let decoder = JSONDecoder()
     
     /// URLSession을 Shared Session으로 초기화 하여 기본적인 요청을 하게 하였습니다.
     init(session: URLSession = .shared) {

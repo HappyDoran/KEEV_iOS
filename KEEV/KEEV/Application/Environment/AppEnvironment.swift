@@ -26,7 +26,7 @@ struct AppEnvironment {
     static let kopisBaseURL: URL = .init(string: "kopis.or.kr")!
     
     /// KEEV 백엔드 서버의 ip주소입니다.
-    static let serverAddress = Bundle.main.infoDictionary?["SERVER_IP_ADDRESS"] as? String ?? ""
+    static let serverIPAddress = Bundle.main.infoDictionary?["SERVER_IP_ADDRESS"] as? String ?? ""
     
     /// 앱에서 사용하는 유틸리티와 서비스의 인스턴스를 `DIContainer`에 등록합니다.
     ///
