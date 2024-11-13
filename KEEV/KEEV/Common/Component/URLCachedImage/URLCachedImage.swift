@@ -63,7 +63,6 @@ struct URLCachedImage<Content: View>: View where Content: View {
     
     private func fetchImage(from url: URL) async {
         if let cachedImage = cache.image(for: url) {
-            print("hit cache")
             phase = .success(Image(uiImage: cachedImage))
         } else {
             await downloadImage(from: url)
@@ -74,7 +73,6 @@ struct URLCachedImage<Content: View>: View where Content: View {
         do {
             let (data, _) = try await session.data(from: url)
             if let downloadedImage = UIImage(data: data) {
-                print("downloaded image")
                 await cache.store(downloadedImage, for: url)
                 phase = .success(Image(uiImage: downloadedImage))
             } else {
