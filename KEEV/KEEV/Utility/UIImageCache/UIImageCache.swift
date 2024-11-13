@@ -18,6 +18,8 @@ import UIKit
 actor UIImageCache {
     typealias Cache = MemoryCacheStorage<NSURL, UIImage>
     
+    static let shared = UIImageCache(configuration: .init(countLimit: 256, totalCostLimit: .megabytes(of: 128), cleanTerm: .seconds(of: 0)))
+    
     private let cache: Cache
     
     /// 환경설정을 주입하여 UIImageCache를 생성합니다.
@@ -52,6 +54,9 @@ actor UIImageCache {
     ///
     /// - Author: newJunsung
     func store(_ image: UIImage, for key: URL) {
+        guard !cache.contains(for: key as NSURL) else {
+            return
+        }
         cache.store(image, for: key as NSURL)
     }
     
