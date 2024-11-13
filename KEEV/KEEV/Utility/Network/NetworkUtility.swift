@@ -17,6 +17,7 @@ struct NetworkUtility {
     init(session: URLSession = .shared) {
         self.session = session
     }
+    
     /// 서버에서 데이터를 가져오는 메소드
     ///
     /// - Parameters:
@@ -28,14 +29,24 @@ struct NetworkUtility {
     /// - Returns: Decodable을 따르는 반환값 ResultType
     ///
     /// - Author: Doran
-    func request<ResultType: Decodable>(router: HTTPRequestable) async throws -> ResultType {
+    func request(router: HTTPRequestable) async throws -> Data {
         let request = try router.asURLRequest()
+        
         let (data, _) = try await session.data(for: request)
         
-        /// decode error 발생시 알아서 오류 출력
-        let decodedData = try decoder.decode(ResultType.self, from: data)
+        return data
+    }
+    
+    func requestWithStatusCode(router: HTTPRequestable) async throws -> (Int, Data) {
+        let request = try router.asURLRequest()
         
-        return decodedData
+        let (data, response) = try await session.data(for: request)
+        
+        guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
+            throw NSError(domain: "ServerError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Server Error"])
+        }
+        
+        return (statusCode, data)
     }
     
     /// API 통신시 XML 데이터를 가져오기 위한 메소드

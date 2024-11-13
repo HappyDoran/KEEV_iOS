@@ -25,6 +25,8 @@ struct AppEnvironment {
     /// KOPIS baseURL입니다.
     static let kopisBaseURL: URL = .init(string: "kopis.or.kr")!
     
+    static let serverAddress = Bundle.main.infoDictionary?["SERVER_IP_ADDRESS"] as? String ?? ""
+    
     /// 앱에서 사용하는 유틸리티와 서비스의 인스턴스를 `DIContainer`에 등록합니다.
     ///
     /// - Important: 유틸리티를 먼저 regist해주시고 서비스를 나중에 regist해주세요!
