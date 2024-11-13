@@ -54,7 +54,7 @@ actor UIImageCache {
     ///
     /// - Author: newJunsung
     func store(_ image: UIImage, for key: URL) {
-        guard cache.contains(for: key as NSURL) else {
+        guard !cache.contains(for: key as NSURL) else {
             return
         }
         cache.store(image, for: key as NSURL)
