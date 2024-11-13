@@ -23,12 +23,12 @@ struct NetworkUtility {
     /// - Parameters:
     ///   - router: HTTPRequestable
     ///
-    ///  코드의 범용성을 넓히기 위한 제네릭 메소드 구현
+    ///  요청을 보내서 서버로부터 가져온 데이터를 리턴하는 메소드입니다.
     ///
-    /// - Throws: 디코딩이 잘못 된 경우 decodingError, URL이 잘못 된 경우 badURL
-    /// - Returns: Decodable을 따르는 반환값 ResultType
+    /// - Throws: URL이 잘못 된 경우 badURL
+    /// - Returns: 서버로부터 가져온 데이터
     ///
-    /// - Author: Doran
+    /// - Author: Doran, 라움
     func request(router: HTTPRequestable) async throws -> Data {
         let request = try router.asURLRequest()
         
@@ -37,6 +37,17 @@ struct NetworkUtility {
         return data
     }
     
+    /// 서버에서 데이터를 가져오는 메소드
+    ///
+    /// - Parameters:
+    ///   - router: HTTPRequestable
+    ///
+    ///  요청을 보내서 서버로부터 가져온 데이터를 status code와 함께 튜플로 리턴하는 메소드입니다.
+    ///
+    /// - Throws: URL이 잘못 된 경우 badURL
+    /// - Returns: 서버로 가져온 status code와 데이터의 튜플
+    ///
+    /// - Author: 라움
     func requestWithStatusCode(router: HTTPRequestable) async throws -> (Int, Data) {
         let request = try router.asURLRequest()
         
