@@ -21,36 +21,33 @@ struct SignInScreen: View {
     @State private var showPrivacyPolicy = false
     
     var body: some View {
-        ZStack {
-            Image("LogoBackgroundImage")
-                .resizable()
-                .ignoresSafeArea()
+        VStack {
+            Spacer()
             
             Image("LogoLargeImage")
                 .resizable()
                 .frame(width: 250, height: 103.5)
             
-            VStack {
-                Spacer()
+            Spacer()
+            
+            Button {
                 
-                Button {
-                    
-                } label: {
-                    RoundedRectangle(cornerRadius: 14)
-                        .foregroundStyle(.white)
-                        .frame(height: 54)
-                        .overlay {
-                            Label("Apple로 로그인", systemImage: "apple.logo")
-                                .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
-                                .foregroundStyle(.black)
-                        }
-                }
-                .padding(.horizontal, 24)
-                .padding(.bottom, 20)
-                
-                signInBottomText
+            } label: {
+                RoundedRectangle(cornerRadius: 14)
+                    .foregroundStyle(.white)
+                    .frame(height: 54)
+                    .overlay {
+                        Label("Apple로 로그인", systemImage: "apple.logo")
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
+                            .foregroundStyle(.black)
+                    }
             }
+            .padding(.horizontal, 24)
+            .padding(.bottom, 20)
+            
+            signInBottomText
         }
+        .backgroundForKEEV()
         .sheet(isPresented: $showTermsOfUse, content: {
             DocumentView(title: "서비스 이용약관", text: settingService.termsOfUse())
                 .presentationDragIndicator(.visible)

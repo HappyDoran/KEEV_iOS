@@ -28,7 +28,8 @@ struct FullScreenCoverTopView: View {
             } label: {
                 HStack {
                     Image(systemName: "xmark")
-                        .figmaFont(PretendardFont.title(style: .xs))
+                        .font(.custom("SF Pro", size: 17))
+                        .fontWeight(.semibold)
                         .foregroundStyle(.gray100)
                     
                     Spacer()
