@@ -9,12 +9,25 @@ import Foundation
 
 struct ReplyUIO: Identifiable {
     let id: Int
-    let user: SimpleUserUIO
+    let userID: Int
+    let userNickname: String
+    let userProfileImageURL: URL?
     let text: String
     let isLiked: Bool
     let likeCount: Int
     let createdDate: Date
     var createdBefore: Int { Int(Date().timeIntervalSince(createdDate) / TimeUnit.days(of: 1).toSeconds) }
+    
+    init(id: Int, user: SimpleUserUIO, text: String, isLiked: Bool, likeCount: Int, createdDate: Date) {
+        self.id = id
+        self.userID = user.id
+        self.userNickname = user.nickname
+        self.userProfileImageURL = user.profileImageURL
+        self.text = text
+        self.isLiked = isLiked
+        self.likeCount = likeCount
+        self.createdDate = createdDate
+    }
 }
 
 extension ReplyUIO {
