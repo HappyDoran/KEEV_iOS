@@ -13,16 +13,6 @@ import Foundation
 protocol URLComposable: URLBaseComposable {
     var path: [String]? { get }
     var queryItems: [URLQueryItem]? { get }
-    
-    /// URL을 만드는 메소드
-    ///
-    ///  읽기, 쓰기가 가능한 URLComponents를 사용하여 URL을 구성합니다.
-    ///
-    /// - Throws: URL이 잘못됐음을 알려주는 Error
-    /// - Returns: 완성된 URL
-    ///
-    /// - Author: Doran
-    func configureURL() throws -> URL
 }
 
 extension URLComposable {
