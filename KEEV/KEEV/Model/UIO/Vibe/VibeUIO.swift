@@ -7,6 +7,10 @@
 
 import Foundation
 
+/// 뷰에서 보여질 VibeUIO
+///
+/// - ToDo: VibeDTO가 생기면 생성자 만들기
+/// - Author: newJunsung
 struct VibeUIO: Identifiable {
     let id: Int
     let user: SimpleUserUIO
