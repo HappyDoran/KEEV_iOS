@@ -91,7 +91,7 @@ extension VibeUIO {
     /// 커멘트를 안 쓴 더미데이터
     static let dummy3 = VibeUIO(
         id: 3,
-        user: .dummy3,
+        user: .dummy2,
         rating: 5,
         imageURLs: [
             URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
