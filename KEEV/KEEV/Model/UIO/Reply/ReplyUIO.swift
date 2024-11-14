@@ -7,15 +7,36 @@
 
 import Foundation
 
+/// 뷰에서 보여질 ReplyUIO
+///
+/// - ToDo: ReplyDTO가 생기면 생성자 만들기
+/// - Author: newJunsung
 struct ReplyUIO: Identifiable {
+    /// 댓글의 id
     let id: Int
+    
+    /// 유저의 id
     let userID: Int
+    
+    /// 유저의 닉네임
     let userNickname: String
+    
+    /// 유저의 프로필 이미지 URL
     let userProfileImageURL: URL?
+    
+    /// 댓글 내용 텍스트
     let text: String
+    
+    /// 앱의 사용자 좋아요를 눌렀는지 여부
     let isLiked: Bool
+    
+    /// 좋아요 수
     let likeCount: Int
+    
+    /// 댓글 생성 날짜
     let createdDate: Date
+    
+    /// 댓글이 오늘로부터 며칠전에 생성됐는지 나타내는 정수
     var createdBefore: Int { Int(Date().timeIntervalSince(createdDate) / TimeUnit.days(of: 1).toSeconds) }
     
     init(id: Int, user: SimpleUserUIO, text: String, isLiked: Bool, likeCount: Int, createdDate: Date) {
