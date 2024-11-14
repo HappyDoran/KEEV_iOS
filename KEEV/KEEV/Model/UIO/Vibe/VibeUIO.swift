@@ -63,7 +63,7 @@ extension VibeUIO {
     /// 레이팅만 등록한 더미데이터
     static let dummy1 = VibeUIO(
         id: 1,
-        user: .dummy0,
+        user: .dummy1,
         rating: 3.5,
         imageURLs: [],
         comment: nil,
@@ -75,7 +75,7 @@ extension VibeUIO {
     /// 커멘트에 줄바꿈이 많은 더미데이터
     static let dummy2 = VibeUIO(
         id: 2,
-        user: .dummy0,
+        user: .dummy2,
         rating: 3.5,
         imageURLs: [
             URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
@@ -91,7 +91,7 @@ extension VibeUIO {
     /// 커멘트를 안 쓴 더미데이터
     static let dummy3 = VibeUIO(
         id: 3,
-        user: .dummy0,
+        user: .dummy3,
         rating: 5,
         imageURLs: [
             URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
