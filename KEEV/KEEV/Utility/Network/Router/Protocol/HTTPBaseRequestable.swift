@@ -15,10 +15,8 @@ import Foundation
 /// - Author: 라움
 protocol HTTPBaseRequestable: URLBaseComposable {
     var method: HTTPMethod { get }
-    
-// MARK: Sprint1에서는 서버와 통신하는 것이 아니기 때문에 header와 body는 주석 처리 해놓았습니다.
-//    var headers: [String: String]? { get }
-//    var body: Data? { get }
+    var headers: [String: String]? { get }
+    var body: Data? { get }
     
     /// URL을 토대로 request를 실행하는 함수
     ///
@@ -37,9 +35,8 @@ extension HTTPBaseRequestable {
         var request = URLRequest(url: url)
         
         request.httpMethod = "\(method)"
-// MARK: Sprint1에서는 서버와 통신하는 것이 아니기 때문에 header와 body는 주석 처리 해놓았습니다.
-//        request.allHTTPHeaderFields = headers
-//        request.httpBody = body
+        request.allHTTPHeaderFields = headers
+        request.httpBody = body
         
         return request
     }

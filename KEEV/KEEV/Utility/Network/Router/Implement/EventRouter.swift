@@ -24,8 +24,15 @@ enum EventRouter {
 /// - Note: 각 요청마다 인스턴스가 생성됩니다.
 /// - Author: Doran
 extension EventRouter: HTTPRequestable {
-    /// http scheme 반환
-    var scheme: String { "http" }
+    var baseURL: any URLBaseComposable {
+        struct BaseURL: URLBaseComposable {
+            let scheme: String
+            let host: String
+            let port: Int?
+        }
+        
+        return BaseURL(scheme: self.scheme, host: self.host, port: self.port)
+    }
 
     /// HTTP 메소드 반환
     var method: HTTPMethod {

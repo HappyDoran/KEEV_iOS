@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Note: URLComposable 프로토콜을 상속하여 configureURL() function을 사용하여 URL을 만들 수 있다.
 /// - Author: Doran
-protocol HTTPRequestable: URLComposable {
+protocol HTTPRequestable: URLEndpointComposable {
     var method: HTTPMethod { get }
     
 // MARK: Sprint1에서는 서버와 통신하는 것이 아니기 때문에 header와 body는 주석 처리 해놓았습니다.
