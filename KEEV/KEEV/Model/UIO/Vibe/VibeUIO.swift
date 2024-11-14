@@ -12,20 +12,39 @@ import Foundation
 /// - ToDo: VibeDTO가 생기면 생성자 만들기
 /// - Author: newJunsung
 struct VibeUIO: Identifiable {
+    /// 바이브의 ID
     let id: Int
+    
+    /// 유저 ID
     let userID: Int
+    
+    /// 유저 닉네임
     let userNickname: String
+    
+    /// 유저 프로필 이미지, URL(string: )을 한 결과 값이기 때문에, nil이 들어갈 수도 있습니다.
     let userProfileImageURL: URL?
+    
+    /// 바이브의 평점
     let rating: Double
+    
+    /// 바이브의 이미지 URL 목록, URL(string: )을 한 결과 값이기 때문에, nil이 들어갈 수도 있습니다.
     let imageURLs: [URL?]
+    
+    /// 바이브의 내용
     let comment: String?
+    
+    /// 바이브 생성 날짜
     let createdDate: String
+    
+    /// 좋아요 수
     let likeCount: Int
+    
+    /// 댓글 수
     let replyCount: Int
     
     init(
         id: Int,
-        user: SimpleUserUIO,
+        user: SimpleUserUIO, // SimpleUserDTO로 나중에 바꿔야합니다.
         rating: Double,
         imageURLs: [URL?],
         comment: String?,
