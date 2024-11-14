@@ -7,15 +7,37 @@
 
 import Foundation
 
+/// 이벤트 관련 DTO를 이벤트 상세 정보 뷰에 나타내기 위해 변환한 타입
+///
+/// 이 타입의 생성자에 `DetailEventDTO`만 주입할 수 있습니다.
+///
+/// - Author: newJunsung
 struct DetailEventUIO: Identifiable {
+    /// 이벤트ID
     let id: String
+    
+    /// 이벤트 이름
     let name: String
+    
+    /// 이벤트 포스터 URL
     let posterURL: URL?
+    
+    /// 공연 시작까지 남은 날짜
     let dDay: Int?
+    
+    /// 공연 시작일
     let startDate: String
+    
+    /// 공연 종료일
     let endDate: String
+    
+    /// 공연 장소
     let placeName: String
+    
+    /// 공연 설명 텍스트
     let description: String?
+    
+    /// 공연 설명 이미지
     let descriptionImageURLs: [URL?]
     
     init(
