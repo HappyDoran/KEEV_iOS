@@ -13,7 +13,9 @@ import Foundation
 /// - Author: newJunsung
 struct VibeUIO: Identifiable {
     let id: Int
-    let user: SimpleUserUIO
+    let userID: Int
+    let userNickname: String
+    let userProfileImageURL: URL?
     let rating: Double
     let imageURLs: [URL?]
     let comment: String?
@@ -32,7 +34,9 @@ struct VibeUIO: Identifiable {
         replyCount: Int
     ) {
         self.id = id
-        self.user = user
+        self.userID = user.id
+        self.userNickname = user.nickname
+        self.userProfileImageURL = user.profileImageURL
         self.rating = rating
         self.imageURLs = imageURLs
         self.comment = comment
