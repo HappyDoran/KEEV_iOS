@@ -25,6 +25,9 @@ struct DetailEventUIO: Identifiable {
     /// 공연 시작까지 남은 날짜
     let dDay: Int?
     
+    /// 공연 예약 시작일과 시간
+    let reservationStartDate: String?
+    
     /// 공연 시작일
     let startDate: String
     
@@ -45,6 +48,7 @@ struct DetailEventUIO: Identifiable {
         name: String,
         posterURL: URL?,
         dDay: Int?,
+        reservationStartDate: String?,
         startDate: String,
         endDate: String,
         placeName: String,
@@ -55,6 +59,7 @@ struct DetailEventUIO: Identifiable {
         self.name = name
         self.posterURL = posterURL
         self.dDay = dDay
+        self.reservationStartDate = reservationStartDate
         self.startDate = startDate
         self.endDate = endDate
         self.placeName = placeName
@@ -66,6 +71,7 @@ struct DetailEventUIO: Identifiable {
         id: String,
         name: String,
         posterURLString: String,
+        reservationStartDate: Date,
         startDate: Date,
         endDate: Date,
         placeName: String,
@@ -76,6 +82,7 @@ struct DetailEventUIO: Identifiable {
         self.name = name
         self.posterURL = URL(string: posterURLString)
         self.dDay = startDate.difference(from: .now)
+        self.reservationStartDate = reservationStartDate.toString(format: "yyyy. MM. dd")
         self.startDate = startDate.toString(format: "yyyy. MM. dd")
         self.endDate = endDate.toString(format: "yyyy. MM. dd")
         self.placeName = placeName
@@ -88,6 +95,7 @@ struct DetailEventUIO: Identifiable {
         self.name = event.name
         self.posterURL = URL(string: event.posterURLString)
         self.dDay = event.startDate.difference(from: .now)
+        self.reservationStartDate = event.reservationStartDate?.toString(format: "yyyy. MM. dd")
         self.startDate = event.startDate.toString(format: "yyyy. MM. dd")
         self.endDate = event.endDate.toString(format: "yyyy. MM. dd")
         self.placeName = event.place.name
@@ -108,6 +116,7 @@ extension DetailEventUIO {
         id: SimpleEventDTO.dummy0.id,
         name: SimpleEventDTO.dummy0.name,
         posterURLString: SimpleEventDTO.dummy0.posterURLString,
+        reservationStartDate: Date.now,
         startDate: SimpleEventDTO.dummy0.startDate,
         endDate: SimpleEventDTO.dummy0.endDate,
         placeName: SimpleEventDTO.dummy0.placeName,
@@ -116,5 +125,5 @@ extension DetailEventUIO {
     )
     
     /// 에러 케이스
-    static let dummy3 = DetailEventUIO(id: "DetailEventUIODummy3", name: "DetailEventUIDummy3", posterURL: nil, dDay: nil, startDate: "Err", endDate: "Err", placeName: "Err", description: nil, descriptionImageURLs: [nil, nil])
+    static let dummy3 = DetailEventUIO(id: "DetailEventUIODummy3", name: "DetailEventUIDummy3", posterURL: nil, dDay: nil, reservationStartDate: nil, startDate: "Err", endDate: "Err", placeName: "Err", description: nil, descriptionImageURLs: [nil, nil])
 }
