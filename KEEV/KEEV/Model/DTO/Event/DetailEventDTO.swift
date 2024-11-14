@@ -28,6 +28,9 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
     /// 이벤트가 생성된 날짜
     let createdDate: Date
     
+    /// 이벤트의 예약이 시작되는 날짜
+    let reservationStartDate: Date?
+    
     /// 이벤트가 시작되는 날짜
     let startDate: Date
     
@@ -61,6 +64,7 @@ extension DetailEventDTO {
         types: [.init(id: 1, name: "콘서트"), .init(id: 2, name: "내한")],
         genres: [.init(id: 1, name: "J-POP")],
         createdDate: .startOfDay(year: 2024, month: 09, day: 25),
+        reservationStartDate: .startOfDay(year: 2024, month: 10, day: 21),
         startDate: .startOfDay(year: 2024, month: 12, day: 14),
         endDate: .startOfDay(year: 2024, month: 12, day: 14),
         startTime: Date.startOfDay(year: 2024, month: 12, day: 14).addingTimeInterval(TimeInterval(3600 * 19)),
@@ -78,6 +82,7 @@ extension DetailEventDTO {
         types: [.init(id: 1, name: "콘서트"), .init(id: 2, name: "내한")],
         genres: [.init(id: 1, name: "J-POP")],
         createdDate: .startOfDay(year: 2024, month: 09, day: 25),
+        reservationStartDate: .startOfDay(year: 2024, month: 10, day: 21),
         startDate: .startOfDay(year: 2024, month: 12, day: 14),
         endDate: .startOfDay(year: 2024, month: 12, day: 14),
         startTime: Date.startOfDay(year: 2024, month: 12, day: 14).addingTimeInterval(TimeInterval(3600 * 19)),
