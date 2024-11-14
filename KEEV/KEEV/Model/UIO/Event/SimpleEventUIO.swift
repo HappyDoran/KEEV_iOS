@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// 이벤트 관련 DTO를 뷰에 나타내기 위해 간단하게 변환한 타입
+/// 이벤트 관련 DTO를 이벤트 목록 뷰에 나타내기 위해 간단하게 변환한 타입
 ///
 /// 이 타입의 생성자에 `SimpleEventDTO`와 `DetailEventDTO`를 주입할 수도 있습니다.
 ///
