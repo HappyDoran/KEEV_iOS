@@ -5,6 +5,8 @@
 //  Created by 김준성 on 11/13/24.
 //
 
+import Foundation
+
 /// 이벤트 관련 DTO를 뷰에 나타내기 위해 간단하게 변환한 타입
 ///
 /// 이 타입의 생성자에 `SimpleEventDTO`와 `DetailEventDTO`를 주입할 수도 있습니다.
@@ -16,6 +18,9 @@ struct SimpleEventUIO: Identifiable {
     
     /// 이벤트 이름
     let name: String
+    
+    /// 포스터의 URL
+    let posterURL: URL?
     
     /// 오늘로부터 공연 시작일까지의 D-day
     let dDay: Int?
@@ -29,9 +34,10 @@ struct SimpleEventUIO: Identifiable {
     /// 장소 이름
     let placeName: String
     
-    init(id: String, name: String, dDay: Int, startDate: String, endDate: String, placeName: String) {
+    init(id: String, name: String, posterURL: URL?, dDay: Int, startDate: String, endDate: String, placeName: String) {
         self.id = id
         self.name = name
+        self.posterURL = posterURL
         self.dDay = dDay
         self.startDate = startDate
         self.endDate = endDate
@@ -43,6 +49,7 @@ struct SimpleEventUIO: Identifiable {
         
         self.id = event.id
         self.name = event.name
+        self.posterURL = URL(string: event.posterURLString)
         self.dDay = event.startDate.difference(from: .now)
         self.startDate = event.startDate.toString(format: dateFormat)
         self.endDate = event.endDate.toString(format: dateFormat)
@@ -54,6 +61,7 @@ struct SimpleEventUIO: Identifiable {
         
         self.id = event.id
         self.name = event.name
+        self.posterURL = URL(string: event.posterURLString)
         self.dDay = event.startDate.difference(from: .now)
         self.startDate = event.startDate.toString(format: dateFormat)
         self.endDate = event.endDate.toString(format: dateFormat)
