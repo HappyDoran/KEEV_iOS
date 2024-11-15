@@ -29,16 +29,9 @@ class EventService: EventServiceProtocol {
     ///
     /// - Author: Doran
     func loadEvents(startDate: Date, endDate: Date, page: Int, rows: Int) async throws -> [EventDTO] {
-        /// getEvent router 생성
-        let router = EventRouter.getEvents(
-            stdate: startDate,
-            eddate: endDate,
-            cpage: page,
-            rows: rows
-        )
         
         /// 비동기 통신
-        return try await loadEventsInternal(router: router)
+        return try await []
     }
     
     /// 주어진 날짜 범위와 페이지 정보를 사용하여 이벤트 목록 중 keyword에 해당하는 이벤트들만  비동기적으로 가져오는 함수
@@ -55,15 +48,9 @@ class EventService: EventServiceProtocol {
     ///
     /// - Author: Doran
     func loadEventByKeyword(startDate: Date, endDate: Date, keyword: String, page: Int, rows: Int) async throws -> [EventDTO] {
-        let router = EventRouter.getEventByKeyword(
-            stdate: startDate,
-            eddate: endDate,
-            keyword: keyword,
-            cpage: page,
-            rows: rows
-        )
         
-        return try await loadEventsInternal(router: router)
+        
+        return try await []
     }
 }
 
@@ -82,9 +69,10 @@ extension EventService {
     /// - Returns: 이벤트 목록 [ConcertDTO]
     ///
     /// - Author: Doran
-    private func loadEventsInternal(router: EventRouter) async throws -> [EventDTO] {
-        let data: Data = try await networkUtility.xmlRequest(router: router)
-        let events = xmlParser.parse(data)
-        return events
+    private func loadEventsInternal(/*router: EventRouter*/) async throws -> [EventDTO] {
+//        let data: Data = try await networkUtility.xmlRequest(router: router)
+//        let events = xmlParser.parse(data)
+//        return events
+        return []
     }
 }
