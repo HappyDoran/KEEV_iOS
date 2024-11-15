@@ -107,7 +107,7 @@ extension Array where Element == KEEVActionSheet.ButtonConfiguration {
         ]
     }
     
-    /// 프로필 사진을 설정할 때 사용하는 액션시트의 프리셋
+    /// 사용자의 바이브를  선택했을 때 사용하는 액션시트의 프리셋
     ///
     /// - Parameters:
     ///   - modifyHandler: 바이브 수정하기 눌렀때 때 수행되는 함수.
@@ -125,7 +125,7 @@ extension Array where Element == KEEVActionSheet.ButtonConfiguration {
         ]
     }
     
-    /// 프로필 사진을 설정할 때 사용하는 액션시트의 프리셋
+    /// 다른 사용자의 바이브를 선택했을 때 사용하는 액션시트의 프리셋
     ///
     /// - Parameters:
     ///   - shareHandler: 공유하기를 눌렀을 때 수행되는 함수.
@@ -138,12 +138,12 @@ extension Array where Element == KEEVActionSheet.ButtonConfiguration {
         reportHandler: @escaping () -> Void
     ) -> [Element] {
         [
-            .share(title: "공유하기", action: shareHandler),
+            .share(title: "바이브 공유하기", action: shareHandler),
             .report(title: "신고하기", action: reportHandler)
         ]
     }
     
-    /// 프로필 사진을 설정할 때 사용하는 액션시트의 프리셋
+    /// 사용자의 댓글을 선택했을 때 사용하는 액션시트의 프리셋
     ///
     /// - Parameters:
     ///   - modifyHandler: 댓글 수정하기를 눌렀을 때 수행되는 함수.
@@ -161,7 +161,7 @@ extension Array where Element == KEEVActionSheet.ButtonConfiguration {
         ]
     }
     
-    /// 프로필 사진을 설정할 때 사용하는 액션시트의 프리셋
+    /// 다른 사용자의 댓글을 선택했을 때 사용하는 액션시트의 프리셋
     ///
     /// - Parameters:
     ///   - reportHandler: 신고하기를 눌렀을 때 수행되는 함수.
@@ -174,7 +174,7 @@ extension Array where Element == KEEVActionSheet.ButtonConfiguration {
         [.report(title: "신고하기", action: reportHandler)]
     }
     
-    /// 프로필 사진을 설정할 때 사용하는 액션시트의 프리셋
+    /// 공연 상세를 선택했을 때 사용하는 액션시트의 프리셋
     ///
     /// - Parameters:
     ///   - shareHandler: 공유하기를 눌렀을 때 수행되는 함수.
@@ -183,6 +183,24 @@ extension Array where Element == KEEVActionSheet.ButtonConfiguration {
     /// - Returns: .share(공유하기)와 .report(신고하기)로 구성된 배열
     /// - Author: newJunsung
     static func concert(
+        shareHandler: @escaping () -> Void,
+        reportHandler: @escaping () -> Void
+    ) -> [Element] {
+        [
+            .share(title: "공유하기", action: shareHandler),
+            .report(title: "신고하기", action: reportHandler)
+        ]
+    }
+    
+    /// 다른 사용자의 프로필을 선택했을 때 사용하는 액션시트의 프리셋
+    ///
+    /// - Parameters:
+    ///   - shareHandler: 공유하기를 눌렀을 때 수행되는 함수.
+    ///   - reportHandler: 신고하기를 눌렀을 때 수행되는 함수.
+    ///
+    /// - Returns: .report(신고하기)로 구성된 배열
+    /// - Author: 라움
+    static func othersProfile(
         shareHandler: @escaping () -> Void,
         reportHandler: @escaping () -> Void
     ) -> [Element] {

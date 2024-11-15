@@ -58,7 +58,7 @@ struct ProfileTopView: View {
                         .tint(.gray100)
                     } else {
                         Button {
-                            
+                            showActionSheet = true
                         } label: {
                             Image(systemName: "ellipsis")
                                 .foregroundStyle(.gray100)

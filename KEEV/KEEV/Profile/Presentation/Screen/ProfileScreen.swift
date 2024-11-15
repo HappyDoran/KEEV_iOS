@@ -13,6 +13,7 @@ struct ProfileScreen: View {
     @State private var userProfile = UserProfile()
     @State private var isMyProfile = true
     @State private var showActionSheet = false
+    @State private var navigateToReport = false
     @State private var showProfileEdit = false
     @State private var profileEditedToast: Toast? = nil
     
@@ -20,6 +21,9 @@ struct ProfileScreen: View {
         NavigationStack {
             ScrollView {
                 ProfileTopView(userProfile: userProfile, isMyProfile: $isMyProfile, showActionSheet: $showActionSheet)
+                    .navigationDestination(isPresented: $navigateToReport) {
+                        ReportScreen(reportType: .user)
+                    }
                 
                 if isMyProfile {
                     profileEditButton
@@ -37,6 +41,18 @@ struct ProfileScreen: View {
                 ProfileEditScreen(profileEditedToast: $profileEditedToast)
             }
             .toast(with: $profileEditedToast, for: .seconds(of: 2))
+            .actionSheetForKEEV(
+                isPresented: $showActionSheet,
+                defaults: .othersProfile(
+                    shareHandler: {
+                        //프로필 공유하기 코드 추가해야합니다.
+                        showActionSheet = false
+                    },
+                    reportHandler: {
+                        navigateToReport = true
+                        showActionSheet = false
+                    })
+            )
         }
     }
 }
