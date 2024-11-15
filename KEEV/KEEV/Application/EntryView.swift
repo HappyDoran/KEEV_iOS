@@ -37,12 +37,14 @@ struct EntryView: View {
                         TabbedItem.label(for: .info)
                     }
                     .tag(TabbedItem.info.rawValue)
+                
                 Text("")
                     .tabItem {
                         TabbedItem.label(for: .write)
                     }
                     .tag(TabbedItem.write.rawValue)
-                DummyView()
+                
+                ProfileScreen()
                     .tabItem {
                         TabbedItem.label(for: .profile)
                     }
@@ -56,8 +58,8 @@ struct EntryView: View {
                 selectedItem = oldValue
             }
         }
-        .sheet(isPresented: $isPresented) {
-            ContentView()
+        .fullScreenCover(isPresented: $isPresented) {
+            VibeCreateScreen()
         }
     }
 }
