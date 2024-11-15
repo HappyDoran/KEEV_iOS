@@ -9,11 +9,13 @@ import SwiftUI
 
 struct ProfileTopView: View {
     private let userProfile: UserProfile
-    @Binding private var showSetting: Bool
+    @Binding private var isMyProfile: Bool
+    @Binding private var showActionSheet: Bool
     
-    init(userProfile: UserProfile, showSetting: Binding<Bool>) {
+    init(userProfile: UserProfile, isMyProfile: Binding<Bool>, showActionSheet: Binding<Bool>) {
         self.userProfile = userProfile
-        self._showSetting = showSetting
+        self._isMyProfile = isMyProfile
+        self._showActionSheet = showActionSheet
     }
     
     var body: some View {
@@ -45,12 +47,23 @@ struct ProfileTopView: View {
                 HStack {
                     Spacer()
                     
-                    NavigationLink {
-                        SettingScreen()
-                    } label: {
-                        Image(systemName: "gearshape.fill")
-                            .foregroundStyle(.gray100)
-                            .padding(.vertical, 8)
+                    if isMyProfile {
+                        NavigationLink {
+                            SettingScreen()
+                        } label: {
+                            Image(systemName: "gearshape.fill")
+                                .foregroundStyle(.gray100)
+                                .padding(.vertical, 8)
+                        }
+                        .tint(.gray100)
+                    } else {
+                        Button {
+                            
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .foregroundStyle(.gray100)
+                                .padding(.vertical, 8)
+                        }
                     }
                 }
                 .padding(.top, 54)
@@ -83,8 +96,5 @@ struct ProfileTopView: View {
 }
 
 #Preview {
-    ProfileTopView(
-        userProfile: UserProfile(nickname: "가래떡강아지", description: "나는 바보입니다"),
-        showSetting: .constant(false)
-    )
+    ProfileTopView(userProfile: UserProfile(), isMyProfile: .constant(true), showActionSheet: .constant(false))
 }

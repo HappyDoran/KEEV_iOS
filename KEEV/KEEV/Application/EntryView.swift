@@ -52,6 +52,7 @@ struct EntryView: View {
             }
             .accentColor(.brand500)
         }
+        .tint(.gray100)
         .onChange(of: selectedItem) { oldValue, newValue in
             if newValue == TabbedItem.write.rawValue {
                 isPresented = true

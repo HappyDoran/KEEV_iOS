@@ -10,23 +10,34 @@ import SwiftUI
 struct ProfileScreen: View {
     @Injected private var accountService: any AccountServiceProtocol
     
-    @State private var showSetting = false
+    @State private var userProfile = UserProfile()
+    @State private var isMyProfile = true
+    @State private var showActionSheet = false
     @State private var showProfileEdit = false
+    @State private var profileEditedToast: Toast? = nil
     
     var body: some View {
         NavigationStack {
             ScrollView {
-                ProfileTopView(userProfile: accountService.userProfile, showSetting: $showSetting)
+                ProfileTopView(userProfile: userProfile, isMyProfile: $isMyProfile, showActionSheet: $showActionSheet)
                 
-                profileEditButton
+                if isMyProfile {
+                    profileEditButton
+                }
             }
             .ignoresSafeArea(edges: .top)
             .backgroundForKEEV()
+            .onAppear(perform: {
+                userProfile = accountService.userProfile
+            })
+            .onChange(of: showProfileEdit, {
+                userProfile = accountService.userProfile
+            })
             .fullScreenCover(isPresented: $showProfileEdit) {
-                ProfileEditScreen()
+                ProfileEditScreen(profileEditedToast: $profileEditedToast)
             }
+            .toast(with: $profileEditedToast, for: .seconds(of: 2))
         }
-        .tint(.gray100)
     }
 }
 
