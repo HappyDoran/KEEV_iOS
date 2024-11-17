@@ -23,7 +23,8 @@ struct ProfileVibeListCell: View {
                 
                 Spacer()
                 
-                Text("\(vibe.rating)")
+                RatingView(rating: vibe.rating, image: Image(systemName: "star.fill"))
+                    .frame(height: 16)
             }
             .padding(.top, 16)
             .padding(.horizontal, 16)
