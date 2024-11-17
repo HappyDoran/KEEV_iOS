@@ -42,6 +42,7 @@ struct ProfileVibeView: View {
                         }
                     }
                 }
+                .padding(.bottom, 20)
                 .padding(.horizontal, 16)
             }
         } header: {

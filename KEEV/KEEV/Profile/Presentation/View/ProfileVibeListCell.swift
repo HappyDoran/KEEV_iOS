@@ -50,12 +50,15 @@ struct ProfileVibeListCell: View {
             }
             
             if let comment = vibe.comment {
-                Text(comment)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                    .foregroundStyle(.gray300)
-                    .lineLimit(2)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 16)
+                NavigationLink {
+                    
+                } label: {
+                    vibeCommentArea(comment: comment)
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
+                        .multilineTextAlignment(.leading)
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 16)
+                }
             }
             
             NavigationLink {
@@ -166,8 +169,22 @@ extension ProfileVibeListCell {
         }
         .padding(.horizontal, 16)
     }
+    
+    @ViewBuilder
+    private func vibeCommentArea(comment: String) -> some View {
+        if comment.count <= 55 {
+            Text(comment)
+                .foregroundStyle(.gray300)
+        } else {
+            Text(comment.prefix(55) + "... ")
+                .foregroundStyle(.gray300)
+            +
+            Text("더보기")
+                .foregroundStyle(.gray50)
+        }
+    }
 }
 
 #Preview {
-    ProfileVibeListCell(vibe: VibeUIO.dummy0)
+    ProfileVibeListCell(vibe: VibeUIO.dummy5)
 }
