@@ -16,11 +16,12 @@ struct ProfileScreen: View {
     @State private var navigateToReport = false
     @State private var showProfileEdit = false
     @State private var profileEditedToast: Toast? = nil
+    @State private var selectedVibeViewType: VibeViewType = .list
     
     var body: some View {
         NavigationStack {
             ScrollView {
-                ProfileTopView(userProfile: userProfile, isMyProfile: $isMyProfile, showActionSheet: $showActionSheet)
+                ProfileTopView(userProfile: userProfile, isMyProfile: isMyProfile, showActionSheet: $showActionSheet)
                     .navigationDestination(isPresented: $navigateToReport) {
                         ReportScreen(reportType: .user)
                     }
@@ -28,6 +29,8 @@ struct ProfileScreen: View {
                 if isMyProfile {
                     profileEditButton
                 }
+                
+                ProfileVibeView(isMyProfile: isMyProfile, selectedVibeViewType: $selectedVibeViewType)
             }
             .ignoresSafeArea(edges: .top)
             .backgroundForKEEV()
@@ -73,6 +76,11 @@ extension ProfileScreen {
         }
         .padding(.top, 16)
     }
+}
+
+enum VibeViewType {
+    case list
+    case table
 }
 
 #Preview {

@@ -9,12 +9,12 @@ import SwiftUI
 
 struct ProfileTopView: View {
     private let userProfile: UserProfile
-    @Binding private var isMyProfile: Bool
+    private let isMyProfile: Bool
     @Binding private var showActionSheet: Bool
     
-    init(userProfile: UserProfile, isMyProfile: Binding<Bool>, showActionSheet: Binding<Bool>) {
+    init(userProfile: UserProfile, isMyProfile: Bool, showActionSheet: Binding<Bool>) {
         self.userProfile = userProfile
-        self._isMyProfile = isMyProfile
+        self.isMyProfile = isMyProfile
         self._showActionSheet = showActionSheet
     }
     
@@ -52,6 +52,7 @@ struct ProfileTopView: View {
                             SettingScreen()
                         } label: {
                             Image(systemName: "gearshape.fill")
+                                .figmaFont(PretendardFont.title(style: .sm))
                                 .foregroundStyle(.gray100)
                                 .padding(.vertical, 8)
                         }
@@ -61,6 +62,7 @@ struct ProfileTopView: View {
                             showActionSheet = true
                         } label: {
                             Image(systemName: "ellipsis")
+                                .figmaFont(PretendardFont.title(style: .sm))
                                 .foregroundStyle(.gray100)
                                 .padding(.vertical, 8)
                         }
@@ -96,5 +98,5 @@ struct ProfileTopView: View {
 }
 
 #Preview {
-    ProfileTopView(userProfile: UserProfile(), isMyProfile: .constant(true), showActionSheet: .constant(false))
+    ProfileTopView(userProfile: UserProfile(), isMyProfile: true, showActionSheet: .constant(false))
 }
