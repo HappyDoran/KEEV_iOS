@@ -30,6 +30,8 @@ struct EventDetailScreen: View {
             EventDetailThumbnail(selectedEvent: selectedEvent)
             DetailInfoView(selectedEvent: selectedEvent)
                 .padding(.horizontal, 20)
+            CommonButton(title: "작성완료", action: { print("hello world")}, style: .maxWidth, disabled: isDisabled())
+                .padding(EdgeInsets(top: 56, leading: 16, bottom: 42, trailing: 16))
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -51,9 +53,23 @@ struct EventDetailScreen: View {
     }
 }
 
+extension EventDetailScreen {
+    private func isDisabled() -> Bool {
+        if let difference = selectedEvent.startDate.difference(from: .now){
+            if difference < 0 {
+                return true
+            }
+            else {
+                return false
+            }
+        }
+        return true
+    }
+}
+
+
 #Preview {
     NavigationStack {
         EventDetailScreen()
-//            .backgroundForKEEV()
     }
 }

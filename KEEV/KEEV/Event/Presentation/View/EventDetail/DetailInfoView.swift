@@ -16,18 +16,20 @@ struct DetailInfoView: View {
     
     @State var isFavorite: Bool = false
     var body: some View {
-        title.padding(.top, 24)
-        infoCell(title: "날짜", content: "\(selectedEvent.startDate.toString(format: "YYYY.MM.dd")) ~ \(selectedEvent.endDate.toString(format: "YYYY.MM.dd"))")
-            .padding(.top, 12)
-        infoCell(title: "장소", content: "\(selectedEvent.placeName)")
-            .padding(.top, 4)
-//        infoCell(title: "예매", content: "\(selectedEvent.startDate.toString(format: "YYYY.MM.dd")) ~ \(selectedEvent.endDate.toString(format: "YYYY.MM.dd"))")
-//            .padding(.top, 4)
+        VStack(spacing: 0){
+            titleCell.padding(.top, 24)
+            infoCell(title: "날짜", content: "\(selectedEvent.startDate.toString(format: "YYYY.MM.dd")) ~ \(selectedEvent.endDate.toString(format: "YYYY.MM.dd"))")
+                .padding(.top, 12)
+            infoCell(title: "장소", content: "\(selectedEvent.placeName)")
+                .padding(.top, 4)
+            //        infoCell(title: "예매", content: "\(selectedEvent.startDate.toString(format: "YYYY.MM.dd")) ~ \(selectedEvent.endDate.toString(format: "YYYY.MM.dd"))")
+            //            .padding(.top, 4)
+        }
     }
 }
 
 extension DetailInfoView {
-    private var title: some View {
+    private var titleCell: some View {
         HStack(alignment: .top, spacing: 20){
             Text("\(selectedEvent.name)")
                 .figmaFont(PretendardFont.title(style: .sm))
