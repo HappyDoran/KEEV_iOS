@@ -1,5 +1,5 @@
 //
-//  DetailInfoView.swift
+//  EventDetailInfoView.swift
 //  KEEV
 //
 //  Created by Doran on 11/17/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct DetailInfoView: View {
+struct EventDetailInfoView: View {
     private let selectedEvent: DetailEventUIO
     
     init(selectedEvent: DetailEventUIO) {
@@ -30,7 +30,7 @@ struct DetailInfoView: View {
     }
 }
 
-extension DetailInfoView {
+extension EventDetailInfoView {
     private var titleCell: some View {
         HStack(alignment: .top, spacing: 20){
             Text("\(selectedEvent.name)")
@@ -52,7 +52,7 @@ extension DetailInfoView {
     }
 }
 
-extension DetailInfoView {
+extension EventDetailInfoView {
     private func infoCell(title: String, content: String) -> some View {
         HStack(spacing: 12) {
             Text(title)
@@ -67,5 +67,5 @@ extension DetailInfoView {
 }
 
 #Preview {
-    DetailInfoView(selectedEvent: .dummy0)
+    EventDetailInfoView(selectedEvent: .dummy0)
 }

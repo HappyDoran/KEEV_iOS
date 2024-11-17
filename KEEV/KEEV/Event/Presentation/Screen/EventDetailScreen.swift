@@ -8,20 +8,20 @@
 import SwiftUI
 
 enum Menu: Int, CaseIterable {
-    case menu1 = 0
-    case menu2 = 1
+    case detail = 0
+    case vibe = 1
 
   var title: String {
       switch self {
-        case .menu1: return "공연 상세"
-        case .menu2: return "바이브"
+        case .detail: return "공연 상세"
+        case .vibe: return "바이브"
         }
     }
 }
 
 struct EventDetailScreen: View {
     private var selectedEvent: DetailEventUIO
-    @State private var activeMenu = Menu.menu1
+    @State private var activeMenu = Menu.vibe
     
     init(selectedEvent: DetailEventUIO) {
         self.selectedEvent = selectedEvent
@@ -32,14 +32,14 @@ struct EventDetailScreen: View {
         VStack(spacing: 0){
             HeaderTabView(activeMenu: $activeMenu)
             switch activeMenu {
-            case .menu1:
+            case .detail:
                 EventDetailThumbnail(selectedEvent: selectedEvent)
-                DetailInfoView(selectedEvent: selectedEvent)
+                EventDetailInfoView(selectedEvent: selectedEvent)
                     .padding(.horizontal, 20)
                 CommonButton(title: isDisabled() ? "작성완료" : "글쓰기", action: { print("hello world")}, style: .maxWidth, disabled: isDisabled())
                     .padding(EdgeInsets(top: 56, leading: 16, bottom: 42, trailing: 16))
-            case .menu2:
-                EmptyView()
+            case .vibe:
+                vibeView
             }
             Spacer()
         }
@@ -63,6 +63,31 @@ struct EventDetailScreen: View {
     }
 }
 
+extension EventDetailScreen {
+    private var vibeView: some View {
+        VStack(spacing: 0){
+            if (isDisabled()) {
+                yetStartVibe.frame(maxHeight: .infinity)
+            }
+            else {
+                EventVibeHeader().padding(.horizontal, 16)
+                EventDetailVibeView()
+            }
+        }
+    }
+    
+    private var yetStartVibe: some View {
+        VStack(spacing: 0){
+            Text("공연이 시작되지 않았습니다.")
+                .figmaFont(PretendardFont.title(style: .sm))
+                .foregroundColor(.gray500)
+            Text("공연이 시작되면 바이브를 작성할 수 있어요.")
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                .foregroundColor(.gray500)
+        }
+    }
+}
+
 
 
 extension EventDetailScreen {
@@ -80,5 +105,5 @@ extension EventDetailScreen {
 
 
 #Preview {
-    EventDetailScreen(selectedEvent: .dummy1)
+    EventDetailScreen(selectedEvent: .dummy0)
 }

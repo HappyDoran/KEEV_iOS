@@ -19,20 +19,20 @@ struct HeaderTabView: View {
             HStack(spacing: 0){
                 Text("공연 상세")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
-                    .foregroundColor(activeMenu == .menu1 ? .gray50 : .gray500)
+                    .foregroundColor(activeMenu == .detail ? .gray50 : .gray500)
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        activeMenu = .menu1
+                        activeMenu = .detail
                     }
                 
                 Text("바이브")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
-                    .foregroundColor(activeMenu == .menu2 ? .gray50 : .gray500)
+                    .foregroundColor(activeMenu == .vibe ? .gray50 : .gray500)
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        activeMenu = .menu2
+                        activeMenu = .vibe
                     }
             }
             .frame(height: 46)
@@ -41,12 +41,12 @@ struct HeaderTabView: View {
                 .fill(Color.brand500)
                 .frame(width: barWidth, height: barHeight)
                 .offset(x:0, y: 0)
-                .offset(x: activeMenu == .menu1 ? -((UIScreen.main.bounds.width / 4)) : (UIScreen.main.bounds.width / 4) , y: 0)
+                .offset(x: activeMenu == .detail ? -((UIScreen.main.bounds.width / 4)) : (UIScreen.main.bounds.width / 4) , y: 0)
                 .animation(.easeInOut, value: activeMenu)
         }
     }
 }
 
 #Preview {
-    HeaderTabView(activeMenu: .constant(.menu1))
+    HeaderTabView(activeMenu: .constant(.detail))
 }
