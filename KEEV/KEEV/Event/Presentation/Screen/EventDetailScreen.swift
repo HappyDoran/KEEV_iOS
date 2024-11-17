@@ -20,14 +20,16 @@ enum Menu: Int, CaseIterable {
 }
 
 struct EventDetailScreen: View {
-    private var selectedEvent =  SimpleEventUIO.dummy0
+    private let selectedEvent = SimpleEventDTO.dummy0
     @State private var activeMenu = Menu.menu1
     
     var body: some View {
         
         VStack(spacing: 0){
             HeaderTabView(activeMenu: $activeMenu)
-            Spacer()
+            EventDetailThumbnail(selectedEvent: selectedEvent)
+            DetailInfoView(selectedEvent: selectedEvent)
+                .padding(.horizontal, 20)
         }
         .toolbar {
             ToolbarItem(placement: .principal) {

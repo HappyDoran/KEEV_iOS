@@ -37,16 +37,12 @@ struct HeaderTabView: View {
             }
             .frame(height: 46)
             
-            // 선택된 메뉴에 따라 Rectangle의 위치와 색상 변경
             Rectangle()
                 .fill(Color.brand500)
                 .frame(width: barWidth, height: barHeight)
                 .offset(x:0, y: 0)
                 .offset(x: activeMenu == .menu1 ? -((UIScreen.main.bounds.width / 4)) : (UIScreen.main.bounds.width / 4) , y: 0)
-                
                 .animation(.easeInOut, value: activeMenu)
-                .padding(.top, 2) // 텍스트와의 간격 조정
-        
         }
     }
 }
