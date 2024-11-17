@@ -12,12 +12,12 @@ struct EventListCell: View {
     let event: SimpleEventUIO
     
     var body: some View {
-        HStack(alignment: .center, spacing: 16) {
+        HStack(alignment: .top, spacing: 16) {
             poster
             content
-                .padding(.vertical, 8)
             Spacer()
         }
+        .padding(.vertical, 8)
         .frame(height: 132)
         .frame(maxWidth: .infinity)
     }
@@ -45,7 +45,7 @@ private extension EventListCell {
             RoundedRectangle(cornerRadius: 6)
                 .foregroundStyle(.gray500)
         )
-        .frame(width: 87, height: 116)
+        .frame(width: 87)
     }
     
     var content: some View {
@@ -70,12 +70,12 @@ private extension EventListCell {
             Text("\(event.startDate) ~ \(event.endDate)")
             Text(event.placeName)
         }
-        .lineLimit(2)
+        .lineLimit(1)
         .foregroundStyle(.gray400)
         .figmaFont(font)
     }
 }
 
 #Preview {
-    EventListCell(event: .dummy6)
+    EventListCell(event: .dummy2)
 }
