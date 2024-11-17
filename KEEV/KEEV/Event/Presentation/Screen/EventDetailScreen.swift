@@ -20,18 +20,28 @@ enum Menu: Int, CaseIterable {
 }
 
 struct EventDetailScreen: View {
-    private let selectedEvent = SimpleEventDTO.dummy0
+    private var selectedEvent: DetailEventUIO
     @State private var activeMenu = Menu.menu1
+    
+    init(selectedEvent: DetailEventUIO) {
+        self.selectedEvent = selectedEvent
+    }
     
     var body: some View {
         
         VStack(spacing: 0){
             HeaderTabView(activeMenu: $activeMenu)
-            EventDetailThumbnail(selectedEvent: selectedEvent)
-            DetailInfoView(selectedEvent: selectedEvent)
-                .padding(.horizontal, 20)
-            CommonButton(title: "작성완료", action: { print("hello world")}, style: .maxWidth, disabled: isDisabled())
-                .padding(EdgeInsets(top: 56, leading: 16, bottom: 42, trailing: 16))
+            switch activeMenu {
+            case .menu1:
+                EventDetailThumbnail(selectedEvent: selectedEvent)
+                DetailInfoView(selectedEvent: selectedEvent)
+                    .padding(.horizontal, 20)
+                CommonButton(title: isDisabled() ? "작성완료" : "글쓰기", action: { print("hello world")}, style: .maxWidth, disabled: isDisabled())
+                    .padding(EdgeInsets(top: 56, leading: 16, bottom: 42, trailing: 16))
+            case .menu2:
+                EmptyView()
+            }
+            Spacer()
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -53,23 +63,22 @@ struct EventDetailScreen: View {
     }
 }
 
+
+
 extension EventDetailScreen {
     private func isDisabled() -> Bool {
-        if let difference = selectedEvent.startDate.difference(from: .now){
-            if difference < 0 {
-                return true
-            }
-            else {
-                return false
-            }
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy.MM.dd"
+        
+        guard let eventStartDate = dateFormatter.date(from: selectedEvent.startDate) else {
+            return false
         }
-        return true
+        
+        return eventStartDate > Date()
     }
 }
 
 
 #Preview {
-    NavigationStack {
-        EventDetailScreen()
-    }
+    EventDetailScreen(selectedEvent: .dummy1)
 }

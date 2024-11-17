@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct DetailInfoView: View {
-    private let selectedEvent: SimpleEventDTO
+    private let selectedEvent: DetailEventUIO
     
-    init(selectedEvent: SimpleEventDTO) {
+    init(selectedEvent: DetailEventUIO) {
         self.selectedEvent = selectedEvent
     }
     
@@ -18,12 +18,14 @@ struct DetailInfoView: View {
     var body: some View {
         VStack(spacing: 0){
             titleCell.padding(.top, 24)
-            infoCell(title: "날짜", content: "\(selectedEvent.startDate.toString(format: "YYYY.MM.dd")) ~ \(selectedEvent.endDate.toString(format: "YYYY.MM.dd"))")
+            infoCell(title: "날짜", content: "\(selectedEvent.startDate) ~ \(selectedEvent.endDate)")
                 .padding(.top, 12)
             infoCell(title: "장소", content: "\(selectedEvent.placeName)")
                 .padding(.top, 4)
-            //        infoCell(title: "예매", content: "\(selectedEvent.startDate.toString(format: "YYYY.MM.dd")) ~ \(selectedEvent.endDate.toString(format: "YYYY.MM.dd"))")
-            //            .padding(.top, 4)
+            if let reservationDate = selectedEvent.reservationStartDate {
+                infoCell(title: "예매", content: "\(reservationDate)")
+                    .padding(.top, 4)
+            }
         }
     }
 }

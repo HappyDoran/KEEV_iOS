@@ -27,6 +27,7 @@ struct EventInfoScreen: View {
     @State private var events: [EventDTO] = []
     @State private var error: String? = nil
     @State private var isLoading: Bool = false
+    @State private var selectedEvent: DetailEventDTO? = nil
     
     var body: some View {
         VStack {
@@ -135,6 +136,8 @@ extension EventInfoScreen {
 
 
 #Preview {
-    EventInfoScreen()
-        .backgroundForKEEV()
+    NavigationStack {
+        EventInfoScreen()
+            .backgroundForKEEV()
+    }
 }
