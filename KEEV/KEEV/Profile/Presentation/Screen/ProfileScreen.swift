@@ -10,53 +10,41 @@ import SwiftUI
 struct ProfileScreen: View {
     @Injected private var accountService: any AccountServiceProtocol
     
+    @Binding private var showActionSheet: Bool
+    
+    init(showActionSheet: Binding<Bool>) {
+        self._showActionSheet = showActionSheet
+    }
+    
     @State private var userProfile = UserProfile()
     @State private var isMyProfile = true
-    @State private var showActionSheet = false
-    @State private var navigateToReport = false
     @State private var showProfileEdit = false
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                ProfileTopView(userProfile: userProfile, isMyProfile: isMyProfile, showActionSheet: $showActionSheet)
-                    .navigationDestination(isPresented: $navigateToReport) {
-                        ReportScreen(reportType: .user)
-                    }
+        ScrollView {
+            ProfileTopView(userProfile: userProfile, isMyProfile: isMyProfile, showActionSheet: $showActionSheet)
                 
-                if isMyProfile {
-                    profileEditButton
-                }
-                
-                ProfileVibeView(isMyProfile: isMyProfile, selectedVibeViewType: $selectedVibeViewType)
+            
+            if isMyProfile {
+                profileEditButton
             }
-            .ignoresSafeArea(edges: .top)
-            .backgroundForKEEV()
-            .onAppear(perform: {
-                userProfile = accountService.userProfile
-            })
-            .onChange(of: showProfileEdit, {
-                userProfile = accountService.userProfile
-            })
-            .fullScreenCover(isPresented: $showProfileEdit) {
-                ProfileEditScreen(profileEditedToast: $profileEditedToast)
-            }
-            .toast(with: $profileEditedToast, for: .seconds(of: 2))
-            .actionSheetForKEEV(
-                isPresented: $showActionSheet,
-                defaults: .othersProfile(
-                    shareHandler: {
-                        //프로필 공유하기 코드 추가해야합니다.
-                        showActionSheet = false
-                    },
-                    reportHandler: {
-                        navigateToReport = true
-                        showActionSheet = false
-                    })
-            )
+            
+            ProfileVibeView(isMyProfile: isMyProfile, selectedVibeViewType: $selectedVibeViewType)
         }
+        .backgroundForKEEV()
+        .ignoresSafeArea(edges: .top)
+        .onAppear(perform: {
+            userProfile = accountService.userProfile
+        })
+        .onChange(of: showProfileEdit, {
+            userProfile = accountService.userProfile
+        })
+        .fullScreenCover(isPresented: $showProfileEdit) {
+            ProfileEditScreen(profileEditedToast: $profileEditedToast)
+        }
+        .toast(with: $profileEditedToast, for: .seconds(of: 2))
     }
 }
 
@@ -84,5 +72,5 @@ enum VibeViewType {
 }
 
 #Preview {
-    ProfileScreen()
+    ProfileScreen(showActionSheet: .constant(false))
 }

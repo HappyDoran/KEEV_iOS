@@ -28,13 +28,9 @@ struct ProfileVibeView: View {
             switch selectedVibeViewType {
             case .list:
                 ForEach(vibes) { vibe in
-                    NavigationLink {
-                        // 바이브 디테일 화면 만들어지면 연결해야됩니다.
-                    } label: {
-                        ProfileVibeListCell(vibe: vibe)
-                    }
-                    .padding(.bottom, 20)
-                    .padding(.horizontal, 16)
+                    ProfileVibeListCell(vibe: vibe)
+                        .padding(.bottom, 20)
+                        .padding(.horizontal, 16)
                 }
             case .table:
                 LazyVGrid(columns: columns, spacing: 8) {
@@ -97,5 +93,5 @@ extension ProfileVibeView {
 }
 
 #Preview {
-    ProfileVibeView(isMyProfile: true, selectedVibeViewType: .constant(.table))
+    ProfileVibeView(isMyProfile: true, selectedVibeViewType: .constant(.list))
 }

@@ -17,6 +17,8 @@ import SwiftUI
 struct EntryView: View {
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
+    @State private var showActionSheet = false
+    @State private var navigateToReport = false
     
     init() {
         let appearance = UITabBarAppearance()
@@ -31,26 +33,45 @@ struct EntryView: View {
     
     var body: some View {
         NavigationStack {
-            TabView(selection: $selectedItem) {
-                EventInfoScreen()
-                    .tabItem {
-                        TabbedItem.label(for: .info)
-                    }
-                    .tag(TabbedItem.info.rawValue)
+            ZStack {
+                TabView(selection: $selectedItem) {
+                    EventInfoScreen()
+                        .tabItem {
+                            TabbedItem.label(for: .info)
+                        }
+                        .tag(TabbedItem.info.rawValue)
+                    
+                    Text("")
+                        .tabItem {
+                            TabbedItem.label(for: .write)
+                        }
+                        .tag(TabbedItem.write.rawValue)
+                    
+                    ProfileScreen(showActionSheet: $showActionSheet)
+                        .tabItem {
+                            TabbedItem.label(for: .profile)
+                        }
+                        .tag(TabbedItem.profile.rawValue)
+                }
+                .tint(.brand500)
                 
-                Text("")
-                    .tabItem {
-                        TabbedItem.label(for: .write)
+                Color.clear
+                    .actionSheetForKEEV(
+                        isPresented: $showActionSheet,
+                        defaults: .othersProfile(
+                            shareHandler: {
+                                //프로필 공유하기 코드 추가해야합니다.
+                                showActionSheet = false
+                            },
+                            reportHandler: {
+                                navigateToReport = true
+                                showActionSheet = false
+                            })
+                    )
+                    .navigationDestination(isPresented: $navigateToReport) {
+                        ReportScreen(reportType: .user)
                     }
-                    .tag(TabbedItem.write.rawValue)
-                
-                ProfileScreen()
-                    .tabItem {
-                        TabbedItem.label(for: .profile)
-                    }
-                    .tag(TabbedItem.profile.rawValue)
             }
-            .accentColor(.brand500)
         }
         .tint(.gray100)
         .onChange(of: selectedItem) { oldValue, newValue in
