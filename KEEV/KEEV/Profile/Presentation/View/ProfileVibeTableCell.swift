@@ -18,14 +18,22 @@ struct ProfileVibeTableCell: View {
         RoundedRectangle(cornerRadius: 4)
             .frame(width: 114, height: 152)
             .overlay {
-                AsyncImage(url: vibe.event.posterURL) { result in
-                    result.image?
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 114, height: 152)
-                        .cornerRadius(4)
-                        .clipped()
+                URLCachedImage(
+                    url: vibe.event.posterURL
+                ) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    } else if phase.error == nil {
+                        ProgressView()
+                    } else {
+                        Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
+                    }
                 }
+                .frame(width: 114, height: 152, alignment: .center)
+                .cornerRadius(4)
+                .clipped()
             }
     }
 }

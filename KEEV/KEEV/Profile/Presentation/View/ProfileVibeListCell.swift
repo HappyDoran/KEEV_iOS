@@ -33,14 +33,22 @@ struct ProfileVibeListCell: View {
                 RoundedRectangle(cornerRadius: 4)
                     .frame(width: 48, height: 64)
                     .overlay {
-                        AsyncImage(url: vibe.event.posterURL) { result in
-                            result.image?
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(width: 48, height: 64)
-                                .cornerRadius(4)
-                                .clipped()
+                        URLCachedImage(
+                            url: vibe.event.posterURL
+                        ) { phase in
+                            if let image = phase.image {
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            } else if phase.error == nil {
+                                ProgressView()
+                            } else {
+                                Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
+                            }
                         }
+                        .frame(width: 48, height: 64, alignment: .center)
+                        .cornerRadius(4)
+                        .clipped()
                     }
                 
                 VStack(alignment: .leading, spacing: 0) {
@@ -70,14 +78,22 @@ struct ProfileVibeListCell: View {
                 RoundedRectangle(cornerRadius: 12)
                     .frame(height: 160)
                     .overlay {
-                        AsyncImage(url: imageURL) { result in
-                            result.image?
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                                .frame(height: 160)
-                                .cornerRadius(12)
-                                .clipped()
+                        URLCachedImage(
+                            url: imageURL
+                        ) { phase in
+                            if let image = phase.image {
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                            } else if phase.error == nil {
+                                ProgressView()
+                            } else {
+                                Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
+                            }
                         }
+                        .frame(height: 160, alignment: .center)
+                        .cornerRadius(12)
+                        .clipped()
                     }
                     .padding(.horizontal, 16)
             }

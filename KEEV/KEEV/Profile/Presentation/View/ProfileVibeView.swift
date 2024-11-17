@@ -28,14 +28,22 @@ struct ProfileVibeView: View {
             switch selectedVibeViewType {
             case .list:
                 ForEach(vibes) { vibe in
-                    ProfileVibeListCell(vibe: vibe)
-                        .padding(.bottom, 20)
-                        .padding(.horizontal, 16)
+                    NavigationLink {
+                        // 바이브 디테일 화면 만들어지면 연결해야됩니다.
+                    } label: {
+                        ProfileVibeListCell(vibe: vibe)
+                    }
+                    .padding(.bottom, 20)
+                    .padding(.horizontal, 16)
                 }
             case .table:
                 LazyVGrid(columns: columns, spacing: 8) {
                     ForEach(vibes) { vibe in
-                        ProfileVibeTableCell(vibe: vibe)
+                        NavigationLink {
+                            // 바이브 디테일 화면 만들어지면 연결해야됩니다.
+                        } label: {
+                            ProfileVibeTableCell(vibe: vibe)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
