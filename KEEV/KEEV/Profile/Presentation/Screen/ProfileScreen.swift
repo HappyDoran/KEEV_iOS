@@ -17,7 +17,7 @@ struct ProfileScreen: View {
     }
     
     @State private var userProfile = UserProfile()
-    @State private var isMyProfile = true
+    @State private var isMyProfile = false
     @State private var showProfileEdit = false
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
@@ -53,9 +53,9 @@ extension ProfileScreen {
         Button {
             showProfileEdit = true
         } label: {
-            RoundedRectangle(cornerRadius: 10)
+            RoundedRectangle(cornerRadius: 50)
                 .frame(width: 84, height: 25)
-                .foregroundStyle(.gray700)
+                .foregroundStyle(.grayBG700)
                 .overlay {
                     Text("프로필 수정")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
