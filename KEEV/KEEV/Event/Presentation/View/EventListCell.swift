@@ -8,6 +8,9 @@
 import SwiftUI
 
 // - MARK: 셀의 핵심부
+/// 간단한 이벤트 정보를 나열하는 스크린 또는 뷰에서 사용하는 셀
+///
+/// - Author: newJunsung
 struct EventListCell: View {
     let event: SimpleEventUIO
     
