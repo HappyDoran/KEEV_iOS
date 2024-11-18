@@ -103,7 +103,11 @@ struct FilteredEventListScreen: View {
         ScrollView(.vertical) {
             LazyVStack(spacing: 0) {
                 ForEach(events) { event in
-                    EventListCell(event: event)
+                    NavigationLink {
+                        Text(event.name)
+                    } label: {
+                        EventListCell(event: event)
+                    }
                 }
             }
             .padding(16)
