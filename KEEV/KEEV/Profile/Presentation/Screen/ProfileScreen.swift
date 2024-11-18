@@ -17,7 +17,7 @@ struct ProfileScreen: View {
     }
     
     @State private var userProfile = UserProfile()
-    @State private var isMyProfile = false
+    @State private var isMyProfile = true
     @State private var showProfileEdit = false
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
