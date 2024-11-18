@@ -15,6 +15,12 @@ import SwiftUI
 struct MainHeader: View {
     @State private var isPresented: Bool = false //시트의 유무를 나타내는 Bool 타입 변수
     
+    @Binding private var selectedEvent: SimpleEventUIO?
+    
+    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil)) {
+        self._selectedEvent = selectedEvent
+    }
+    
     var body: some View {
         // MARK: 로고 이미지
         HStack(spacing: 0) {
@@ -35,8 +41,7 @@ struct MainHeader: View {
                     .foregroundColor(Color.gray100)
             }
             .fullScreenCover(isPresented: $isPresented){
-                SearchScreen(searchContent: .event)
-                
+                SearchScreen(selectedEvent: $selectedEvent, searchContent: .event)
             }
         }
         .backgroundForKEEV()

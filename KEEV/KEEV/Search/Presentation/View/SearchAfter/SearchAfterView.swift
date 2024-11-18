@@ -14,14 +14,13 @@ import SwiftUI
 /// - Author: Doran
 struct SearchAfterView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var events: [EventDTO] = [
-        EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png")]
+    @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     
-    @Binding private var selectedEvent: EventDTO?
+    @Binding private var selectedEvent: SimpleEventUIO?
     private var searchContent: SearchContent
     private let onClick: () -> Void
     
-    init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent, onClick: @escaping ()-> Void) {
+    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), searchContent: SearchContent, onClick: @escaping ()-> Void) {
         self._selectedEvent = selectedEvent
         self.searchContent = searchContent
         self.onClick = onClick
@@ -56,7 +55,7 @@ extension SearchAfterView {
     }
     // MARK: 검색 결과 뷰
     private var searchResult: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             ForEach(events) { event in
                 SearchResultCell(event: event){
                     selectedEvent = event

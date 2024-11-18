@@ -27,15 +27,24 @@ struct EventInfoScreen: View {
     @State private var events: [EventDTO] = []
     @State private var error: String? = nil
     @State private var isLoading: Bool = false
-    @State private var selectedEvent: DetailEventDTO? = nil
+    @State private var selectedEvent: SimpleEventUIO? = nil
+    @State private var navigateToEventDetail: Bool = false
     
     var body: some View {
         VStack {
-            MainHeader()
-            ScrollView {
+            MainHeader(selectedEvent: $selectedEvent)
+            ScrollView(showsIndicators: false) {
                 thumbnailSection.padding(.top, 16).padding(.horizontal, 16)
                 eventListSection.padding(.top, 48).padding(.horizontal, 16)
                 horizontalScrollSection.padding(.leading, 16)
+            }
+            .navigationDestination(isPresented: Binding<Bool>(
+                get: { selectedEvent != nil },
+                set: { if !$0 { selectedEvent = nil } } // 선택된 이벤트가 없으면 nil로 설정
+            )) {
+                if let event = selectedEvent {
+                    EventDetailScreen(selectedEvent: .dummy0)
+                }
             }
         }
         .onAppear {

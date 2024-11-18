@@ -37,6 +37,7 @@ struct HeaderTabView: View {
             }
             .frame(height: 46)
             
+            // geometryreader 고려
             Rectangle()
                 .fill(Color.brand500)
                 .frame(width: barWidth, height: barHeight)

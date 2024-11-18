@@ -21,14 +21,13 @@ struct EventDetailThumbnail: View {
             if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
                 image
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
             } else if phase.error == nil { // 이미지를 불러오는 중일 때
                 ProgressView()
             } else { // 에러가 발생했을 때
                 Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
             }
         }
-        .frame(height: 393)
     }
 }
 

@@ -21,27 +21,20 @@ enum Menu: Int, CaseIterable {
 
 struct EventDetailScreen: View {
     private var selectedEvent: DetailEventUIO
-    @State private var activeMenu = Menu.vibe
+    @State private var activeMenu = Menu.detail
     
     init(selectedEvent: DetailEventUIO) {
         self.selectedEvent = selectedEvent
     }
-    
     var body: some View {
-        
         VStack(spacing: 0){
             HeaderTabView(activeMenu: $activeMenu)
-            switch activeMenu {
-            case .detail:
-                EventDetailThumbnail(selectedEvent: selectedEvent)
-                EventDetailInfoView(selectedEvent: selectedEvent)
-                    .padding(.horizontal, 20)
-                CommonButton(title: isDisabled() ? "작성완료" : "글쓰기", action: { print("hello world")}, style: .maxWidth, disabled: isDisabled())
-                    .padding(EdgeInsets(top: 56, leading: 16, bottom: 42, trailing: 16))
-            case .vibe:
-                vibeView
+                switch activeMenu {
+                case .detail:
+                    infoView
+                case .vibe:
+                    vibeView
             }
-            Spacer()
         }
         .toolbar {
             ToolbarItem(placement: .principal) {
@@ -59,19 +52,30 @@ struct EventDetailScreen: View {
                 }
             }
         }
-        .toolbarRole(.editor)
     }
 }
 
 extension EventDetailScreen {
+    private var infoView: some View {
+        ScrollView(showsIndicators: false) {
+        EventDetailThumbnail(selectedEvent: selectedEvent)
+        EventDetailInfoView(selectedEvent: selectedEvent)
+            .padding(.horizontal, 20)
+        CommonButton(title: isDisabled ? "작성완료" : "글쓰기", action: { print("hello world")}, style: .maxWidth, disabled: isDisabled)
+            .padding(EdgeInsets(top: 56, leading: 16, bottom: 42, trailing: 16))
+        }
+    }
+    
+    
+    @ViewBuilder
     private var vibeView: some View {
         VStack(spacing: 0){
-            if (isDisabled()) {
+            if (isDisabled) {
                 yetStartVibe.frame(maxHeight: .infinity)
             }
             else {
                 EventVibeHeader().padding(.horizontal, 16)
-                EventDetailVibeView()
+                EventVibeView()
             }
         }
     }
@@ -91,7 +95,7 @@ extension EventDetailScreen {
 
 
 extension EventDetailScreen {
-    private func isDisabled() -> Bool {
+    private var isDisabled: Bool {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy.MM.dd"
         
@@ -105,5 +109,7 @@ extension EventDetailScreen {
 
 
 #Preview {
-    EventDetailScreen(selectedEvent: .dummy0)
+    NavigationStack {
+        EventDetailScreen(selectedEvent: .dummy0)
+    }
 }
