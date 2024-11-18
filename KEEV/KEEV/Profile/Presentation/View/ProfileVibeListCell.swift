@@ -23,7 +23,7 @@ struct ProfileVibeListCell: View {
                 
                 Spacer()
                 
-                RatingView(rating: vibe.rating, image: Image(systemName: "star.fill"))
+                RatingView(rating: vibe.rating, image: Image(.star))
                     .frame(height: 16)
             }
             .padding(.top, 16)
@@ -82,7 +82,7 @@ struct ProfileVibeListCell: View {
         }
         .background {
             RoundedRectangle(cornerRadius: 20)
-                .foregroundStyle(.gray800)
+                .foregroundStyle(.grayBG700)
         }
     }
 }
