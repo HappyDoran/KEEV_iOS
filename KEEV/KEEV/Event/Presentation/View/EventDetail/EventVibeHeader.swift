@@ -25,7 +25,7 @@ struct EventVibeHeader: View {
                 
             }){
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(Color.gray700)
+                    .fill(Color.grayBG700)
                     .frame(width: 75, height: 29)
                     .overlay{
                         HStack(spacing: 0){

@@ -45,6 +45,7 @@ struct HeaderTabView: View {
                 .offset(x: activeMenu == .detail ? -((UIScreen.main.bounds.width / 4)) : (UIScreen.main.bounds.width / 4) , y: 0)
                 .animation(.easeInOut, value: activeMenu)
         }
+        .background(Color.grayBG800)
     }
 }
 

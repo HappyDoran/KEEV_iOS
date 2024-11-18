@@ -22,6 +22,7 @@ enum Menu: Int, CaseIterable {
 struct EventDetailScreen: View {
     private var selectedEvent: DetailEventUIO
     @State private var activeMenu = Menu.detail
+    @State private var isPresented: Bool = false //시트의 유무를 나타내는 Bool 타입 변수
     
     init(selectedEvent: DetailEventUIO) {
         self.selectedEvent = selectedEvent
@@ -36,6 +37,7 @@ struct EventDetailScreen: View {
                     vibeView
             }
         }
+        .background(Color.grayBG950)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Text(selectedEvent.name)
@@ -110,6 +112,6 @@ extension EventDetailScreen {
 
 #Preview {
     NavigationStack {
-        EventDetailScreen(selectedEvent: .dummy0)
+        EventDetailScreen(selectedEvent: .dummy1)
     }
 }
