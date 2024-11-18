@@ -72,7 +72,7 @@ import SwiftUI
 /// 이런 식으로 외부에서 값을 받아서 페이지에 대한 정보를 얻고 그에 대한 정보들을 주입하면 됩니다.
 /// 위의 코드에서 `current + 1`을 주입한 이유는 다음 페이지부터 정보를 가져와야하기 때문입니다.
 ///
-/// - ToDo: EventService 객체 넣기, duration에 기간 Date를 지정하는 프로퍼티 생성
+/// - ToDo: EventService 객체 넣기, duration에 기간 Date를 지정하는 프로퍼티 생성, NavigationLink에 Destination 설정
 /// - Author: newJunsung
 struct FilteredEventListScreen: View {
     private let duration: Duration?
