@@ -58,8 +58,10 @@ struct ProfileVibeListCell: View {
                 NavigationLink {
                     
                 } label: {
-                    vibeCommentArea(comment: comment)
+                    Text(comment)
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
+                        .foregroundStyle(.gray300)
+                        .lineLimit(2)
                         .multilineTextAlignment(.leading)
                         .padding(.horizontal, 16)
                         .padding(.bottom, 16)
@@ -92,8 +94,8 @@ struct ProfileVibeListCell: View {
     }
 }
 
-extension ProfileVibeListCell {
-    private var eventInfoArea: some View {
+private extension ProfileVibeListCell {
+    var eventInfoArea: some View {
         HStack(spacing: 12) {
             RoundedRectangle(cornerRadius: 4)
                 .frame(width: 48, height: 64)
@@ -138,7 +140,7 @@ extension ProfileVibeListCell {
     }
     
     @ViewBuilder
-    private func vibeImageArea(imageURL: URL?, imageCount: Int) -> some View {
+    func vibeImageArea(imageURL: URL?, imageCount: Int) -> some View {
         ZStack(alignment: .bottomTrailing) {
             RoundedRectangle(cornerRadius: 12)
                 .frame(height: 160)
@@ -173,20 +175,6 @@ extension ProfileVibeListCell {
                 .padding(12)
         }
         .padding(.horizontal, 16)
-    }
-    
-    @ViewBuilder
-    private func vibeCommentArea(comment: String) -> some View {
-        if comment.count <= 55 {
-            Text(comment)
-                .foregroundStyle(.gray300)
-        } else {
-            Text(comment.prefix(55) + "... ")
-                .foregroundStyle(.gray300)
-            +
-            Text("더보기")
-                .foregroundStyle(.gray50)
-        }
     }
 }
 

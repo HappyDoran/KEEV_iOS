@@ -25,9 +25,9 @@ struct ProfileVibeView: View {
     
     private let vibes = VibeUIO.dummies
     private var columns: [GridItem] = [
-        GridItem(.fixed(114)),
-        GridItem(.fixed(114)),
-        GridItem(.fixed(114))
+        GridItem(),
+        GridItem(),
+        GridItem()
     ]
     
     var body: some View {
@@ -60,8 +60,21 @@ struct ProfileVibeView: View {
     }
 }
 
-extension ProfileVibeView {
-    private var profileVibeViewHeader: some View {
+private extension ProfileVibeView {
+    var profileVibeViewHeader: some View {
+        HStack(spacing: 0) {
+            vibeViewHeaderTitle
+            
+            Spacer()
+            
+            vibeListViewButton
+            
+            vibeTableViewButton
+        }
+        .padding(.horizontal, 16)
+    }
+    
+    var vibeViewHeaderTitle: some View {
         HStack(spacing: 0) {
             Text(isMyProfile ? "나의 바이브" : "바이브")
                 .figmaFont(PretendardFont.title(style: .sm))
@@ -75,31 +88,32 @@ extension ProfileVibeView {
             Text("개")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                 .foregroundStyle(.gray500)
-            
-            Spacer()
-            
-            Button {
-                selectedVibeViewType = .list
-            } label: {
-                Image(systemName: "rectangle.grid.1x2.fill")
-                    .figmaFont(PretendardFont.title(style: .xs))
-                    .frame(width: 32, height: 32)
-                    .foregroundStyle(selectedVibeViewType == .list ? .gray100 : .gray700)
-            }
-            
-            Button {
-                selectedVibeViewType = .table
-            } label: {
-                Image(systemName: "rectangle.grid.2x2.fill")
-                    .figmaFont(PretendardFont.title(style: .xs))
-                    .frame(width: 32, height: 32)
-                    .foregroundStyle(selectedVibeViewType == .table ? .gray100 : .gray700)
-            }
         }
-        .padding(.horizontal, 16)
+    }
+    
+    var vibeListViewButton: some View {
+        Button {
+            selectedVibeViewType = .list
+        } label: {
+            Image(systemName: "rectangle.grid.1x2.fill")
+                .figmaFont(PretendardFont.title(style: .xs))
+                .frame(width: 32, height: 32)
+                .foregroundStyle(selectedVibeViewType == .list ? .gray100 : .gray700)
+        }
+    }
+    
+    var vibeTableViewButton: some View {
+        Button {
+            selectedVibeViewType = .table
+        } label: {
+            Image(systemName: "rectangle.grid.2x2.fill")
+                .figmaFont(PretendardFont.title(style: .xs))
+                .frame(width: 32, height: 32)
+                .foregroundStyle(selectedVibeViewType == .table ? .gray100 : .gray700)
+        }
     }
 }
 
 #Preview {
-    ProfileVibeView(isMyProfile: true, selectedVibeViewType: .constant(.list))
+    ProfileVibeView(isMyProfile: true, selectedVibeViewType: .constant(.table))
 }
