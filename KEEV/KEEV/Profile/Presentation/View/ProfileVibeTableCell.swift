@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 바이브의 표시 방식을 테이블로 선택했을 때 보여지는 각각의 테이블 셀
+///
+/// 바이브의 표시 방식을 테이블로 선택했을 때 테이블에서 보여지는 각각의 테이블 셀입니다.
+///
+/// - Author: 라움
 struct ProfileVibeTableCell: View {
     private let vibe: VibeUIO
     

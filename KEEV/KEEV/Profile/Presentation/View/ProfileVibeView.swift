@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// 프로필 화면 하단에 표시되는 바이브 영역
+///
+/// 프로필 화면 하단에 표시되는 바이브 영역입니다.
+///
+/// 사용자 본인의 프로필일 경우에는 '나의 바이브', 타 사용자의 프로필일 경우에는 '바이브'로 타이틀이 표시됩니다.
+///
+/// - Author: 라움
 struct ProfileVibeView: View {
     private let isMyProfile: Bool
     @Binding private var selectedVibeViewType: VibeViewType

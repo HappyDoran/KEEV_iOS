@@ -7,6 +7,17 @@
 
 import SwiftUI
 
+/// 바이브에서 별점을 표시해주는 뷰
+///
+/// 바이브에서 이벤트의 별점을 표시해주는 뷰입니다.
+///
+/// 사용예시는 아래와 같습니다.
+///
+/// ```swift
+/// RatingView(rating: vibe.rating, image: Image(.star))
+/// ```
+///
+/// - Author: 라움
 struct RatingView: View {
     private let rating: Double
     private let image: Image
@@ -40,5 +51,5 @@ struct RatingView: View {
 }
 
 #Preview {
-    RatingView(rating: 3.5, image: Image(systemName: "star.fill"))
+    RatingView(rating: 3.5, image: Image(.star))
 }

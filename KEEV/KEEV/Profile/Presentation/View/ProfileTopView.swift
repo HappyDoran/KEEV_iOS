@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// 프로필 화면 상단 프로필 정보 영역
+///
+/// 프로필 화면 상단 영역에 표시되는 프로필 정보 영역이며 다음과 같은 정보가 표시됩니다.
+///
+/// - 프로필 사진, 닉네임, 한 줄 소개, 배경사진
+///
+/// - Author: 라움
 struct ProfileTopView: View {
     private let userProfile: UserProfile
     private let isMyProfile: Bool

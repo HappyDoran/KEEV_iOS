@@ -7,6 +7,13 @@
 
 import SwiftUI
 
+/// 프로필 화면
+///
+/// 프로필 메인 화면입니다.
+///
+/// 사용자의 프로필 정보를 보여주는 ProfileTopView와 바이브 목록을 보여주는 ProfileVibeView로 구성되어있습니다.
+///
+/// - Author: 라움
 struct ProfileScreen: View {
     @Injected private var accountService: any AccountServiceProtocol
     
@@ -66,6 +73,11 @@ extension ProfileScreen {
     }
 }
 
+/// 바이브 보기 방식에 대한 열거형
+///
+/// 바이브 보기 방식에 대한 열거형으로 리스트 방식과 테이블 방식이 있습니다.
+///
+/// - Author: 라움
 enum VibeViewType {
     case list
     case table

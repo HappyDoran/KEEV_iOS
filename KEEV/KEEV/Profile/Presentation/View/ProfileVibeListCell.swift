@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 바이브의 표시 방식을 리스트로 선택했을 때 보여지는 각각의 리스트 셀
+///
+/// 바이브의 표시 방식을 리스트로 선택했을 때 바이브 리스트에서 보여지는 각각의 리스트 셀입니다.
+///
+/// - Author: 라움
 struct ProfileVibeListCell: View {
     private let vibe: VibeUIO
     
