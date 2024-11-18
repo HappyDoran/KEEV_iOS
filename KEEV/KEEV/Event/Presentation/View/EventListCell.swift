@@ -62,6 +62,7 @@ private extension EventListCell {
     var name: some View {
         let font = PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold))
         return Text(event.name)
+            .multilineTextAlignment(.leading)
             .lineLimit(2)
             .foregroundStyle(.gray100)
             .figmaFont(font)
