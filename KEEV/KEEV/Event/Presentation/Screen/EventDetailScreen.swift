@@ -7,7 +7,13 @@
 
 import SwiftUI
 
-enum Menu: Int, CaseIterable {
+/// 섹션을 정의하는 열거형
+///
+/// - detail: 공연 상세 정보
+/// - vibe: 사람들이 남긴 공연에 대한 바이브
+///
+/// - Author: Doran
+enum Section: Int, CaseIterable {
     case detail = 0
     case vibe = 1
 
@@ -19,9 +25,14 @@ enum Menu: Int, CaseIterable {
     }
 }
 
+/// 이벤트 상세 스크린
+///
+/// - Parameter selectedEvent: 상세 정보를 표시할 이벤트 객체
+///
+/// - Author: Doran
 struct EventDetailScreen: View {
     private var selectedEvent: DetailEventUIO
-    @State private var activeMenu = Menu.detail
+    @State private var activeSection = Section.detail
     @State private var isPresented: Bool = false //시트의 유무를 나타내는 Bool 타입 변수
     
     init(selectedEvent: DetailEventUIO) {
@@ -29,8 +40,8 @@ struct EventDetailScreen: View {
     }
     var body: some View {
         VStack(spacing: 0){
-            HeaderTabView(activeMenu: $activeMenu)
-                switch activeMenu {
+            HeaderTabView(activeSection: $activeSection)
+                switch activeSection {
                 case .detail:
                     infoView
                 case .vibe:
@@ -58,6 +69,11 @@ struct EventDetailScreen: View {
 }
 
 extension EventDetailScreen {
+    /// 이벤트 상세 정보 뷰
+    ///
+    /// - Returns: 이벤트 상세 정보를 표시하는 뷰.
+    ///
+    /// - Author: Doran
     private var infoView: some View {
         ScrollView(showsIndicators: false) {
         EventDetailThumbnail(selectedEvent: selectedEvent)
@@ -68,7 +84,11 @@ extension EventDetailScreen {
         }
     }
     
-    
+    /// 바이브 뷰
+    ///
+    /// - Returns: 바이브 정보를 표시하는 뷰
+    ///
+    /// - Author: Doran
     @ViewBuilder
     private var vibeView: some View {
         VStack(spacing: 0){
@@ -82,6 +102,11 @@ extension EventDetailScreen {
         }
     }
     
+    /// 공연이 시작되지 않았을 때 표시되는 뷰
+    ///
+    /// - Returns: 공연이 시작되지 않았음을 알리는 뷰
+    ///
+    /// - Author: Doran
     private var yetStartVibe: some View {
         VStack(spacing: 0){
             Text("공연이 시작되지 않았습니다.")
@@ -97,6 +122,11 @@ extension EventDetailScreen {
 
 
 extension EventDetailScreen {
+    /// 이벤트 시작 여부를 판단하는 연산 프로퍼티
+    ///
+    /// - Returns: 이벤트가 시작되지 않았다면 true, 그렇지 않다면 false를 반환.
+    ///
+    /// - Author: Doran
     private var isDisabled: Bool {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy.MM.dd"

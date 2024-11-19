@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 바이브의 내용을 보여주는 셀뷰
+///
+/// - Parameter vibeData: 셀에 표시할 바이브 데이터 객체입니다.
+///
+/// - Author: Doran
 struct EventVibeCell: View {
     private let vibeData: VibeUIO
     
@@ -21,6 +26,7 @@ struct EventVibeCell: View {
                 VStack(alignment: .leading, spacing : 0){
                     HStack(spacing: 0){
                         profileImage(url: vibeData.userProfileImageURL)
+                        
                         Text("\(vibeData.userNickname)")
                             .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
                             .multilineTextAlignment(.leading)
@@ -131,16 +137,24 @@ extension EventVibeCell {
         }
     }
     
+    /// 셀의 높이값을 계산하는 메소드
+    ///
+    /// - Parameters:
+    ///   - vibe: VibeUIO
+    ///
+    ///  각각의 콘텐츠 + 윗 패딩값을 가지고 높이를 계산합니다.
+    ///
+    /// - Returns: 프로필 높이 + 이미지 높이 + 코멘트 높이 + 날짜 푸터 높이
+    ///
+    /// - Author: Doran
     private func calculateHeight(for vibe: VibeUIO) -> CGFloat {
         // 이미지 높이
         let imageHeight: CGFloat = vibe.imageURLs.first != nil || vibe.imageURLs.count != 0 ? 176 : 0
-        // 텍스트 높이 (예시로 고정값 사용, 필요에 따라 조정)
+        // 텍스트 높이
         let commentHeight: CGFloat = vibe.comment != nil ? 58 : 0
         // 기타 높이
         let headerHeight: CGFloat = 72 // 프로필과 제목 높이
         let footerHeight: CGFloat = 50 // 날짜 및 버튼 높이
-        
-        print(headerHeight + imageHeight + commentHeight + footerHeight)
         
         return headerHeight + imageHeight + commentHeight + footerHeight
     }

@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 바이브 뷰
+///
+/// - Parameter vibeData: 바이브 객체
+///
+/// - Author: Doran
 struct EventVibeView: View {
     private let vibeData: [VibeUIO] = VibeUIO.dummies
     

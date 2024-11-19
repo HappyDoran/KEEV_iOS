@@ -7,9 +7,16 @@
 
 import SwiftUI
 
+/// 헤더 탭 뷰
+///
+///  "공연 상세"와 "바이브" 두 개의 탭을 제공하며, 현재 활성화된 탭에 따라 표시되는 바가 이동.
+///
+/// - Parameter activeSection: 현재 활성화된 섹션을 나타내는 바인딩 변수
+///
+/// - Author: Doran
 struct HeaderTabView: View {
     
-    @Binding var activeMenu: Menu
+    @Binding var activeSection: Section
     @State private var barX: CGFloat = 0
     private let barHeight: CGFloat = 4
     private let barWidth: CGFloat = 82
@@ -19,20 +26,20 @@ struct HeaderTabView: View {
             HStack(spacing: 0){
                 Text("공연 상세")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
-                    .foregroundColor(activeMenu == .detail ? .gray50 : .gray500)
+                    .foregroundColor(activeSection == .detail ? .gray50 : .gray500)
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        activeMenu = .detail
+                        activeSection = .detail
                     }
                 
                 Text("바이브")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
-                    .foregroundColor(activeMenu == .vibe ? .gray50 : .gray500)
+                    .foregroundColor(activeSection == .vibe ? .gray50 : .gray500)
                     .frame(maxWidth: .infinity)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        activeMenu = .vibe
+                        activeSection = .vibe
                     }
             }
             .frame(height: 46)
@@ -42,13 +49,13 @@ struct HeaderTabView: View {
                 .fill(Color.brand500)
                 .frame(width: barWidth, height: barHeight)
                 .offset(x:0, y: 0)
-                .offset(x: activeMenu == .detail ? -((UIScreen.main.bounds.width / 4)) : (UIScreen.main.bounds.width / 4) , y: 0)
-                .animation(.easeInOut, value: activeMenu)
+                .offset(x: activeSection == .detail ? -((UIScreen.main.bounds.width / 4)) : (UIScreen.main.bounds.width / 4) , y: 0)
+                .animation(.easeInOut, value: activeSection)
         }
         .background(Color.grayBG800)
     }
 }
 
 #Preview {
-    HeaderTabView(activeMenu: .constant(.detail))
+    HeaderTabView(activeSection: .constant(.detail))
 }

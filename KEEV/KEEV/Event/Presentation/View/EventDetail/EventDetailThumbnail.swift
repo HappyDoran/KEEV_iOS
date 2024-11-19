@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 이벤트 이미지를 표시하는 썸네일 뷰
+///
+/// - Parameter selectedEvent: 썸네일로 표시할 이벤트 객체
+///
+/// - Author: Doran
 struct EventDetailThumbnail: View {
     private let selectedEvent: DetailEventUIO
     

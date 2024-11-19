@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 이벤트 상세 정보 중에서 텍스트를 표시하는 뷰
+///
+/// - Parameter selectedEvent: 상세 정보를 표시할 이벤트 객체
+///
+/// - Author: Doran
 struct EventDetailInfoView: View {
     private let selectedEvent: DetailEventUIO
     
@@ -31,6 +36,10 @@ struct EventDetailInfoView: View {
 }
 
 extension EventDetailInfoView {
+    
+    /// 이벤트 제목과 좋아요 버튼을 표시하는 셀뷰
+    ///
+    /// - Author: Doran
     private var titleCell: some View {
         HStack(alignment: .top, spacing: 20){
             Text("\(selectedEvent.name)")
@@ -53,6 +62,9 @@ extension EventDetailInfoView {
 }
 
 extension EventDetailInfoView {
+    /// 날짜, 장소, 예매일을 표시하는 셀
+    ///
+    /// - Author: Doran
     private func infoCell(title: String, content: String) -> some View {
         HStack(spacing: 12) {
             Text(title)
