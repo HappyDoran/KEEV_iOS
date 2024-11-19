@@ -37,27 +37,31 @@ struct EntryView: View {
                         TabbedItem.label(for: .info)
                     }
                     .tag(TabbedItem.info.rawValue)
+                
                 Text("")
                     .tabItem {
                         TabbedItem.label(for: .write)
                     }
                     .tag(TabbedItem.write.rawValue)
-                DummyView()
+                
+                ProfileScreen()
                     .tabItem {
                         TabbedItem.label(for: .profile)
                     }
                     .tag(TabbedItem.profile.rawValue)
             }
-            .accentColor(.brand500)
+            .tint(.brand500)
+            .sensoryFeedback(.impact, trigger: selectedItem)
         }
+        .tint(.gray100)
         .onChange(of: selectedItem) { oldValue, newValue in
             if newValue == TabbedItem.write.rawValue {
                 isPresented = true
                 selectedItem = oldValue
             }
         }
-        .sheet(isPresented: $isPresented) {
-            ContentView()
+        .fullScreenCover(isPresented: $isPresented) {
+            VibeCreateScreen()
         }
     }
 }

@@ -83,11 +83,24 @@ extension KEEVActionSheet {
                         .opacity(0.7)
                         .ignoresSafeArea(.all)
                     
-                    KEEVActionSheet(isPresented: $isPresented, configurations: configurations)
-                        .padding(.horizontal, 16)
-                        .padding(.top, 16)
-                        .padding(.bottom, 44)
-                        .transition(.move(edge: .bottom))
+                    VStack {
+                        Spacer()
+                        
+                        KEEVActionSheet(isPresented: $isPresented, configurations: configurations)
+                            .padding(.horizontal, 16)
+                            .padding(.top, 16)
+                            .padding(.bottom, 44)
+                            .background {
+                                UnevenRoundedRectangle(
+                                    topLeadingRadius: 24,
+                                    bottomLeadingRadius: 0,
+                                    bottomTrailingRadius: 0,
+                                    topTrailingRadius: 24
+                                )
+                                .foregroundStyle(.grayBG900)
+                            }
+                    }
+                    .transition(.move(edge: .bottom))
                 }
             }
             .ignoresSafeArea(edges: .bottom)

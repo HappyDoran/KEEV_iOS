@@ -40,7 +40,7 @@ extension KEEVActionSheet {
                         topTrailingRadius: isFirst ? 16 : 0
                     )
                     .frame(height: 56)
-                    .foregroundStyle(.gray800)
+                    .foregroundStyle(.grayBG700)
                     .overlay(alignment: .leading) {
                         HStack(spacing: 8) {
                             if let image = configuration.image {
