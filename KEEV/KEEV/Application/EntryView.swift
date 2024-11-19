@@ -51,6 +51,7 @@ struct EntryView: View {
                     .tag(TabbedItem.profile.rawValue)
             }
             .tint(.brand500)
+            .sensoryFeedback(.impact, trigger: selectedItem)
         }
         .tint(.gray100)
         .onChange(of: selectedItem) { oldValue, newValue in

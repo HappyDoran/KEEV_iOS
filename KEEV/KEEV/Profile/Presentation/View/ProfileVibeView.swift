@@ -57,6 +57,7 @@ struct ProfileVibeView: View {
                 .padding(.top, 24)
                 .padding(.bottom, 12)
         }
+        .sensoryFeedback(.impact, trigger: selectedVibeViewType)
     }
 }
 

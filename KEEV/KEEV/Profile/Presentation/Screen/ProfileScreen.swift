@@ -24,6 +24,7 @@ struct ProfileScreen: View {
     @State private var showProfileEdit = false
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
+    @State private var tapFeedback = false
     
     var body: some View {
         ScrollView {
@@ -43,6 +44,7 @@ struct ProfileScreen: View {
         .onChange(of: showProfileEdit, {
             userProfile = accountService.userProfile
         })
+        .sensoryFeedback(.impact, trigger: tapFeedback)
         .fullScreenCover(isPresented: $showProfileEdit) {
             ProfileEditScreen(profileEditedToast: $profileEditedToast)
         }
@@ -68,6 +70,7 @@ struct ProfileScreen: View {
 extension ProfileScreen {
     private var profileEditButton: some View {
         Button {
+            tapFeedback.toggle()
             showProfileEdit = true
         } label: {
             RoundedRectangle(cornerRadius: 50)
