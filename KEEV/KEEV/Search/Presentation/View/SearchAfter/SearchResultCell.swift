@@ -15,10 +15,10 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct SearchResultCell: View {
-    private let event: EventDTO
+    private let event: SimpleEventUIO
     private let onClick: () -> Void
     
-    init(event: EventDTO, onClick: @escaping ()-> Void){
+    init(event: SimpleEventUIO, onClick: @escaping ()-> Void){
         self.event = event
         self.onClick = onClick
     }
@@ -33,13 +33,19 @@ struct SearchResultCell: View {
                         .frame(width: 87, height: 116)
                     
                     
-                    AsyncImage(url: URL(string: event.poster)) { image in
-                        image
-                            .resizable()
-                            .scaledToFit()
-                            .cornerRadius(6)
-                    } placeholder: {
-                        ProgressView()
+                    URLCachedImage(url: event.posterURL) { phase in
+                        if let image = phase.image {
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                        } else if phase.error == nil {
+                            ProgressView()
+                        } else {
+                            let _ = print(phase.error!)
+                            Image(systemName: "xmark")
+                                .resizable()
+                                .scaledToFit()
+                        }
                     }
                     .frame(width: 87, height: 116)
                 }
@@ -49,7 +55,7 @@ struct SearchResultCell: View {
                     
                     
                     // MARK: 이벤트 제목
-                    Text(event.title)
+                    Text(event.name)
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
                         .foregroundColor(.gray100)
                         .multilineTextAlignment(.leading)
@@ -68,7 +74,7 @@ struct SearchResultCell: View {
                     .padding(.top, 8)
                     
                     // MARK: 장소
-                    Text(event.place)
+                    Text(event.placeName)
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                         .foregroundColor(.gray400)
                         .padding(.top, 2)
@@ -79,7 +85,7 @@ struct SearchResultCell: View {
 }
 
 #Preview {
-    SearchResultCell(event: EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png"), onClick: {})
+    SearchResultCell(event: .dummy0, onClick: {})
         .backgroundForKEEV()
 }
 

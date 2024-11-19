@@ -15,11 +15,11 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct VibeHeader: View {
-    private let selectedEvent: EventDTO?
+    private let selectedEvent: SimpleEventUIO?
     private let rating: Double
     @Binding private var showExitAlert: Bool
     
-    init(selectedEvent: EventDTO?, rating: Double, showExitAlert: Binding<Bool>) {
+    init(selectedEvent: SimpleEventUIO?, rating: Double, showExitAlert: Binding<Bool>) {
         self.selectedEvent = selectedEvent
         self.rating = rating
         self._showExitAlert = showExitAlert
@@ -70,7 +70,7 @@ struct VibeHeader: View {
 
 #Preview {
     VibeHeader(selectedEvent:
-                EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png"),
+            .dummy0,
                rating: 0.0,
                showExitAlert: .constant(false)
     )

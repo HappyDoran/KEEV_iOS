@@ -29,11 +29,11 @@ struct SearchScreen: View {
     @State private var eventSearchStatus: EventSearchStatus = .beforeSearch
     @FocusState private var searchFieldFocus: Bool
     
-    @Binding private var selectedEvent: EventDTO?
+    @Binding private var selectedEvent: SimpleEventUIO?
     
     private let searchContent: SearchContent
     
-    init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent) {
+    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), searchContent: SearchContent) {
         self._selectedEvent = selectedEvent
         self.searchContent = searchContent
     }

@@ -18,7 +18,7 @@ struct VibeCreateScreen: View {
     
     @State private var isPresented = false
     
-    @State private var selectedEvent: EventDTO? = nil
+    @State private var selectedEvent: SimpleEventUIO? = nil
     
     @State private var rating: Double = 0
     
