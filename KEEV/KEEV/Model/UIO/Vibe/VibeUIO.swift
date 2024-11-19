@@ -24,6 +24,8 @@ struct VibeUIO: Identifiable {
     /// 유저 프로필 이미지, URL(string: )을 한 결과 값이기 때문에, nil이 들어갈 수도 있습니다.
     let userProfileImageURL: URL?
     
+    let event: SimpleEventUIO
+    
     /// 바이브의 평점
     let rating: Double
     
@@ -45,6 +47,7 @@ struct VibeUIO: Identifiable {
     init(
         id: Int,
         user: SimpleUserUIO, // SimpleUserDTO로 나중에 바꿔야합니다.
+        event: SimpleEventUIO,
         rating: Double,
         imageURLs: [URL?],
         comment: String?,
@@ -56,6 +59,7 @@ struct VibeUIO: Identifiable {
         self.userID = user.id
         self.userNickname = user.nickname
         self.userProfileImageURL = user.profileImageURL
+        self.event = event
         self.rating = rating
         self.imageURLs = imageURLs
         self.comment = comment
@@ -70,6 +74,7 @@ extension VibeUIO {
     static let dummy0 = VibeUIO(
         id: 0,
         user: .dummy0,
+        event: .dummy0,
         rating: 3.5,
         imageURLs: [
             URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
@@ -87,6 +92,7 @@ extension VibeUIO {
     static let dummy1 = VibeUIO(
         id: 1,
         user: .dummy1,
+        event: .dummy1,
         rating: 3.5,
         imageURLs: [],
         comment: nil,
@@ -99,6 +105,7 @@ extension VibeUIO {
     static let dummy2 = VibeUIO(
         id: 2,
         user: .dummy2,
+        event: .dummy2,
         rating: 3.5,
         imageURLs: [
             URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
@@ -115,6 +122,7 @@ extension VibeUIO {
     static let dummy3 = VibeUIO(
         id: 3,
         user: .dummy2,
+        event: .dummy3,
         rating: 5,
         imageURLs: [
             URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
@@ -131,6 +139,7 @@ extension VibeUIO {
     static let dummy4 = VibeUIO(
         id: 4,
         user: .dummy0,
+        event: .dummy4,
         rating: 3.5,
         imageURLs: [
             URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
@@ -148,6 +157,7 @@ extension VibeUIO {
     static let dummy6 = VibeUIO(
         id: 6,
         user: .dummy0,
+        event: .dummy5,
         rating: 3.5,
         imageURLs: [
             URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
@@ -163,7 +173,8 @@ extension VibeUIO {
     /// 좋아요와 댓글이 엄청 많은 데이터
     static let dummy5 = VibeUIO(
         id: 5,
-        user: .dummy0,
+        user: .dummy1,
+        event: .dummy4,
         rating: 3.5,
         imageURLs: [
             URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
@@ -177,5 +188,5 @@ extension VibeUIO {
     )
     
     /// 더미데이터 0~5까지 모은 배열
-    static let dummies = [dummy0, dummy1, dummy2, dummy3, dummy4, dummy5]
+    static let dummies = [dummy0, dummy1, dummy2, dummy3, dummy4, dummy5, dummy6]
 }
