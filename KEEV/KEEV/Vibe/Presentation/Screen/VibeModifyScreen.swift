@@ -190,7 +190,7 @@ private extension VibeModifyScreen {
 }
 
 private extension VibeModifyScreen {
-    private func deletePreviousPhoto(at index: Int) {
+    func deletePreviousPhoto(at index: Int) {
         previousImages.remove(at: index)
     }
     
@@ -200,7 +200,7 @@ private extension VibeModifyScreen {
         selectedItems.remove(at: index)
     }
     
-    private func handleSelectedPhotos() {
+    func handleSelectedPhotos() {
         selectedImages.removeAll()
         var tempPhotos = [UIImage]()
         Task {
