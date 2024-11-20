@@ -14,11 +14,18 @@ import SwiftUI
 /// - Note: 화면 확대/축소와 관련된 제스처는 화면이 확대된 상태에서의 버그 발생으로 인해서 포함시키지 않았습니다. 이후에 버그 해결하면 기능 추가토록 하겠습니다.
 /// - Author: 라움
 struct FullPhotosView: View {
-    private let photos: [UIImage]
-    @Binding var selectedPhoto: UIImage
+    private let photoURLs: [URL]
+    @Binding private var selectedURL: URL
+    
+    init(photoURLs: [URL?], selectedURL: Binding<URL>) {
+        let urls = photoURLs.compactMap { $0 }
+        self.photoURLs = urls
+        self._selectedURL = selectedURL
+    }
     
     @Environment(\.dismiss) private var dismiss
     
+    @State private var tapFeedback = false
     // 현재 기능상 포함되어있지 않은 확대/축소를 위해 필요한 프로퍼티입니다.
     @State private var scale: CGFloat = 1.0
     @State private var latestScale: CGFloat = 1.0
@@ -65,20 +72,32 @@ struct FullPhotosView: View {
     
     var body: some View {
         ZStack {
-            TabView(selection: $selectedPhoto) {
-                ForEach(photos, id: \.self) { photo in
-                    Image(uiImage: photo)
-                        .resizable()
-                        .scaledToFit()
-                        .tag(photo)
+            TabView(selection: $selectedURL) {
+                ForEach(photoURLs, id: \.self) { url in
+                    URLCachedImage(
+                        url: url
+                    ) { phase in
+                        if let image = phase.image {
+                            image
+                                .resizable()
+                                .scaledToFit()
+                        } else if phase.error == nil {
+                            ProgressView()
+                        } else {
+                            Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
+                        }
+                    }
+                    .tag(url)
                 }
             }
             .tabViewStyle(PageTabViewStyle())
             .gesture(slideDown)
+            .sensoryFeedback(.selection, trigger: selectedURL)
             
             VStack {
                 HStack(spacing: 40) {
                     Button {
+                        tapFeedback.toggle()
                         dismiss()
                     } label: {
                         Image(systemName: "xmark")
@@ -87,6 +106,7 @@ struct FullPhotosView: View {
                             .foregroundStyle(Color.white)
                             .frame(width: 32, height: 24)
                     }
+                    .sensoryFeedback(.impact, trigger: tapFeedback)
                     .padding(.horizontal, 16)
                     
                     Spacer()
@@ -113,4 +133,10 @@ struct FullPhotosView: View {
             .ignoresSafeArea()
         }
     }
+}
+
+#Preview {
+    @Previewable @State var selectedURL: URL = VibeUIO.dummy0.imageURLs.first!!
+    
+    FullPhotosView(photoURLs: VibeUIO.dummy0.imageURLs, selectedURL: $selectedURL)
 }
