@@ -31,7 +31,6 @@ struct VibeEventCell: View {
                     .fill(Color.gray900)
                     .frame(width: 60, height: 82)
                 
-                
                 URLCachedImage(url: event.posterURL) { phase in
                     if let image = phase.image {
                         image
@@ -46,7 +45,7 @@ struct VibeEventCell: View {
                             .scaledToFit()
                     }
                 }
-                .frame(width: 60, height: 82)
+                .frame(width: 60, height: 82, alignment: .center)
             }
             
             VStack(alignment: .leading, spacing: 0) {

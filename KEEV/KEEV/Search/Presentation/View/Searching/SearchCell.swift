@@ -46,7 +46,7 @@ struct SearchCell: View {
                                 .scaledToFit()
                         }
                     }
-                    .frame(width: 48, height: 64)
+                    .frame(width: 48, height: 64, alignment: .center)
                 }
                 
                 VStack(alignment: .leading, spacing: 0) {

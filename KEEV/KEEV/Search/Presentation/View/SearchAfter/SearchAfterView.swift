@@ -14,9 +14,7 @@ import SwiftUI
 /// - Author: Doran
 struct SearchAfterView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var events: [SimpleEventUIO] = [
-        .dummy0
-    ]
+    @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     
     @Binding private var selectedEvent: SimpleEventUIO?
     private var searchContent: SearchContent
@@ -57,7 +55,7 @@ extension SearchAfterView {
     }
     // MARK: 검색 결과 뷰
     private var searchResult: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             ForEach(events) { event in
                 SearchResultCell(event: event){
                     selectedEvent = event

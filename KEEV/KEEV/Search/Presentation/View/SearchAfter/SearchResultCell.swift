@@ -32,7 +32,6 @@ struct SearchResultCell: View {
                         .fill(Color.gray900)
                         .frame(width: 87, height: 116)
                     
-                    
                     URLCachedImage(url: event.posterURL) { phase in
                         if let image = phase.image {
                             image
@@ -47,9 +46,9 @@ struct SearchResultCell: View {
                                 .scaledToFit()
                         }
                     }
-                    .frame(width: 87, height: 116)
+                    .frame(width: 87, height: 116, alignment: .center)
                 }
-                
+
                 VStack(alignment: .leading, spacing: 0) {
                     DDayBox(date: event.startDate.toDate(format: "yyyy.MM.dd")!)
                     
@@ -61,7 +60,7 @@ struct SearchResultCell: View {
                         .multilineTextAlignment(.leading)
                         .lineLimit(2)
                         .truncationMode(.tail)
-                        .frame(width: 258, height: 44)
+                        .frame(height: 44)
                         .padding(.top, 8)
                     
                     // MARK: 기간

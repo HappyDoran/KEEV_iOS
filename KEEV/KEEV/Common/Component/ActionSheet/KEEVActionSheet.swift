@@ -33,8 +33,6 @@ struct KEEVActionSheet: View {
     
     var body: some View {
         VStack(spacing: 16) {
-            Spacer()
-            
             VStack(spacing: 0) {
                 ForEach(Array(configurations.enumerated()), id: \.element.id) { index, configuration in
                     if index == 0 && index == configurations.count - 1 {
@@ -69,7 +67,7 @@ extension KEEVActionSheet {
             } label: {
                 RoundedRectangle(cornerRadius: 16)
                     .frame(height: 56)
-                    .foregroundStyle(.gray800)
+                    .foregroundStyle(.grayBG700)
                     .overlay {
                         Text("닫기")
                             .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))

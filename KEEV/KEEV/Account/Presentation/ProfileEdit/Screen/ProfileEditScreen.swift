@@ -14,7 +14,13 @@ import SwiftUI
 /// - ToDo: 닫기 버튼을 탭할 시에 나오는 커스텀 알럿 수정 후 해당하는 코드 부분을 수정해야합니다.
 /// - Author: 라움
 struct ProfileEditScreen: View {
-    @StateObject private var accountService = AccountService()
+    @Binding private var profileEditedToast: Toast?
+    
+    init(profileEditedToast: Binding<Toast?>) {
+        self._profileEditedToast = profileEditedToast
+    }
+    
+    @Injected private var accountService: any AccountServiceProtocol
     
     @Environment(\.dismiss) private var dismiss
     
@@ -43,7 +49,6 @@ struct ProfileEditScreen: View {
                     .padding(.bottom, 36)
                 
                 ProfileEditCenterView(
-                    accountService: accountService,
                     userProfile: $userProfile,
                     showProfileImageActionSheet: $showProfileImageActionSheet,
                     disableButton: $disableButton,
@@ -57,6 +62,7 @@ struct ProfileEditScreen: View {
                     title: "수정 완료",
                     action: {
                         accountService.setUserProfile(userProfile)
+                        profileEditedToast = Toast(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)
                         dismiss()
                     },
                     style: .maxWidth,
@@ -110,6 +116,7 @@ struct ProfileEditScreen: View {
             secondButtonStyle: .active,
             secondButtonAction: {
                 accountService.setUserProfile(userProfile)
+                profileEditedToast = Toast(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)
                 dismiss()
             }
         )
@@ -117,5 +124,5 @@ struct ProfileEditScreen: View {
 }
 
 #Preview {
-    ProfileEditScreen()
+    ProfileEditScreen(profileEditedToast: .constant(.init(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)))
 }
