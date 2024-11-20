@@ -22,37 +22,38 @@ struct HeaderTabView: View {
     private let barWidth: CGFloat = 82
     
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
-            HStack(spacing: 0){
-                Text("공연 상세")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
-                    .foregroundColor(activeSection == .detail ? .gray50 : .gray500)
-                    .frame(maxWidth: .infinity)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        activeSection = .detail
-                    }
+        GeometryReader { geometry in
+            VStack(alignment: .center, spacing: 0) {
+                HStack(spacing: 0) {
+                    Text("공연 상세")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
+                        .foregroundColor(activeSection == .detail ? .gray50 : .gray500)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            activeSection = .detail
+                        }
+                    
+                    Text("바이브")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
+                        .foregroundColor(activeSection == .vibe ? .gray50 : .gray500)
+                        .frame(maxWidth: .infinity)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            activeSection = .vibe
+                        }
+                }
+                .frame(height: 46)
                 
-                Text("바이브")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
-                    .foregroundColor(activeSection == .vibe ? .gray50 : .gray500)
-                    .frame(maxWidth: .infinity)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        activeSection = .vibe
-                    }
+                Rectangle()
+                    .fill(Color.brand500)
+                    .frame(width: barWidth, height: barHeight)
+                    .offset(x: activeSection == .detail ? -((geometry.size.width / 4)) : (geometry.size.width / 4), y: 0)
+                    .animation(.easeInOut, value: activeSection)
             }
-            .frame(height: 46)
-            
-            // geometryreader 고려
-            Rectangle()
-                .fill(Color.brand500)
-                .frame(width: barWidth, height: barHeight)
-                .offset(x:0, y: 0)
-                .offset(x: activeSection == .detail ? -((UIScreen.main.bounds.width / 4)) : (UIScreen.main.bounds.width / 4) , y: 0)
-                .animation(.easeInOut, value: activeSection)
+            .background(Color.grayBG800)
         }
-        .background(Color.grayBG800)
+        .frame(height: 46)
     }
 }
 

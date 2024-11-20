@@ -77,6 +77,7 @@ extension EventDetailScreen {
     private var infoView: some View {
         ScrollView(showsIndicators: false) {
         EventDetailThumbnail(selectedEvent: selectedEvent)
+                .padding(.top,4)
         EventDetailInfoView(selectedEvent: selectedEvent)
             .padding(.horizontal, 20)
         CommonButton(title: isDisabled ? "작성완료" : "글쓰기", action: { print("hello world")}, style: .maxWidth, disabled: isDisabled)
