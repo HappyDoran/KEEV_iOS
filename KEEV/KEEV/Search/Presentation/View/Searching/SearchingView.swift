@@ -10,7 +10,8 @@ import SwiftUI
 struct SearchingView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var events: [SimpleEventUIO] = [
-        .dummy0,.dummy1]
+        .dummy0,.dummy1
+    ]
     
     @Binding private var selectedEvent: SimpleEventUIO?
     var searchContent: SearchContent

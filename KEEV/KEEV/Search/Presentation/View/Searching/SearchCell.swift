@@ -32,17 +32,18 @@ struct SearchCell: View {
                         .fill(Color.gray900)
                         .frame(width: 48, height: 64)
                     
-                    URLCachedImage(
-                        url: event.posterURL
-                    ) { phase in
-                        if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
+                    URLCachedImage(url: event.posterURL) { phase in
+                        if let image = phase.image {
                             image
                                 .resizable()
-                                .cornerRadius(6)
-                        } else if phase.error == nil { // 이미지를 불러오는 중일 때
+                                .aspectRatio(contentMode: .fill)
+                        } else if phase.error == nil {
                             ProgressView()
-                        } else { // 에러가 발생했을 때
-                            Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
+                        } else {
+                            let _ = print(phase.error!)
+                            Image(systemName: "xmark")
+                                .resizable()
+                                .scaledToFit()
                         }
                     }
                     .frame(width: 48, height: 64, alignment: .center)
