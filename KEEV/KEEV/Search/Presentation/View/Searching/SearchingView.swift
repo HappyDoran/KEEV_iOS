@@ -9,14 +9,14 @@ import SwiftUI
 
 struct SearchingView: View {
     @Environment(\.dismiss) private var dismiss
-    @State private var events: [EventDTO] = [
-        EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & SUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 4", place: "C5", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")]
+    @State private var events: [SimpleEventUIO] = [
+        .dummy0,.dummy1]
     
-    @Binding private var selectedEvent: EventDTO?
+    @Binding private var selectedEvent: SimpleEventUIO?
     var searchContent: SearchContent
     private let onClick: () -> Void
     
-    init(selectedEvent: Binding<EventDTO?> = Binding.constant(nil), searchContent: SearchContent,onClick: @escaping ()-> Void) {
+    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), searchContent: SearchContent, onClick: @escaping ()-> Void) {
         self._selectedEvent = selectedEvent
         self.searchContent = searchContent
         self.onClick = onClick

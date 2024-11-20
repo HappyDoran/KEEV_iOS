@@ -83,7 +83,7 @@ extension DetailEventDTO {
         genres: [.init(id: 1, name: "J-POP")],
         createdDate: .startOfDay(year: 2024, month: 09, day: 25),
         reservationStartDate: .startOfDay(year: 2024, month: 10, day: 21),
-        startDate: .startOfDay(year: 2024, month: 12, day: 14),
+        startDate: .startOfDay(year: 2024, month: 11, day: 14),
         endDate: .startOfDay(year: 2024, month: 12, day: 14),
         startTime: Date.startOfDay(year: 2024, month: 12, day: 14).addingTimeInterval(TimeInterval(3600 * 19)),
         posterURLString: "https://image.toast.com/aaaaab/ticketlink/TKL_2/m(19).jpg",
