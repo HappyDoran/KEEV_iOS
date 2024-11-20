@@ -38,7 +38,6 @@ struct SearchCell: View {
                         if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
                             image
                                 .resizable()
-//                                .aspectRatio(contentMode: .fit)
                                 .cornerRadius(6)
                         } else if phase.error == nil { // 이미지를 불러오는 중일 때
                             ProgressView()

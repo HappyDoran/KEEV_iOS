@@ -13,7 +13,7 @@ import SwiftUI
 /// - vibe: 사람들이 남긴 공연에 대한 바이브
 ///
 /// - Author: Doran
-enum Section: Int, CaseIterable {
+enum EventDetailSection: Int, CaseIterable {
     case detail = 0
     case vibe = 1
 
@@ -32,7 +32,7 @@ enum Section: Int, CaseIterable {
 /// - Author: Doran
 struct EventDetailScreen: View {
     private var selectedEvent: DetailEventUIO
-    @State private var activeSection = Section.detail
+    @State private var activeSection = EventDetailSection.detail
     @State private var isPresented: Bool = false //시트의 유무를 나타내는 Bool 타입 변수
     
     init(selectedEvent: DetailEventUIO) {

@@ -16,7 +16,7 @@ import SwiftUI
 /// - Author: Doran
 struct HeaderTabView: View {
     
-    @Binding var activeSection: Section
+    @Binding var activeSection: EventDetailSection
     @State private var barX: CGFloat = 0
     private let barHeight: CGFloat = 4
     private let barWidth: CGFloat = 82
