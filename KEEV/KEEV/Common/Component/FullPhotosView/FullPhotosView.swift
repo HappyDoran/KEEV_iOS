@@ -18,12 +18,7 @@ struct FullPhotosView: View {
     @Binding private var selectedURL: URL
     
     init(photoURLs: [URL?], selectedURL: Binding<URL>) {
-        var urls: [URL] = []
-        for url in photoURLs {
-            if let url = url {
-                urls.append(url)
-            }
-        }
+        let urls = photoURLs.compactMap { $0 }
         self.photoURLs = urls
         self._selectedURL = selectedURL
     }
