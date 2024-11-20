@@ -14,8 +14,8 @@ struct VibeDetailScreen: View {
     @State private var vibe: VibeUIO
     @State private var replies: [ReplyUIO] = []
     
-    private let onUpdate: (VibeUIO) -> Void
-    private let onDelete: (VibeUIO) -> Void
+    private let onUpdate: ((VibeUIO) -> Void)?
+    private let onDelete: ((VibeUIO) -> Void)?
     
     @State private var imageIndexTag: Int = 0
     @State private var replyText: String = ""
@@ -28,8 +28,8 @@ struct VibeDetailScreen: View {
     
     init(
         vibe: VibeUIO,
-        onUpdate: @escaping (VibeUIO) -> Void,
-        onDelete: @escaping (VibeUIO) -> Void
+        onUpdate: ((VibeUIO) -> Void)? = nil,
+        onDelete: ((VibeUIO) -> Void)? = nil
     ) {
         self.vibe = vibe
         self.onUpdate = onUpdate
@@ -139,7 +139,7 @@ private extension VibeDetailScreen {
             } deleteHandler: {
                 showVibeActionSheet = false
                 /// 삭제를 시도하는 api가 있어야 합니다.
-                onDelete(vibe)
+                onDelete?(vibe)
                 dismiss()
             }
         } else {
