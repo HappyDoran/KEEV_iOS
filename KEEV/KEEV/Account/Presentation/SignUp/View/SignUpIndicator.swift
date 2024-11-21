@@ -60,9 +60,7 @@ struct SignUpIndicator: View {
             .padding(.horizontal, 16)
             
         
-            ProgressView(value: progress)
-                .tint(.brand500)
-                .background(.grayBG950)
+            ProgressBar(value: progress, total: 1)
                 .animation(.easeInOut, value: progress)
         }
         .onChange(of: currentPage) {
