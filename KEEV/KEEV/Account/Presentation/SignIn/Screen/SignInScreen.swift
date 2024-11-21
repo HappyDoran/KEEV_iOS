@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AuthenticationServices
 
 /// 로그인 화면
 ///
@@ -15,6 +16,7 @@ import SwiftUI
 /// - Todo: 로그인 기능이 추가되면 애플 로그인 버튼 수정해야합니다.
 /// - Author: 라움
 struct SignInScreen: View {
+    @Injected private var accountService: any AccountServiceProtocol
     @Injected private var settingService: any SettingServiceProtocol
     
     @State private var showTermsOfUse = false
@@ -30,20 +32,9 @@ struct SignInScreen: View {
             
             Spacer()
             
-            Button {
-                
-            } label: {
-                RoundedRectangle(cornerRadius: 14)
-                    .foregroundStyle(.white)
-                    .frame(height: 54)
-                    .overlay {
-                        Label("Apple로 로그인", systemImage: "apple.logo")
-                            .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
-                            .foregroundStyle(.black)
-                    }
-            }
-            .padding(.horizontal, 24)
-            .padding(.bottom, 20)
+            signInWithAppleButton
+                .padding(.horizontal, 24)
+                .padding(.bottom, 20)
             
             signInBottomText
         }
@@ -63,8 +54,32 @@ struct SignInScreen: View {
     }
 }
 
-extension SignInScreen {
-    private var signInBottomText: some View {
+private extension SignInScreen {
+    var signInWithAppleButton: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 14)
+                .foregroundStyle(.white)
+                .frame(height: 54)
+                .overlay {
+                    SignInWithAppleButton { request in
+                        accountService.signInRequest(request: request)
+                    } onCompletion: { result in
+                        accountService.signInHandler(result: result)
+                    }
+                    .blendMode(.overlay)
+                    .cornerRadius(14)
+                    .signInWithAppleButtonStyle(.white)
+                    .frame(height: 54)
+                }
+            
+            Label("Apple로 로그인", systemImage: "apple.logo")
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
+                .foregroundStyle(.black)
+                .frame(height: 54)
+        }
+    }
+    
+    var signInBottomText: some View {
         HStack(spacing: 0) {
             Text("로그인(가입)시 ")
             
