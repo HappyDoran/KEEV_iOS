@@ -18,7 +18,7 @@ struct EventVibeHeader: View {
             Button(action: {
                 // 정렬 기능을 보여주는 ActionSheet가 올라와야 합니다.
             }){
-                HStack(spacing: 0){
+                HStack(spacing: 2){
                     Image(systemName: "arrow.up.arrow.down")
                         .font(.system(size: 12, weight: .semibold))
                         .foregroundColor(.brand500)
@@ -35,9 +35,9 @@ struct EventVibeHeader: View {
                     .fill(Color.grayBG700)
                     .frame(width: 75, height: 29)
                     .overlay{
-                        HStack(spacing: 0){
+                        HStack(spacing: 2){
                             Text("글쓰기")
-                                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                                 .foregroundColor(.brand500)
                             Image(systemName: "square.and.pencil")
                                 .font(.system(size: 12, weight: .semibold))
