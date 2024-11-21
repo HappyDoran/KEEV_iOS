@@ -30,7 +30,7 @@ struct SearchField: View {
     var body: some View {
         Rectangle()
             .frame(height: 56)
-            .foregroundStyle(.gray900)
+            .foregroundStyle(.grayBG800)
             .overlay {
                 HStack(spacing: 0) {
                     Image(systemName: "magnifyingglass")
@@ -42,7 +42,7 @@ struct SearchField: View {
                         .padding(.leading, 6)
                     
                     TextField("", text: $text, prompt: Text("공연 이름 검색하기").foregroundStyle(.gray700))
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .regular)))
                         .focused(isFocused)
                         .accentColor(.brand500)
                         .foregroundStyle(.gray100)
