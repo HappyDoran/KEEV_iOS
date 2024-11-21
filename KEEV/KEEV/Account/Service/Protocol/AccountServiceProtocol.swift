@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AuthenticationServices
 
 /// AccountService를 구현하기 위한 프로토콜
 ///
@@ -26,6 +27,8 @@ protocol AccountServiceProtocol: ObservableObject {
     var backgroundImage: UIImage? { get }
     var description: String { get }
     
+    func signInRequest(request: ASAuthorizationAppleIDRequest)
+    func signInHandler(result: Result<ASAuthorization, any Error>)
     func setUserProfile(_ newUserProfile: UserProfile)
     
     func isValidEmail(_ email: String) -> Bool

@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AuthenticationServices
 
 /// 회원가입 과정에서 사용자 정보를 처리하는 Service
 ///
@@ -60,6 +61,29 @@ class AccountService: AccountServiceProtocol {
     /// - Author: 라움
     var description: String {
         return userProfile.description
+    }
+    
+    func signInRequest(request: ASAuthorizationAppleIDRequest) {
+        request.requestedScopes = [.email, .fullName]
+    }
+    
+    func signInHandler(result: Result<ASAuthorization, any Error>) {
+        switch result {
+        case .success(let authorization):
+            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
+            
+            if let email = credential.email, let fullName = credential.fullName {
+                print("Email: \(email) / Full name: \(fullName)")
+            }
+            if let authCode = String(data: credential.authorizationCode!, encoding: .utf8) {
+                print("Authorization code: \(authCode)")
+            }
+            if let identityToken = String(data: credential.identityToken!, encoding: .utf8) {
+                print("Identity token: \(identityToken)")
+            }
+        case .failure(let error):
+            print(error.localizedDescription)
+        }
     }
     
     /// 사용자의 프로필을 새로운 프로필로 업데이트하는 함수
