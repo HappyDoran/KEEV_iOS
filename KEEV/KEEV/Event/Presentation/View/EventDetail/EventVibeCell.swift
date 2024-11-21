@@ -36,6 +36,8 @@ struct EventVibeCell: View {
                         Spacer()
                         
                         //라움이 만든 프로필의 바이브 별점 가져다 쓰기
+                        RatingView(rating: vibeData.rating, image: Image(.star))
+                            .frame(width: 80, height: 16)
                     }
                     .padding(.horizontal, 16)
                     
@@ -66,7 +68,7 @@ struct EventVibeCell: View {
                             Image(systemName: "heart.fill")
                                 .frame(width: 18, height: 18)
                                 .foregroundColor(.gray500)
-                            Text("\(vibeData.likeCount)")
+                            Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                                 .foregroundColor(.gray500)
                         }
@@ -75,7 +77,7 @@ struct EventVibeCell: View {
                             Image(systemName: "bubble.middle.bottom.fill")
                                 .frame(width: 18, height: 18)
                                 .foregroundColor(.gray500)
-                            Text("\(vibeData.replyCount)")
+                            Text(vibeData.replyCount > 99 ? "99+" : "\(vibeData.replyCount)")
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                                 .foregroundColor(.gray500)
                         }
@@ -126,14 +128,16 @@ extension EventVibeCell {
                 if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
                     image
                         .resizable()
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .mask(
+                            RoundedRectangle(cornerRadius: 12)
+                        )
                 } else if phase.error == nil { // 이미지를 불러오는 중일 때
                     ProgressView()
                 } else { // 에러가 발생했을 때
                     Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
                 }
             }
-            .frame(height: 160, alignment: .center)
+            .frame(height: 160)
         }
     }
     
