@@ -153,7 +153,7 @@ private extension VibeContentView {
         
         var image: Image {
             switch self {
-            case .reply: Image(.comment)
+            case .reply: Image(.reply)
             }
         }
     }
