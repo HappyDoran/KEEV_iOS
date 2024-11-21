@@ -72,7 +72,7 @@ class AccountService: AccountServiceProtocol {
     ///
     /// - Author: 라움
     func signInRequest(request: ASAuthorizationAppleIDRequest) {
-        request.requestedScopes = [.email, .fullName]
+        request.requestedScopes = []
     }
     
     /// 로그인 성공 시 호출되는 handler
@@ -88,9 +88,7 @@ class AccountService: AccountServiceProtocol {
         case .success(let authorization):
             guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
             
-            if let email = credential.email, let fullName = credential.fullName {
-                print("Email: \(email) / Full name: \(fullName)")
-            }
+            print("User: \(credential.user)")
             if let authCode = String(data: credential.authorizationCode!, encoding: .utf8) {
                 print("Authorization code: \(authCode)")
             }
