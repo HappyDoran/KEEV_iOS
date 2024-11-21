@@ -8,8 +8,83 @@
 import SwiftUI
 
 struct TotalSearchScreen: View {
+    @State private var searchText: String = ""
+    @State private var eventSearchStatus: EventSearchStatus = .beforeSearch
+    @FocusState private var searchFieldFocus: Bool
+    
+    @State private var selectedEvent: SimpleEventUIO? = nil
+    
+    private let searchContent: SearchContent = .event
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(spacing: 0){
+            // MARK: 검색창
+            SearchField(text: $searchText,searchStatus: $eventSearchStatus, isFocused: $searchFieldFocus)
+            
+            switch eventSearchStatus {
+                // MARK: 검색 결과가 나오기 전의 뷰
+            case .beforeSearch:
+                SearchBeforeView(text: $searchText, isFocused: $searchFieldFocus)
+                    .padding(.horizontal, 16)
+                
+                // MARK: 텍스트 필드에 검색을 하는 중인 뷰
+            case .searching:
+                SearchingView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                    handleSearching()
+                }
+                
+                // MARK: 검색 결과가 나온 후의 뷰
+            case .afterSearch:
+                SearchAfterView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                    handleAfterSearch()
+                }.padding(.horizontal, 16)
+            }
+            Spacer()
+        }
+        .onChange(of: [searchFieldFocus, searchText.isEmpty]) {
+            eventSearchStatus = searchCase()
+        }
+        .backgroundForKEEV()
+        .navigationDestination(item: $selectedEvent) { event in
+            Text(event.name)
+        }
+        .navigationTitle(searchContent.title)
+    }
+}
+
+extension TotalSearchScreen {
+    // MARK: 검색을 하는 과정을 표현한 함수
+    private func searchCase()-> EventSearchStatus {
+        if !searchFieldFocus && searchText.isEmpty {
+            return .beforeSearch
+        }
+        else if searchFieldFocus && searchText.isEmpty {
+            return .beforeSearch
+        }
+        else if searchFieldFocus && !searchText.isEmpty {
+            return .searching
+        }
+        else {
+            return .afterSearch
+        }
+    }
+    
+    private func handleSearching() {
+        switch searchContent {
+        case .event:
+            print("searchResult 이동")
+        case .vibe:
+            print("글쓰기 이동")
+        }
+    }
+    
+    private func handleAfterSearch() {
+        switch searchContent {
+        case .event:
+            print("Event Detail 이동")
+        case .vibe:
+            print("글쓰기 이동")
+        }
     }
 }
 
