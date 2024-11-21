@@ -32,17 +32,19 @@ struct RatingView: View {
     var body: some View {
         let stars = HStack(spacing: 3) {
             ForEach(0..<Int(maxRating), id: \.self) { index in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .foregroundColor(.gray700)
+                Color.grayBG700
+                    .mask {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                    }
             }
         }
         
         stars.overlay(
             GeometryReader { geometry in
                 Rectangle()
-                    .foregroundStyle(.gray300)
+                    .foregroundStyle(.grayBG300)
                     .frame(width: rating / maxRating * geometry.size.width)
             }
         )
