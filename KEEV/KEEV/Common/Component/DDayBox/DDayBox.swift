@@ -13,14 +13,18 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct DDayBox: View {
-    private let date: Date
+    private let difference: Int?
+    
+    init(difference: Int?) {
+        self.difference = difference
+    }
     
     init(date: Date) {
-        self.date = date
+        self.difference = date.difference(from: .now)
     }
     
     var body: some View {
-        if let difference = date.difference(from: .now) {
+        if let difference = difference {
             if difference < 0 {
                 Text("D\(difference)")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold)))
