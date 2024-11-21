@@ -54,8 +54,8 @@ struct SignInScreen: View {
     }
 }
 
-extension SignInScreen {
-    private var signInWithAppleButton: some View {
+private extension SignInScreen {
+    var signInWithAppleButton: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 14)
                 .foregroundStyle(.white)
@@ -79,7 +79,7 @@ extension SignInScreen {
         }
     }
     
-    private var signInBottomText: some View {
+    var signInBottomText: some View {
         HStack(spacing: 0) {
             Text("로그인(가입)시 ")
             
