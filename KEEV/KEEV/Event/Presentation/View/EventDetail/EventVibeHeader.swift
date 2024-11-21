@@ -35,14 +35,14 @@ struct EventVibeHeader: View {
                     .fill(Color.grayBG700)
                     .frame(width: 75, height: 29)
                     .overlay{
-                        HStack(spacing: 2){
+                        HStack(spacing: 2) {
                             Text("글쓰기")
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
-                                .foregroundColor(.brand500)
                             Image(systemName: "square.and.pencil")
                                 .font(.system(size: 12, weight: .semibold))
-                                .foregroundColor(.brand500)
+                                .padding(.bottom, 1.4)
                         }
+                        .foregroundColor(.brand500)
                     }
             }
         }
