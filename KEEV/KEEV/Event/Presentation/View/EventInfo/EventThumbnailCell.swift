@@ -36,7 +36,7 @@ struct EventThumbnailCell: View {
             
             // MARK: D-Day Box
             //이후 모델의 날짜 타입이 Date가 되면 수정될 예정입니다.
-            DDayBox(date: event.startDate.toDate(format: "yyyy.MM.dd")!).padding(.top, 8)
+            DDayBox(difference: event.dDay).padding(.top, 8)
             
             // MARK: 이벤트 제목
             Text(event.name)
