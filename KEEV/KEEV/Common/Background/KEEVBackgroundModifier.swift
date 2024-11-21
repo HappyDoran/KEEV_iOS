@@ -19,7 +19,7 @@ import SwiftUI
 struct KEEVBackgroundModifier: ViewModifier {
     func body(content: Content) -> some View {
         ZStack {
-            Color.gray950
+            Color.grayBG950
                 .ignoresSafeArea(.all, edges: .all)
             content
         }
