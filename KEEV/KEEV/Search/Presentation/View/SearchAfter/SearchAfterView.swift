@@ -57,11 +57,12 @@ extension SearchAfterView {
     private var searchResult: some View {
         ScrollView(showsIndicators: false) {
             ForEach(events) { event in
-                SearchResultCell(event: event){
-                    selectedEvent = event
-                    dismiss()
-                    onClick()
-                }
+                EventListCell(event: event)
+                    .onTapGesture {
+                        selectedEvent = event
+                        dismiss()
+                        onClick()
+                    }
             }
         }
     }
