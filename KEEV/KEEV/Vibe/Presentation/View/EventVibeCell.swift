@@ -65,18 +65,20 @@ struct EventVibeCell: View {
                         Spacer()
                         
                         HStack(spacing: 4) {
-                            Image(systemName: "heart.fill")
-                                .frame(width: 18, height: 18)
-                                .foregroundColor(.gray500)
+                            Image(.heartFill)
+                                .resizable()
+                                .frame(width: 14, height: 12)
+                            
                             Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                                 .foregroundColor(.gray500)
                         }
                         
                         HStack(spacing: 4) {
-                            Image(systemName: "bubble.middle.bottom.fill")
-                                .frame(width: 18, height: 18)
-                                .foregroundColor(.gray500)
+                            Image(.replyFill)
+                                .resizable()
+                                .frame(width: 14, height: 12)
+
                             Text(vibeData.replyCount > 99 ? "99+" : "\(vibeData.replyCount)")
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                                 .foregroundColor(.gray500)
