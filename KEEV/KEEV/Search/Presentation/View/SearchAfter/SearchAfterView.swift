@@ -13,8 +13,7 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct SearchAfterView: View {
-    @Environment(\.dismiss) private var dismiss
-    @State private var events: [SimpleEventUIO] = []
+    @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     
     @Binding private var selectedEvent: SimpleEventUIO?
     private var searchContent: SearchContent
@@ -80,7 +79,6 @@ extension SearchAfterView {
                 EventListCell(event: event)
                     .onTapGesture {
                         selectedEvent = event
-                        dismiss()
                         onClick()
                     }
             }
