@@ -33,7 +33,7 @@ enum SearchContent {
 /// - Author: Doran
 struct EventInfoScreen: View {
     @StateObject private var eventService = EventService()
-    @State private var events: [EventDTO] = []
+    @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     @State private var error: String? = nil
     @State private var isLoading: Bool = false
     @State private var selectedEvent: SimpleEventUIO? = nil
@@ -51,7 +51,7 @@ struct EventInfoScreen: View {
                 get: { selectedEvent != nil },
                 set: { if !$0 { selectedEvent = nil } } // 선택된 이벤트가 없으면 nil로 설정
             )) {
-                if let event = selectedEvent {
+                if selectedEvent != nil {
                     EventDetailScreen(selectedEvent: .dummy0)
                 }
             }
@@ -106,23 +106,10 @@ extension EventInfoScreen {
     private func loadEventData() {
         isLoading = true
         Task.detached {
-            do {
-                let loadedEvents = try await eventService.loadEvents(
-                    startDate: Calendar.current.date(from: DateComponents(year: 2024, month: 10, day: 4)) ?? Date(),
-                    endDate: Date(),
-                    page: 1,
-                    rows: 10
-                )
                 await MainActor.run {
-                    self.events = loadedEvents
+                    self.events = SimpleEventUIO.dummies
                     self.isLoading = false
                 }
-            } catch {
-                await MainActor.run {
-                    self.error = error.localizedDescription
-                    self.isLoading = false
-                }
-            }
         }
     }
     
@@ -138,7 +125,7 @@ extension EventInfoScreen {
                     rows: 5
                 )
                 await MainActor.run {
-                    self.events = loadedEvents
+//                    self.events = loadedEvents
                     self.isLoading = false
                 }
             } catch {
