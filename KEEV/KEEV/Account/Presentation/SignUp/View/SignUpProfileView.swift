@@ -15,7 +15,8 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpProfileView: View {
-    @ObservedObject var accountService: AccountService
+//    @ObservedObject var accountService: AccountService
+    @Injected private var accountService: any AccountServiceProtocol
     @Binding var userProfile: UserProfile
     @Binding var showActionSheet: Bool
     @Binding var currentPage: SignUpPage
@@ -104,7 +105,7 @@ extension SignUpProfileView {
 
 #Preview {
     SignUpProfileView(
-        accountService: AccountService(),
+//        accountService: AccountService(),
         userProfile: .constant(UserProfile()),
         showActionSheet: .constant(false),
         currentPage: .constant(.profile),

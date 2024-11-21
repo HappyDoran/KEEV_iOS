@@ -19,7 +19,7 @@ enum SignUpPage: Int {
 ///
 /// - Author: 라움
 struct SignUpScreen: View {
-    @StateObject private var accountService = AccountService()
+    @Injected private var accountService: any AccountServiceProtocol
     
     @State private var userProfile: UserProfile = UserProfile()
     @State private var currentPage: SignUpPage = .email
@@ -68,14 +68,14 @@ extension SignUpScreen {
         switch currentPage {
         case .email:
             SignUpEmailView(
-                accountService: accountService,
+//                accountService: accountService as! AccountService,
                 userProfile: $userProfile,
                 currentPage: $currentPage,
                 transitionDirection: $transitionDirection
             )
         case .profile:
             SignUpProfileView(
-                accountService: accountService,
+//                accountService: accountService as! AccountService,
                 userProfile: $userProfile,
                 showActionSheet: $showActionSheet,
                 currentPage: $currentPage,
@@ -83,7 +83,7 @@ extension SignUpScreen {
             )
         case .complete:
             SignUpCompleteView(
-                accountService: accountService,
+//                accountService: accountService as! AccountService,
                 currentPage: $currentPage
             )
         }

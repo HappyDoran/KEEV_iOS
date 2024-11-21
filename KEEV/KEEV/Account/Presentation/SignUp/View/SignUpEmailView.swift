@@ -15,7 +15,8 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpEmailView: View {
-    @ObservedObject var accountService: AccountService
+//    @ObservedObject var accountService: AccountService
+    @Injected private var accountService: any AccountServiceProtocol
     @Binding var userProfile: UserProfile
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
@@ -85,7 +86,7 @@ extension SignUpEmailView {
 
 #Preview {
     SignUpEmailView(
-        accountService: AccountService(),
+//        accountService: AccountService(),
         userProfile: .constant(UserProfile()),
         currentPage: .constant(.email),
         transitionDirection: .constant(.leading)

@@ -14,7 +14,7 @@ import Lottie
 ///
 /// - Author: 라움
 struct SignUpCompleteView: View {
-    @ObservedObject var accountService: AccountService
+    @Injected private var accountService: any AccountServiceProtocol
     @Binding var currentPage: SignUpPage
     
     var body: some View {
@@ -71,7 +71,7 @@ struct SignUpCompleteView: View {
 
 #Preview {
     SignUpCompleteView(
-        accountService: AccountService(),
+//        accountService: AccountService(),
         currentPage: .constant(.complete)
     )
 }
