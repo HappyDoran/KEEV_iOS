@@ -47,14 +47,6 @@ struct EventInfoScreen: View {
                 eventListSection.padding(.top, 48).padding(.horizontal, 16)
                 horizontalScrollSection.padding(.leading, 16)
             }
-            .navigationDestination(isPresented: Binding<Bool>(
-                get: { selectedEvent != nil },
-                set: { if !$0 { selectedEvent = nil } } // 선택된 이벤트가 없으면 nil로 설정
-            )) {
-                if selectedEvent != nil {
-                    EventDetailScreen(selectedEvent: .dummy0)
-                }
-            }
         }
         .onAppear {
             loadEventData()
@@ -117,7 +109,7 @@ extension EventInfoScreen {
         isLoading = true
         Task.detached {
             do {
-                let loadedEvents = try await eventService.loadEventByKeyword(
+                let _ = try await eventService.loadEventByKeyword(
                     startDate: Calendar.current.date(from: DateComponents(year: 2024, month: 3, day: 4)) ?? Date(),
                     endDate: Date(),
                     keyword: keyword,
