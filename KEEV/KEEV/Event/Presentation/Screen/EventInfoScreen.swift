@@ -60,7 +60,9 @@ extension EventInfoScreen {
     private var thumbnailSection: some View {
         HStack(spacing: 8) {
             ForEach(0..<min(events.count, 3), id: \.self) { index in
-                NavigationLink(destination: Text("Detail View")) {
+                NavigationLink {
+                    EventDetailScreen(selectedEvent: .dummy2)
+                } label: {
                     EventThumbnailCell(event: events[index])
                 }
             }
