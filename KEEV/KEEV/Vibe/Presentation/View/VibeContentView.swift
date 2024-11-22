@@ -13,9 +13,10 @@ struct VibeContentView: View {
     @State private var imageIndexTag: Int = 0
     
     var body: some View {
-        Group {
+        VStack(spacing: 24) {
             vibeContent
             heartAndCommentCount
+                .padding(.vertical, 12)
         }
     }
 }
@@ -88,6 +89,7 @@ private extension VibeContentView {
             countLabel(for: .reply, count: vibe.replyCount)
             Spacer()
         }
+        
     }
 }
 
