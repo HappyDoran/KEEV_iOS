@@ -21,16 +21,19 @@ struct EventDetailInfoView: View {
     
     @State var isFavorite: Bool = false
     var body: some View {
-        VStack(spacing: 0){
-            titleCell.padding(.top, 24)
-            infoCell(title: "날짜", content: "\(selectedEvent.startDate) ~ \(selectedEvent.endDate)")
-                .padding(.top, 12)
-            infoCell(title: "장소", content: "\(selectedEvent.placeName)")
-                .padding(.top, 4)
-            if let reservationDate = selectedEvent.reservationStartDate {
-                infoCell(title: "예매", content: "\(reservationDate)")
+        ScrollView {
+            VStack(spacing: 0){
+                titleCell.padding(.top, 24)
+                infoCell(title: "날짜", content: "\(selectedEvent.startDate) ~ \(selectedEvent.endDate)")
+                    .padding(.top, 12)
+                infoCell(title: "장소", content: "\(selectedEvent.placeName)")
                     .padding(.top, 4)
+                if let reservationDate = selectedEvent.reservationStartDate {
+                    infoCell(title: "예매", content: "\(reservationDate)")
+                        .padding(.top, 4)
+                }
             }
+            .padding(.bottom, 48)
         }
     }
 }
@@ -46,16 +49,16 @@ extension EventDetailInfoView {
                 .figmaFont(PretendardFont.title(style: .sm))
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            VStack{
-                Image(systemName: isFavorite ? "heart.fill" : "heart")
-                    .resizable()
-                    .frame(width: 21, height: 19)
-                    .foregroundStyle(.brand500)
-                    .onTapGesture {
-                        isFavorite.toggle()
-                    }
-            }
-            .frame(width: 32, height: 32)
+            //            VStack{
+            //                Image(systemName: isFavorite ? "heart.fill" : "heart")
+            //                    .resizable()
+            //                    .frame(width: 21, height: 19)
+            //                    .foregroundStyle(.brand500)
+            //                    .onTapGesture {
+            //                        isFavorite.toggle()
+            //                    }
+            //            }
+            //            .frame(width: 32, height: 32)
         }
         .frame(height: 56)
     }
