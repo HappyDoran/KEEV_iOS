@@ -10,24 +10,34 @@ import SwiftUI
 struct ReplyListView: View {
     let userID: Int
     @Binding var replies: [ReplyUIO]
-    private let moreTabHandler: (Int, ReplyUIO) -> Void
+    private let userTapHandler: ((Int) -> Void)?
+    private let moreTapHandler: ((Int, ReplyUIO) -> Void)?
+    private let likeTapHandler: ((Int, ReplyUIO) -> Void)?
     
     init(
         userID: Int,
         replies: Binding<[ReplyUIO]>,
-        moreTabHandler: @escaping (Int, ReplyUIO) -> Void
+        userTapHandler: ((Int) -> Void)? = nil,
+        moreTapHandler: ((Int, ReplyUIO) -> Void)? = nil,
+        likeTapHandler: ((Int, ReplyUIO) -> Void)? = nil
     ) {
         self.userID = userID
         self._replies = replies
-        self.moreTabHandler = moreTabHandler
+        self.userTapHandler = userTapHandler
+        self.moreTapHandler = moreTapHandler
+        self.likeTapHandler = likeTapHandler
     }
     
     
     var body: some View {
         LazyVStack {
             ForEach(0..<replies.count, id: \.self) { index in
-                ReplyListCell(userID: userID, reply: replies[index]) {
-                    moreTabHandler(index, replies[index])
+                ReplyListCell(reply: replies[index]) {
+                    userTapHandler?(replies[index].userID)
+                } moreTapHandler: {
+                    moreTapHandler?(index, replies[index])
+                } likeTapHandler: {
+                    likeTapHandler?(index, replies[index])
                 }
                 
                 if index < replies.count - 1 {
@@ -45,7 +55,5 @@ struct ReplyListView: View {
 #Preview {
     ReplyListView(userID: 2, replies: .constant([
         .dummy0, .dummy1, .dummy2
-    ])) { _, _ in
-        
-    }
+    ]))
 }

@@ -8,14 +8,21 @@
 import SwiftUI
 
 struct ReplyListCell: View {
-    private let userID: Int?
     private let reply: ReplyUIO
-    private let moreTabHandler: () -> Void
+    private let userTapHandler: () -> Void
+    private let moreTapHandler: () -> Void
+    private let likeTapHandler: () -> Void
     
-    init(userID: Int?, reply: ReplyUIO, moreTabHandler: @escaping () -> Void) {
-        self.userID = userID
+    init(
+        reply: ReplyUIO,
+        userTapHandler: @escaping () -> Void,
+        moreTapHandler: @escaping () -> Void,
+        likeTapHandler: @escaping () -> Void
+    ) {
         self.reply = reply
-        self.moreTabHandler = moreTabHandler
+        self.userTapHandler = userTapHandler
+        self.moreTapHandler = moreTapHandler
+        self.likeTapHandler = likeTapHandler
     }
     
     var body: some View {
@@ -41,10 +48,11 @@ private extension ReplyListCell {
     var replyHeader: some View {
         HStack(alignment: .top) {
             userInfo
+                .onTapGesture(perform: userTapHandler)
             
             Spacer()
             
-            Button(action: moreTabHandler) {
+            Button(action: moreTapHandler) {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(.gray50)
             }
@@ -63,7 +71,7 @@ private extension ReplyListCell {
                 )
                 .foregroundColor(.gray50)
             
-            if userID == reply.userID {
+            if reply.isMine {
                 Text("작성자")
                     .figmaFont(
                         PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold))
@@ -98,5 +106,12 @@ private extension ReplyListCell {
 }
 
 #Preview {
-    ReplyListCell(userID: 1, reply: .dummy2) { }
+    ReplyListCell(reply: .dummy0) {
+        
+    } moreTapHandler: {
+        
+    } likeTapHandler: {
+        
+    }
+
 }
