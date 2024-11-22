@@ -50,7 +50,7 @@ struct EventVibeCell: View {
                     }
                     
                     if let comment = vibeData.comment {
-                        Text("\(comment)")
+                        Text(comment)
                             .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
                             .lineLimit(2)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -58,32 +58,26 @@ struct EventVibeCell: View {
                     }
                     
                     HStack(spacing: 12) {
-                        Text("\(vibeData.createdDate)")
+                        Text(vibeData.createdDate)
                             .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                            .foregroundColor(.gray500)
                         
                         Spacer()
                         
                         HStack(spacing: 4) {
                             Image(.heartFill)
-                                .resizable()
-                                .frame(width: 14, height: 12)
                             
                             Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                                .foregroundColor(.gray500)
                         }
                         
                         HStack(spacing: 4) {
                             Image(.replyFill)
-                                .resizable()
-                                .frame(width: 14, height: 12)
 
                             Text(vibeData.replyCount > 99 ? "99+" : "\(vibeData.replyCount)")
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                                .foregroundColor(.gray500)
                         }
                     }
+                    .foregroundColor(.gray500)
                     .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
                     
                     
