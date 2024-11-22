@@ -8,6 +8,25 @@
 import Foundation
 import SwiftUI
 
+enum AccountError: String, Error {
+    case empty
+    case inValidEmail
+    case inValidNickname
+}
+
+extension AccountError : LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .empty:
+            return ""
+        case .inValidEmail:
+            return "이메일의 형식이 올바르지 않습니다."
+        case .inValidNickname:
+            return "특수문자가 포함되어 있습니다."
+        }
+    }
+}
+
 /// 회원가입 과정에서 사용자 정보를 처리하는 Service
 ///
 /// 회원가입 과정에서의 사용자 정보를 처리하는 Service입니다.
@@ -141,21 +160,54 @@ class AccountService: AccountServiceProtocol {
     }
 }
 
-enum AccountError: String, Error {
-    case empty
-    case inValidEmail
-    case inValidNickname
-}
 
-extension AccountError : LocalizedError {
-    var errorDescription: String? {
-        switch self {
-        case .empty:
-            return ""
-        case .inValidEmail:
-            return "이메일의 형식이 올바르지 않습니다."
-        case .inValidNickname:
-            return "특수문자가 포함되어 있습니다."
-        }
+extension AccountService {
+    // 자동 로그인을 하는 함수
+    func autoLogin() {
+        // 키체인에서 리프레시 토큰을 가져온다.
+        // 이거를 서버로 보내서 검사를 받는다.(refreshAccessToken)
+        // 성공하면 account에 값을 할당한다.
+        // 실패하면 로그인 뷰로 넘어가게 안내해주기만 하면 됨.
+    }
+    
+    // 애플로 로그인 하고 Identity Token, Authorization Code, user을 보내고 서버한테 detailUser를 받아오는 함수
+    func login(identityToken: String, authorizationCode: String, user: String) {
+        // Apple 인증에 성공하면 Identity Token, Authorization Code, user를 받아온다. 이걸 가지고 서버에 요청한다.
+        // 서버가 200을 반환하면:
+        //  회원 정보가 존재: 서버로부터 DetailUser, email, Access Token, Refresh Token을 받는다.
+        //  Access Token, Refresh Token, email을 KeyChain에 저장한다.
+        //  user는 detailUser에 넣어준다. NotificationCenter를 활용해 User값이 바뀌었음을 전역적으로 알린다.
+        // 서버가 201을 반환하면:
+        //  회원가입으로 Navigation해준다.
+    }
+    
+    // Profile을 서버에 보내는 함수
+    func sendProfile(userProfile: UserProfile) {
+        // 서버가 201을 반환하면, 사용자는 Email과 Nickname을 입력한다.
+        // 이 정보를 사용하여 다시 서버에 요청을 보낸다.
+        // 서버가 성공적으로 회원 가입을 처리하면:
+        //  Access Token, Refresh Token, email을 KeyChain에 저장한다.
+        //  user는 detailUser에 넣어준다. NotificationCenter를 활용해 User값이 바뀌었음을 전역적으로 알린다.
+        //  완료되면 EntityView로 Navigation 이동한다.
+    }
+    
+    // Access Token 갱신 요청 함수
+    func refreshAccessToken() {
+        // refreshAccessToken을 통해 Access Token을 가져온다.
+        // 만약 Unauthorized 응답이 반환되면:
+        //  Access Token이 만료된 경우: Refresh Token을 서버에 보내어 새로운 Access Token을 요청한다.
+        //  받은 Access Token을 Keychain에 저장한다.
+    }
+    
+    // 로그아웃 함수
+    func logout() {
+        // 키체인의 Access Token, Refresh Token, email을 지운다.
+        // 서버에 헤더로 Access Token을 보내면 서버에서의 Access Token과 Refresh Token을 삭제한다.
+    }
+    
+    // 회원탈되 함수
+    func goodBye() {
+        // 키체인의 Access Token, Refresh Token, email을 지운다.
+        // 서버에 헤더로 Access Token을 보내면 서버에서의 연관 테이블을 삭제 한다.
     }
 }

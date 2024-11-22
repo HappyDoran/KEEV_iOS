@@ -32,4 +32,11 @@ protocol AccountServiceProtocol: ObservableObject {
     func checkEmailValidity(_ email: String) throws
     func isValidNickname(_ nickname: String) -> Bool
     func checkNicknameValidity(_ nickname: String) throws
+    
+    func autoLogin() -> Void
+    func login(identityToken: String, authorizationCode: String, user: String) -> Void
+    func sendProfile(userProfile: UserProfile) -> Void
+    func refreshAccessToken() -> Void
+    func logout() -> Void
+    func goodBye() -> Void
 }
