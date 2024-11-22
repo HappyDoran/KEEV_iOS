@@ -14,7 +14,7 @@ import Foundation
 ///
 /// - ToDo: SimpleUserDTO가 생기면 생성자 만들기
 /// - Author: newJunsung
-struct SimpleUserUIO: Identifiable {
+struct SimpleUserUIO: Identifiable, Hashable {
     let id: Int
     let nickname: String
     let profileImageURL: URL?
