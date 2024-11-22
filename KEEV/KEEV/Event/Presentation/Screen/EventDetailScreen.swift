@@ -34,13 +34,14 @@ struct EventDetailScreen: View {
     private var selectedEvent: DetailEventUIO
     @State private var activeSection = EventDetailSection.detail
     @State private var isPresented: Bool = false //시트의 유무를 나타내는 Bool 타입 변수
+    @State private var vibeCount: Int? = nil
     
     init(selectedEvent: DetailEventUIO) {
         self.selectedEvent = selectedEvent
     }
     var body: some View {
         VStack(spacing: 0){
-            HeaderTabView(activeSection: $activeSection)
+            HeaderTabView(activeSection: $activeSection, dDay: selectedEvent.dDay, vibeCount: nil)
                 switch activeSection {
                 case .detail:
                     infoView
