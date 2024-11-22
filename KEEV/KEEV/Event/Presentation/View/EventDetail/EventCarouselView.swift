@@ -5,7 +5,7 @@ struct EventCarouselView: View {
     let timer = Timer.publish(every: 3.0, on: .main, in: .common).autoconnect()
     
     @State private var selectedImageIndex: Int = 0
-    @State private var itemsArray: [String] = []
+
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
@@ -15,27 +15,33 @@ struct EventCarouselView: View {
                         .resizable()
                         .scaledToFill()
                         .tag(index)
-                        .frame(height: 226)
+                        .frame(height: 264)
                         .clipped()
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             
-            // Dots indicator
-            HStack(spacing: 4) {
-                ForEach(0..<imageNames.count, id: \.self) { index in
-                    Circle()
-                        .fill(Color.white.opacity(selectedImageIndex == index ? 1 : 0.33))
-                        .frame(width: 6, height: 6)
-                    
+            Capsule()
+                .fill(Color.gray950.opacity(0.8))
+                .frame(width: 42, height: 21)
+                .overlay{
+                    HStack(spacing : 0) {
+                        Text("\(selectedImageIndex+1) ")
+                            .foregroundColor(.gray50)
+                        Text("/ \(imageNames.count)")
+                            .foregroundColor(.gray500)
+                    }
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 }
-            }
+
+
         }
         .onReceive(timer) { _ in
             withAnimation(.default) {
                 selectedImageIndex = (selectedImageIndex + 1) % imageNames.count
             }
         }
+        .frame(height: 264)
     }
 }
 
