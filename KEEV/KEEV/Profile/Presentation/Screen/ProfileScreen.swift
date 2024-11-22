@@ -62,7 +62,7 @@ struct ProfileScreen: View {
                 })
         )
         .navigationDestination(isPresented: $navigateToReport) {
-            ReportScreen(reportType: .user)
+            ReportScreen(reportType: .user(userID: 1))
         }
     }
 }
