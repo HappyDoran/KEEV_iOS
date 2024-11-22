@@ -65,10 +65,16 @@ struct HeaderTabView: View {
                 .frame(height: 46)
                 
                 Rectangle()
-                    .fill(Color.brand500)
-                    .frame(width: barWidth, height: barHeight)
-                    .offset(x: activeSection == .detail ? -((geometry.size.width / 4)) : (geometry.size.width / 4), y: 0)
-                    .animation(.easeInOut, value: activeSection)
+                    .foregroundStyle(.gray500)
+                    .frame(height: 1)
+                    
+                    .overlay {
+                        Rectangle()
+                            .fill(Color.brand500)
+                            .frame(width: barWidth, height: barHeight)
+                            .offset(x: activeSection == .detail ? -((geometry.size.width / 4)) : (geometry.size.width / 4), y: 0)
+                            .animation(.easeInOut, value: activeSection)
+                    }
             }
             .background(Color.grayBG800)
         }
