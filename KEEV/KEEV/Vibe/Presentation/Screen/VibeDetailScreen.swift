@@ -25,6 +25,7 @@ struct VibeDetailScreen: View {
     @State private var modifyReplySheet: ReplyWithIndex? = nil
     @State private var navigateToModifyVibe: Bool = false
     @State private var navigateToReport: ReportType? = nil
+    @State private var navigateToUserProfile: Int? = nil
     
     init(
         vibe: VibeUIO,
@@ -37,15 +38,20 @@ struct VibeDetailScreen: View {
     }
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             ScrollView {
-                VStack(spacing: 24) {
+                VStack(spacing: 0) {
                     VibeContentView(vibe: vibe)
                         .padding(.top, 20)
                         .padding(.horizontal, 16)
-                    ReplyListView(userID: 2, replies: $replies) { index, tabbedReply in
-                        showReplyActionSheet = .init(index: index, reply: tabbedReply)
-                    }
+                    ReplyListView(
+                        userID: 2,
+                        replies: $replies,
+                        userTapHandler: tapReplyUser,
+                        moreTapHandler: tapReplyMore,
+                        likeTapHandler: tapReplyLike
+                    )
+                    .background(.grayBG700)
                 }
             }
             .scrollDismissesKeyboard(.immediately)
@@ -64,6 +70,7 @@ struct VibeDetailScreen: View {
             .padding(.top, 8)
             .padding(.bottom, 16)
             .padding(.horizontal, 20)
+            .background(.grayBG800)
         }
         .navigationTitle("바이브")
         .navigationBarTitleDisplayMode(.inline)
@@ -110,6 +117,12 @@ struct VibeDetailScreen: View {
         .navigationDestination(isPresented: $navigateToModifyVibe) {
             VibeModifyScreen(vibe: $vibe)
         }
+        .navigationDestination(item: $navigateToUserProfile) { userID in
+            VStack {
+                Text("userID: \(userID)")
+                Text("유저 프로필 뷰로 이동해야 함.")
+            }
+        }
         .task {
             // ReplyService에서 댓글을 불러오는 함수를 호출하면 됨.
             replies = [
@@ -145,7 +158,7 @@ private extension VibeDetailScreen {
         } else {
             return [
                 .report(title: "신고하기") {
-                    navigateToReport = .vibe
+                    navigateToReport = .vibe(eventID: vibe.event.id, vibeID: vibe.id)
                 }
             ]
         }
@@ -165,10 +178,24 @@ private extension VibeDetailScreen {
             
         } else {
             return .othersComment {
-                showReplyActionSheet = nil
-                navigateToReport = .comment
+                if let reply = selectedReply?.reply {
+                    showReplyActionSheet = nil
+                    navigateToReport = .comment(vibeID: vibe.id, replyID: reply.id)
+                }
             }
         }
+    }
+    
+    func tapReplyMore(index: Int, reply: ReplyUIO) {
+        showReplyActionSheet = .init(index: index, reply: reply)
+    }
+    
+    func tapReplyUser(for userID: Int) {
+        navigateToUserProfile = userID
+    }
+    
+    func tapReplyLike(index: Int, reply: ReplyUIO) {
+        // 좋아요를 눌렀을 때 문제 해결
     }
 }
 
