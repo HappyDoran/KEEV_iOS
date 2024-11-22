@@ -87,7 +87,6 @@ extension EventDetailScreen {
                     .padding(.horizontal, 20)
                 
                 detailSection
-                
             }
             
             CommonButton(title: "\(vibeWriteState)", action: { print("hello world") }, style: .maxWidth, disabled: isDisabled)
@@ -108,7 +107,7 @@ extension EventDetailScreen {
             }
             else {
                 EventVibeHeader().padding(.horizontal, 16)
-                EventVibeView()
+                EventVibeView(eventID: selectedEvent.id)
             }
         }
     }
@@ -189,9 +188,9 @@ extension EventDetailScreen {
     /// - Author: Doran
     private var isDisabled: Bool {
         if vibeWriteState == .canWrite {
-            return false
+            return true
         }
-        return true
+        return false
     }
 }
 
