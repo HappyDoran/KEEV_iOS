@@ -18,11 +18,8 @@ import SwiftUI
 /// - Author: newJunsung
 struct KEEVBackgroundModifier: ViewModifier {
     func body(content: Content) -> some View {
-        ZStack {
-            Color.grayBG950
-                .ignoresSafeArea(.all, edges: .all)
             content
-        }
+                .background(Color.grayBG950)
     }
 }
 
