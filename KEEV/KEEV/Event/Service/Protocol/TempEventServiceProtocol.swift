@@ -7,8 +7,7 @@
 
 import Foundation
 
-protocol TempEventServiceProtocol: ObservableObject {
-    func loadEvents() async throws -> [SimpleEventDTO]
-    func loadPaginatedEvents(page: Int, size: Int, sort: String) async throws -> PaginatedResponse<SimpleEventDTO>
-    func loadDetailEvent(id: String) async throws -> DetailEventDTO
+protocol TempEventServiceProtocol: AnyObject {
+    func loadPaginatedEvents(page: Int, size: Int, sort: String) async throws -> PaginatedResponse<SimpleEventUIO>
+    func loadDetailEvent(id: String) async throws -> DetailEventUIO
 }
