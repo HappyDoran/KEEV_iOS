@@ -34,8 +34,9 @@ struct EventDetailScreen: View {
     @State private var selectedEvent: DetailEventUIO
     @State private var vibeWriteState: VibeWriteState
     @State private var activeSection = EventDetailSection.detail
-    @State private var isPresented: Bool = false //시트의 유무를 나타내는 Bool 타입 변수
     @State private var vibeCount: Int? = nil
+    @State private var showEventDetailSheet = false
+    @State private var navigateToReportEvent = false
     
     init(selectedEvent: DetailEventUIO) {
         self.selectedEvent = selectedEvent
@@ -59,15 +60,23 @@ struct EventDetailScreen: View {
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular)))
                     .frame(width: 277)
                     .foregroundStyle(.gray300)
-                    
+                
             }
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {}) {
+                Button(action: determineSheetForSection) {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundColor(.gray100)
                 }
             }
+        }
+        .actionSheetForKEEV(isPresented: $showEventDetailSheet, configurations: [
+            KEEVActionSheet.ButtonConfiguration.report(title: "신고하기") {
+                navigateToReportEvent = true
+            }
+        ])
+        .navigationDestination(isPresented: $navigateToReportEvent) {
+            ReportScreen(reportType: .event(eventID: selectedEvent.id))
         }
     }
 }
@@ -175,6 +184,13 @@ extension EventDetailScreen {
         Text(text)
             .foregroundStyle(.gray50)
             .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+    }
+    
+    private func determineSheetForSection() {
+        switch activeSection {
+        case .detail: showEventDetailSheet = true
+        case .vibe: showEventDetailSheet = true // 신고 시트가 올라와야 함.
+        }
     }
 }
 
