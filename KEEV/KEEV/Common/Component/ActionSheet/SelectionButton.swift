@@ -20,11 +20,13 @@ extension KEEVActionSheet {
     /// - Note: 액션 시트 닫기 버튼은 CloseButton에 별도로 만들었습니다.
     /// - Author: 라움
     struct SelectionButton: View {
+        @Binding private var isPresented: Bool
         private let configuration: any KEEVButtonConfiguration
         private let isFirst: Bool
         private let isLast: Bool
         
-        init(configuration: any KEEVButtonConfiguration, isFirst: Bool, isLast: Bool) {
+        init(isPresented: Binding<Bool>, configuration: any KEEVButtonConfiguration, isFirst: Bool, isLast: Bool) {
+            self._isPresented = isPresented
             self.configuration = configuration
             self.isFirst = isFirst
             self.isLast = isLast
@@ -32,7 +34,7 @@ extension KEEVActionSheet {
         
         var body: some View {
             VStack(spacing: 0) {
-                Button(action: configuration.action) {
+                Button(action: action) {
                     UnevenRoundedRectangle(
                         topLeadingRadius: isFirst ? 16 : 0,
                         bottomLeadingRadius: isLast ? 16 : 0,
@@ -65,6 +67,11 @@ extension KEEVActionSheet {
                         .background(.gray700)
                 }
             }
+        }
+        
+        private func action() {
+            configuration.action()
+            isPresented = false
         }
     }
 }
