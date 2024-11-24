@@ -1,7 +1,12 @@
 import SwiftUI
 
+/// 메인 베너 이미지 캐러셀 뷰
+///
+/// 이미지가 오른쪽으로만 계속 넘어가는 무한 캐러셀입니다.
+///
+/// - Author: Doran
 struct EventCarouselView: View {
-    let timer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 3.0, on: .main, in: .common).autoconnect()
     
     @State private var selectedImageIndex: Int = 0
     @State private var itemsArray: [Banner] = []
@@ -22,8 +27,6 @@ struct EventCarouselView: View {
             selectedImageIndex = banners.count
         }
         .onChange(of: selectedImageIndex) { _, newValue in
-            print(selectedImageIndex)
-            print(newValue)
             if newValue == 0 {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     itemsArray.removeLast(3)
