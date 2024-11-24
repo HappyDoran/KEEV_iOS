@@ -102,6 +102,19 @@ struct DetailEventUIO: Identifiable {
         self.description = event.description
         self.descriptionImageURLs = event.descriptionImagesURLStrings.map(URL.init)
     }
+    
+    init(simpleEventUIO event: SimpleEventUIO) {
+        self.id = event.id
+        self.name = event.name
+        self.posterURL = event.posterURL
+        self.dDay = event.dDay
+        self.reservationStartDate = nil
+        self.startDate = event.startDate
+        self.endDate = event.endDate
+        self.placeName = event.placeName
+        self.description = nil
+        self.descriptionImageURLs = []
+    }
 }
 
 extension DetailEventUIO {
