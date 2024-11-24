@@ -29,14 +29,14 @@ struct ProfileVibeListCell: View {
                 Spacer()
                 
                 RatingView(rating: vibe.rating, image: Image(.star))
-                    .frame(height: 16)
+                    .frame(width: 80, height: 16)
             }
             .padding(.top, 16)
             .padding(.bottom, 12)
             .padding(.horizontal, 16)
             
             NavigationLink {
-                //공연 상세로 이동해야합니다.
+                EventDetailScreen(simpleEvent: vibe.event)
             } label: {
                 eventInfoArea
                     .padding(.horizontal, 16)
@@ -44,52 +44,16 @@ struct ProfileVibeListCell: View {
             
             Divider()
                 .padding(.vertical, 16)
-            
-            if let imageURL = vibe.imageURLs.first {
-                NavigationLink {
-                    //바이브 상세로 이동해야합니다.
-                } label: {
-                    vibeImageArea(imageURL: imageURL, imageCount: vibe.imageURLs.count)
-                        .padding(.bottom, 16)
-                }
-            }
-            
-            if let comment = vibe.comment {
-                NavigationLink {
-                    
-                } label: {
-                    Text(comment)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                        .foregroundStyle(.gray300)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 16)
-                }
-            }
-            
             NavigationLink {
-                //바이브 상세로 이동해야합니다.
+                VibeDetailScreen(vibe: vibe)
             } label: {
-                HStack(spacing: 4) {
-                    Image(systemName: "heart.fill")
-                    
-                    Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
-                        .padding(.trailing, 8)
-                    
-                    Image(systemName: "bubble.middle.bottom.fill")
-                    
-                    Text(vibe.replyCount > 99 ? "99+" : "\(vibe.replyCount)")
-                }
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                .foregroundStyle(.gray500)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 16)
+                vibeArea
             }
+            .padding(.bottom, 16)
         }
         .background {
             RoundedRectangle(cornerRadius: 20)
-                .foregroundStyle(.grayBG700)
+                .foregroundStyle(.grayBG800)
         }
     }
 }
@@ -136,6 +100,37 @@ private extension ProfileVibeListCell {
                     .foregroundStyle(.gray300)
                     .lineLimit(1)
             }
+        }
+    }
+    
+    var vibeArea: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            if let imageURL = vibe.imageURLs.first {
+                vibeImageArea(imageURL: imageURL, imageCount: vibe.imageURLs.count)
+            }
+            
+            if let comment = vibe.comment {
+                Text(comment)
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
+                    .foregroundStyle(.gray300)
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal, 16)
+            }
+            
+            HStack(spacing: 4) {
+                Image(systemName: "heart.fill")
+                
+                Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
+                    .padding(.trailing, 8)
+                
+                Image(systemName: "bubble.middle.bottom.fill")
+                
+                Text(vibe.replyCount > 99 ? "99+" : "\(vibe.replyCount)")
+            }
+            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+            .foregroundStyle(.gray500)
+            .padding(.horizontal, 16)
         }
     }
     
