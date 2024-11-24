@@ -8,12 +8,23 @@
 import SwiftUI
 
 extension EventVibeActionSheet {
+    /// 액션 시트에서 사용되는 타입을 나열한 열거형
+    ///
+    /// 최신순인지, 좋아요순인지를 판별할 때 사용합니다.
+    ///
+    /// - Author: Doran
     private enum ActionType {
         case latest
         case liked
     }
 }
 
+/// Event Vibe에서 보여지는 액션시트
+///
+/// - Parameters:
+///     - `isPresented`: 액션 시트를 보여줄 지 결정하는 뷰.
+///
+/// - Author: Doran
 struct EventVibeActionSheet: View {
     @Binding private var isPresented: Bool
     @State private var selectedAction: ActionType? = .latest
@@ -34,6 +45,18 @@ struct EventVibeActionSheet: View {
 }
 
 extension EventVibeActionSheet {
+    /// 액션 시트에 들어가는 버튼
+    ///
+    /// - Parameters:
+    ///     - `isPresented`: 액션 시트를 보여줄 지 결정하는 뷰.
+    ///     - `title`: 버튼 텍스트
+    ///     - `actionType`: 버튼의 타입 (최신순인지, 좋아요순인지)
+    ///     - `selectedAction`: 선택한 버튼의 타입
+    ///     - `isFirst`: 버튼이 맨 위의 버튼인지
+    ///     - `isLast`: 버튼이 맨 아래의 버튼인지
+    ///
+    ///
+    /// - Author: Doran
     private struct ActionButton: View {
         @Binding var isPresented: Bool
         @Binding var selectedAction: EventVibeActionSheet.ActionType?
@@ -94,6 +117,11 @@ extension EventVibeActionSheet {
         }
     }
     
+    /// 액션 시트 닫기 버튼
+    ///
+    /// 앱션 시트 최하단에 노출되는 액션 시트 닫기 버튼입니다.
+    ///
+    /// - Author: Doran
     private struct CloseButton: View {
         @Binding var isPresented: Bool
         
@@ -123,6 +151,14 @@ extension EventVibeActionSheet {
             self._isPresented = isPresented
         }
         
+        /// Modifier가 적용된 새로운 뷰를 리턴하는 함수
+        ///
+        /// - Parameters:
+        ///   - content: 기존 뷰
+        ///
+        /// - Returns: EventVibe ActionSheet 뷰
+        ///
+        /// - Author: Doran
         func body(content: Content) -> some View {
             ZStack {
                 content
