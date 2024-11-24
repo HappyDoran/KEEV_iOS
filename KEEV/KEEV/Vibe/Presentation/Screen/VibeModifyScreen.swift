@@ -59,7 +59,7 @@ struct VibeModifyScreen: View {
                     commentSection
                 }
             }
-            .background(Color.gray900)
+            .background(Color.grayBG800)
         }
         .customAlert(
             isPresented: $showExitAlert,
@@ -110,7 +110,7 @@ private extension VibeModifyScreen {
                     ) {
                         RoundedRectangle(cornerRadius: 16)
                             .frame(width: 100, height: 100)
-                            .foregroundColor(.gray800)
+                            .foregroundColor(.grayBG700)
                             .overlay{
                                 Image(systemName: "plus")
                                     .resizable()

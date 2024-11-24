@@ -27,7 +27,7 @@ struct EventSelectCell: View {
             ZStack{
                 RoundedRectangle(cornerRadius: 16)
                     .frame(height: 106)
-                    .foregroundColor(.gray800)
+                    .foregroundColor(.grayBG700)
                 VStack(spacing: 0){
                     Image(systemName: "newspaper.fill")
                         .figmaFont(PretendardFont.title(style: .lg))

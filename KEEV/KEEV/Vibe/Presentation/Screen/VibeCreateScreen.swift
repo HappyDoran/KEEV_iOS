@@ -58,7 +58,7 @@ struct VibeCreateScreen: View {
                             commentSection
                         }
                     }
-                    .background(Color.gray900)
+                    .background(Color.grayBG800)
                 }
             }
             
