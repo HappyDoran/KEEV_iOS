@@ -192,4 +192,29 @@ extension View {
             Toast.Modifier(toast: toast, duration: duration)
         )
     }
+    
+    /// 이벤트에 대한 바이브를 보는 뷰에서 액션 시트를 표시하는 ViewModifier를 적용하는 함수
+    ///
+    /// - Parameters:
+    ///   - isPresented: 액션 시트의 표시 여부를 제어하는 바인딩 변수
+    ///
+    /// 전역함수를 인자로 넘기는 것에 대한 예시입니다,
+    ///
+    /// ```swift
+    /// VStack {
+    ///     Button("hihi") {
+    ///         isPresented = true
+    ///     }
+    /// }
+    /// .actionSheetForEventVibe(isPresented: $isPresented)
+    /// ```
+    ///
+    /// - Returns: 최신순, 좋아요순 버튼이 있는 ActionSheet 뷰
+    ///
+    /// - Author: Doran
+    func actionSheetForEventVibe(isPresented: Binding<Bool>) -> some View {
+        modifier(
+            EventVibeActionSheet.Modifier(isPresented: isPresented)
+        )
+    }
 }
