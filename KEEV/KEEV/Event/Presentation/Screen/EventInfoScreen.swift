@@ -61,7 +61,7 @@ extension EventInfoScreen {
         HStack(spacing: 8) {
             ForEach(0..<min(events.count, 3), id: \.self) { index in
                 NavigationLink {
-                    EventDetailScreen(selectedEvent: .dummy2)
+                    EventDetailScreen(detailEvent: .dummy2)
                 } label: {
                     EventThumbnailCell(event: events[index])
                 }
