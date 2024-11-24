@@ -37,6 +37,14 @@ struct DetailUserUIO: Identifiable {
         self.backgroundImageURL = backgroundImageURL
         self.description = description
     }
+    
+    init(detailuserDTO user: UserDTO) {
+        id = user.id
+        nickname = user.nickname
+        profileImageURL = URL(string :user.profileImageURL ?? "")
+        backgroundImageURL = URL(string :user.backgroundImageURL ?? "")
+        description = user.description
+    }
 }
 
 extension DetailUserUIO {
