@@ -38,14 +38,25 @@ struct EventDetailScreen: View {
     @State private var showEventDetailSheet = false
     @State private var navigateToReportEvent = false
     
-    init(selectedEvent: DetailEventUIO) {
-        self.selectedEvent = selectedEvent
-        let dDay = selectedEvent.dDay ?? 0
+    private let isLoadDetailEvent: Bool
+    
+    init(detailEvent: DetailEventUIO) {
+        self.selectedEvent = detailEvent
+        let dDay = detailEvent.dDay ?? 0
         self.vibeWriteState = dDay >= 0 ? .loading : .writeYet(for: dDay)
+        self.isLoadDetailEvent = false
     }
+    
+    init(simpleEvent: SimpleEventUIO) {
+        self.selectedEvent = DetailEventUIO(simpleEventUIO: simpleEvent)
+        let dDay = simpleEvent.dDay ?? 0
+        self.vibeWriteState = dDay >= 0 ? .loading : .writeYet(for: dDay)
+        self.isLoadDetailEvent = true
+    }
+    
     var body: some View {
         VStack(spacing: 0){
-            HeaderTabView(activeSection: $activeSection, dDay: selectedEvent.dDay, vibeCount: nil)
+            HeaderTabView(activeSection: $activeSection, dDay: selectedEvent.dDay, vibeCount: vibeCount)
             switch activeSection {
             case .detail:
                 infoView
@@ -77,6 +88,19 @@ struct EventDetailScreen: View {
         ])
         .navigationDestination(isPresented: $navigateToReportEvent) {
             ReportScreen(reportType: .event(eventID: selectedEvent.id))
+        }
+        .task {
+            if isLoadDetailEvent {
+                // 이벤트 ID로 새로 이벤트 정보를 불러오면 됨.
+            }
+            
+            if let dDay = selectedEvent.dDay, dDay >= 0 {
+                // vibeCount를 불러오는 함수를 실행하면 됨.
+                // 유저의 글쓰기 여부를 분별하는 함수도 실행하면 됨.
+            }
+        }
+        .refreshable {
+            // 이벤트 ID로 새로 이벤트 정보를 불러오면 됨.
         }
     }
 }
@@ -141,10 +165,13 @@ extension EventDetailScreen {
     private var detailSection: some View {
         VStack(spacing: 12) {
             VStack(spacing: 12) {
-                HStack {
-                    Text("공연 상세 정보")
-                        .figmaFont(PretendardFont.title(style: .sm))
-                    Spacer()
+                if selectedEvent.description != nil
+                    || !selectedEvent.descriptionImageURLs.isEmpty {              
+                    HStack {
+                        Text("공연 상세 정보")
+                            .figmaFont(PretendardFont.title(style: .sm))
+                        Spacer()
+                    }
                 }
                 
                 if let description = selectedEvent.description {
@@ -152,7 +179,10 @@ extension EventDetailScreen {
                 }
             }
             .padding(.horizontal, 20)
-            detailImagePart
+            
+            if !selectedEvent.descriptionImageURLs.isEmpty {
+                detailImagePart
+            }
         }
     }
     
@@ -203,7 +233,7 @@ extension EventDetailScreen {
     ///
     /// - Author: Doran
     private var isDisabled: Bool {
-        if vibeWriteState == .canWrite {
+        if vibeWriteState == .canWrite || vibeWriteState == .loading {
             return true
         }
         return false
@@ -231,6 +261,6 @@ extension EventDetailScreen {
 
 #Preview {
     NavigationStack {
-        EventDetailScreen(selectedEvent: .dummy2)
+        EventDetailScreen(detailEvent: .dummy2)
     }
 }
