@@ -37,7 +37,7 @@ struct PhotoPickerView: View {
                 ) {
                     RoundedRectangle(cornerRadius: 16)
                         .frame(width: 100, height: 100)
-                        .foregroundColor(.gray800)
+                        .foregroundColor(.grayBG700)
                         .overlay{
                             Image(systemName: "plus")
                                 .resizable()
