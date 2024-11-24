@@ -42,7 +42,6 @@ struct EventInfoScreen: View {
     var body: some View {
         VStack {
             MainHeader(selectedEvent: $selectedEvent)
-            EventCarouselView()
             ScrollView(showsIndicators: false) {
                 thumbnailSection.padding(.top, 16).padding(.horizontal, 16)
                 eventListSection.padding(.top, 48).padding(.horizontal, 16)
