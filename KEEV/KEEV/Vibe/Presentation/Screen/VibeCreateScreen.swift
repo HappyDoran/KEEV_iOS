@@ -66,20 +66,22 @@ struct VibeCreateScreen: View {
                 EventSelectCell(isPresented: $isPresented)
                     .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
                 
-                VStack(spacing : 0) {
-                    ratingSection
-
-                    Rectangle().fill(.gray800).frame(height: 1)
-                    
-                    photoPickerSection
-
-                    Rectangle().fill(.gray800).frame(height: 1)
-                    
-                    commentSection
-
+                ScrollView {
+                    VStack(spacing : 0) {
+                        ratingSection
+                        
+                        Rectangle().fill(.gray800).frame(height: 1)
+                        
+                        photoPickerSection
+                        
+                        Rectangle().fill(.gray800).frame(height: 1)
+                        
+                        commentSection
+                        
+                    }
+                    .opacity(selectedEvent == nil ? 0.2 : 1)
+                    .disabled(selectedEvent == nil)
                 }
-                .opacity(selectedEvent == nil ? 0.2 : 1)
-                .disabled(selectedEvent == nil)
             }
             
             Spacer()
@@ -119,7 +121,7 @@ extension VibeCreateScreen {
     private var commentSection: some View {
         VibeCommentCell(comment: $comment, showCancelAlert: $showCancelAlert)
             .padding(.horizontal, 16)
-            .padding(.bottom, 69)
+            .frame(minHeight: 158)
     }
 }
 
