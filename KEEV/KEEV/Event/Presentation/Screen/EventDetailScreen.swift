@@ -43,14 +43,14 @@ struct EventDetailScreen: View {
     init(detailEvent: DetailEventUIO) {
         self.selectedEvent = detailEvent
         let dDay = detailEvent.dDay ?? 0
-        self.vibeWriteState = dDay >= 0 ? .loading : .writeYet(for: dDay)
+        self.vibeWriteState = dDay >= 0 ? .canWrite : .writeYet(for: dDay)
         self.isLoadDetailEvent = false
     }
     
     init(simpleEvent: SimpleEventUIO) {
         self.selectedEvent = DetailEventUIO(simpleEventUIO: simpleEvent)
         let dDay = simpleEvent.dDay ?? 0
-        self.vibeWriteState = dDay >= 0 ? .loading : .writeYet(for: dDay)
+        self.vibeWriteState = dDay >= 0 ? .canWrite : .writeYet(for: dDay)
         self.isLoadDetailEvent = true
     }
     
@@ -233,10 +233,10 @@ extension EventDetailScreen {
     ///
     /// - Author: Doran
     private var isDisabled: Bool {
-        if vibeWriteState == .canWrite || vibeWriteState == .loading {
-            return true
+        if vibeWriteState == .canWrite {
+            return false
         }
-        return false
+        return true
     }
 }
 
