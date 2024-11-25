@@ -35,7 +35,7 @@ struct VibeHeader: View {
             // MARK: 검색 시트 아래로 내리는 버튼
             HStack {
                 Button(action: {
-                    if let selectedEvent {
+                    if selectedEvent != nil {
                         showExitAlert = true
                     } else {
                         dismiss()
