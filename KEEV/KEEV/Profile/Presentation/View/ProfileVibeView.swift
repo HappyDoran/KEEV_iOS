@@ -73,7 +73,6 @@ private extension ProfileVibeView {
             
             vibeTableViewButton
         }
-        .padding(.horizontal, 16)
     }
     
     var vibeViewHeaderTitle: some View {
@@ -84,11 +83,12 @@ private extension ProfileVibeView {
                 .padding(.trailing, 8)
             
             Text("\(vibes.count)")
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 .foregroundStyle(.brand500)
+                .padding(.trailing, 2)
             
             Text("개")
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                 .foregroundStyle(.gray500)
         }
     }

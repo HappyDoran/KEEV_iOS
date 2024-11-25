@@ -89,11 +89,11 @@ struct ProfileTopView: View {
                 
                 if userProfile.description.isEmpty && isMyProfile {
                     Text("한 줄 소개를 입력해주세요.")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .medium)))
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                         .foregroundStyle(.gray700)
                 } else if !userProfile.description.isEmpty && isMyProfile {
                     Text(userProfile.description)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .medium)))
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                         .foregroundStyle(.gray300)
                 }
             }
