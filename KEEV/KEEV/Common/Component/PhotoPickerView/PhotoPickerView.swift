@@ -46,6 +46,7 @@ struct PhotoPickerView: View {
                                 .foregroundColor(.gray500)
                         }
                 }
+                .tint(.brand500)
                 
                 // MARK: 이미지가 있을 때는 이미지, 이미지가 없을 때는 빈 사각형을 띄우는 뷰
                 ForEach(0..<maxSelectedCount, id: \.self) { index in

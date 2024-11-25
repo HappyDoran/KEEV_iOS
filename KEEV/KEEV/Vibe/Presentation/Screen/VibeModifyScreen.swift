@@ -119,6 +119,7 @@ private extension VibeModifyScreen {
                                     .foregroundColor(.gray500)
                             }
                     }
+                    .tint(.brand500)
                     .onChange(of: selectedItems) { _, _ in
                         if !isDelete {
                             handleSelectedPhotos()
