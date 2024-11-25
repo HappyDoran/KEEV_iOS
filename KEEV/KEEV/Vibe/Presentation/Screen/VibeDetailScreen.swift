@@ -67,14 +67,22 @@ struct VibeDetailScreen: View {
                 // 에러 처리는 해줘야겠죠?
                 replyText = ""
             }
-            .padding(.top, 8)
-            .padding(.bottom, 16)
+            .padding(.top, 16)
             .padding(.horizontal, 20)
             .background(.grayBG800)
         }
         .navigationTitle("바이브")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .foregroundStyle(.gray100)
+                }
+            }
+            
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     showVibeActionSheet = true
