@@ -38,7 +38,7 @@ struct VibeHeader: View {
                     showExitAlert = true
                 }) {
                     Image(systemName: "xmark")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundColor(.gray100)
                 }
                 Spacer()
