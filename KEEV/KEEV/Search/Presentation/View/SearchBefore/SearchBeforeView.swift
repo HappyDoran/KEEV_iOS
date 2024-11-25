@@ -70,7 +70,7 @@ extension SearchBeforeView {
     
     // MARK: 최금 검색어가 없을 경우
     private var nothingFound: some View {
-        Text("최근 검색어가 없습니다.")
+        Text("최근 검색어가 없습니다")
             .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
             .foregroundColor(.gray700)
             .padding(.top, 205)
