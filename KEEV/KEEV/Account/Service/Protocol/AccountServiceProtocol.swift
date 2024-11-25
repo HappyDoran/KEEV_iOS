@@ -33,11 +33,10 @@ protocol AccountServiceProtocol: ObservableObject {
     func isValidNickname(_ nickname: String) -> Bool
     func checkNicknameValidity(_ nickname: String) throws
     
-    func autoSignIn() async throws
-    func signIn(identityToken: String, authorizationCode: String, user: String) async throws
-    func signUp(userProfile: UserProfile) async throws
-    func refreshAccessToken() async throws
-    func signOut() async throws
+    func refreshAccessToken(refreshToken: String) async throws
+    func autoSignin() async throws
+    func signin() async throws
+    func signup(userProfile: UserProfile) async throws
+    func signout() async throws
     func goodBye() async throws
-    
 }

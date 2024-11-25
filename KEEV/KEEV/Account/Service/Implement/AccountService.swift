@@ -163,128 +163,112 @@ class AccountService: AccountServiceProtocol {
 
 
 extension AccountService {
-    
-    // 자동 로그인을 하는 함수
-    func autoSignIn() async throws{
-        // 키체인에서 리프레시 토큰을 가져온다.
-        let refreshToken = try await getRefreshToken()
+    func refreshAccessToken(refreshToken: String) async throws {
+        // 서버에 refreshToken request
         
+        // 서버에 받아온 accessToken, refreshToken
         
-        // 이거를 서버로 보내서 검사를 받는다.(refreshAccessToken)
-        // TODO: 서버 호출 코드
+        // accessToken, refreshToken 키체인에 저장
         
-        // 그렇다면 자동 로그인을 할 때는, accessToken이 Keychain에 있으면 된다?
-        
-        // 성공하면 account에 값을 할당한다.
-        // 실패하면 로그인 뷰로 넘어가게 안내해주기만 하면 됨.
+        // NotificationCenter
     }
     
-    // 애플로 로그인 하고 Identity Token, Authorization Code, user을 보내고 서버한테 detailUser를 받아오는 함수
-    func signIn(identityToken: String, authorizationCode: String, user: String) async throws  {
-        // Apple 인증에 성공하면 Identity Token, Authorization Code, user를 받아온다. 이걸 가지고 서버에 요청한다.
-        // TODO: 서버 호출 코드
+    func autoSignin() async throws {
+        // 키체인에서 accessToken, refreshToken 로드
         
-        // 서버가 200을 반환하면:
-        let detailUser =  DetailUserUIO(detailuserDTO:
-                                            UserDTO(id: Int.random(in: 1...100),
-                                                    nickname: userProfile.nickname,
-                                                    profileImageURL: nil,
-                                                    backgroundImageURL: nil,
-                                                    description: nil,
-                                                    signupDate: Date()
-                                                   )) // 목업 데이터
-        let email = "user@example.com" // 목업 데이터
-        let accessToken = "mockAccessToken" // 목업 데이터
-        let refreshToken = "mockRefreshToken" // 목업 데이터
+        // accessToken 만료시
         
-        // Access Token, Refresh Token, email을 KeyChain에 저장한다.
-        try await saveAccessToken(accessToken)
-        try await saveRefreshToken(refreshToken)
+            // refreshToken 만료시
         
-        // user는 detailUser에 넣어준다.
-        // NotificationCenter를 활용해 User값이 바뀌었음을 전역적으로 알린다.
+                // go SignInScreen
+            
+            // refreshToken 만료 안됐을시
+        
+                // 서버에 refreshToken request
+        
+                // 서버에 받아온 accessToken, refreshToken
+        
+                // accessToken, refreshToken 키체인에 저장
+        
+                // NotificationCenter
+        
+                // go home
+        
+        // accessToken 만료 안됐을시
+        
+            // 서버에 refreshToken request
+
+            // 서버에 받아온 accessToken, refreshToken
+
+            // accessToken, refreshToken 키체인에 저장
+
+            // NotificationCenter
+
+            // go home
     }
     
-    // Profile을 서버에 보내는 함수
-    func signUp(userProfile: UserProfile) async throws {
-        // 서버가 201을 반환하면, 사용자는 Email과 Nickname을 입력한다.
-        // TODO: 서버 호출 코드
+    func signin() async throws {
+        // let user = "user"
+        // let identityToken = "identityToken"
+        // let authorizationToken = "authorizationToken"
         
-        // 서버가 성공적으로 회원 가입을 처리하면:
-        let email = "newuser@example.com" // 목업 데이터
-        let accessToken = "mockAccessToken" // 목업 데이터
-        let refreshToken = "mockRefreshToken" // 목업 데이터
+        //서버에 위에 3개 request
+        let statusCode = 200
         
-        // Access Token, Refresh Token, email을 KeyChain에 저장한다.
-        try await saveAccessToken(accessToken)
-        try await saveRefreshToken(refreshToken)
+        if(statusCode == 200) {
+            // 서버에서 받아온 DetailUser, email, accessToken, refreshToken
+            
+            // accessToken, refreshToken, email 키체인에 저장
+            
+            // NotificationCenter
+        }
+        else if(statusCode == 201){
+            // 서버에서 받아온 DetailUser = nil, email = nil, AccessToken, RefreshToken
+            
+            // go SignUpScreen
+        }
         
-        // user는 detailUser에 넣어준다.
-        // NotificationCenter를 활용해 User값이 바뀌었음을 전역적으로 알린다.
-        // 완료되면 EntityView로 Navigation 이동한다.
     }
     
-    // Access Token 갱신 요청 함수
-    func refreshAccessToken() async throws {
-        // refreshAccessToken을 통해 Access Token을 가져온다.
-        // TODO: 서버 호출 코드
+    func signup(userProfile: UserProfile) async throws {
+        //서버에 userProfile request
         
-        // 만약 Unauthorized 응답이 반환되면:
-        // Access Token이 만료된 경우: Refresh Token을 서버에 보내어 새로운 Access Token을 요청한다.
-        let newAccessToken = "newMockAccessToken" // 목업 데이터
+        // 서버에서 받아온 DetailUser, email, accessToken, refreshToken
         
-        // 받은 Access Token을 Keychain에 저장한다.
-        try await saveAccessToken(newAccessToken)
+        // accessToken, refreshToken, email 키체인에 저장
+        
+        // NotificationCenter
+        
+        // go Home
     }
     
-    // 로그아웃 함수
-    func signOut() async throws {
-        // 키체인의 Access Token, Refresh Token, email을 지운다.
-        // TODO: 키체인 삭제 코드
+    func signout() async throws {
         
-        // 서버에 헤더로 Access Token을 보내면 서버에서의 Access Token과 Refresh Token을 삭제한다.
-        // TODO: 서버 호출 코드
     }
     
-    // 회원탈퇴 함수
     func goodBye() async throws {
-        // 키체인의 Access Token, Refresh Token, email을 지운다.
-        // TODO: 키체인 삭제 코드
         
-        // 서버에 헤더로 Access Token을 보내면 서버에서의 연관 테이블을 삭제 한다.
-        // TODO: 서버 호출 코드
     }
-    
-    //키체인에서 엑세스 토큰 가져오는 함수
-    private func getAccessToken() async throws -> String {
-        guard let accessTokenData = keychainUtility.read(tokenTag: "accessToken"),
-              let accessToken = String(data: accessTokenData, encoding: .utf8) else {
-            print("Access token not found.")
+}
+
+extension AccountService {
+    // 키체인에서 토큰 가져오는 함수
+    private func getToken(tokenTag: String) throws -> String {
+        guard let tokenData = keychainUtility.read(tokenTag: tokenTag),
+              let token = String(data: tokenData, encoding: .utf8) else {
+            print("token not found.")
             throw TokenKeyChainError.NotFound
         }
-        
-        return accessToken
+        return token
     }
     
-    //키체인에서 리프레시 토큰 가져오는 함수
-    private func getRefreshToken() async throws -> String {
-        guard let refreshTokenData = keychainUtility.read(tokenTag: "refreshToken"),
-              let refreshToken = String(data: refreshTokenData, encoding: .utf8) else {
-            print("Refresh token not found.")
-            throw TokenKeyChainError.NotFound
-        }
-        
-        return refreshToken
+    // 키체인에 토큰 저장하는 함수
+    private func saveToken(_ token: String, tokenTag: String) throws {
+        try keychainUtility.create(token, tokenTag: tokenTag)
     }
     
-    // 키체인에 액세스 토큰 저장하는 함수
-    private func saveAccessToken(_ accessToken: String) async throws {
-        try keychainUtility.create("accessToken", tokenTag: accessToken)
+    // 키체인에서 토큰 삭제하는 함수
+    private func deleteToken(tokenTag: String) throws {
+        try keychainUtility.delete(tokenTag: tokenTag)
     }
-    
-    // 키체인에 리프레시 토큰 저장하는 함수
-    private func saveRefreshToken(_ refreshToken: String) async throws {
-        try keychainUtility.create("refreshToken", tokenTag: refreshToken)
-    }
-    
 }
