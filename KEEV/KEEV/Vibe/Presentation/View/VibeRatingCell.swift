@@ -21,7 +21,7 @@ struct VibeRatingCell: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: 12) {
             // MARK: 헤더
             Text("공연의 만족도를 선택해주세요")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
@@ -36,7 +36,6 @@ struct VibeRatingCell: View {
                 Image(.star)
             }
             .frame(height: 48)
-            .padding(.top, 8)
             .padding(.bottom, 40)
         }
     }
