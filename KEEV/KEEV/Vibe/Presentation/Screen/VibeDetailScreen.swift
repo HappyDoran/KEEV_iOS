@@ -73,6 +73,7 @@ struct VibeDetailScreen: View {
         }
         .navigationTitle("바이브")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
