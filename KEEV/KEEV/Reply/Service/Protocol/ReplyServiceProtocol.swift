@@ -8,8 +8,9 @@
 import Foundation
 
 protocol ReplyServiceProtocol: ObservableObject {
-    func createReply() async throws  -> ReplyUIO
-    func readReply() async throws -> ReplyUIO
-    func updateReply() async throws -> ReplyUIO
-    func deleteReply() async throws -> ReplyUIO
+    func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO]
+    func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO
+//    func modifyReply(_ reply: ReplyUIO) async throws -> ReplyUIO
+//    func deleteReply(_ replyID: Int) async throws
 }
+

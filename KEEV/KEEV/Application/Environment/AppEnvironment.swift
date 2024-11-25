@@ -50,5 +50,6 @@ struct AppEnvironment {
         diContainer.register(AccountService(), for: (any AccountServiceProtocol).self)
         diContainer.register(EventService(), for: (any EventServiceProtocol).self)
         diContainer.register(SettingService(), for: (any SettingServiceProtocol).self)
+        diContainer.register(ReplyService(), for: (any ReplyServiceProtocol).self)
     }
 }
