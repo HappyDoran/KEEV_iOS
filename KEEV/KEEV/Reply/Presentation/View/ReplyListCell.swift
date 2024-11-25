@@ -83,6 +83,7 @@ private extension ReplyListCell {
     
     var replyBody: some View {
         Text(reply.text)
+            .foregroundStyle(.gray300)
             .multilineTextAlignment(.leading)
             .figmaFont(
                 PretendardFont.body(
