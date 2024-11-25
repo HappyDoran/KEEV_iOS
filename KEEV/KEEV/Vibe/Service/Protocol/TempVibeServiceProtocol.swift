@@ -19,10 +19,7 @@ protocol TempVibeServiceProtocol: AnyObject {
     func getVibeCount(eventID: String) async throws -> Int
     func uploadVibe(rating: Float, comment: String?, images: [Image]?) async throws -> VibeUIO
     func deleteVibe(eventID: String, vibeID: Int) async throws
-    func modifyVibe(vibeID: Int, rating: Float, comment: String?, previousImageURLs: [String], images: [Image]?) async throws
+    func modifyVibe(vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [Image]?) async throws -> VibeUIO
     func checkIfUserUploadedVibe(userID: Int) async throws -> Int
     func getVibeWithVibeID(vibeID: Int) async throws -> VibeUIO
-    func likeVibe(vibeID: Int, userID: Int) async throws
-    func cencelLikeVibe(vibeID: Int, userID: Int) async throws
-    func checkIfUserLikedVIbe(userID: Int) async throws -> Bool
 }
