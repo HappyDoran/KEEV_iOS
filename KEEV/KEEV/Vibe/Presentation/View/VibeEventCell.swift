@@ -47,7 +47,7 @@ struct VibeEventCell: View {
                 
                 // MARK: 이벤트 제목
                 Text(event.name)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                     .foregroundColor(.gray100)
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
@@ -56,7 +56,7 @@ struct VibeEventCell: View {
                 // MARK: 기간
                 HStack(spacing: 0) {
                     Text("\(event.startDate)~\(event.endDate)")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                         .foregroundColor(.gray400)
                     Spacer()
                 }
@@ -70,25 +70,29 @@ struct VibeEventCell: View {
                         .foregroundColor(.gray400)
                         .padding(.top, 2)
                     Spacer()
-                    if let onClick {
-                        Button(action: onClick ){
-                            Text("변경")
-                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                                .foregroundColor(.gray500)
-                                .overlay(
-                                    Rectangle()
-                                        .fill(.gray500)
-                                        .frame(width: 23, height: 1)
-                                    , alignment: .bottom
-                                )
-                        }
-                    }
                 }
             }
         }
+        .overlay(alignment: .bottomTrailing) {
+            if let onClick {
+                Button(action: onClick){
+                    Text("변경")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                        .foregroundColor(.gray500)
+                        .overlay(
+                            Rectangle()
+                                .fill(.gray500)
+                                .frame(width: 23, height: 1)
+                            , alignment: .bottom
+                        )
+                }
+            }
+        }
+        .frame(height: 82)
     }
 }
 
 #Preview {
     VibeEventCell(event: .dummy5, onClick: {}).backgroundForKEEV()
+        .frame(height: 106)
 }
