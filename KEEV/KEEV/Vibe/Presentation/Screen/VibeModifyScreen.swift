@@ -186,7 +186,7 @@ private extension VibeModifyScreen {
     var commentSection: some View {
         VibeCommentCell(comment: $comment, showCancelAlert: $showCancelAlert)
             .padding(.horizontal, 16)
-            .padding(.bottom, 69)
+            .padding(.bottom, 20)
     }
 }
 

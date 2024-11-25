@@ -58,16 +58,16 @@ struct VibeCreateScreen: View {
                             commentSection
                         }
                     }
+                    .scrollDisabled(comment.isEmpty)
                     .background(Color.grayBG800)
                 }
             }
             
             else {
-                EventSelectCell(isPresented: $isPresented)
-                    .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
-                
-                ScrollView {
-                    VStack(spacing : 0) {
+                VStack(spacing : 0) {
+                    EventSelectCell(isPresented: $isPresented)
+                        .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
+                    Group {
                         ratingSection
                         
                         Rectangle().fill(.gray800).frame(height: 1)
@@ -77,14 +77,13 @@ struct VibeCreateScreen: View {
                         Rectangle().fill(.gray800).frame(height: 1)
                         
                         commentSection
-                        
-                    }
+                    }                
                     .opacity(selectedEvent == nil ? 0.2 : 1)
                     .disabled(selectedEvent == nil)
                 }
+                
+                Spacer()
             }
-            
-            Spacer()
         }
         .fullScreenCover(isPresented: $isPresented) {
             SearchScreen(selectedEvent: $selectedEvent, searchContent: .vibe)
@@ -121,7 +120,7 @@ extension VibeCreateScreen {
     private var commentSection: some View {
         VibeCommentCell(comment: $comment, showCancelAlert: $showCancelAlert)
             .padding(.horizontal, 16)
-            .frame(minHeight: 158)
+            .padding(.bottom, 20)
     }
 }
 
