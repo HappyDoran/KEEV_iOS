@@ -25,38 +25,39 @@ struct ProfileVibeView: View {
     
     private let vibes = VibeUIO.dummies
     private var columns: [GridItem] = [
-        GridItem(),
-        GridItem(),
-        GridItem()
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8),
+        GridItem(.flexible(), spacing: 8)
     ]
     
     var body: some View {
         Section {
             switch selectedVibeViewType {
             case .list:
-                ForEach(vibes) { vibe in
-                    ProfileVibeListCell(vibe: vibe)
-                        .padding(.bottom, 20)
-                        .padding(.horizontal, 16)
+                VStack(spacing: 20) {
+                    ForEach(vibes) { vibe in
+                        ProfileVibeListCell(vibe: vibe)
+                    }
                 }
             case .table:
                 LazyVGrid(columns: columns, spacing: 8) {
                     ForEach(vibes) { vibe in
                         NavigationLink {
-                            // 바이브 디테일 화면 만들어지면 연결해야됩니다.
+                            VibeDetailScreen(vibe: vibe)
                         } label: {
                             ProfileVibeTableCell(vibe: vibe)
+                                .aspectRatio(114/152, contentMode: .fill)
                         }
                     }
                 }
-                .padding(.bottom, 20)
-                .padding(.horizontal, 16)
             }
         } header: {
             profileVibeViewHeader
                 .padding(.top, 24)
                 .padding(.bottom, 12)
         }
+        .padding(.bottom, 20)
+        .padding(.horizontal, 16)
         .sensoryFeedback(.impact, trigger: selectedVibeViewType)
     }
 }
