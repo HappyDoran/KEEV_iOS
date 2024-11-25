@@ -139,8 +139,11 @@ extension EventDetailScreen {
                 yetStartVibe.frame(maxHeight: .infinity)
             }
             else {
-                EventVibeHeader().padding(.horizontal, 16)
-                EventVibeView(eventID: selectedEvent.id)
+                VStack(spacing: 0) {
+                    EventVibeHeader()
+                    EventVibeView(eventID: selectedEvent.id)
+                }
+                .padding(.horizontal, 16)
             }
         }
     }
@@ -151,11 +154,11 @@ extension EventDetailScreen {
     ///
     /// - Author: Doran
     private var yetStartVibe: some View {
-        VStack(spacing: 0){
-            Text("공연이 시작되지 않았습니다.")
+        VStack(spacing: 4){
+            Text("공연이 시작되지 않았습니다")
                 .figmaFont(PretendardFont.title(style: .sm))
                 .foregroundColor(.gray500)
-            Text("공연이 시작되면 바이브를 작성할 수 있어요.")
+            Text("공연이 시작되면 바이브를 작성할 수 있어요")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                 .foregroundColor(.gray500)
         }
