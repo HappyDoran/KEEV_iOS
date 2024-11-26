@@ -33,7 +33,6 @@ struct ReportScreen: View {
         self.reportType = reportType
     }
     
-    private let reportService = ReportService()
     @State private var selectedCase = ""
     @State private var showReportDoneAlert = false
     @State private var buttonDisabled = true
@@ -51,8 +50,7 @@ struct ReportScreen: View {
             CommonButton(
                 title: "작성완료",
                 action: {
-                    reportService.sendReport(selectedCase)
-                    
+                    // do something from reportService
                     showReportDoneAlert = true
                 },
                 style: .maxWidth,
