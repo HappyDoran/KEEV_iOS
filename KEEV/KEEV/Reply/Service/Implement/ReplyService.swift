@@ -10,11 +10,11 @@ import Foundation
 /// 댓글에 대한 에러 열거
 ///
 /// - Author: Doran
-enum ReplyError: Error {
+enum ReplyServiceError: Error {
     case replyNotFound
 }
 
-class ReplyService: ReplyServiceProtocol {
+class MockReplyService: ReplyServiceProtocol {
     
     private var replies: [ReplyUIO] = [
         .dummy0,
@@ -50,12 +50,19 @@ class ReplyService: ReplyServiceProtocol {
         // 서버에 replyID, vibeID, text를 가지고 댓글을 수정
         
         guard let index = replies.firstIndex(where: { $0.id == reply.id }) else {
-            throw ReplyError.replyNotFound
+            throw ReplyServiceError.replyNotFound
         }
         
-        replies[index].text = updatedReply
+        let newReplyDTO = ReplyUIO(
+            id: reply.id,
+            user: SimpleUserUIO(id: reply.userID, nickname: reply.userNickname, profileImageURL: reply.userProfileImageURL),
+            vibeID: reply.vibeID,
+            text: updatedReply,
+            isLiked: reply.isLiked,
+            likeCount: reply.likeCount,
+            createdDate: reply.createdDate)
         
-        return replies[index]
+        return newReplyDTO
     }
 
     func deleteReply(_ replyID: Int) async throws {
@@ -63,7 +70,7 @@ class ReplyService: ReplyServiceProtocol {
         // 서버에 replyID를 가지고 댓글을 수정
         
         guard let index = replies.firstIndex(where: { $0.id == replyID }) else {
-            throw ReplyError.replyNotFound
+            throw ReplyServiceError.replyNotFound
         }
         
         replies.remove(at: index)
