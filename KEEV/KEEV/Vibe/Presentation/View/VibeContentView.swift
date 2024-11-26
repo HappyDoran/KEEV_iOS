@@ -49,7 +49,9 @@ private extension VibeContentView {
                     )
                 )
             Spacer()
-            Text("\(vibe.rating)") // 머지하면 별점으로 수정될 예정
+            
+            RatingView(rating: vibe.rating, image: Image(.star))
+                .frame(width: 80, height: 16)
         }
         .padding(.horizontal, 4)
     }
