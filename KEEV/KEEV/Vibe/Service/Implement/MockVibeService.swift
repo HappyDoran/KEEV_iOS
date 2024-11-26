@@ -15,12 +15,15 @@ import SwiftUI
 /// - Todo: 향후에 VibeService와 VibeServiceProtocol을 교체하면서 MockService의 프로토콜도 수정해주어야합니다.
 /// - Author: 라움
 class MockVibeService: TempVibeServiceProtocol {
+    private var vibes: [VibeUIO] = []
+    private var vibeCount = 0
+    
     func getPaginatedVibes(page: Int, size: Int, sort: String) async throws -> PaginatedResponse<VibeUIO> {
-        var vibes: [VibeUIO] = []
+        var vibeList: [VibeUIO] = []
         let startIndex = page*size
         
         for index in startIndex..<startIndex + size {
-            vibes.append(
+            vibeList.append(
                 .init(
                     id: index,
                     user: SimpleUserUIO(id: index, nickname: "더미닉네임\(index)", profileImageURL: nil),
@@ -35,26 +38,41 @@ class MockVibeService: TempVibeServiceProtocol {
             )
         }
         
-        if vibes.isEmpty {
+        if vibeList.isEmpty {
             throw VibeError.notFound
         } else {
-            return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: vibes)
+            return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: vibeList)
         }
     }
     
     func getVibeCount(eventID: String) async throws -> Int {
-        1
+        vibeCount
     }
     
-    func uploadVibe(rating: Float, comment: String?, images: [Image]?) async throws -> VibeUIO {
-        .dummy0
+    func uploadVibe(rating: Float, comment: String?, images: [UIImage]) async throws -> VibeUIO {
+        let newVibe = VibeUIO(
+            id: vibeCount + 1,
+            user: SimpleUserUIO(id: 123, nickname: "가래떡강아지", profileImageURL: nil),
+            event: SimpleEventUIO(id: "135", name: "번개반찬", posterURL: nil, dDay: 0, startDate: "2024.11.26", endDate: "2024.11.26", placeName: "기숙사 휴게실"),
+            rating: 4.0,
+            imageURLs: [nil],
+            comment: "배부르다!",
+            createdDate: "2024.11.26",
+            likeCount: 0,
+            replyCount: 0
+        )
+        
+        vibes.append(newVibe)
+        vibeCount += 1
+        
+        return newVibe
     }
     
     func deleteVibe(eventID: String, vibeID: Int) async throws {
         
     }
     
-    func modifyVibe(vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [Image]?) async throws -> VibeUIO {
+    func modifyVibe(vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [UIImage]) async throws -> VibeUIO {
         var vibe = VibeUIO(
             id: vibeID,
             user: SimpleUserUIO(id: 1, nickname: "가나다", profileImageURL: nil),
