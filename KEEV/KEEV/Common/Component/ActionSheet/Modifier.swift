@@ -52,6 +52,7 @@ extension KEEVActionSheet {
     /// - Author: 라움
     struct Modifier: ViewModifier {
         @Binding var isPresented: Bool
+        @State private var sheetHeight: CGFloat = .zero
         private let configurations: [any KEEVButtonConfiguration]
         
         init(isPresented: Binding<Bool>, configurations: [any KEEVButtonConfiguration]) {
@@ -75,39 +76,26 @@ extension KEEVActionSheet {
         ///
         /// - Author: 라움
         func body(content: Content) -> some View {
-            ZStack {
                 content
-                
-                if isPresented {
-                    Color.black
-                        .opacity(0.7)
-                        .ignoresSafeArea(.all)
-                    
-                    VStack {
-                        Spacer()
-                        
+                    .sheet(isPresented: $isPresented) {
                         KEEVActionSheet(isPresented: $isPresented, configurations: configurations)
                             .padding(.horizontal, 16)
                             .padding(.top, 16)
-                            .padding(.bottom, 44)
-                            .background {
-                                UnevenRoundedRectangle(
-                                    topLeadingRadius: 24,
-                                    bottomLeadingRadius: 0,
-                                    bottomTrailingRadius: 0,
-                                    topTrailingRadius: 24
-                                )
-                                .foregroundStyle(.grayBG900)
+                            .overlay {
+                                GeometryReader { proxy in
+                                    Color.clear.preference(
+                                        key: ViewHeightPreferenceKey.self,
+                                        value: proxy.size.height
+                                    )
+                                }
                             }
+                            .onPreferenceChange(ViewHeightPreferenceKey.self) { height in
+                                sheetHeight = height
+                            }
+                            .presentationDetents([.height(sheetHeight)])
+                            .presentationDragIndicator(.hidden)
+                            .presentationBackground(.grayBG950)
                     }
-                    .transition(.move(edge: .bottom))
-                }
             }
-            .ignoresSafeArea(edges: .bottom)
-            .animation(.snappy, value: isPresented)
-            .onTapGesture {
-                isPresented = false
-            }
-        }
     }
 }

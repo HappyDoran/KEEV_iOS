@@ -30,6 +30,7 @@ struct SettingCell: View {
                 .padding(.vertical, 16)
             
             Divider()
+                .padding(0)
         }
     }
 }

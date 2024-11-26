@@ -24,35 +24,30 @@ struct VibeEventCell: View {
     }
     
     var body: some View {
-        HStack(spacing: 16){
+        HStack(alignment: .top, spacing: 16){
             // MARK: 포스터
-            ZStack {
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(Color.gray900)
-                    .frame(width: 60, height: 82)
-                
-                URLCachedImage(url: event.posterURL) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } else if phase.error == nil {
-                        ProgressView()
-                    } else {
-                        let _ = print(phase.error!)
-                        Image(systemName: "xmark")
-                            .resizable()
-                            .scaledToFit()
-                    }
+            URLCachedImage(url: event.posterURL) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } else if phase.error == nil {
+                    ProgressView()
+                } else {
+                    let _ = print(phase.error!)
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .scaledToFit()
                 }
-                .frame(width: 60, height: 82, alignment: .center)
             }
+            .frame(width: 60, height: 82, alignment: .center)
+            .mask(RoundedRectangle(cornerRadius: 6))
             
             VStack(alignment: .leading, spacing: 0) {
                 
                 // MARK: 이벤트 제목
                 Text(event.name)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                     .foregroundColor(.gray100)
                     .multilineTextAlignment(.leading)
                     .lineLimit(2)
@@ -61,7 +56,7 @@ struct VibeEventCell: View {
                 // MARK: 기간
                 HStack(spacing: 0) {
                     Text("\(event.startDate)~\(event.endDate)")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                         .foregroundColor(.gray400)
                     Spacer()
                 }
@@ -71,28 +66,33 @@ struct VibeEventCell: View {
                     // MARK: 장소
                     Text(event.placeName)
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
+                        .lineLimit(1)
                         .foregroundColor(.gray400)
                         .padding(.top, 2)
                     Spacer()
-                    if let onClick {
-                        Button(action: onClick ){
-                            Text("변경")
-                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                                .foregroundColor(.gray500)
-                                .overlay(
-                                    Rectangle()
-                                        .fill(.gray500)
-                                        .frame(width: 23, height: 1)
-                                    , alignment: .bottom
-                                )
-                        }
-                    }
                 }
             }
         }
+        .overlay(alignment: .bottomTrailing) {
+            if let onClick {
+                Button(action: onClick){
+                    Text("변경")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                        .foregroundColor(.gray500)
+                        .overlay(
+                            Rectangle()
+                                .fill(.gray500)
+                                .frame(width: 23, height: 1)
+                            , alignment: .bottom
+                        )
+                }
+            }
+        }
+        .frame(height: 82)
     }
 }
 
 #Preview {
-    VibeEventCell(event: .dummy0, onClick: {}).backgroundForKEEV()
+    VibeEventCell(event: .dummy5, onClick: {}).backgroundForKEEV()
+        .frame(height: 106)
 }

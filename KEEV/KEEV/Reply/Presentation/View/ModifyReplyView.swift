@@ -24,6 +24,7 @@ struct ModifyReplyView: View {
         ReplyInputView(replyText: $text) { _ in
             sendHandler(text)
         }
+        .padding(.horizontal, 16)
     }
 }
 

@@ -13,7 +13,6 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct SearchAfterView: View {
-    @Environment(\.dismiss) private var dismiss
     @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     
     @Binding private var selectedEvent: SimpleEventUIO?
@@ -29,7 +28,11 @@ struct SearchAfterView: View {
     var body: some View {
         VStack(spacing: 0){
             recentSearchHeader
-            searchResult
+            if events.isEmpty {
+                searchEmpty
+            } else {
+                searchResult
+            }
         }
     }
 }
@@ -53,15 +56,31 @@ extension SearchAfterView {
         .frame(height: 33)
         .padding(.top, 12)
     }
+    
+    private var searchEmpty: some View {
+        VStack(spacing: 4) {
+            Spacer()
+            Text("공연이 없어요...")
+                .figmaFont(PretendardFont.title(style: .sm))
+                .foregroundStyle(.gray500)
+            Text("찾으시는 공연에 대해\n hmhz.studio@gmail.com으로 연락주세요.")
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.gray500)
+            Spacer()
+            Spacer()
+        }
+    }
+    
     // MARK: 검색 결과 뷰
     private var searchResult: some View {
         ScrollView(showsIndicators: false) {
             ForEach(events) { event in
-                SearchResultCell(event: event){
-                    selectedEvent = event
-                    dismiss()
-                    onClick()
-                }
+                EventListCell(event: event)
+                    .onTapGesture {
+                        selectedEvent = event
+                        onClick()
+                    }
             }
         }
     }

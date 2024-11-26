@@ -26,6 +26,18 @@ extension View {
         modifier(FigmaFontModifier(figmaFont))
     }
     
+    /// 피그마의 배경색으로 바꾸기 위한 modifier
+    ///
+    /// 우선 기본적으로 라이트모드가 지원되지 않기 때문에,
+    ///
+    /// 배경색은 `gray950`으로 통일되어 있습니다.
+    ///
+    /// - Important: `ZStack`으로 내부가 구현되어 있어서, 뷰의 `modifier`들의 가장 마지막에 호출하는 것을 권장드립니다.
+    /// - Author: newJunsung
+    func backgroundForKEEV() -> some View {
+        modifier(KEEVBackgroundModifier())
+    }
+    
     /// 커스텀 경고창을 표시하는 ViewModifier를 적용하는 함수
     ///
     /// - Parameters:

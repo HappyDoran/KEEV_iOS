@@ -17,6 +17,14 @@ import SwiftUI
 struct HeaderTabView: View {
     
     @Binding var activeSection: EventDetailSection
+    let dDay: Int?
+    let vibeCount: Int?
+    
+    private var vibeCountString: String {
+        let count = vibeCount ?? 0
+        return count > 99 ? "99+" : String(count)
+    }
+    
     @State private var barX: CGFloat = 0
     private let barHeight: CGFloat = 4
     private let barWidth: CGFloat = 82
@@ -34,29 +42,47 @@ struct HeaderTabView: View {
                             activeSection = .detail
                         }
                     
-                    Text("바이브")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
-                        .foregroundColor(activeSection == .vibe ? .gray50 : .gray500)
-                        .frame(maxWidth: .infinity)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            activeSection = .vibe
+                    
+                    HStack(spacing: 4) {
+                        Text("바이브")
+                            .foregroundColor(activeSection == .vibe ? .gray50 : .gray500)
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
+                        
+                        if let dDay, dDay >= 0,
+                           let vibeCount {
+                            Text(vibeCountString)
+                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
+                                .foregroundColor(.brand500)
+                                .animation(.easeInOut, value: vibeCount)
                         }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        activeSection = .vibe
+                    }
                 }
                 .frame(height: 46)
-                
-                Rectangle()
-                    .fill(Color.brand500)
-                    .frame(width: barWidth, height: barHeight)
-                    .offset(x: activeSection == .detail ? -((geometry.size.width / 4)) : (geometry.size.width / 4), y: 0)
-                    .animation(.easeInOut, value: activeSection)
             }
-            .background(Color.grayBG800)
+            .overlay(alignment: .bottom) {
+                ZStack {
+                    Rectangle()
+                        .foregroundStyle(.grayBG800)
+                        .frame(height: 1)
+                    
+                    Rectangle()
+                        .fill(Color.brand500)
+                        .frame(width: barWidth, height: barHeight)
+                        .offset(x: activeSection == .detail ? -((geometry.size.width / 4)) : (geometry.size.width / 4), y: 0)
+                        .animation(.easeInOut, value: activeSection)
+                }
+            }
+            .backgroundForKEEV()
         }
         .frame(height: 46)
     }
 }
 
 #Preview {
-    HeaderTabView(activeSection: .constant(.detail))
+    HeaderTabView(activeSection: .constant(.detail), dDay: 0, vibeCount: 10)
 }

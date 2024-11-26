@@ -13,8 +13,6 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct MainHeader: View {
-    @State private var isPresented: Bool = false //시트의 유무를 나타내는 Bool 타입 변수
-    
     @Binding private var selectedEvent: SimpleEventUIO?
     
     init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil)) {
@@ -32,16 +30,13 @@ struct MainHeader: View {
             Spacer()
             
             // MARK: 검색 시트 위로 올리는 버튼
-            Button(action: {
-                isPresented.toggle()
-            }) {
+            NavigationLink {
+                TotalSearchScreen()
+            } label: {
                 Image(systemName: "magnifyingglass")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
                     .font(.system(size: 20))
                     .foregroundColor(Color.gray100)
-            }
-            .fullScreenCover(isPresented: $isPresented){
-                SearchScreen(selectedEvent: $selectedEvent, searchContent: .event)
             }
         }
         .backgroundForKEEV()

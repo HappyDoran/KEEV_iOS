@@ -94,7 +94,7 @@ extension Toast {
                     ToastView(toast: unwrappedToast)
                         .onTapGesture(perform: finishToast)
                         .transition(AnyTransition.move(edge: .bottom).combined(with: .opacity))
-                        .padding(.bottom, 90)
+                        .padding(.bottom, 16)
                 }
             }
             .animation(.spring, value: isPresented)

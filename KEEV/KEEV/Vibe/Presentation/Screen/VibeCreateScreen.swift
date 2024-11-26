@@ -58,31 +58,31 @@ struct VibeCreateScreen: View {
                             commentSection
                         }
                     }
-                    .background(Color.gray900)
+                    .scrollDisabled(selectedEvent == nil)
+                    .background(Color.grayBG800)
                 }
             }
             
             else {
-                EventSelectCell(isPresented: $isPresented)
-                    .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
-                
                 VStack(spacing : 0) {
-                    ratingSection
-
-                    Rectangle().fill(.gray800).frame(height: 1)
-                    
-                    photoPickerSection
-
-                    Rectangle().fill(.gray800).frame(height: 1)
-                    
-                    commentSection
-
+                    EventSelectCell(isPresented: $isPresented)
+                        .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
+                    ScrollView {
+                        ratingSection
+                        
+                        Rectangle().fill(.gray800).frame(height: 1)
+                        
+                        photoPickerSection
+                        
+                        Rectangle().fill(.gray800).frame(height: 1)
+                        
+                        commentSection
+                    }                
+                    .opacity(selectedEvent == nil ? 0.2 : 1)
+                    .disabled(selectedEvent == nil)
                 }
-                .opacity(selectedEvent == nil ? 0.2 : 1)
-                .disabled(selectedEvent == nil)
+                .scrollDisabled(false)
             }
-            
-            Spacer()
         }
         .fullScreenCover(isPresented: $isPresented) {
             SearchScreen(selectedEvent: $selectedEvent, searchContent: .vibe)
@@ -119,7 +119,7 @@ extension VibeCreateScreen {
     private var commentSection: some View {
         VibeCommentCell(comment: $comment, showCancelAlert: $showCancelAlert)
             .padding(.horizontal, 16)
-            .padding(.bottom, 69)
+            .padding(.bottom, 20)
     }
 }
 

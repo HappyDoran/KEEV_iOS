@@ -65,7 +65,7 @@ fileprivate struct CheckedCircleView: View {
     private var startPoint: CGPoint {
         CGPoint(
             x: frame.midX - 5 / 20 * radius,
-            y: frame.midY - 2 / 20 * radius
+            y: frame.midY - 1 / 20 * radius
         )
     }
     
@@ -73,7 +73,7 @@ fileprivate struct CheckedCircleView: View {
         let center = CGPoint(x: frame.midX, y: frame.midY)
         
         return CGPoint(
-            x: center.x,
+            x: center.x - 1 / 20 * radius,
             y: center.y + 3 / 20 * radius
         )
     }
@@ -81,7 +81,7 @@ fileprivate struct CheckedCircleView: View {
     private var endPoint: CGPoint {
         CGPoint(
             x: frame.midX + 5 / 20 * radius,
-            y: frame.midY - 2 / 20 * radius
+            y: frame.midY - 3 / 20 * radius
         )
     }
     

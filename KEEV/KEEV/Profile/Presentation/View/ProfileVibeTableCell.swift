@@ -26,7 +26,6 @@ struct ProfileVibeTableCell: View {
             if let image = phase.image {
                 image
                     .resizable()
-                    .scaledToFill()
             } else if phase.error == nil {
                 ProgressView()
             } else {
@@ -35,7 +34,6 @@ struct ProfileVibeTableCell: View {
         }
         .mask {
             RoundedRectangle(cornerRadius: 4)
-                .aspectRatio(114 / 152, contentMode: .fit)
         }
     }
 }

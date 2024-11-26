@@ -13,41 +13,45 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct DDayBox: View {
-    private let date: Date
+    private let difference: Int?
+    
+    init(difference: Int?) {
+        self.difference = difference
+    }
     
     init(date: Date) {
-        self.date = date
+        self.difference = date.difference(from: .now)
     }
     
     var body: some View {
-        if let difference = date.difference(from: .now) {
+        if let difference = difference {
             if difference < 0 {
                 Text("D\(difference)")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold)))
-                    .foregroundStyle(.gray500)
+                    .foregroundStyle(.grayBG400)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background() {
                         RoundedRectangle(cornerRadius: 4)
                             .frame(height: 19)
-                            .foregroundStyle(.gray800)
+                            .foregroundStyle(.grayBG700)
                     }
             } else if difference == 0 {
                 Text("D-DAY")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold)))
-                    .foregroundStyle(.brand400)
+                    .foregroundStyle(.brand500)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .background {
                         RoundedRectangle(cornerRadius: 4)
                             .frame(height: 19)
-                            .foregroundStyle(.brand400)
+                            .foregroundStyle(.brand500.opacity(0.2))
                             .opacity(0.2)
                     }
             } else {
                 Text("D+\(difference)")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold)))
-                    .foregroundStyle(.gray600)
+                    .foregroundStyle(.grayBG500)
                     .padding(.horizontal, 6)
                     .padding(.vertical, 2)
                     .overlay {
@@ -57,7 +61,7 @@ struct DDayBox: View {
                             .overlay {
                                 RoundedRectangle(cornerRadius: 4)
                                     .inset(by: 1)
-                                    .stroke(Color.gray800, lineWidth: 1.5)
+                                    .stroke(Color.grayBG700, lineWidth: 1.5)
                             }
                     }
             }

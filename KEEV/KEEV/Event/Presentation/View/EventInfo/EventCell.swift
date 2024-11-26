@@ -14,34 +14,29 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventCell: View {
-    private let event: EventDTO
+    private let event: SimpleEventUIO
     
-    init(event: EventDTO) {
+    init(event: SimpleEventUIO) {
         self.event = event
     }
     
     var body: some View {
         HStack(spacing: 8){
             // MARK: 포스터
-            ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.gray900)
-                    .frame(width: 64, height: 90)
-                
-                AsyncImage(url: URL(string: event.poster)) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .cornerRadius(8)
-                } placeholder: {
-                    ProgressView()
-                }
-                .frame(width: 62, height: 90)
+            AsyncImage(url: event.posterURL) { image in
+                image
+                    .resizable()
+            } placeholder: {
+                ProgressView()
             }
+            .mask {
+                RoundedRectangle(cornerRadius: 8)
+            }
+            .frame(width: 62, height: 90)
             
             VStack(alignment: .leading, spacing: 0) {
                 // MARK: 이벤트 제목
-                Text(event.title)
+                Text(event.name)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .semibold)))
                     .foregroundColor(.gray100)
                     .multilineTextAlignment(.leading)
@@ -58,9 +53,10 @@ struct EventCell: View {
                 }.padding(.top, 8)
                 
                 // MARK: 장소
-                Text(event.place)
+                Text(event.placeName)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                     .foregroundColor(.gray400).padding(.top, 2)
+                    .frame(alignment: .leading)
             }
             .frame(width: 241, height: 88)
         }
@@ -72,6 +68,6 @@ struct EventCell: View {
     EventDTO(id: "1", title: "AAA TOUR BY HYUKOH & \nSUNSET ROLLERCOASTER", startDate: "2024. 10. 4", endDate: "2024. 10. 6", place: "올림픽공원 올림픽홀", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF251812_241021_161408.png")
     
     
-    EventCell(event: eventCellEvent)
+    EventCell(event: .dummy0)
         .backgroundForKEEV()
 }

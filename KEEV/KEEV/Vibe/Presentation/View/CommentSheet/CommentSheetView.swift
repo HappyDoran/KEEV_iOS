@@ -33,7 +33,7 @@ struct CommentSheetView: View {
     
     var body: some View {
         ZStack {
-            Color.gray800
+            Color.grayBG700
                 .ignoresSafeArea(.all, edges: .all)
             VStack(spacing: 0){
                 // MARK: 헤더

@@ -25,6 +25,7 @@ enum EventSearchStatus {
 ///
 /// - Author: Doran
 struct SearchScreen: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var searchText: String = ""
     @State private var eventSearchStatus: EventSearchStatus = .beforeSearch
     @FocusState private var searchFieldFocus: Bool
@@ -106,6 +107,7 @@ extension SearchScreen {
             print("Event Detail 이동")
         case .vibe:
             print("글쓰기 이동")
+            dismiss()
         }
     }
 }

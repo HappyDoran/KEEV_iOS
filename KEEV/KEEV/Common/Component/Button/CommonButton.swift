@@ -32,13 +32,20 @@ struct CommonButton: View {
     }
     
     var body: some View {
-        Button(action: action) {
+        let font: PretendardFont
+        if case .alert = style {
+            font = .body(style: .init(bodySize: .base, bodyWeight: .medium))
+        } else {
+            font = .body(style: .init(bodySize: .large, bodyWeight: .semibold))
+        }
+        
+        return Button(action: action) {
             Text(title)
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                .figmaFont(font)
                 .frame(width: style.width, height: style.height)
                 .frame(maxWidth: style.maxWidth)
                 .background(style.backgroundColor.opacity(disabled ? 0.2 : 1))
-                .foregroundColor(disabled ? .gray500 : style.foregroundColor)
+                .foregroundColor(disabled ? .gray700 : style.foregroundColor)
                 .cornerRadius(16)
         }
         .disabled(disabled)

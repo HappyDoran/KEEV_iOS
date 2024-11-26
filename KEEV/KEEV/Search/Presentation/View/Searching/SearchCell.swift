@@ -15,72 +15,31 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct SearchCell: View {
-    private let event: SimpleEventUIO
-    private let onClick: () -> Void
+    private let text: String
     
-    init(event: SimpleEventUIO, onClick: @escaping ()-> Void){
-        self.event = event
-        self.onClick = onClick
+    init(text: String){
+        self.text = text
     }
     
     var body: some View {
-        Button(action: onClick ){
-            HStack(spacing: 12){
-                // MARK: 포스터
-                ZStack {
-                    RoundedRectangle(cornerRadius: 6)
-                        .fill(Color.gray900)
-                        .frame(width: 48, height: 64)
-                    
-                    URLCachedImage(url: event.posterURL) { phase in
-                        if let image = phase.image {
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } else if phase.error == nil {
-                            ProgressView()
-                        } else {
-                            let _ = print(phase.error!)
-                            Image(systemName: "xmark")
-                                .resizable()
-                                .scaledToFit()
-                        }
-                    }
-                    .frame(width: 48, height: 64, alignment: .center)
-                }
-                
-                VStack(alignment: .leading, spacing: 0) {
-                    // MARK: 이벤트 제목
-                    Text(event.name)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
-                        .foregroundColor(.gray100)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(1)
-                        .truncationMode(.tail)
-                        .frame(height: 21)
-                    
-                    // MARK: 기간
-                    HStack(spacing: 0) {
-                        Text("\(event.startDate)~\(event.endDate)")
-                            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                            .foregroundColor(.gray500)
-                        Spacer()
-                    }
-                    .padding(.top, 4)
-                    
-                    // MARK: 장소
-                    Text(event.placeName)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                        .foregroundColor(.gray500)
-                        .padding(.top, 2)
-                }
-            }
+        HStack(spacing: 12){
+            Image(systemName: "magnifyingglass")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 16, height: 16)
+                .foregroundColor(.gray500)
+            
+            Text(text)
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .regular)))
+                .foregroundStyle(.gray100)
+                .lineLimit(1)
+            
+            Spacer()
         }
-        .frame(height: 72)
     }
 }
 
 #Preview {
-    SearchCell(event: .dummy0, onClick: {})
+    SearchCell(text: SimpleEventUIO.dummy0.name)
         .backgroundForKEEV()
 }

@@ -11,7 +11,7 @@ import Foundation
 ///
 /// - ToDo: VibeDTO가 생기면 생성자 만들기
 /// - Author: newJunsung
-struct VibeUIO: Identifiable {
+struct VibeUIO: Identifiable, Equatable {
     /// 바이브의 ID
     let id: Int
     
@@ -45,6 +45,8 @@ struct VibeUIO: Identifiable {
     /// 댓글 수
     let replyCount: Int
     
+    let isMine: Bool
+    
     init(
         id: Int,
         user: SimpleUserUIO, // SimpleUserDTO로 나중에 바꿔야합니다.
@@ -54,7 +56,8 @@ struct VibeUIO: Identifiable {
         comment: String?,
         createdDate: String,
         likeCount: Int,
-        replyCount: Int
+        replyCount: Int,
+        isMine: Bool
     ) {
         self.id = id
         self.userID = user.id
@@ -67,6 +70,7 @@ struct VibeUIO: Identifiable {
         self.createdDate = createdDate
         self.likeCount = likeCount
         self.replyCount = replyCount
+        self.isMine = isMine
     }
 }
 
@@ -86,7 +90,8 @@ extension VibeUIO {
         comment: "재밌었다",
         createdDate: "10월 18일",
         likeCount: 1,
-        replyCount: 17
+        replyCount: 17,
+        isMine: true
     )
     
     /// 레이팅만 등록한 더미데이터
@@ -99,7 +104,8 @@ extension VibeUIO {
         comment: nil,
         createdDate: "10월 18일",
         likeCount: 0,
-        replyCount: 0
+        replyCount: 0,
+        isMine: false
     )
     
     /// 커멘트에 줄바꿈이 많은 더미데이터
@@ -116,7 +122,8 @@ extension VibeUIO {
         comment: "사람들의 내 내 봅니다. 까닭이요, 벌레는 나는 듯합니다.\n아무 우는 사람들의 잠, 다 별이 이름을 까닭입니다.\n\n소녀들의 새겨지는 않은 하늘에는 버리었습니다.\n\n\n이름과, 하나의 벌써 토끼, 새겨지는 별이 그리고 것은 없이 있습니다.\n했던 위에 아름다운 덮어 밤을 그러나 이름과 까닭이요, 봅니다.\n\n이름자를 어머니, 위에 별 나의 것은 계절이 버리었습니다.\n\n\n나는 써 하나에 그리고 동경과 가을로 멀듯이, 계십니다.\n위에 이네들은 가득 까닭입니다.\n\n못 피어나듯이 아름다운 부끄러운 지나가는 잠, 봅니다.\n\n\n이름과, 가을 별 아름다운 흙으로 별빛이 봅니다.",
         createdDate: "10월 18일",
         likeCount: 4,
-        replyCount: 134347
+        replyCount: 134347,
+        isMine: false
     )
     
     /// 커멘트를 안 쓴 더미데이터
@@ -133,7 +140,8 @@ extension VibeUIO {
         comment: nil,
         createdDate: "10월 18일",
         likeCount: 122,
-        replyCount: 17
+        replyCount: 17,
+        isMine: true
     )
     
     /// 평점과 커멘트가 있는 후기
@@ -151,7 +159,8 @@ extension VibeUIO {
         comment: "재밌었다",
         createdDate: "10월 18일",
         likeCount: 4312,
-        replyCount: 17
+        replyCount: 17,
+        isMine: false
     )
     
     /// 좋아요와 댓글이 엄청 많은 데이터
@@ -168,7 +177,8 @@ extension VibeUIO {
         comment: "사람들의 내 내 봅니다. 까닭이요, 벌레는 나는 듯합니다. 아무 우는 사람들의 잠, 다 별이 이름을 까닭입니다. 소녀들의 새겨지는 않은 하늘에는 버리었습니다. 이름과, 하나의 벌써 토끼, 새겨지는 별이 그리고 것은 없이 있습니다. 했던 위에 아름다운 덮어 밤을 그러나 이름과 까닭이요, 봅니다. 이름자를 어머니, 위에 별 나의 것은 계절이 버리었습니다. 나는 써 하나에 그리고 동경과 가을로 멀듯이, 계십니다. 위에 이네들은 가득 까닭입니다. 못 피어나듯이 아름다운 부끄러운 지나가는 잠, 봅니다. 이름과, 가을 별 아름다운 흙으로 별빛이 봅니다.",
         createdDate: "10월 18일",
         likeCount: Int.max,
-        replyCount: Int.max
+        replyCount: Int.max,
+        isMine: false
     )
     
     /// 커멘트가 엄청 긴 더미데이터
@@ -185,7 +195,8 @@ extension VibeUIO {
         comment: "사람들의 내 내 봅니다. 까닭이요, 벌레는 나는 듯합니다. 아무 우는 사람들의 잠, 다 별이 이름을 까닭입니다. 소녀들의 새겨지는 않은 하늘에는 버리었습니다. 이름과, 하나의 벌써 토끼, 새겨지는 별이 그리고 것은 없이 있습니다. 했던 위에 아름다운 덮어 밤을 그러나 이름과 까닭이요, 봅니다. 이름자를 어머니, 위에 별 나의 것은 계절이 버리었습니다. 나는 써 하나에 그리고 동경과 가을로 멀듯이, 계십니다. 위에 이네들은 가득 까닭입니다. 못 피어나듯이 아름다운 부끄러운 지나가는 잠, 봅니다. 이름과, 가을 별 아름다운 흙으로 별빛이 봅니다.",
         createdDate: "10월 18일",
         likeCount: 4,
-        replyCount: 17
+        replyCount: 17,
+        isMine: true
     )
     
     /// 더미데이터 0~5까지 모은 배열
