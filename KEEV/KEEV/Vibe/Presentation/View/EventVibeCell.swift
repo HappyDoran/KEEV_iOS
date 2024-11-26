@@ -61,12 +61,12 @@ struct EventVibeCell: View {
                 
                 Spacer()
                 
-                HStack(spacing: 4) {
-                    Image(.heartFill)
-                    
-                    Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                }
+//                HStack(spacing: 4) {
+//                    Image(.heartFill)
+//                    
+//                    Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
+//                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+//                }
                 
                 HStack(spacing: 4) {
                     Image(.replyFill)
