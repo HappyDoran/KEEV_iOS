@@ -35,9 +35,6 @@ struct VibeModifyScreen: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            VibeHeader(selectedEvent: vibe.event, rating: rating, showExitAlert: $showExitAlert)
-                .padding(.horizontal, 16)
-            
             VibeEventCell(event: vibe.event, onClick: nil)
                 .padding(EdgeInsets(top: 28, leading: 16, bottom: 36, trailing: 16))
             
@@ -60,6 +57,39 @@ struct VibeModifyScreen: View {
                 }
             }
             .background(Color.grayBG800)
+        }
+        .navigationBarBackButtonHidden()
+        .navigationTitle("글 고치기")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    showExitAlert = true
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .foregroundStyle(.gray100)
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: {
+                    // 수정하는 로직 추가
+                    // 
+                    dismiss()
+                }){
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.brand500)
+                            .frame(width: 58, height: 32)
+                            .opacity(rating == 0 ? 0.2 : 1)
+                        
+                        Text("완료")
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                            .foregroundColor(rating == 0 ? .gray700 : .brand50)
+                    }
+                }
+                .disabled(rating == 0)
+            }
         }
         .customAlert(
             isPresented: $showExitAlert,
