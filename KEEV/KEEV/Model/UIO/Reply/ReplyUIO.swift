@@ -27,7 +27,7 @@ struct ReplyUIO: Identifiable {
     let vibeID: Int
     
     /// 댓글 내용 텍스트
-    let text: String
+    var text: String
     
     /// 앱의 사용자 좋아요를 눌렀는지 여부
     let isLiked: Bool
