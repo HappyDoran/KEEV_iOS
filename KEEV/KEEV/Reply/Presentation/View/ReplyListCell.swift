@@ -31,6 +31,8 @@ struct ReplyListCell: View {
                 .frame(width: 40, height: 40)
             
             content
+            
+            info
         }
         .background(.clear)
     }
@@ -41,25 +43,30 @@ private extension ReplyListCell {
         VStack(alignment: .leading) {
             replyHeader
             replyBody
-            replyFooter
         }
     }
     
-    var replyHeader: some View {
-        HStack(alignment: .top) {
-            userInfo
-                .onTapGesture(perform: userTapHandler)
-            
-            Spacer()
-            
+    private var info: some View {
+        VStack(alignment: .trailing) {
             Button(action: moreTapHandler) {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(.gray50)
             }
             .frame(width: 15, height: 3)
-            .padding(.horizontal, 10.5)
             .padding(.vertical, 8.5)
+            
+            Spacer()
+            Text("\(reply.createdBefore)일 전")
+                .figmaFont(PretendardFont.body(
+                    style: .init(bodySize: .xsmall, bodyWeight: .medium)
+                ))
+                .foregroundStyle(.gray500)
         }
+    }
+    
+    var replyHeader: some View {
+        userInfo
+            .onTapGesture(perform: userTapHandler)
     }
     
     var userInfo: some View {
@@ -78,30 +85,29 @@ private extension ReplyListCell {
                     )
                     .foregroundStyle(.gray500)
             }
+            
+            Spacer()
         }
     }
     
     var replyBody: some View {
-        Text(reply.text)
-            .foregroundStyle(.gray300)
-            .multilineTextAlignment(.leading)
-            .figmaFont(
-                PretendardFont.body(
-                    style: .init(bodySize: .base, bodyWeight: .regular)
+        VStack(alignment: .leading, spacing: 6) {
+            Text(reply.text)
+                .foregroundStyle(.gray300)
+                .multilineTextAlignment(.leading)
+                .figmaFont(
+                    PretendardFont.body(
+                        style: .init(bodySize: .base, bodyWeight: .regular)
+                    )
                 )
-            )
-    }
-    var replyFooter: some View {
-        let font = PretendardFont.body(
-            style: .init(bodySize: .xsmall, bodyWeight: .medium)
-        )
-        
-        return HStack {
-            // 좋아요 추후 추가 예정
-            Spacer()
-            Text("\(reply.createdBefore)일 전")
-                .figmaFont(font)
-                .foregroundStyle(.gray500)
+            
+            HStack {
+                Text("  ")
+                    .figmaFont(
+                        PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))
+                    )
+                    .foregroundStyle(.gray700)
+            }
         }
     }
 }
@@ -114,5 +120,5 @@ private extension ReplyListCell {
     } likeTapHandler: {
         
     }
-
+    
 }
