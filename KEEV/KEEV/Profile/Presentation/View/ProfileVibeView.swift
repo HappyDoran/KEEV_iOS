@@ -31,7 +31,9 @@ struct ProfileVibeView: View {
     ]
     
     var body: some View {
-        Section {
+        VStack(spacing: 12) {
+            profileVibeViewHeader
+            
             switch selectedVibeViewType {
             case .list:
                 VStack(spacing: 20) {
@@ -51,11 +53,8 @@ struct ProfileVibeView: View {
                     }
                 }
             }
-        } header: {
-            profileVibeViewHeader
-                .padding(.top, 24)
-                .padding(.bottom, 12)
         }
+        .padding(.top, 24)
         .padding(.bottom, 20)
         .padding(.horizontal, 16)
         .sensoryFeedback(.impact, trigger: selectedVibeViewType)
