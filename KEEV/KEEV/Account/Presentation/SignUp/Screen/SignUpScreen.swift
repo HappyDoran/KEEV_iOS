@@ -21,7 +21,9 @@ enum SignUpPage: Int {
 struct SignUpScreen: View {
     @Injected private var accountService: any AccountServiceProtocol
     
-    @State private var userProfile: UserProfile = UserProfile()
+    @State private var email: String = ""
+    @State private var nickname: String = ""
+    @State private var profileImage: UIImage?
     @State private var currentPage: SignUpPage = .email
     @State private var transitionDirection: Edge = .trailing
     @State private var showActionSheet = false
@@ -46,11 +48,11 @@ struct SignUpScreen: View {
                     showImageSelectSheet = true
                     showActionSheet = false
                 }, deleteHandler: {
-                    userProfile.profileImage = nil
+                    profileImage = nil
                     showActionSheet = false
                 }))
         .fullScreenCover(isPresented: $showImageSelectSheet) {
-            ImageSelectView(image: $userProfile.profileImage)
+            ImageSelectView(image: $profileImage)
         }
     }
 }
@@ -68,24 +70,27 @@ extension SignUpScreen {
         switch currentPage {
         case .email:
             SignUpEmailView(
-//                accountService: accountService as! AccountService,
-                userProfile: $userProfile,
+                email: $email,
                 currentPage: $currentPage,
                 transitionDirection: $transitionDirection
             )
         case .profile:
             SignUpProfileView(
-//                accountService: accountService as! AccountService,
-                userProfile: $userProfile,
+                email: email,
+                nickname: $nickname, profileImage: $profileImage,
                 showActionSheet: $showActionSheet,
                 currentPage: $currentPage,
                 transitionDirection: $transitionDirection
             )
         case .complete:
             SignUpCompleteView(
-//                accountService: accountService as! AccountService,
+                nickname: nickname,
+                profileImage: profileImage,
+                email: email,
                 currentPage: $currentPage
-            )
+            ) {
+                // 로그인 뷰로 가거나 이벤트 인포뷰로 넘거가면 됩니다.
+            }
         }
     }
 }

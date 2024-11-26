@@ -17,7 +17,7 @@ import SwiftUI
 struct SignUpEmailView: View {
 //    @ObservedObject var accountService: AccountService
     @Injected private var accountService: any AccountServiceProtocol
-    @Binding var userProfile: UserProfile
+    @Binding var email: String
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
     
@@ -37,15 +37,15 @@ struct SignUpEmailView: View {
                 
                 SingleLineTextField(
                     placeholder: "keev@email.com",
-                    text: $userProfile.email,
+                    text: $email,
                     keyboardType: .emailAddress,
                     errorMessage: $errorMessage
                 )
                 .submitLabel(.done)
                 .textInputAutocapitalization(.never)
-                .onChange(of: userProfile.email, {
-                    validityTest(userProfile.email)
-                })
+                .onChange(of: email) {
+                    validityTest(email)
+                }
                 .padding(.top, 24)
                 .padding(.bottom, 8)
             }
@@ -74,7 +74,7 @@ struct SignUpEmailView: View {
 extension SignUpEmailView {
     private func validityTest(_ email: String) {
         do {
-            try accountService.checkEmailValidity(email)
+            try accountService.isValidEmail(email)
             errorMessage = ""
             disableButton = false
         } catch {
@@ -87,7 +87,7 @@ extension SignUpEmailView {
 #Preview {
     SignUpEmailView(
 //        accountService: AccountService(),
-        userProfile: .constant(UserProfile()),
+        email: .constant("fefefefe@fefefefe.fefefefe"),
         currentPage: .constant(.email),
         transitionDirection: .constant(.leading)
     )

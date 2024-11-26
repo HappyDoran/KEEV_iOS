@@ -14,8 +14,11 @@ import Lottie
 ///
 /// - Author: 라움
 struct SignUpCompleteView: View {
-    @Injected private var accountService: any AccountServiceProtocol
+    let nickname: String
+    let profileImage: UIImage?
+    let email: String
     @Binding var currentPage: SignUpPage
+    let finishSignUp: () -> Void
     
     var body: some View {
         VStack {
@@ -30,16 +33,16 @@ struct SignUpCompleteView: View {
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
                         .foregroundStyle(.gray300)
                     
-                    ProfileImage(profileImage: accountService.profileImage, size: 140, editable: false)
+                    ProfileImage(profileImage: profileImage, size: 140, editable: false)
                         .padding(.top, 100)
                         .padding(.bottom, 12)
                     
-                    Text(accountService.nickname)
+                    Text(nickname)
                         .figmaFont(PretendardFont.title(style: .sm))
                         .foregroundStyle(.gray50)
                         .padding(.bottom, 4)
                     
-                    Text(accountService.email)
+                    Text(email)
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
                         .foregroundStyle(.gray300)
                 }
@@ -59,6 +62,7 @@ struct SignUpCompleteView: View {
             title: "시작하기",
             action: {
                 // navigationRouter로 메인화면으로 가면 됩니다.
+                finishSignUp()
             },
             style: .maxWidth
         )
@@ -70,8 +74,5 @@ struct SignUpCompleteView: View {
 }
 
 #Preview {
-    SignUpCompleteView(
-//        accountService: AccountService(),
-        currentPage: .constant(.complete)
-    )
+    SignUpCompleteView(nickname: "hi", profileImage: nil, email: "fee@fee.com", currentPage: .constant(.complete)) { }
 }
