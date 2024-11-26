@@ -23,10 +23,10 @@ protocol ReportServiceProtocol {
     /// 댓글 신고하기 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 신고ID와 정상적으로 저장될 경우의 메시지로 이루어진 튜플
+    /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendCommentReport(vibeId: Int, commentId: String, reason: String) async throws -> (Int, String)
+    func sendCommentReport(vibeId: Int, commentId: String, reason: String) async throws -> String
     
     /// 바이브 신고하기 함수
     ///
@@ -38,10 +38,10 @@ protocol ReportServiceProtocol {
     /// 바이브 신고하기 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 신고ID와 정상적으로 저장될 경우의 메시지로 이루어진 튜플
+    /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendVibeReport(eventId: String, vibeId: Int, reason: String) async throws -> (Int, String)
+    func sendVibeReport(eventId: String, vibeId: Int, reason: String) async throws -> String
     
     /// 유저 신고하기 함수
     ///
@@ -52,10 +52,10 @@ protocol ReportServiceProtocol {
     /// 유저 신고하기 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 신고ID와 정상적으로 저장될 경우의 메시지로 이루어진 튜플
+    /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendUserReport(userId: Int, reason: String) async throws -> (Int, String)
+    func sendUserReport(userId: Int, reason: String) async throws -> String
     
     /// 이벤트 신고하기 함수
     ///
@@ -66,8 +66,8 @@ protocol ReportServiceProtocol {
     /// 이벤트 신고하기 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 신고ID와 정상적으로 저장될 경우의 메시지로 이루어진 튜플
+    /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendEventReport(eventId: String, reason: String) async throws -> (Int, String)
+    func sendEventReport(eventId: String, reason: String) async throws -> String
 }

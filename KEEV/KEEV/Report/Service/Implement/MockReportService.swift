@@ -23,11 +23,11 @@ class MockReportService: ReportServiceProtocol {
     /// 댓글 신고하기 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 신고ID와 정상적으로 저장될 경우의 메시지로 이루어진 튜플
+    /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendCommentReport(vibeId: Int, commentId: String, reason: String) async throws -> (Int, String) {
-        let response = (103, "Comment report has been successfully submitted.")
+    func sendCommentReport(vibeId: Int, commentId: String, reason: String) async throws -> String {
+        let response = "Comment report has been successfully submitted."
         return response
     }
     
@@ -41,11 +41,11 @@ class MockReportService: ReportServiceProtocol {
     /// 바이브 신고하기 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 신고ID와 정상적으로 저장될 경우의 메시지로 이루어진 튜플
+    /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendVibeReport(eventId: String, vibeId: Int, reason: String) async throws -> (Int, String) {
-        let response = (103, "Vibe report has been successfully submitted.")
+    func sendVibeReport(eventId: String, vibeId: Int, reason: String) async throws -> String {
+        let response = "Vibe report has been successfully submitted."
         return response
     }
     
@@ -58,11 +58,11 @@ class MockReportService: ReportServiceProtocol {
     /// 유저 신고하기 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 신고ID와 정상적으로 저장될 경우의 메시지로 이루어진 튜플
+    /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendUserReport(userId: Int, reason: String) async throws -> (Int, String) {
-        let response = (103, "User report has been successfully submitted.")
+    func sendUserReport(userId: Int, reason: String) async throws -> String {
+        let response = "User report has been successfully submitted."
         return response
     }
     
@@ -75,11 +75,11 @@ class MockReportService: ReportServiceProtocol {
     /// 이벤트 신고하기 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 신고ID와 정상적으로 저장될 경우의 메시지로 이루어진 튜플
+    /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendEventReport(eventId: String, reason: String) async throws -> (Int, String) {
-        let response = (103, "Event report has been successfully submitted.")
+    func sendEventReport(eventId: String, reason: String) async throws -> String {
+        let response = "Event report has been successfully submitted."
         return response
     }
 }
