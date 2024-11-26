@@ -23,11 +23,12 @@ extension EventVibeActionSheet {
 ///
 /// - Parameters:
 ///     - `isPresented`: 액션 시트를 보여줄 지 결정하는 뷰.
+///     - `selectedAction`: 액션 시트에서 사용되는 타입
 ///
 /// - Author: Doran
 struct EventVibeActionSheet: View {
     @Binding private var isPresented: Bool
-    @Binding private var selectedAction: ActionType? // Binding으로 추가
+    @Binding private var selectedAction: ActionType?
     
     init(isPresented: Binding<Bool>, selectedAction: Binding<ActionType?>) {
         self._isPresented = isPresented
@@ -50,6 +51,7 @@ extension EventVibeActionSheet {
     ///
     /// - Parameters:
     ///     - `isPresented`: 액션 시트를 보여줄 지 결정하는 뷰.
+    ///     -  `selectedAction`: 액션 시트에서 사용되는 타입
     ///     - `title`: 버튼 텍스트
     ///     - `actionType`: 버튼의 타입 (최신순인지, 좋아요순인지)
     ///     - `selectedAction`: 선택한 버튼의 타입

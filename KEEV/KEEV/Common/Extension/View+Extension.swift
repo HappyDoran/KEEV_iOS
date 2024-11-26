@@ -197,7 +197,7 @@ extension View {
     ///
     /// - Parameters:
     ///   - isPresented: 액션 시트의 표시 여부를 제어하는 바인딩 변수
-    ///   - 
+    ///   - selectedAction: 액션 시트에서 사용되는 타입
     ///
     /// 전역함수를 인자로 넘기는 것에 대한 예시입니다,
     ///
