@@ -197,6 +197,7 @@ extension View {
     ///
     /// - Parameters:
     ///   - isPresented: 액션 시트의 표시 여부를 제어하는 바인딩 변수
+    ///   - 
     ///
     /// 전역함수를 인자로 넘기는 것에 대한 예시입니다,
     ///
@@ -212,9 +213,9 @@ extension View {
     /// - Returns: 최신순, 좋아요순 버튼이 있는 ActionSheet 뷰
     ///
     /// - Author: Doran
-    func actionSheetForEventVibe(isPresented: Binding<Bool>) -> some View {
-        modifier(
-            EventVibeActionSheet.Modifier(isPresented: isPresented)
-        )
-    }
+    func actionSheetForEventVibe(isPresented: Binding<Bool>, selectedAction: Binding<EventVibeActionSheet.ActionType?>) -> some View {
+            modifier(
+                EventVibeActionSheet.Modifier(isPresented: isPresented, selectedAction: selectedAction)
+            )
+        }
 }

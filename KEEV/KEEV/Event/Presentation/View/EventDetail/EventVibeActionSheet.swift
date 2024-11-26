@@ -13,7 +13,7 @@ extension EventVibeActionSheet {
     /// 최신순인지, 좋아요순인지를 판별할 때 사용합니다.
     ///
     /// - Author: Doran
-    private enum ActionType {
+    enum ActionType {
         case latest
         case liked
     }
@@ -27,10 +27,11 @@ extension EventVibeActionSheet {
 /// - Author: Doran
 struct EventVibeActionSheet: View {
     @Binding private var isPresented: Bool
-    @State private var selectedAction: ActionType? = .latest
+    @Binding private var selectedAction: ActionType? // Binding으로 추가
     
-    init(isPresented: Binding<Bool>) {
+    init(isPresented: Binding<Bool>, selectedAction: Binding<ActionType?>) {
         self._isPresented = isPresented
+        self._selectedAction = selectedAction
     }
     
     var body: some View {
@@ -144,11 +145,13 @@ extension EventVibeActionSheet {
 
 extension EventVibeActionSheet {
     struct Modifier: ViewModifier {
-        
         @Binding var isPresented: Bool
+        @Binding var selectedAction: EventVibeActionSheet.ActionType?
+        @State private var sheetHeight: CGFloat = .zero
         
-        init(isPresented: Binding<Bool>) {
+        init(isPresented: Binding<Bool>, selectedAction: Binding<EventVibeActionSheet.ActionType?>) {
             self._isPresented = isPresented
+            self._selectedAction = selectedAction
         }
         
         /// Modifier가 적용된 새로운 뷰를 리턴하는 함수
@@ -162,35 +165,25 @@ extension EventVibeActionSheet {
         func body(content: Content) -> some View {
             ZStack {
                 content
-                
-                if isPresented {
-                    Color.black
-                        .opacity(0.7)
-                        .ignoresSafeArea(.all)
-
-                    VStack {
-                        Spacer()
-                        EventVibeActionSheet(isPresented: $isPresented)
+                    .sheet(isPresented: $isPresented){
+                        EventVibeActionSheet(isPresented: $isPresented, selectedAction: $selectedAction)
                             .padding(.horizontal, 16)
                             .padding(.top, 16)
-                            .padding(.bottom, 44)
-                            .background {
-                                UnevenRoundedRectangle(
-                                    topLeadingRadius: 24,
-                                    bottomLeadingRadius: 0,
-                                    bottomTrailingRadius: 0,
-                                    topTrailingRadius: 24
-                                )
-                                .foregroundStyle(.grayBG900)
+                            .overlay {
+                                GeometryReader { proxy in
+                                    Color.clear.preference(
+                                        key: ViewHeightPreferenceKey.self,
+                                        value: proxy.size.height
+                                    )
+                                }
                             }
+                            .onPreferenceChange(ViewHeightPreferenceKey.self) { height in
+                                sheetHeight = height
+                            }
+                            .presentationDetents([.height(sheetHeight)])
+                            .presentationDragIndicator(.hidden)
+                        .presentationBackground(.grayBG950)
                     }
-                    .transition(.move(edge: .bottom))
-                }
-            }
-            .ignoresSafeArea(edges: .bottom)
-            .animation(.snappy, value: isPresented)
-            .onTapGesture {
-                isPresented = false
             }
         }
     }
@@ -198,11 +191,12 @@ extension EventVibeActionSheet {
 
 #Preview {
     @Previewable @State var isPresented = false
+    @Previewable @State var selectedAction: EventVibeActionSheet.ActionType? = .latest
     
     VStack {
         Button("hihi") {
             isPresented = true
         }
     }
-    .actionSheetForEventVibe(isPresented: $isPresented)
+    .actionSheetForEventVibe(isPresented: $isPresented, selectedAction: $selectedAction)
 }
