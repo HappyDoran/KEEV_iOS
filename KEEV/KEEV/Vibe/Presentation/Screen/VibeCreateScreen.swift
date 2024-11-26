@@ -58,7 +58,7 @@ struct VibeCreateScreen: View {
                             commentSection
                         }
                     }
-                    .scrollDisabled(comment.isEmpty)
+                    .scrollDisabled(selectedEvent == nil)
                     .background(Color.grayBG800)
                 }
             }
@@ -67,7 +67,7 @@ struct VibeCreateScreen: View {
                 VStack(spacing : 0) {
                     EventSelectCell(isPresented: $isPresented)
                         .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
-                    Group {
+                    ScrollView {
                         ratingSection
                         
                         Rectangle().fill(.gray800).frame(height: 1)
@@ -81,8 +81,7 @@ struct VibeCreateScreen: View {
                     .opacity(selectedEvent == nil ? 0.2 : 1)
                     .disabled(selectedEvent == nil)
                 }
-                
-                Spacer()
+                .scrollDisabled(false)
             }
         }
         .fullScreenCover(isPresented: $isPresented) {
