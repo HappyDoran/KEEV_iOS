@@ -7,6 +7,9 @@
 
 import Foundation
 
+/// 댓글에 대한 에러 열거
+///
+/// - Author: Doran
 enum ReplyError: Error {
     case replyNotFound
 }
@@ -19,7 +22,6 @@ class ReplyService: ReplyServiceProtocol {
         .dummy2,
         .dummy3
     ]
-    
     
     func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
         
