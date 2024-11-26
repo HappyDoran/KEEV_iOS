@@ -83,10 +83,10 @@ protocol AccountServiceProtocol: AnyObject {
     ) async throws -> DetailUserUIO
     
     /// 이메일이 형식에 맞는지 검사하는 함수
-    func isValidEmail(_ email: String) -> Bool
+    func isValidEmail(_ email: String) throws
     
     /// 닉네임이 형식에 맞는지 검사하는 함수
-    func isValidNickname(_ nickname: String) -> Bool
+    func isValidNickname(_ nickname: String) throws
     
     /// 로그아웃을 시도합니다.
     func signOut() async throws
@@ -96,14 +96,18 @@ protocol AccountServiceProtocol: AnyObject {
 }
 
 extension AccountServiceProtocol {
-    func isValidEmail(_ email: String) -> Bool {
+    func isValidEmail(_ email: String) throws {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        return NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email)
+        if !NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email) {
+            throw AccountServiceError.invalidEmail
+        }
     }
 
-    func isValidNickname(_ nickname: String) -> Bool {
+    func isValidNickname(_ nickname: String) throws {
         let nicknameRegex = "^[ㄱ-ㅎ가-힣A-Za-z0-9]{1,}$"
-        return NSPredicate(format: "SELF MATCHES %@", nicknameRegex).evaluate(with: nickname)
+        if !NSPredicate(format: "SELF MATCHES %@", nicknameRegex).evaluate(with: nickname) {
+            throw AccountServiceError.invalidNickname
+        }
     }
 }
 
@@ -124,7 +128,7 @@ enum SignInStatus: Hashable {
     func hash(into hasher: inout Hasher) {
         switch self {
         case .created: hasher.combine(self)
-        case .ok(let user): hasher.combine(self)
+        case .ok(_): hasher.combine(self)
         }
     }
     
@@ -151,4 +155,17 @@ enum AccountServiceError: Error {
     
     /// 이외의 모든 에러
     case unknownError(description: String)
+}
+
+extension AccountServiceError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .expiredToken: return "Token 만료"
+        case .invalidEmail: return "이메일 형식이 올바르지 않습니다."
+        case .invalidNickname: return "닉네임 형식이 올바르지 않습니다."
+        case .alreadyExsistEmail: return "이미 존재하는 이메일입니다."
+        case .alreadyExsistNickname: return "이미 존재하는 닉네임입니다."
+        case .unknownError(_): return "알 수 없는 에러가 발생했습니다."
+        }
+    }
 }
