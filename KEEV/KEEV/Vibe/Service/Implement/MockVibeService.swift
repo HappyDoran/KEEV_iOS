@@ -33,7 +33,8 @@ class MockVibeService: TempVibeServiceProtocol {
                     comment: "코멘트 내용\(index)",
                     createdDate: "2024.11.25",
                     likeCount: index,
-                    replyCount: index
+                    replyCount: index,
+                    isMine: index % 10 == 1
                 )
             )
         }
@@ -55,7 +56,8 @@ class MockVibeService: TempVibeServiceProtocol {
             comment: "배부르다!",
             createdDate: "2024.11.26",
             likeCount: 0,
-            replyCount: 0
+            replyCount: 0,
+            isMine: true
         )
         
         vibes.append(newVibe)
@@ -78,7 +80,8 @@ class MockVibeService: TempVibeServiceProtocol {
             comment: comment,
             createdDate: VibeUIO.dummy0.createdDate,
             likeCount: VibeUIO.dummy0.likeCount,
-            replyCount: VibeUIO.dummy0.replyCount
+            replyCount: VibeUIO.dummy0.replyCount,
+            isMine: true
         )
         
         return vibe

@@ -38,7 +38,7 @@ class MockReplyService: ReplyServiceProtocol {
         
         let newUser = SimpleUserUIO(id: 2, nickname: "추가된 사람은 이렇게 추가가 될것이지롱", profileImageURL: nil)
         
-        let newReply = ReplyUIO(id: newID, user: newUser, vibeID: vibeID, text: text, isLiked: false, likeCount: 0, createdDate: .now)
+        let newReply = ReplyUIO(id: newID, user: newUser, vibeID: vibeID, text: text, isLiked: false, likeCount: 0, createdDate: .now, isMine: true)
         
         replies.append(newReply)
         
@@ -60,7 +60,9 @@ class MockReplyService: ReplyServiceProtocol {
             text: updatedReply,
             isLiked: reply.isLiked,
             likeCount: reply.likeCount,
-            createdDate: reply.createdDate)
+            createdDate: reply.createdDate,
+            isMine: true
+        )
         
         return newReplyDTO
     }
