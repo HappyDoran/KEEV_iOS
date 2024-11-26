@@ -14,7 +14,12 @@ import Foundation
 /// - Author: 라움
 class MockActivityService: ActivityServiceProtocol {
     func getUserInfo(userID: Int) async throws -> DetailUserUIO {
-        DetailUserUIO(id: 1, nickname: "가래떡강아지", profileImageURL: nil, backgroundImageURL: nil, description: nil)
+        for dummy in DetailUserUIO.dummies {
+            if dummy.id == userID {
+                return dummy
+            }
+        }
+        throw ActivityServiceError.notFound
     }
     
     func getUserVibeList(userID: Int) async throws -> [VibeUIO] {
@@ -25,5 +30,9 @@ class MockActivityService: ActivityServiceProtocol {
         }
         
         return vibes
+    }
+    
+    private enum ActivityServiceError: Error {
+        case notFound
     }
 }
