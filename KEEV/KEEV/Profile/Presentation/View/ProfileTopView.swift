@@ -85,7 +85,7 @@ struct ProfileTopView: View {
                 Text(userProfile.nickname)
                     .figmaFont(PretendardFont.title(style: .md))
                     .foregroundStyle(.gray100)
-                    .padding(.bottom, 4)
+                    .padding(.bottom, 8)
                 
                 if userProfile.description.isEmpty && isMyProfile {
                     Text("한 줄 소개를 입력해주세요.")
