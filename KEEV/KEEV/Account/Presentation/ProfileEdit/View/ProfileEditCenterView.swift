@@ -16,7 +16,7 @@ import SwiftUI
 /// - Note: 액션시트에 대한 modifier는 ProfileEditScreen에 추가되어있습니다.
 /// - Author: 라움
 struct ProfileEditCenterView: View {
-    @Injected private var accountService: any AccountServiceProtocol
+    private let accountService = AccountService()
     
     @Binding var userProfile: UserProfile
     @Binding var showProfileImageActionSheet: Bool

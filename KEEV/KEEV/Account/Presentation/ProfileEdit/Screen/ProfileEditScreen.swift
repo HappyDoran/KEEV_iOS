@@ -20,7 +20,7 @@ struct ProfileEditScreen: View {
         self._profileEditedToast = profileEditedToast
     }
     
-    @Injected private var accountService: any AccountServiceProtocol
+    private var accountService = AccountService()
     
     @Environment(\.dismiss) private var dismiss
     

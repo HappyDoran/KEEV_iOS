@@ -15,7 +15,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileScreen: View {
-    @Injected private var accountService: any AccountServiceProtocol
+    private let accountService = AccountService()
     
     @State private var userProfile = UserProfile()
     @State private var isMyProfile = true
