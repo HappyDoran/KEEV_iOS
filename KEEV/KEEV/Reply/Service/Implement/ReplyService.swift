@@ -57,8 +57,14 @@ class ReplyService: ReplyServiceProtocol {
     }
 
     func deleteReply(_ replyID: Int) async throws {
-        <#code#>
+        
+        // 서버에 replyID를 가지고 댓글을 수정
+        
+        guard let index = replies.firstIndex(where: { $0.id == replyID }) else {
+            throw ReplyError.replyNotFound
+        }
+        
+        replies.remove(at: index)
     }
-    
     
 }
