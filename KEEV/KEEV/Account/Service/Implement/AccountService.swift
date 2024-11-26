@@ -222,11 +222,6 @@ extension AccountService {
             
             // NotificationCenter
         }
-        else if(statusCode == 201){
-            // 서버에서 받아온 DetailUser = nil, email = nil, AccessToken, RefreshToken
-            
-            // go SignUpScreen
-        }
         
     }
     

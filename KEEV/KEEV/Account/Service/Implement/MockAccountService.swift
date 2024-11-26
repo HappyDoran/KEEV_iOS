@@ -43,10 +43,14 @@ final class MockAccountService: AccountServiceProtocol {
     }
     
     func signOut() async throws {
-        guard let email, let userInfo else { throw AccountServiceError.unknownError(description: "이미 로그아웃 되었습니다.") }
+        guard email != nil, userInfo != nil else { throw AccountServiceError.unknownError(description: "이미 로그아웃 되었습니다.") }
+        email = nil
+        userInfo = nil
     }
     
     func deleteAccount() async throws {
-        guard let email, let userInfo else { throw AccountServiceError.unknownError(description: "탈퇴할 계정이 없습니다.") }
+        guard email != nil, userInfo != nil else { throw AccountServiceError.unknownError(description: "탈퇴할 계정이 없습니다.") }
+        email = nil
+        userInfo = nil
     }
 }
