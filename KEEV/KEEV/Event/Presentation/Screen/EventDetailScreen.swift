@@ -69,7 +69,6 @@ struct EventDetailScreen: View {
             ToolbarItem(placement: .principal) {
                 Text(selectedEvent.name)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular)))
-                    .frame(width: 277)
                     .foregroundStyle(.gray300)
                 
             }
@@ -264,6 +263,6 @@ extension EventDetailScreen {
 
 #Preview {
     NavigationStack {
-        EventDetailScreen(detailEvent: .dummy2)
+        EventDetailScreen(detailEvent: .dummy0)
     }
 }

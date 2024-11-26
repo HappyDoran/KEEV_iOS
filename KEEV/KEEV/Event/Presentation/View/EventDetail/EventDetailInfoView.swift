@@ -60,7 +60,6 @@ extension EventDetailInfoView {
             //            }
             //            .frame(width: 32, height: 32)
         }
-        .frame(height: 56)
     }
 }
 

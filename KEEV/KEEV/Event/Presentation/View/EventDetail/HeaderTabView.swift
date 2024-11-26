@@ -65,13 +65,19 @@ struct HeaderTabView: View {
                 .frame(height: 46)
             }
             .overlay(alignment: .bottom) {
-                Rectangle()
-                    .fill(Color.brand500)
-                    .frame(width: barWidth, height: barHeight)
-                    .offset(x: activeSection == .detail ? -((geometry.size.width / 4)) : (geometry.size.width / 4), y: 0)
-                    .animation(.easeInOut, value: activeSection)
+                ZStack {
+                    Rectangle()
+                        .foregroundStyle(.grayBG800)
+                        .frame(height: 1)
+                    
+                    Rectangle()
+                        .fill(Color.brand500)
+                        .frame(width: barWidth, height: barHeight)
+                        .offset(x: activeSection == .detail ? -((geometry.size.width / 4)) : (geometry.size.width / 4), y: 0)
+                        .animation(.easeInOut, value: activeSection)
+                }
             }
-            .background(Color.grayBG800)
+            .backgroundForKEEV()
         }
         .frame(height: 46)
     }
