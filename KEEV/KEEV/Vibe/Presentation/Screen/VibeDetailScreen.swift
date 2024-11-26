@@ -141,6 +141,9 @@ struct VibeDetailScreen: View {
                 .dummy2
             ]
         }
+        .onChange(of: vibe) { _, newValue in
+            onUpdate?(newValue)
+        }
     }
 }
 
@@ -154,9 +157,9 @@ private extension VibeDetailScreen {
     
     func vibeActionSheetContent() -> [KEEVActionSheet.ButtonConfiguration] {
         if 2 == vibe.userID {
+            //        if vibe.isMine {
             return .myVibe {
                 showVibeActionSheet = false
-                print("feeeeee")
                 navigateToModifyVibe = true
             } deleteHandler: {
                 showVibeActionSheet = false
@@ -174,7 +177,8 @@ private extension VibeDetailScreen {
     }
     
     func replyActionSheetContent(selectedReply: ReplyWithIndex?) -> [KEEVActionSheet.ButtonConfiguration] {
-        if 2 == selectedReply?.reply.userID { // 서비스로부터 id를 가져와야 합니다.
+        if let reply = selectedReply?.reply,
+           reply.isMine { // 서비스로부터 id를 가져와야 합니다.
             return .myComment {
                 showReplyActionSheet = nil
                 modifyReplySheet = selectedReply
