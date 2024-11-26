@@ -45,10 +45,6 @@ class MockVibeService: TempVibeServiceProtocol {
         }
     }
     
-    func getVibeCount(eventID: String) async throws -> Int {
-        vibeCount
-    }
-    
     func uploadVibe(rating: Float, comment: String?, images: [UIImage]) async throws -> VibeUIO {
         let newVibe = VibeUIO(
             id: vibeCount + 1,
