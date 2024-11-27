@@ -27,7 +27,6 @@ struct VibeDetailScreen: View {
     @State private var navigateToReport: ReportType? = nil
     @State private var navigateToUserProfile: Int? = nil
     
-    @StateObject private var replyService = ReplyService(jsonDecoder: JSONDecoder())
     init(
         vibe: VibeUIO,
         onUpdate: ((VibeUIO) -> Void)? = nil,

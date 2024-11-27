@@ -20,6 +20,7 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Parameters:
     ///   - vibeID : 바이브 아이디
+    ///   - userID: 작성한 사용자 아이디
     ///
     /// 키체인에서 accessToken을 가져옵니다.
     /// ReplyHTTPRequestRouter를 통해 라우터를 만듭니다.
@@ -45,6 +46,7 @@ class ReplyService: ReplyServiceProtocol {
     /// - Parameters:
     ///   - vibeID: 바이브 아이디
     ///   - text: 추가하고자 하는 텍스트
+    ///   - userID: 작성한 사용자 아이디
     ///
     /// 키체인에서 accessToken을 가져옵니다.
     /// ReplyHTTPRequestRouter를 통해 라우터를 만듭니다.
@@ -70,6 +72,7 @@ class ReplyService: ReplyServiceProtocol {
     /// - Parameters:
     ///   - reply: 수정할 하는 댓글 객체
     ///   - updatedReply: 반영되는 댓글 텍스트
+    ///   - userID: 작성한 사용자 아이디
     ///
     /// 키체인에서 accessToken을 가져옵니다.
     /// ReplyHTTPRequestRouter를 통해 라우터를 만듭니다.
@@ -100,7 +103,6 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Parameters:
     ///   - replyID: 삭제할 댓글 아이디
-    ///   - vibeID: 삭제할 댓글이 존재하는 바이브 아이디
     ///
     /// - Throws: 삭제할 댓글을 찾지 못할 경우 에러
     ///
