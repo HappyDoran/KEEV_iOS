@@ -54,6 +54,7 @@ protocol ReplyServiceProtocol: ObservableObject {
     ///
     /// - Parameters:
     ///   - replyID: 삭제할 댓글 아이디
+    ///   - vibeID: 삭제할 댓글이 존재하는 바이브 아이디
     ///
     /// - Throws: 삭제할 댓글을 찾지 못할 경우 에러
     ///
