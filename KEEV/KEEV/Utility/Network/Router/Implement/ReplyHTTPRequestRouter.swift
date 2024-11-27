@@ -16,7 +16,7 @@ enum ReplyHTTPRequestRouter {
     case fetchReplies(token: String, vibeID: Int)
     case addReply(token: String, vibeID: Int, text: String)
     case modifyReply(token: String, replyID: String, vibeID: String, updatedReply: String)
-    case deleteReply(token: String, replyID: String, vibeID: String)
+    case deleteReply(token: String, replyID: String)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
@@ -25,37 +25,6 @@ enum ReplyHTTPRequestRouter {
 ///
 /// - Author: Doran
 extension ReplyHTTPRequestRouter: HTTPRequestable {
-    var scheme: String { "https" }
-    var host: String { AppEnvironment.keevBaseURL }
-    var port: Int? { nil }
-    
-    var body: Data? {
-        switch self {
-        case .fetchReplies:
-            return nil
-        case .addReply(_, let vibeID, let text):
-            let json: [String: Any] = [
-                "vibeId": vibeID,
-                "content": text
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .modifyReply(_, let replyID, let vibeID, let updatedReply):
-            let json: [String: Any] = [
-                "Id": replyID,
-                "vibeId": vibeID,
-                "content": updatedReply
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .deleteReply(_, let replyID, let vibeID):
-            
-            let json: [String: Any] = [
-                "Id": replyID,
-                "vibeId": vibeID
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
-        }
-    }
-    
     var method: HTTPMethod {
         switch self {
         case .fetchReplies:
@@ -83,9 +52,13 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
-        case .deleteReply(let token, _, _):
+        case .deleteReply(let token, _):
             return ["Authorization": "Bearer \(token)"]
         }
+    }
+    
+    var baseURL: any URLBaseComposable {
+        AppEnvironment.keevBaseURL
     }
     
     var path: [String]? {
@@ -104,5 +77,33 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         
         return path
     }
+    
+    var body: Data? {
+        switch self {
+        case .fetchReplies:
+            return nil
+        case .addReply(_, let vibeID, let text):
+            let json: [String: Any] = [
+                "vibeId": vibeID,
+                "content": text
+            ]
+            return try? JSONSerialization.data(withJSONObject: json, options: [])
+        case .modifyReply(_, let replyID, let vibeID, let updatedReply):
+            let json: [String: Any] = [
+                "Id": replyID,
+                "vibeId": vibeID,
+                "content": updatedReply
+            ]
+            return try? JSONSerialization.data(withJSONObject: json, options: [])
+        case .deleteReply(_, let replyID):
+            
+            let json: [String: Any] = [
+                "Id": replyID,
+            ]
+            return try? JSONSerialization.data(withJSONObject: json, options: [])
+        }
+    }
+    
+    var queryItems: [URLQueryItem]? { nil }
     
 }

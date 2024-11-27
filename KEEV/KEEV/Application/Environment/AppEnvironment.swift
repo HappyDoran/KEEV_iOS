@@ -23,7 +23,12 @@ struct AppEnvironment {
     static let kopisApiKey = Bundle.main.infoDictionary?["KOPIS_API_KEY"] as? String ?? ""
     
     /// 서버와 통신하는 keevBaseURL입니다.
-    static let keevBaseURL = Bundle.main.infoDictionary?["SERVER_IP_ADDRESS"] as? String ?? ""
+    static let keevBaseURL: BaseURL = {
+        guard let host = Bundle.main.infoDictionary?["SERVER_IP_ADDRESS"] as? String else {
+            fatalError("fefe")
+        }
+        return .init(scheme: "https", host: host, port: nil)
+    }()
     
     /// 앱에서 사용하는 유틸리티와 서비스의 인스턴스를 `DIContainer`에 등록합니다.
     ///

@@ -23,14 +23,14 @@ class MockReplyService: ReplyServiceProtocol {
         .dummy3
     ]
     
-    func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
+    func fetchReplies(for vibeID: Int, userID: Int) async throws -> [ReplyUIO] {
         
         // 서버에서 vibeID를 가지고 replies를 가져옴
         
         return replies.filter { $0.vibeID == vibeID }
     }
     
-    func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO {
+    func addReply(to vibeID: Int, text: String, userID: Int) async throws -> ReplyUIO {
         
         // 서버에서 vibeID와 text를 가지고 댓글을 저장
         
@@ -45,7 +45,7 @@ class MockReplyService: ReplyServiceProtocol {
         return newReply
     }
     
-    func modifyReply(_ reply: ReplyUIO, updatedReply: String) async throws -> ReplyUIO {
+    func modifyReply(_ reply: ReplyUIO, updatedReply: String, userID: Int) async throws -> ReplyUIO {
         
         // 서버에 replyID, vibeID, text를 가지고 댓글을 수정
         
@@ -67,7 +67,7 @@ class MockReplyService: ReplyServiceProtocol {
         return newReplyDTO
     }
 
-    func deleteReply(_ replyID: Int, vibeID: Int) async throws {
+    func deleteReply(_ replyID: Int) async throws {
         
         // 서버에 replyID를 가지고 댓글을 수정
         

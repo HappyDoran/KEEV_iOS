@@ -13,7 +13,6 @@ import Foundation
 protocol URLBaseComposable {
     var scheme: String { get }
     var host: String { get }
-    var path: [String]? { get }
     var port: Int? { get }
     
     /// URL을 만드는 메소드
@@ -33,10 +32,6 @@ extension URLBaseComposable {
         components.scheme = scheme
         components.host = host
         components.port = port
-        
-        if let path = path {
-            components.path = "/\(path.joined(separator: "/"))"
-        }
         
         guard let url = components.url else {
             throw NetworkError.badURL
