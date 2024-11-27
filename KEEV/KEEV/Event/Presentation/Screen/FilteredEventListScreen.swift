@@ -75,7 +75,7 @@ import SwiftUI
 /// - ToDo: EventService 객체 넣기, duration에 기간 Date를 지정하는 프로퍼티 생성, NavigationLink에 Destination 설정
 /// - Author: newJunsung
 struct FilteredEventListScreen: View {
-    @Injected private var eventService: any TempEventServiceProtocol
+    @Injected private var eventService: any EventServiceProtocol
     
     private let duration: Duration?
     private let eventGenre: GenreDTO?
@@ -111,7 +111,7 @@ struct FilteredEventListScreen: View {
                             Task {
                                 do {
                                     // 서비스가 이벤트를 찾는 로직
-                                    events.append(contentsOf: try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: "startDate").contents)
+                                    events.append(contentsOf: try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending), (SortCase.startDate, .ascending)]).contents)
                                     currentPage += 1
                                 } catch {
                                     print(error)
@@ -129,7 +129,7 @@ struct FilteredEventListScreen: View {
             Task {
                 do {
                     // 서비스가 이벤트를 찾는 로직
-                    events = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: "startDate").contents
+                    events = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending), (SortCase.startDate, .ascending)]).contents
                     currentPage += 1
                 } catch {
                     print(error)
