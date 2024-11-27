@@ -61,10 +61,10 @@ private extension SignInScreen {
                 .foregroundStyle(.white)
                 .frame(height: 54)
                 .overlay {
-                    SignInWithAppleButton { request in
-                        accountService.signInRequest(request: request)
+                    SignInWithAppleButton { _ in
+                        
                     } onCompletion: { result in
-                        accountService.signInHandler(result: result)
+//                        accountService.signInHandler(result: result)
                     }
                     .blendMode(.overlay)
                     .cornerRadius(14)
