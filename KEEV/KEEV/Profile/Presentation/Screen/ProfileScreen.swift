@@ -15,10 +15,10 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileScreen: View {
-    @Injected private var accountService: any AccountServiceProtocol
+//    private let accountService = AccountService()
     
-    @State private var userProfile = UserProfile()
-    @State private var isMyProfile = true
+    @State private var userProfile: DetailUserUIO = .dummy4
+    let isMyProfile = false
     @State private var showActionSheet = false
     @State private var navigateToReport = false
     @State private var showProfileEdit = false
@@ -38,28 +38,25 @@ struct ProfileScreen: View {
         }
         .backgroundForKEEV()
         .ignoresSafeArea(edges: .top)
-        .onAppear(perform: {
-            userProfile = accountService.userProfile
-        })
-        .onChange(of: showProfileEdit, {
-            userProfile = accountService.userProfile
-        })
+        .onAppear {
+//            userProfile = accountService.userProfile
+        }
+        .onChange(of: showProfileEdit) {
+//            userProfile = accountService.userProfile
+        }
         .sensoryFeedback(.impact, trigger: tapFeedback)
         .fullScreenCover(isPresented: $showProfileEdit) {
-            ProfileEditScreen(profileEditedToast: $profileEditedToast)
+            ProfileEditScreen(userProfile: $userProfile, profileEditedToast: $profileEditedToast)
         }
         .toast(with: $profileEditedToast, for: .seconds(of: 2))
         .actionSheetForKEEV(
             isPresented: $showActionSheet,
-            defaults: .othersProfile(
-                shareHandler: {
-                    //프로필 공유하기 코드 추가해야합니다.
-                    showActionSheet = false
-                },
-                reportHandler: {
+            configurations: [
+                KEEVActionSheet.ButtonConfiguration.report(title: "신고하기", action: {
                     navigateToReport = true
                     showActionSheet = false
                 })
+            ]
         )
         .navigationDestination(isPresented: $navigateToReport) {
             ReportScreen(reportType: .user(userID: 1))

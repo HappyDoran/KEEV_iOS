@@ -9,6 +9,25 @@ import Foundation
 import SwiftUI
 import AuthenticationServices
 
+enum AccountError: String, Error {
+    case empty
+    case inValidEmail
+    case inValidNickname
+}
+
+extension AccountError : LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .empty:
+            return ""
+        case .inValidEmail:
+            return "이메일의 형식이 올바르지 않습니다."
+        case .inValidNickname:
+            return "특수문자가 포함되어 있습니다."
+        }
+    }
+}
+
 /// 회원가입 과정에서 사용자 정보를 처리하는 Service
 ///
 /// 회원가입 과정에서의 사용자 정보를 처리하는 Service입니다.
@@ -19,9 +38,10 @@ import AuthenticationServices
 ///
 /// - Note: ObservableObject로 구현되어있으므로 회원가입에서 사용할 때 StateObject나 ObservedObject로 사용하면 됩니다.
 /// - Author: 라움
-class AccountService: AccountServiceProtocol {
+class AccountService {
     /// 회원가입 과정에서의 사용자 정보가 담기는 UserProfile 구조체입니다.
     private(set) var userProfile: UserProfile = UserProfile()
+    private var keychainUtility = TokenKeyChainUtility()
     
     /// 사용자 이메일을 리턴하는 연산 프로퍼티
     ///
@@ -179,21 +199,109 @@ class AccountService: AccountServiceProtocol {
     }
 }
 
-enum AccountError: String, Error {
-    case empty
-    case inValidEmail
-    case inValidNickname
+
+extension AccountService {
+    func refreshAccessToken(refreshToken: String) async throws {
+        // 서버에 refreshToken request
+        
+        // 서버에 받아온 accessToken, refreshToken
+        
+        // accessToken, refreshToken 키체인에 저장
+        
+        // NotificationCenter
+    }
+    
+    func autoSignin() async throws {
+        // 키체인에서 accessToken, refreshToken 로드
+        
+        // accessToken 만료시
+        
+            // refreshToken 만료시
+        
+                // go SignInScreen
+            
+            // refreshToken 만료 안됐을시
+        
+                // 서버에 refreshToken request
+        
+                // 서버에 받아온 accessToken, refreshToken
+        
+                // accessToken, refreshToken 키체인에 저장
+        
+                // NotificationCenter
+        
+                // go home
+        
+        // accessToken 만료 안됐을시
+        
+            // 서버에 refreshToken request
+
+            // 서버에 받아온 accessToken, refreshToken
+
+            // accessToken, refreshToken 키체인에 저장
+
+            // NotificationCenter
+
+            // go home
+    }
+    
+    func signin() async throws {
+        // let user = "user"
+        // let identityToken = "identityToken"
+        // let authorizationToken = "authorizationToken"
+        
+        //서버에 위에 3개 request
+        let statusCode = 200
+        
+        if(statusCode == 200) {
+            // 서버에서 받아온 DetailUser, email, accessToken, refreshToken
+            
+            // accessToken, refreshToken, email 키체인에 저장
+            
+            // NotificationCenter
+        }
+        
+    }
+    
+    func signup(userProfile: UserProfile) async throws {
+        //서버에 userProfile request
+        
+        // 서버에서 받아온 DetailUser, email, accessToken, refreshToken
+        
+        // accessToken, refreshToken, email 키체인에 저장
+        
+        // NotificationCenter
+        
+        // go Home
+    }
+    
+    func signout() async throws {
+        
+    }
+    
+    func goodBye() async throws {
+        
+    }
 }
 
-extension AccountError : LocalizedError {
-    var errorDescription: String? {
-        switch self {
-        case .empty:
-            return ""
-        case .inValidEmail:
-            return "이메일의 형식이 올바르지 않습니다."
-        case .inValidNickname:
-            return "특수문자가 포함되어 있습니다."
+extension AccountService {
+    // 키체인에서 토큰 가져오는 함수
+    private func getToken(tokenTag: String) throws -> String {
+        guard let tokenData = keychainUtility.read(tokenTag: tokenTag),
+              let token = String(data: tokenData, encoding: .utf8) else {
+            print("token not found.")
+            throw TokenKeyChainError.NotFound
         }
+        return token
+    }
+    
+    // 키체인에 토큰 저장하는 함수
+    private func saveToken(_ token: String, tokenTag: String) throws {
+        try keychainUtility.create(token, tokenTag: tokenTag)
+    }
+    
+    // 키체인에서 토큰 삭제하는 함수
+    private func deleteToken(tokenTag: String) throws {
+        try keychainUtility.delete(tokenTag: tokenTag)
     }
 }

@@ -15,8 +15,11 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpProfileView: View {
-    @ObservedObject var accountService: AccountService
-    @Binding var userProfile: UserProfile
+    @Injected private var accountService: any AccountServiceProtocol
+    
+    let email: String
+    @Binding var nickname: String
+    @Binding var profileImage: UIImage?
     @Binding var showActionSheet: Bool
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
@@ -41,7 +44,7 @@ struct SignUpProfileView: View {
                 HStack {
                     Spacer()
                     
-                    ProfileImage(profileImage: userProfile.profileImage, size: 128, editable: true)
+                    ProfileImage(profileImage: profileImage, size: 128, editable: true)
                         .onTapGesture {
                             isFocused = false
                             showActionSheet = true
@@ -54,15 +57,15 @@ struct SignUpProfileView: View {
                 
                 SingleLineTextField(
                     placeholder: "닉네임",
-                    text: $userProfile.nickname,
+                    text: $nickname,
                     maxLength: 14,
                     errorMessage: $errorMessage
                 )
                 .submitLabel(.done)
                 .focused($isFocused)
-                .onChange(of: userProfile.nickname, {
-                    validityTest(userProfile.nickname)
-                })
+                .onChange(of: nickname) {
+                    validityTest(nickname)
+                }
                 .padding(.bottom, 8)
             }
             .padding(.top, 40)
@@ -73,10 +76,23 @@ struct SignUpProfileView: View {
             CommonButton(
                 title: "다음",
                 action: {
-                    accountService.setUserProfile(userProfile)
-                    
-                    transitionDirection = .trailing
-                    currentPage = .complete
+                    Task {
+                        do {
+                            _ = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: nil)
+                            transitionDirection = .trailing
+                            currentPage = .complete
+                        } catch {
+                            if let error = error as? AccountServiceError {
+                                if case let .unknownError(description) = error {
+                                    print(description)
+                                    print(error)
+                                }
+                                print(error.localizedDescription)
+                            } else {
+                                print(error)
+                            }
+                        }
+                    }
                 },
                 style: .maxWidth,
                 disabled: disableButton
@@ -92,7 +108,7 @@ struct SignUpProfileView: View {
 extension SignUpProfileView {
     private func validityTest(_ nickname: String) {
         do {
-            try accountService.checkNicknameValidity(nickname)
+            try accountService.isValidNickname(nickname)
             errorMessage = ""
             disableButton = false
         } catch {
@@ -104,8 +120,7 @@ extension SignUpProfileView {
 
 #Preview {
     SignUpProfileView(
-        accountService: AccountService(),
-        userProfile: .constant(UserProfile()),
+        email: "hihi@fjefj.com", nickname: .constant("fefe"), profileImage: .constant(nil),
         showActionSheet: .constant(false),
         currentPage: .constant(.profile),
         transitionDirection: .constant(.leading)

@@ -16,9 +16,12 @@ import SwiftUI
 /// - Note: 액션시트에 대한 modifier는 ProfileEditScreen에 추가되어있습니다.
 /// - Author: 라움
 struct ProfileEditCenterView: View {
-    @Injected private var accountService: any AccountServiceProtocol
+    @Injected private var service: any AccountServiceProtocol
     
-    @Binding var userProfile: UserProfile
+    @Binding var nickname: String
+    @Binding var profileImage: UIImage?
+    @Binding var description: String
+    
     @Binding var showProfileImageActionSheet: Bool
     @Binding var disableButton: Bool
     var isFocused: FocusState<Bool>.Binding
@@ -30,7 +33,7 @@ struct ProfileEditCenterView: View {
             HStack {
                 Spacer()
                 
-                ProfileImage(profileImage: userProfile.profileImage, size: 128, editable: true, strokeWidth: 4, strokeColor: .gray950)
+                ProfileImage(profileImage: profileImage, size: 128, editable: true, strokeWidth: 4, strokeColor: .gray950)
                     .onTapGesture {
                         isFocused.wrappedValue = false
                         showProfileImageActionSheet = true
@@ -47,15 +50,15 @@ struct ProfileEditCenterView: View {
             
             SingleLineTextField(
                 placeholder: "닉네임",
-                text: $userProfile.nickname,
+                text: $nickname,
                 maxLength: 14,
                 errorMessage: $errorMessage
             )
             .submitLabel(.done)
             .focused(isFocused)
-            .onChange(of: userProfile.nickname, {
-                validityTest(userProfile.nickname)
-            })
+            .onChange(of: nickname) {
+                validityTest(nickname)
+            }
             
             Text("한 줄 소개")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
@@ -65,7 +68,7 @@ struct ProfileEditCenterView: View {
             
             SingleLineTextField(
                 placeholder: "한 줄 소개를 입력해주세요.",
-                text: $userProfile.description,
+                text: $description,
                 maxLength: 20
             )
             .submitLabel(.done)
@@ -77,7 +80,7 @@ struct ProfileEditCenterView: View {
 extension ProfileEditCenterView {
     private func validityTest(_ nickname: String) {
         do {
-            try accountService.checkNicknameValidity(nickname)
+            try service.isValidNickname(nickname)
             errorMessage = ""
             disableButton = false
         } catch {
@@ -91,7 +94,9 @@ extension ProfileEditCenterView {
     @Previewable @FocusState var isFocused: Bool
     
     ProfileEditCenterView(
-        userProfile: .constant(UserProfile()),
+        nickname: .constant("dummy nicknameffff"),
+        profileImage: .constant(nil),
+        description: .constant("dummy descriptionfefefefefe"),
         showProfileImageActionSheet: .constant(false),
         disableButton: .constant(false),
         isFocused: $isFocused

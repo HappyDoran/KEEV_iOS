@@ -47,7 +47,7 @@ struct AppEnvironment {
         diContainer.register(NetworkUtility(), for: NetworkUtility.self)
         
         // Service(서비스는 해당 구역에 작성해주시면 됩니다.)
-        diContainer.register(AccountService(), for: (any AccountServiceProtocol).self)
+        diContainer.register(MockAccountService(), for: (any AccountServiceProtocol).self)
         diContainer.register(MockEventService(), for: (any TempEventServiceProtocol).self)
         diContainer.register(SettingService(), for: (any SettingServiceProtocol).self)
         diContainer.register(MockReplyService(), for: (any ReplyServiceProtocol).self)
