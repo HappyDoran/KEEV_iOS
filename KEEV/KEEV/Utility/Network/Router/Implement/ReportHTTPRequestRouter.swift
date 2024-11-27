@@ -79,7 +79,7 @@ extension ReportHTTPRequestRouter: HTTPRequestable {
         case .vibeReport:
             path.append("vibe")
         case .userReport:
-            path.append("comment")
+            path.append("user")
         case .eventReport:
             path.append("event")
         }

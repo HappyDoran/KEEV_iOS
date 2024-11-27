@@ -10,7 +10,7 @@ import Foundation
 ///
 /// - Note: path, queryItems는 optional값이기 때문에 optional 처리를 해줍니다.
 /// - Author: Doran
-protocol URLEndpointComposable {
+protocol URLEndpointComposable: URLBaseComposable {
     var baseURL: URLBaseComposable { get }
     var path: [String]? { get }
     var queryItems: [URLQueryItem]? { get }
