@@ -7,13 +7,23 @@
 
 import SwiftUI
 
+/// 댓글 읽기, 쓰기, 수정, 삭제에 대한 Router들을 나열한 열거형
+///
+///  accessToken을 header에 실어서 request 합니다.
+///
+/// - Author: Doran
 enum ReplyHTTPRequestRouter {
     case fetchReplies(token: String, vibeID: Int)
     case addReply(token: String, vibeID: Int, text: String)
-    case modifyReply(token: String, reply: ReplyDTO, updatedReply: String)
-    case deleteReply(token: String, reply: ReplyDTO)
+    case modifyReply(token: String, replyID: String, vibeID: String, updatedReply: String)
+    case deleteReply(token: String, replyID: String, vibeID: String)
 }
 
+/// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
+///
+/// - Note: accessToken을 키체인에서 가져오는 함수를 여기다 쓰면 문제가 될까요?
+///
+/// - Author: Doran
 extension ReplyHTTPRequestRouter: HTTPRequestable {
     var body: Data? {
         switch self {
@@ -25,18 +35,18 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
                 "content": text
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .modifyReply(_, let reply, let updatedReply):
+        case .modifyReply(_, let replyID, let vibeID, let updatedReply):
             let json: [String: Any] = [
-                "Id": reply.id,
-                "vibeId": reply.vibeID,
+                "Id": replyID,
+                "vibeId": vibeID,
                 "content": updatedReply
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .deleteReply(_, let reply):
+        case .deleteReply(_, let replyID, let vibeID):
             
             let json: [String: Any] = [
-                "Id": reply.id,
-                "vibeId": reply.vibeID
+                "Id": replyID,
+                "vibeId": vibeID
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
         }
@@ -66,12 +76,12 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
-        case .modifyReply(let token, _, _):
+        case .modifyReply(let token, _, _, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
-        case .deleteReply(let token, _):
+        case .deleteReply(let token, _, _):
             return ["Authorization": "Bearer \(token)"]
         }
     }
@@ -84,11 +94,11 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchReplies(_, let vibeID):
             path.append(contentsOf: ["get", "\(vibeID)"])
-        case .addReply(_, _, _):
+        case .addReply:
             path.append("register")
-        case .modifyReply(_, _, _):
+        case .modifyReply:
             path.append("edit")
-        case .deleteReply(_, _):
+        case .deleteReply:
             path.append("delete")
         }
         
