@@ -23,34 +23,37 @@ struct SignUpCompleteView: View {
     var body: some View {
         VStack {
             ZStack {
-                VStack(alignment: .center, spacing: 0) {
-                    Text("환영합니다!")
-                        .figmaFont(PretendardFont.title(style: .lg))
-                        .foregroundStyle(.brand500)
-                        .padding(.bottom, 12)
-                    
-                    Text("다양한 공연의 즐거움과 바이브를 느껴보세요!")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
-                        .foregroundStyle(.gray300)
-                    
-                    ProfileImage(profileImage: profileImage, size: 140, editable: false)
-                        .padding(.top, 100)
-                        .padding(.bottom, 12)
-                    
-                    Text(nickname)
-                        .figmaFont(PretendardFont.title(style: .sm))
-                        .foregroundStyle(.gray50)
-                        .padding(.bottom, 4)
-                    
-                    Text(email)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
-                        .foregroundStyle(.gray300)
-                }
-                
                 LottieView(animation: .named("SignUpCompleteLottie"))
-                    .playing()
+                    .playing(loopMode: .loop)
                     .frame(height: 250)
                     .padding()
+                
+                VStack(alignment: .center) {
+                    VStack(spacing: 12) {
+                        Text("환영합니다!")
+                            .figmaFont(PretendardFont.title(style: .lg))
+                            .foregroundStyle(.brand500)
+                        
+                        Text("다양한 공연의 즐거움과 바이브를 느껴보세요!")
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                            .foregroundStyle(.gray300)
+                    }
+                    
+                    VStack(spacing: 0) {
+                        ProfileImage(profileImage: profileImage, size: 140, editable: false)
+                            .padding(.top, 100)
+                            .padding(.bottom, 12)
+                        
+                        Text(nickname)
+                            .figmaFont(PretendardFont.title(style: .sm))
+                            .foregroundStyle(.gray50)
+                            .padding(.bottom, 4)
+                        
+                        Text(email)
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
+                            .foregroundStyle(.gray300)
+                    }
+                }
             }
         }
         .padding(.top, 40)

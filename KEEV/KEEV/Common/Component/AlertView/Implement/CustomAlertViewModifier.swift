@@ -126,10 +126,11 @@ struct CustomAlertViewModifier: ViewModifier {
                     }
                     .padding(.top, 16)
                 }
+                .ignoresSafeArea()
                 .padding(.all, 20)
                 .frame(width: 310)
-                .background(Color.gray800)
-                .cornerRadius(16)
+                .background(Color.grayBG700)
+                .cornerRadius(12)
                 .zIndex(1)
                 .transition(.scale)
             }

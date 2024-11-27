@@ -44,7 +44,7 @@ struct SettingScreen: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
+            VStack(spacing: 0) {
                 SettingCell(title: "현재 버전 \(AppEnvironment.version)", titleColor: .gray500)
                 
                 NavigationLink {

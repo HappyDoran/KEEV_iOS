@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AuthenticationServices
 
 enum AccountError: String, Error {
     case empty
@@ -80,6 +81,43 @@ class AccountService {
     /// - Author: 라움
     var description: String {
         return userProfile.description
+    }
+    
+    /// Apple ID에 대한 인증 요청을 하는 함수
+    ///
+    /// - Parameters:
+    ///   - request: 애플 로그인
+    ///
+    /// Apple ID에 대한 인증 요청을 하는 함수입니다.
+    ///
+    /// - Author: 라움
+    func signInRequest(request: ASAuthorizationAppleIDRequest) {
+        request.requestedScopes = []
+    }
+    
+    /// 로그인 성공 시 호출되는 handler
+    ///
+    /// - Parameters:
+    ///   - result: 애플 로그인 결과
+    ///
+    /// 로그인 성공 시 호출되는 handler입니다.
+    ///
+    /// - Author: 라움
+    func signInHandler(result: Result<ASAuthorization, any Error>) {
+        switch result {
+        case .success(let authorization):
+            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential else { return }
+            
+            print("User: \(credential.user)")
+            if let authCode = String(data: credential.authorizationCode!, encoding: .utf8) {
+                print("Authorization code: \(authCode)")
+            }
+            if let identityToken = String(data: credential.identityToken!, encoding: .utf8) {
+                print("Identity token: \(identityToken)")
+            }
+        case .failure(let error):
+            print(error.localizedDescription)
+        }
     }
     
     /// 사용자의 프로필을 새로운 프로필로 업데이트하는 함수

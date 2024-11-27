@@ -35,10 +35,14 @@ struct VibeHeader: View {
             // MARK: 검색 시트 아래로 내리는 버튼
             HStack {
                 Button(action: {
-                    showExitAlert = true
+                    if selectedEvent != nil {
+                        showExitAlert = true
+                    } else {
+                        dismiss()
+                    }
                 }) {
                     Image(systemName: "xmark")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundColor(.gray100)
                 }
                 Spacer()

@@ -12,7 +12,7 @@ import Foundation
 /// 이 타입의 생성자에 `SimpleEventDTO`와 `DetailEventDTO`를 주입할 수도 있습니다.
 ///
 /// - Author: newJunsung
-struct SimpleEventUIO: Identifiable {
+struct SimpleEventUIO: Identifiable, Hashable {
     /// 이벤트의 id
     let id: String
     

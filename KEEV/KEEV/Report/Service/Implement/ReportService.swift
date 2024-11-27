@@ -11,19 +11,10 @@ import Foundation
 ///
 /// 신고하기 기능을 위한 ReportService입니다.
 ///
-/// - Todo: 서버와 연결이 이루어지면 sendReport 함수에 서버로 신고를 전송하는 기능을 추가해야합니다.
+/// - Todo: ReportServiceProtocol을 채택한 후 각 함수에 대한 기능들을 구현해야합니다.
 /// - Author: 라움
-class ReportService: ReportServiceProtocol {
-    /// 신고 전송 함수
-    ///
-    /// - Parameters:
-    ///   - report: 신고 내용
-    ///
-    /// - Todo: 서버와 연결이 이루어지면 sendReport 함수에 서버로 신고를 전송하는 기능을 추가해야합니다.
-    /// - Author: 라움
-    func sendReport(_ report: String) {
-        print("신고완료 - \(report)")
-    }
+class ReportService {
+    
 }
 
 /// 신고 타입
@@ -33,11 +24,24 @@ class ReportService: ReportServiceProtocol {
 /// rawValue로는 신고하기 화면 상단에 나오는 질문 문자열을 가지고 있습니다.
 ///
 /// - Author: 라움
-enum ReportType: String {
-    case event = "이 공연에 어떤 문제가 있나요?"
-    case vibe = "이 게시물에 어떤 문제가 있었나요?"
-    case user = "이 사용자에게 어떤 문제가 있었나요?"
-    case comment = "이 댓글에 어떤 문제가 있었나요?"
+enum ReportType: CustomStringConvertible {
+    case event(eventID: String)
+    case vibe(eventID: String, vibeID: Int)
+    case user(userID: Int)
+    case comment(vibeID: Int, replyID: Int)
+    
+    var description: String {
+        switch self {
+        case .event:
+            "이 공연에 어떤 문제가 있나요?"
+        case .vibe:
+            "이 게시물에 어떤 문제가 있었나요?"
+        case .user:
+            "이 사용자에게 어떤 문제가 있었나요?"
+        case .comment:
+            "이 댓글에 어떤 문제가 있었나요?"
+        }
+    }
 }
 
 extension ReportType {
@@ -58,5 +62,15 @@ extension ReportType {
     /// 신고 내용을 '기타'로 선택했을 경우에 나타나는 텍스트 필드에 보이는 플레이스홀더입니다.
     var etcReportPlaceholder: String {
         return "어떤 문제가 있었는지 작성해주세요."
+    }
+}
+
+extension ReportType: Hashable {
+    static func == (lhs: ReportType, rhs: ReportType) -> Bool {
+        lhs.description == rhs.description
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.description)
     }
 }

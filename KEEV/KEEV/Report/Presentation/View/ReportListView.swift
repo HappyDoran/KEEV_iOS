@@ -25,7 +25,7 @@ struct ReportListView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text(reportType.rawValue)
+            Text("\(reportType)")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
                 .foregroundStyle(.gray500)
                 .padding(.bottom, 12)
@@ -66,5 +66,5 @@ extension ReportListView {
 }
 
 #Preview {
-    ReportListView(reportType: .event, selectedCase: .constant(""))
+    ReportListView(reportType: .event(eventID: "dee"), selectedCase: .constant(""))
 }

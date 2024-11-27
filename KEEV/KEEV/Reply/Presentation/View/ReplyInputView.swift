@@ -19,8 +19,10 @@ struct ReplyInputView: View {
     var body: some View {
         HStack {
             TextField(
-                "댓글을 입력해주세요.",
-                text: $replyText
+                "",
+                text: $replyText,
+                prompt: Text("댓글을 입력해주세요")
+                    .foregroundStyle(.gray700)
             )
             .figmaFont(
                 PretendardFont.body(
@@ -39,8 +41,8 @@ struct ReplyInputView: View {
         .background(
             RoundedRectangle(cornerRadius: 9999)
                 .foregroundStyle(.grayBG700)
+                .frame(height: 46)
         )
-        
     }
 }
 
@@ -65,7 +67,7 @@ private extension ReplyInputView {
 }
 
 #Preview {
-    ReplyInputView(replyText: .constant("jjjj")) { _ in
+    ReplyInputView(replyText: .constant("")) { _ in
         
     }
 }

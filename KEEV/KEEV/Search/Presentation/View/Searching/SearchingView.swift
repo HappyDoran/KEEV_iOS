@@ -35,11 +35,14 @@ extension SearchingView {
     private var searching: some View {
         ScrollView {
             ForEach(events) { event in
-                SearchCell(event: event){
-                    selectedEvent = event
-                    dismiss()
-                    onClick()
-                }
+                SearchCell(text: event.name)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .onTapGesture {
+                        selectedEvent = event
+                        dismiss()
+                        onClick()
+                    }
             }
         }.padding(.top, 12)
     }

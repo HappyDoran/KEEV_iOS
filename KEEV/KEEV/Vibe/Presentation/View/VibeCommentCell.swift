@@ -67,7 +67,7 @@ extension VibeCommentCell {
             .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
             .background {
                 RoundedRectangle(cornerRadius: 12)
-                    .foregroundColor(.gray800)
+                    .foregroundColor(.grayBG700)
             }
     }
 }

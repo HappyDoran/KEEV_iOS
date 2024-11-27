@@ -22,8 +22,8 @@ struct EntryView: View {
         let appearance = UITabBarAppearance()
         
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = UIColor(.gray950)
-        appearance.shadowColor = UIColor(.gray500)
+        appearance.backgroundColor = UIColor(.grayBG950)
+        appearance.shadowColor = UIColor(.grayBG500)
         
         UITabBar.appearance().standardAppearance = appearance
         UITabBar.appearance().scrollEdgeAppearance = appearance

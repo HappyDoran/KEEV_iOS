@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 
-
 /// AccountService를 구현하기 위한 프로토콜
 ///
 /// AccountService를 구현하기 위한 프로토콜입니다.
@@ -168,4 +167,3 @@ extension AccountServiceError: LocalizedError {
         case .unknownError(_): return "알 수 없는 에러가 발생했습니다."
         }
     }
-}

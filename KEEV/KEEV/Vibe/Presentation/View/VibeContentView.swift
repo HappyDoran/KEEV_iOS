@@ -13,9 +13,10 @@ struct VibeContentView: View {
     @State private var imageIndexTag: Int = 0
     
     var body: some View {
-        Group {
+        VStack(spacing: 24) {
             vibeContent
             heartAndCommentCount
+                .padding(.vertical, 12)
         }
     }
 }
@@ -48,7 +49,9 @@ private extension VibeContentView {
                     )
                 )
             Spacer()
-            Text("\(vibe.rating)") // 머지하면 별점으로 수정될 예정
+            
+            RatingView(rating: vibe.rating, image: Image(.star))
+                .frame(width: 80, height: 16)
         }
         .padding(.horizontal, 4)
     }
@@ -88,6 +91,7 @@ private extension VibeContentView {
             countLabel(for: .reply, count: vibe.replyCount)
             Spacer()
         }
+        
     }
 }
 
@@ -153,7 +157,7 @@ private extension VibeContentView {
         
         var image: Image {
             switch self {
-            case .reply: Image(.comment)
+            case .reply: Image(.reply)
             }
         }
     }

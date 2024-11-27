@@ -26,6 +26,18 @@ extension View {
         modifier(FigmaFontModifier(figmaFont))
     }
     
+    /// 피그마의 배경색으로 바꾸기 위한 modifier
+    ///
+    /// 우선 기본적으로 라이트모드가 지원되지 않기 때문에,
+    ///
+    /// 배경색은 `gray950`으로 통일되어 있습니다.
+    ///
+    /// - Important: `ZStack`으로 내부가 구현되어 있어서, 뷰의 `modifier`들의 가장 마지막에 호출하는 것을 권장드립니다.
+    /// - Author: newJunsung
+    func backgroundForKEEV() -> some View {
+        modifier(KEEVBackgroundModifier())
+    }
+    
     /// 커스텀 경고창을 표시하는 ViewModifier를 적용하는 함수
     ///
     /// - Parameters:
@@ -192,4 +204,30 @@ extension View {
             Toast.Modifier(toast: toast, duration: duration)
         )
     }
+    
+    /// 이벤트에 대한 바이브를 보는 뷰에서 액션 시트를 표시하는 ViewModifier를 적용하는 함수
+    ///
+    /// - Parameters:
+    ///   - isPresented: 액션 시트의 표시 여부를 제어하는 바인딩 변수
+    ///   - selectedAction: 액션 시트에서 사용되는 타입
+    ///
+    /// 전역함수를 인자로 넘기는 것에 대한 예시입니다,
+    ///
+    /// ```swift
+    /// VStack {
+    ///     Button("hihi") {
+    ///         isPresented = true
+    ///     }
+    /// }
+    /// .actionSheetForEventVibe(isPresented: $isPresented)
+    /// ```
+    ///
+    /// - Returns: 최신순, 좋아요순 버튼이 있는 ActionSheet 뷰
+    ///
+    /// - Author: Doran
+    func actionSheetForEventVibe(isPresented: Binding<Bool>, selectedAction: Binding<EventVibeActionSheet.ActionType?>) -> some View {
+            modifier(
+                EventVibeActionSheet.Modifier(isPresented: isPresented, selectedAction: selectedAction)
+            )
+        }
 }

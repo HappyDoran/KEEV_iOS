@@ -35,20 +35,38 @@ struct KEEVActionSheet: View {
         VStack(spacing: 16) {
             VStack(spacing: 0) {
                 ForEach(Array(configurations.enumerated()), id: \.element.id) { index, configuration in
-                    if index == 0 && index == configurations.count - 1 {
-                        SelectionButton(configuration: configuration, isFirst: true, isLast: true)
-                    } else if index == 0 {
-                        SelectionButton(configuration: configuration, isFirst: true, isLast: false)
-                    } else if index == configurations.count - 1 {
-                        SelectionButton(configuration: configuration, isFirst: false, isLast: true)
-                    } else {
-                        SelectionButton(configuration: configuration, isFirst: false, isLast: false)
-                    }
+                    selectionButton(index: index, configuration: configuration)
                 }
             }
             
             CloseButton(isPresented: $isPresented)
         }
+    }
+    
+    private func selectionButton(index: Int, configuration: any KEEVButtonConfiguration) -> SelectionButton {
+        let isFirst: Bool
+        let isLast: Bool
+        
+        if index == 0 && index == configurations.count - 1 {
+            isFirst = true
+            isLast = true
+        } else if index == 0 {
+            isFirst = true
+            isLast = false
+        } else if index == configurations.count - 1 {
+            isFirst = false
+            isLast = true
+        } else {
+            isFirst = false
+            isLast = false
+        }
+        
+        return SelectionButton(
+            isPresented: $isPresented,
+            configuration: configuration,
+            isFirst: isFirst,
+            isLast: isLast
+        )
     }
 }
 

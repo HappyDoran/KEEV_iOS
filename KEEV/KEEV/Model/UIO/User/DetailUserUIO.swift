@@ -62,5 +62,8 @@ extension DetailUserUIO {
     
     /// 프사와 배경화면이 둘 다 있는 더미 사용자
     static let dummy4 = DetailUserUIO(id: 5, nickname: "대상혁", profileImageURL: URL(string: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp"), backgroundImageURL: URL(string: "https://image.kmib.co.kr/online_image/2024/1103/2024110311070142113_1730599621_0020687410.jpg"), description: "화이팅!")
+    
+    /// 더미데이터 0~4까지 모은 배열
+    static let dummies = [dummy0, dummy1, dummy2, dummy3, dummy4]
 }
 

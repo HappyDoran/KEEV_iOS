@@ -53,7 +53,7 @@ private extension EventListCell {
     
     var content: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("\(event.dDay!)")
+            DDayBox(difference: event.dDay)
             name
             durationAndPlace
         }

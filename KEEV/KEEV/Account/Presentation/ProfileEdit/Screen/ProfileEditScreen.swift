@@ -77,7 +77,6 @@ struct ProfileEditScreen: View {
                 )
                 .padding(.top, 12)
                 .padding(.horizontal, 16)
-                .padding(.bottom, 42)
             }
             .ignoresSafeArea(.keyboard)
         }

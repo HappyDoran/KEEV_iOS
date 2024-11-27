@@ -50,6 +50,7 @@ struct URLCachedImage<Content: View>: View where Content: View {
     var body: some View {
         content(phase)
             .task(configureImage)
+            .id(url)
     }
     
     @Sendable

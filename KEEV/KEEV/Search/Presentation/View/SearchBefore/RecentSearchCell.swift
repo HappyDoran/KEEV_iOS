@@ -37,7 +37,7 @@ struct RecentSearchCell: View {
                 Spacer()
                 
                 Text(search.date.toString(format: "MM.dd"))
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                     .foregroundColor(.gray500)
             }
             

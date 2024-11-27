@@ -13,15 +13,19 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventDetailThumbnail: View {
-    private let selectedEvent: DetailEventUIO
+    private let posterURL: URL?
+    
+    init(posterURL: URL?) {
+        self.posterURL = posterURL
+    }
     
     init(selectedEvent: DetailEventUIO) {
-        self.selectedEvent = selectedEvent
+        self.posterURL = selectedEvent.posterURL
     }
     
     var body: some View {
         URLCachedImage(
-            url: selectedEvent.posterURL
+            url: posterURL
         ) { phase in
             if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
                 image
