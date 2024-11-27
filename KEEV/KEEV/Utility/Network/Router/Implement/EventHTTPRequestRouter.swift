@@ -7,13 +7,20 @@
 
 import SwiftUI
 
+///sort에 넣을 QueryItem를 위한 딕셔너리
 typealias SortParameter = (key: String, value: String)
 
+/// 이벤트 불러오기, 상세 이벤트 불러오기에 대한 Router들을 나열한 열거형
+///
+/// - Author: Doran
 enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
     case fetchDetailEvent(eventID: String)
 }
 
+/// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
+///
+/// - Author: Doran
 extension EventHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {

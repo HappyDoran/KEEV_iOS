@@ -11,11 +11,24 @@ import Observation
 /// EventService는 이벤트와 관련된 비즈니스 로직을 구현한 클래스
 ///
 /// - Author: Doran
-class EventService: TempEventServiceProtocol {
+class EventService: EventServiceProtocol {
     
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
+    /// 이벤트 목록을 가져오는 함수
+    ///
+    /// - Parameters:
+    ///   - page: 가져오고자하는 페이지의 번호
+    ///   - size: 한 페이지에 넣을 이벤트의 갯수
+    ///   - sort: 이벤트 정렬 기준
+    ///
+    /// 페이지네이션이 적용된 이벤트 목록을 가져오는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 페이지네이션이 적용된 이벤트 목록
+    ///
+    /// - Author: Doran
     func loadPaginatedEvents(page: Int, size: Int, sort: String = "createdDate:desc") async throws -> PaginatedResponse<SimpleEventUIO> {
         let sortParameters: [SortParameter] = sort.split(separator: ",").map {
             let components = $0.split(separator: ":").map(String.init)
@@ -47,6 +60,17 @@ class EventService: TempEventServiceProtocol {
         return paginatedResponse
     }
     
+    /// 이벤트 ID에 해당하는 이벤트 상세정보를 가져오는 함수
+    ///
+    /// - Parameters:
+    ///   - id: 이벤트 ID
+    ///
+    /// 인자로 받은 이벤트 ID에 해당하는 이벤트 상세정보를 가져오는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 이벤트 상세정보 UIO
+    ///
+    /// - Author: Doran
     func loadDetailEvent(id: String) async throws -> DetailEventUIO {
         let router = EventHTTPRequestRouter.fetchDetailEvent(eventID: id)
         

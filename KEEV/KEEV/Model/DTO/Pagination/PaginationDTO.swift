@@ -16,6 +16,11 @@ import  SwiftUI
 
 import Foundation
 
+/// Pagination이 적용된 데이터 구조체
+///
+/// json 디코딩을 해야하기 때문에 제네릭 타입도 Decodable 하고 struct 자체도 Decodable 합니다.
+///
+/// - Author: Doran
 struct PaginationDTO<T: Decodable>: Decodable {
     let totalElements: Int
     let currentPage: Int
