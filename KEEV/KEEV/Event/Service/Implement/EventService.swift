@@ -52,12 +52,6 @@ class EventService: EventServiceProtocol {
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
 
-        if let jsonString = String(data: data, encoding: .utf8) {
-            print("Response Data: \(jsonString)")
-        } else {
-            print("Failed to convert data to String")
-        }
-
         let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
 
         let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
@@ -88,12 +82,6 @@ class EventService: EventServiceProtocol {
         let router = EventHTTPRequestRouter.fetchDetailEvent(eventID: id)
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
-        
-        if let jsonString = String(data: data, encoding: .utf8) {
-            print("Response Data: \(jsonString)")
-        } else {
-            print("Failed to convert data to String")
-        }
         
         let detailEventDTO = try jsonDecoder.decode(DetailEventDTO.self, from: data)
         let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
