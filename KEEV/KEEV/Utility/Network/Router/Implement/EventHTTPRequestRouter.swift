@@ -11,26 +11,27 @@ typealias SortParameter = (key: String, value: String)
 
 enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
+    case fetchDetailEvent(eventID: String)
 }
 
 extension EventHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
-        case .fetchEvents:
+        case .fetchEvents, .fetchDetailEvent:
             return .get
         }
     }
     
     var headers: [String: String]? {
         switch self {
-        case .fetchEvents:
+        case .fetchEvents, .fetchDetailEvent:
             return nil
         }
     }
     
     var body: Data? {
         switch self {
-        case .fetchEvents:
+        case .fetchEvents, .fetchDetailEvent:
             return nil
         }
     }
@@ -45,6 +46,8 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchEvents:
             path.append(contentsOf: ["get", "sortBy"])
+        case .fetchDetailEvent(let eventID):
+            path.append(contentsOf: ["get", "\(eventID)"])
         }
         
         return path
@@ -65,6 +68,8 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             }
             
             return queryItems
+        case .fetchDetailEvent(eventID: let eventID):
+            return nil
         }
     }
 }

@@ -40,5 +40,5 @@ protocol TempEventServiceProtocol: AnyObject {
     /// - Returns: 이벤트 상세정보 UIO
     ///
     /// - Author: 라움
-//    func loadDetailEvent(id: String) async throws -> DetailEventUIO
+    func loadDetailEvent(id: String) async throws -> DetailEventUIO
 }
