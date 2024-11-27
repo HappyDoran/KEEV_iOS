@@ -26,7 +26,7 @@ struct EventDetailInfoView: View {
                 titleCell.padding(.top, 24)
                 infoCell(title: "날짜", content: "\(selectedEvent.startDate) ~ \(selectedEvent.endDate)")
                     .padding(.top, 12)
-                infoCell(title: "장소", content: "\(selectedEvent.placeName)")
+                infoCell(title: "장소", content: "\(selectedEvent.placesName)")
                     .padding(.top, 4)
                 if let reservationDate = selectedEvent.reservationStartDate {
                     infoCell(title: "예매", content: "\(reservationDate)")
