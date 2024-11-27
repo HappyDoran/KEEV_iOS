@@ -14,17 +14,26 @@ import SwiftUI
 /// - ToDo: 닫기 버튼을 탭할 시에 나오는 커스텀 알럿 수정 후 해당하는 코드 부분을 수정해야합니다.
 /// - Author: 라움
 struct ProfileEditScreen: View {
+    @Binding private var userProfile: DetailUserUIO
     @Binding private var profileEditedToast: Toast?
     
-    init(profileEditedToast: Binding<Toast?>) {
+    init(userProfile: Binding<DetailUserUIO>, profileEditedToast: Binding<Toast?>) {
+        self._userProfile = userProfile
         self._profileEditedToast = profileEditedToast
+        self.nickname = userProfile.wrappedValue.nickname
+        self.description = userProfile.wrappedValue.description ?? ""
     }
     
-    private var accountService = AccountService()
+    @Injected private var service: any AccountServiceProtocol
     
     @Environment(\.dismiss) private var dismiss
     
-    @State private var userProfile = UserProfile()
+    @State private var nickname: String
+    @State private var description:String
+    @State private var backgroundImage: UIImage?
+    @State private var profileImage: UIImage?
+    
+    
     @State private var showProfileImageActionSheet = false
     @State private var showProfileImageSelectSheet = false
     @State private var showBackgroundActionSheet = false
@@ -37,7 +46,7 @@ struct ProfileEditScreen: View {
     var body: some View {
         ZStack {
             ProfileEditBackgroundView(
-                backgroundImage: userProfile.backgroundImage,
+                backgroundImage: backgroundImage,
                 showBackgroundActionSheet: $showBackgroundActionSheet,
                 isFocused: $isFocused
             )
@@ -49,7 +58,9 @@ struct ProfileEditScreen: View {
                     .padding(.bottom, 36)
                 
                 ProfileEditCenterView(
-                    userProfile: $userProfile,
+                    nickname: $nickname,
+                    profileImage: $profileImage,
+                    description: $description,
                     showProfileImageActionSheet: $showProfileImageActionSheet,
                     disableButton: $disableButton,
                     isFocused: $isFocused
@@ -60,11 +71,7 @@ struct ProfileEditScreen: View {
                 
                 CommonButton(
                     title: "수정 완료",
-                    action: {
-                        accountService.setUserProfile(userProfile)
-                        profileEditedToast = Toast(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)
-                        dismiss()
-                    },
+                    action: sendModifiedProfile,
                     style: .maxWidth,
                     disabled: disableButton
                 )
@@ -74,8 +81,26 @@ struct ProfileEditScreen: View {
             }
             .ignoresSafeArea(.keyboard)
         }
-        .onAppear {
-            userProfile = accountService.userProfile
+        .task { // 추후에 Task가 병렬적으로 수행되도록 리팩토링이 필요함.
+            if let userProfileURL = userProfile.profileImageURL {
+                do {
+                    let (data, _) = try await URLSession.shared.data(from: userProfileURL)
+                    let image = UIImage(data: data)
+                    profileImage = image
+                } catch {
+                    profileImage = nil
+                }
+            }
+            
+            if let backgroundImageURL = userProfile.backgroundImageURL {
+                do {
+                    let (data, _) = try await URLSession.shared.data(from: backgroundImageURL)
+                    let image = UIImage(data: data)
+                    backgroundImage = image
+                } catch {
+                    backgroundImage = nil
+                }
+            }
         }
         .backgroundForKEEV()
         .actionSheetForKEEV(
@@ -85,11 +110,11 @@ struct ProfileEditScreen: View {
                     showProfileImageSelectSheet = true
                     showProfileImageActionSheet = false
                 }, deleteHandler: {
-                    userProfile.profileImage = nil
+                    profileImage = nil
                     showProfileImageActionSheet = false
                 }))
         .fullScreenCover(isPresented: $showProfileImageSelectSheet) {
-            ImageSelectView(image: $userProfile.profileImage)
+            ImageSelectView(image: $profileImage)
         }
         .actionSheetForKEEV(
             isPresented: $showBackgroundActionSheet,
@@ -98,11 +123,11 @@ struct ProfileEditScreen: View {
                     showBackgroundImageSelectSheet = true
                     showBackgroundActionSheet = false
                 }, deleteHandler: {
-                    userProfile.backgroundImage = nil
+                    backgroundImage = nil
                     showBackgroundActionSheet = false
                 }))
         .fullScreenCover(isPresented: $showBackgroundImageSelectSheet) {
-            ImageSelectView(image: $userProfile.backgroundImage)
+            ImageSelectView(image: $backgroundImage)
         }
         .customAlert(
             isPresented: $showCloseAlert,
@@ -114,15 +139,30 @@ struct ProfileEditScreen: View {
             },
             secondButtonText: "예",
             secondButtonStyle: .active,
-            secondButtonAction: {
-                accountService.setUserProfile(userProfile)
-                profileEditedToast = Toast(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)
-                dismiss()
-            }
+            secondButtonAction: sendModifiedProfile
         )
     }
 }
 
+private extension ProfileEditScreen {
+    func sendModifiedProfile() {
+        Task {
+            do {
+                userProfile = try await service.updateProfile(
+                    nickname: nickname,
+                    profileImage: profileImage,
+                    backgroundImage: backgroundImage,
+                    description: description
+                )
+                profileEditedToast = Toast(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)
+                dismiss()
+            } catch {
+                print("ProfileEditScreen-sendModifiedProfile: \(error)")
+            }
+        }
+    }
+}
+
 #Preview {
-    ProfileEditScreen(profileEditedToast: .constant(.init(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)))
+    ProfileEditScreen(userProfile: .constant(.dummy4), profileEditedToast: .constant(.init(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)))
 }
