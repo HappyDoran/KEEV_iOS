@@ -17,7 +17,7 @@ struct EventVibeView: View {
     
     @Injected private var vibeService: any TempVibeServiceProtocol
     @State private var vibes: [VibeUIO] = []
-    @State private var currentPage = 1
+    @State private var currentPage = 0
     private let pageSize = 5
     
     init (eventID: String) {
@@ -62,6 +62,7 @@ struct EventVibeView: View {
                             do {
                                 // 서비스가 이벤트의 바이브를 찾는 로직
                                 vibes = try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: "startDate").contents
+                                currentPage += 1
                             } catch {
                                 print(error)
                             }
