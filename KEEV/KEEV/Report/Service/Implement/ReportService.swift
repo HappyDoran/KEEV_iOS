@@ -20,12 +20,12 @@ class ReportService: ReportServiceProtocol {
         let message: String
     }
     
-    func sendCommentReport(vibeId: Int, commentId: String, reason: String) async throws -> String {
+    func sendCommentReport(vibeID: Int, commentID: String, reason: String) async throws -> String {
         let accessToken = try getAccessToken()
         let router = ReportHTTPRequestRouter.commentReport(
             token: accessToken,
-            vibeId: vibeId,
-            commentId: commentId,
+            vibeID: vibeID,
+            commentID: commentID,
             reason: reason
         )
         
@@ -35,12 +35,12 @@ class ReportService: ReportServiceProtocol {
         return response.message
     }
     
-    func sendVibeReport(eventId: String, vibeId: Int, reason: String) async throws -> String {
+    func sendVibeReport(eventID: String, vibeID: Int, reason: String) async throws -> String {
         let accessToken = try getAccessToken()
         let router = ReportHTTPRequestRouter.vibeReport(
             token: accessToken,
-            eventId: eventId,
-            vibeId: vibeId,
+            eventID: eventID,
+            vibeID: vibeID,
             reason: reason
         )
         
@@ -50,11 +50,11 @@ class ReportService: ReportServiceProtocol {
         return response.message
     }
     
-    func sendUserReport(userId: Int, reason: String) async throws -> String {
+    func sendUserReport(userID: Int, reason: String) async throws -> String {
         let accessToken = try getAccessToken()
         let router = ReportHTTPRequestRouter.userReport(
             token: accessToken,
-            userId: userId,
+            userID: userID,
             reason: reason
         )
         
@@ -64,11 +64,11 @@ class ReportService: ReportServiceProtocol {
         return response.message
     }
     
-    func sendEventReport(eventId: String, reason: String) async throws -> String {
+    func sendEventReport(eventID: String, reason: String) async throws -> String {
         let accessToken = try getAccessToken()
         let router = ReportHTTPRequestRouter.eventReport(
             token: accessToken,
-            eventId: eventId,
+            eventID: eventID,
             reason: reason
         )
         

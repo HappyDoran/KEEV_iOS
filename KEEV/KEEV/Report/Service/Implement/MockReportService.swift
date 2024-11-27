@@ -16,8 +16,8 @@ class MockReportService: ReportServiceProtocol {
     /// 댓글 신고하기 함수
     ///
     /// - Parameters:
-    ///   - vibeId: 바이브 ID
-    ///   - commentId: 댓글 ID
+    ///   - vibeID: 바이브 ID
+    ///   - commentID: 댓글 ID
     ///   - reason: 신고 사유
     ///
     /// 댓글 신고하기 함수입니다.
@@ -26,7 +26,7 @@ class MockReportService: ReportServiceProtocol {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendCommentReport(vibeId: Int, commentId: String, reason: String) async throws -> String {
+    func sendCommentReport(vibeID: Int, commentID: String, reason: String) async throws -> String {
         let response = "Comment report has been successfully submitted."
         return response
     }
@@ -34,8 +34,8 @@ class MockReportService: ReportServiceProtocol {
     /// 바이브 신고하기 함수
     ///
     /// - Parameters:
-    ///   - eventId: 이벤트 ID
-    ///   - vibeId: 바이브 ID
+    ///   - eventID: 이벤트 ID
+    ///   - vibeID: 바이브 ID
     ///   - reason: 신고 사유
     ///
     /// 바이브 신고하기 함수입니다.
@@ -44,7 +44,7 @@ class MockReportService: ReportServiceProtocol {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendVibeReport(eventId: String, vibeId: Int, reason: String) async throws -> String {
+    func sendVibeReport(eventID: String, vibeID: Int, reason: String) async throws -> String {
         let response = "Vibe report has been successfully submitted."
         return response
     }
@@ -52,7 +52,7 @@ class MockReportService: ReportServiceProtocol {
     /// 유저 신고하기 함수
     ///
     /// - Parameters:
-    ///   - userId: 유저 ID
+    ///   - userID: 유저 ID
     ///   - reason: 신고 사유
     ///
     /// 유저 신고하기 함수입니다.
@@ -61,7 +61,7 @@ class MockReportService: ReportServiceProtocol {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendUserReport(userId: Int, reason: String) async throws -> String {
+    func sendUserReport(userID: Int, reason: String) async throws -> String {
         let response = "User report has been successfully submitted."
         return response
     }
@@ -69,7 +69,7 @@ class MockReportService: ReportServiceProtocol {
     /// 이벤트 신고하기 함수
     ///
     /// - Parameters:
-    ///   - eventId: 이벤트 ID
+    ///   - eventID: 이벤트 ID
     ///   - reason: 신고 사유
     ///
     /// 이벤트 신고하기 함수입니다.
@@ -78,7 +78,7 @@ class MockReportService: ReportServiceProtocol {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendEventReport(eventId: String, reason: String) async throws -> String {
+    func sendEventReport(eventID: String, reason: String) async throws -> String {
         let response = "Event report has been successfully submitted."
         return response
     }

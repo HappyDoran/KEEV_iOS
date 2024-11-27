@@ -13,45 +13,45 @@ import SwiftUI
 ///
 /// - Author: 라움
 enum ReportHTTPRequestRouter {
-    case commentReport(token: String, vibeId: Int, commentId: String, reason: String)
-    case vibeReport(token: String, eventId: String, vibeId: Int, reason: String)
-    case userReport(token: String, userId: Int, reason: String)
-    case eventReport(token: String, eventId: String, reason: String)
+    case commentReport(token: String, vibeID: Int, commentID: String, reason: String)
+    case vibeReport(token: String, eventID: String, vibeID: Int, reason: String)
+    case userReport(token: String, userID: Int, reason: String)
+    case eventReport(token: String, eventID: String, reason: String)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
 ///
 /// - Author: 라움
 extension ReportHTTPRequestRouter: HTTPRequestable {
-    var scheme: String { "https" }
-    var host: String { AppEnvironment.keevBaseURL }
-    var port: Int? { nil }
+    var baseURL: any URLBaseComposable {
+        AppEnvironment.keevBaseURL
+    }
     
     var body: Data? {
         switch self {
-        case .commentReport(_, let vibeId, let commentId, let reason):
+        case .commentReport(_, let vibeID, let commentID, let reason):
             let json: [String: Any] = [
-                "vibeId": vibeId,
-                "commentId": commentId,
+                "vibeId": vibeID,
+                "commentId": commentID,
                 "reason": reason
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .vibeReport(_, let eventId, let vibeId, let reason):
+        case .vibeReport(_, let eventID, let vibeID, let reason):
             let json: [String: Any] = [
-                "eventId": eventId,
-                "vibeId": vibeId,
+                "eventId": eventID,
+                "vibeId": vibeID,
                 "reason": reason
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .userReport(_, let userId, let reason):
+        case .userReport(_, let userID, let reason):
             let json: [String: Any] = [
-                "userId": userId,
+                "userId": userID,
                 "reason": reason
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .eventReport(_, let eventId, let reason):
+        case .eventReport(_, let eventID, let reason):
             let json: [String: Any] = [
-                "eventId": eventId,
+                "eventId": eventID,
                 "reason": reason
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
@@ -86,4 +86,6 @@ extension ReportHTTPRequestRouter: HTTPRequestable {
         
         return path
     }
+    
+    var queryItems: [URLQueryItem]? { nil }
 }
