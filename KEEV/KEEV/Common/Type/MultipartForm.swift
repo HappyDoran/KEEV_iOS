@@ -59,7 +59,7 @@ import Foundation
 /// - Note: `build()`의 경우, 저장했던 Form들의 개수에 따라 시간이 더 걸릴 수 있습니다. 시간복잡도는 O(`n`)입니다.
 /// - Warning: `build()`는 빌드 시, `String`을 `data`함수를 통해 강제 언래핑해서 넣습니다. 이 과정에서 이모지 등을 데이터로 만드는 과정에서 충돌이 날 수도 있습니다.
 /// - Author: newJunsung
-struct MultipartFormBuilder {
+struct MultipartFormBuilder: Sendable {
     private typealias Form = (String, String?, Content)
     
     /// 빌드 시에 사용되는 바운더리 값
@@ -74,30 +74,75 @@ struct MultipartFormBuilder {
         self.boundary = "----\(UUID().uuidString)"
     }
     
+    /// form-data로 만들 데이터를 넣습니다.
     ///
+    /// 여기에 들어가는 `name`과 `fileName`은 Content-Deposition을 구성하게 됩니다.
+    ///
+    /// `fileName`의 경우 옵셔널이며, `nil`일 경우와 아닐 경우 구성되는 Deposition이 다릅니다.
+    ///
+    /// - `nil`일 경우:
+    /// ```text
+    /// "Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n"
+    /// ```
+    /// - `nil`이 아닐 경우:
+    /// ```text
+    /// "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\n\r\n"
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - name: 이름입니다.
+    ///   - fileName: 같은 `name`을 쓰는 등의 이유로 구분을 해야할 때 쓰이는 `fileName`입니다.
+    ///   - content: `.json`, `.png`, `.jpeg` 형식이 들어갈 수 있습니다. 각 타입들 모두 `Data`를 넣어야 합니다.
+    ///
+    /// - Author: newJunsung
     mutating func append(name: String, fileName: String? = nil, content: Content) {
         forms.append((name, fileName, content))
     }
     
-    mutating func remove(at index: Int) -> (String, String?, Content)? {
+    /// 삭제하고자 하는 요소의 인덱스의 요소를 삭제합니다.
+    ///
+    /// - Parameters:
+    ///   - index: 삭제하고자 하는 요소의 인덱스
+    ///
+    /// - Returns: 삭제하고자하는 인덱스의 요소를 리턴받습니다.
+    /// - Author: newJunsung
+    mutating func remove(at index: Int) -> (String, String?, Content) {
         forms.remove(at: index)
     }
     
-    /// 파일이름에 해당하는 배열을 삭제합니다. 중복되는 파일명이 있다면
+    /// `fileName`에 해당하는 첫 번째 요소를 지우는 함수
+    ///
+    /// - Parameters:
+    ///   - fileName: 지우고자 하는 요소의 파일명
+    ///   - isFirst: 앞에서부터 지우고자하는 요소를 찾을지 결정하는 요소. `true`면 앞에서부터, `false`면 뒤에서부터 찾습니다.
+    ///
+    /// - Returns: 해당하는 `fileName`이 없을 경우, `nil`을 반환하며, 있을 경우 `name, fileName, Content`를 리턴합니다.
+    /// - Author: newJunsung
     mutating func remove(fileName: String, isFirst: Bool = true) -> (String, String?, Content)? {
-        guard let index = forms.firstIndex(where: {
-            $0.1 == fileName
-        }) else {
-            return nil
+        func findElement(_ form: Form) -> Bool {
+            form.1 == fileName
         }
         
+        let index: Int?
+        if isFirst {
+            index = forms.firstIndex(where: findElement)
+        } else {
+            index = forms.lastIndex(where: findElement)
+        }
+        
+        guard let index else { return nil }
         return forms.remove(at: index)
     }
     
+    /// 현재까지 작성한 Form들을 전부 지웁니다.
     mutating func removeAll() {
         forms.removeAll()
     }
     
+    /// 현재까지 기록된 Form을 바탕으로 data를 만들어주는 함수
+    ///
+    /// - Returns: (boundary, data)를 리턴합니다.
+    /// - Author: newJunsung
     func build() -> (String, Data)? {
         var data = Data()
         
