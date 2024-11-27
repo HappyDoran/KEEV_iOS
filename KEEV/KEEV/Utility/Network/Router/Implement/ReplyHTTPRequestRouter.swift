@@ -57,27 +57,6 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         }
     }
     
-    var baseURL: any URLBaseComposable {
-        AppEnvironment.keevBaseURL
-    }
-    
-    var path: [String]? {
-        var path = ["comment"]
-        
-        switch self {
-        case .fetchReplies(_, let vibeID):
-            path.append(contentsOf: ["get", "\(vibeID)"])
-        case .addReply:
-            path.append("register")
-        case .modifyReply:
-            path.append("edit")
-        case .deleteReply:
-            path.append("delete")
-        }
-        
-        return path
-    }
-    
     var body: Data? {
         switch self {
         case .fetchReplies:
@@ -102,6 +81,27 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
         }
+    }
+    
+    var baseURL: any URLBaseComposable {
+        AppEnvironment.keevBaseURL
+    }
+    
+    var path: [String]? {
+        var path = ["comment"]
+        
+        switch self {
+        case .fetchReplies(_, let vibeID):
+            path.append(contentsOf: ["get", "\(vibeID)"])
+        case .addReply:
+            path.append("register")
+        case .modifyReply:
+            path.append("edit")
+        case .deleteReply:
+            path.append("delete")
+        }
+        
+        return path
     }
     
     var queryItems: [URLQueryItem]? { nil }
