@@ -16,6 +16,12 @@ class ActivityService: ActivityServiceProtocol {
     private let networkUtility = NetworkUtility()
     private let jsonDecoder = JSONDecoder()
     
+    init() {
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy.MM.dd"
+        jsonDecoder.dateDecodingStrategy = .formatted(dateformatter)
+    }
+    
     func getUserInfo(userID: Int) async throws -> DetailUserUIO {
         let router = ActivityHTTPRequestRouter.userInfo(userID: userID)
         
