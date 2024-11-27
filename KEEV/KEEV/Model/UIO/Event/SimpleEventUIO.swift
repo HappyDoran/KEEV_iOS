@@ -53,7 +53,7 @@ struct SimpleEventUIO: Identifiable, Hashable {
         self.dDay = event.startDate.difference(from: .now)
         self.startDate = event.startDate.toString(format: dateFormat)
         self.endDate = event.endDate.toString(format: dateFormat)
-        self.placeName = event.placeName
+        self.placeName = event.placeNames.first ?? "알 수 없음"
     }
     
     init(detailEventDTO event: DetailEventDTO) {
@@ -65,7 +65,7 @@ struct SimpleEventUIO: Identifiable, Hashable {
         self.dDay = event.startDate.difference(from: .now)
         self.startDate = event.startDate.toString(format: dateFormat)
         self.endDate = event.endDate.toString(format: dateFormat)
-        self.placeName = event.place.name
+        self.placeName = event.places.map(\.name).first ?? "알 수 없음"
     }
 }
 
