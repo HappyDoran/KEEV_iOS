@@ -9,11 +9,12 @@ import Foundation
 
 class ReplyService: ReplyServiceProtocol {
     private let networkUtility = NetworkUtility()
-    private let jsonDecoder: JSONDecoder
+    private var currentUser: DetailUserUIO?
+    private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     /// 초기화 시 JSONDecoder를 주입받도록 변경
-    init(jsonDecoder: JSONDecoder = JSONDecoder()) {
-        self.jsonDecoder = jsonDecoder
+    init(currentUser: DetailUserUIO? = nil) {
+        self.currentUser = currentUser
     }
     
     /// 바이브에 대한 댓글을 가져오는 함수
@@ -29,14 +30,15 @@ class ReplyService: ReplyServiceProtocol {
     /// - Returns: 바이브에 대한 댓글들
     ///
     /// - Author: Doran
-    func fetchReplies(for vibeID: Int, userID: Int) async throws -> [ReplyUIO] {
+    func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         
         let replyDTOs = try jsonDecoder.decode([ReplyDTO].self, from: data)
-        let replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: userID)}
+        let currentUserID = currentUser?.id
+        let replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
         
         return replies
     }
@@ -55,14 +57,15 @@ class ReplyService: ReplyServiceProtocol {
     /// - Returns: 추가한 댓글
     ///
     /// - Author: Doran
-    func addReply(to vibeID: Int, text: String, userID: Int) async throws -> ReplyUIO {
+    func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.addReply(token: accessToken, vibeID: vibeID, text: text)
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         
         let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
-        let reply = ReplyUIO(reply: replyDTO, currentUserID: userID)
+        let currentUserID = currentUser?.id
+        let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
         
         return reply
     }
@@ -82,7 +85,7 @@ class ReplyService: ReplyServiceProtocol {
     /// - Returns: 수정 완료한 객체
     ///
     /// - Author: Doran
-    func modifyReply(_ reply: ReplyUIO, updatedReply: String, userID: Int) async throws -> ReplyUIO {
+    func modifyReply(_ reply: ReplyUIO, updatedReply: String) async throws -> ReplyUIO {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.modifyReply(
             token: accessToken,
@@ -94,7 +97,8 @@ class ReplyService: ReplyServiceProtocol {
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         
         let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
-        let reply = ReplyUIO(reply: replyDTO, currentUserID: userID)
+        let currentUserID = currentUser?.id
+        let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
         
         return reply
     }

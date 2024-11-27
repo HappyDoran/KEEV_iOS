@@ -65,7 +65,7 @@ struct ReplyUIO: Identifiable, Hashable {
         self.isMine = isMine
     }
     
-    init(reply: ReplyDTO, currentUserID: Int) {
+    init(reply: ReplyDTO, currentUserID: Int?) {
         id = reply.id
         userID = reply.userID
         userNickname = reply.userNickname
@@ -75,7 +75,7 @@ struct ReplyUIO: Identifiable, Hashable {
         isLiked = reply.isLiked
         likeCount = reply.likeCount
         createdDate = reply.createdDate
-        isMine = (reply.userID == currentUserID)
+        isMine = (currentUserID != nil && reply.userID == currentUserID)
     }
 }
 
