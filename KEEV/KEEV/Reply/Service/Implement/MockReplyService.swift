@@ -49,7 +49,7 @@ class MockReplyService: ReplyServiceProtocol {
         
         // 서버에 replyID, vibeID, text를 가지고 댓글을 수정
         
-        guard let index = replies.firstIndex(where: { $0.id == reply.id }) else {
+        guard replies.firstIndex(where: { $0.id == reply.id }) != nil else {
             throw ReplyServiceError.replyNotFound
         }
         
