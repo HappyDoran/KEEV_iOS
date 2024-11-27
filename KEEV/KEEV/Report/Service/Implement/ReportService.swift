@@ -11,10 +11,84 @@ import Foundation
 ///
 /// 신고하기 기능을 위한 ReportService입니다.
 ///
-/// - Todo: ReportServiceProtocol을 채택한 후 각 함수에 대한 기능들을 구현해야합니다.
 /// - Author: 라움
-class ReportService {
+class ReportService: ReportServiceProtocol {
+    private let networkUtility = NetworkUtility()
+    private let jsonDecoder = JSONDecoder()
+    private struct ReportResponse: Decodable {
+        let id: Int
+        let message: String
+    }
     
+    func sendCommentReport(vibeID: Int, commentID: String, reason: String) async throws -> String {
+        let accessToken = try getAccessToken()
+        let router = ReportHTTPRequestRouter.commentReport(
+            token: accessToken,
+            vibeID: vibeID,
+            commentID: commentID,
+            reason: reason
+        )
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let response = try jsonDecoder.decode(ReportResponse.self, from: data)
+        return response.message
+    }
+    
+    func sendVibeReport(eventID: String, vibeID: Int, reason: String) async throws -> String {
+        let accessToken = try getAccessToken()
+        let router = ReportHTTPRequestRouter.vibeReport(
+            token: accessToken,
+            eventID: eventID,
+            vibeID: vibeID,
+            reason: reason
+        )
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let response = try jsonDecoder.decode(ReportResponse.self, from: data)
+        return response.message
+    }
+    
+    func sendUserReport(userID: Int, reason: String) async throws -> String {
+        let accessToken = try getAccessToken()
+        let router = ReportHTTPRequestRouter.userReport(
+            token: accessToken,
+            userID: userID,
+            reason: reason
+        )
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let response = try jsonDecoder.decode(ReportResponse.self, from: data)
+        return response.message
+    }
+    
+    func sendEventReport(eventID: String, reason: String) async throws -> String {
+        let accessToken = try getAccessToken()
+        let router = ReportHTTPRequestRouter.eventReport(
+            token: accessToken,
+            eventID: eventID,
+            reason: reason
+        )
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let response = try jsonDecoder.decode(ReportResponse.self, from: data)
+        return response.message
+    }
+}
+
+extension ReportService {
+    private func getAccessToken() throws -> String {
+        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
+              let token = String(data: accessTokenData, encoding: .utf8) else {
+            print("accessToken not found")
+            throw TokenKeyChainError.NotFound
+        }
+        
+        return token
+    }
 }
 
 /// 신고 타입
