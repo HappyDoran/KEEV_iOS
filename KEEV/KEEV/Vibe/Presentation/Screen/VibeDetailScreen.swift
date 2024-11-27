@@ -209,8 +209,15 @@ private extension VibeDetailScreen {
             } deleteHandler: {
                 guard let selectedReply else { return }
                 // 댓글 삭제하는 api 호출
-                replies.remove(at: selectedReply.index) // 성공하면 삭제, 실패하면 에러 처리
-                showReplyActionSheet = nil
+                Task {
+                    do {
+                        try await replyService.deleteReply(reply.id, vibeID: reply.vibeID)
+                    } catch {
+                        print("Error deleting reply: \(error.localizedDescription)")
+                    }
+                }
+//                replies.remove(at: selectedReply.index) // 성공하면 삭제, 실패하면 에러 처리
+//                showReplyActionSheet = nil
             }
             
         } else {

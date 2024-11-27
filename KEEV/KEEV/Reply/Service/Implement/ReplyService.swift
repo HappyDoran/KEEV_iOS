@@ -25,7 +25,7 @@ class ReplyService: ReplyServiceProtocol {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.addReply(token: accessToken, vibeID: vibeID, text: text)
         
-        let (statusCode, data) = try await networkUtility.requestWithStatusCode(router: router)
+        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         
         let replyDTO = try JSONDecoder().decode(ReplyDTO.self, from: data)
         let reply = ReplyUIO(ReplyDTO: replyDTO)
@@ -44,19 +44,18 @@ class ReplyService: ReplyServiceProtocol {
         
         let (statusCode, data) = try await networkUtility.requestWithStatusCode(router: router)
         
-        print(statusCode, data)
-        
         let replyDTO = try JSONDecoder().decode(ReplyDTO.self, from: data)
         let reply = ReplyUIO(ReplyDTO: replyDTO)
         
         return reply
     }
     
-//    func deleteReply(_ replyID: Int) async throws {
-//        <#code#>
-//    }
-    
-    
+    func deleteReply(_ replyID: Int, vibeID: Int) async throws {
+        let accessToken = try getAccessToken()
+        let router = ReplyHTTPRequestRouter.deleteReply(token: accessToken, replyID: "\(replyID)", vibeID: "\(vibeID)")
+        
+        _ = try await networkUtility.request(router: router)
+    }
 }
 
 extension ReplyService {

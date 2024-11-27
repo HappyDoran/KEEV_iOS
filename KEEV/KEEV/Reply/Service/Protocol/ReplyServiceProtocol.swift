@@ -58,6 +58,6 @@ protocol ReplyServiceProtocol: ObservableObject {
     /// - Throws: 삭제할 댓글을 찾지 못할 경우 에러
     ///
     /// - Author: Doran
-//    func deleteReply(_ replyID: Int) async throws
+    func deleteReply(_ replyID: Int, vibeID: Int) async throws
 }
 
