@@ -51,6 +51,18 @@ struct EventInfoScreen: View {
         .onAppear {
             loadEventData()
         }
+        .task {
+            do {
+                let eventService = EventService()
+                let response = try await eventService.loadPaginatedEvents(page: 1, size: 10, sort: [(SortCase.createdDate, .descending), (SortCase.startDate, .ascending)])
+                print("Total Events: \(response.totalElements), Current Page: \(response.currentPage)")
+                for event in response.contents {
+                    print("Event Name: \(event.name), Start Date: \(event.startDate)")
+                }
+            } catch {
+                print("Error loading events: \(error)")
+            }
+        }
         .backgroundForKEEV()
     }
 }

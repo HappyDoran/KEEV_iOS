@@ -111,7 +111,7 @@ struct FilteredEventListScreen: View {
                             Task {
                                 do {
                                     // 서비스가 이벤트를 찾는 로직
-                                    events.append(contentsOf: try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: "startDate").contents)
+                                    events.append(contentsOf: try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending), (SortCase.startDate, .ascending)]).contents)
                                     currentPage += 1
                                 } catch {
                                     print(error)
@@ -129,7 +129,7 @@ struct FilteredEventListScreen: View {
             Task {
                 do {
                     // 서비스가 이벤트를 찾는 로직
-                    events = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: "startDate").contents
+                    events = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending), (SortCase.startDate, .ascending)]).contents
                     currentPage += 1
                 } catch {
                     print(error)
