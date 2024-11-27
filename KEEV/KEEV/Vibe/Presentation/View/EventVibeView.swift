@@ -14,38 +14,58 @@ import SwiftUI
 /// - Author: Doran
 struct EventVibeView: View {
     let eventID: String
-    @State private var vibes: [VibeUIO]? = nil
     
-    init(
-        eventID: String,
-        vibes: [VibeUIO]? = nil
-    ) {
+    @Injected private var vibeService: any TempVibeServiceProtocol
+    @State private var vibes: [VibeUIO] = []
+    @State private var currentPage = 1
+    private let pageSize = 5
+    
+    init (eventID: String) {
         self.eventID = eventID
-        self.vibes = vibes
     }
     
     var body: some View {
         ScrollView(showsIndicators: false) {
-            if let vibes {
-                VStack(spacing: 0){
-                    ForEach(0..<min(vibes.count, 5), id: \.self) { index in
+            if !vibes.isEmpty {
+                LazyVStack(spacing: 0) {
+                    ForEach(vibes.indices, id: \.self) { index in
                         NavigationLink {
                             VibeDetailScreen(vibe: vibes[index]) { vibe in
-                                self.vibes?[index] = vibe
+                                self.vibes[index] = vibe
                             } onDelete: { _ in
-                                self.vibes?.remove(at: index)
+                                self.vibes.remove(at: index)
                             }
-
                         } label: {
                             EventVibeCell(vibeData: vibes[index])
+                        }
+                        .onAppear {
+                            guard let index = vibes.firstIndex(where: { $0.id == vibes[index].id }) else { return }
+                            
+                            if index % pageSize == (pageSize - 1) {
+                                Task {
+                                    do {
+                                        // 서비스가 이벤트의 바이브를 찾는 로직
+                                        vibes.append(contentsOf: try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: "startDate").contents)
+                                        currentPage += 1
+                                    } catch {
+                                        print(error)
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             } else {
                 ProgressView()
                     .onAppear {
-                        // 서비스가 이벤트의 바이브를 찾는 로직
-                        vibes = VibeUIO.dummies
+                        Task {
+                            do {
+                                // 서비스가 이벤트의 바이브를 찾는 로직
+                                vibes = try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: "startDate").contents
+                            } catch {
+                                print(error)
+                            }
+                        }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
