@@ -75,38 +75,49 @@ import SwiftUI
 /// - ToDo: EventService 객체 넣기, duration에 기간 Date를 지정하는 프로퍼티 생성, NavigationLink에 Destination 설정
 /// - Author: newJunsung
 struct FilteredEventListScreen: View {
+    @Injected private var eventService: any TempEventServiceProtocol
+    
     private let duration: Duration?
     private let eventGenre: GenreDTO?
     private let eventType: EventTypeDTO
     
-    @State private var currentPage: Int
-    private let maxPage: Int
-    @State var events: [SimpleEventUIO]
-    
     init(
         duration: Duration,
         eventGenre: GenreDTO?,
-        eventType: EventTypeDTO,
-        currentPage: Int,
-        maxPage: Int,
-        events: [SimpleEventUIO] = []
+        eventType: EventTypeDTO
     ) {
         self.duration = duration
         self.eventGenre = eventGenre
         self.eventType = eventType
-        self.currentPage = currentPage > maxPage ? maxPage : currentPage
-        self.maxPage = maxPage
-        self.events = events
     }
+    
+    @State private var currentPage = 0
+    private let pageSize = 7
+    @State private var events: [SimpleEventUIO] = []
     
     var body: some View {
         ScrollView(.vertical) {
             LazyVStack(spacing: 0) {
-                ForEach(events) { event in
+                ForEach(events.indices, id: \.self) { index in
                     NavigationLink {
-                        Text(event.name)
+                        EventDetailScreen(simpleEvent: events[index])
                     } label: {
-                        EventListCell(event: event)
+                        EventListCell(event: events[index])
+                    }
+                    .onAppear {
+                        guard let index = events.firstIndex(where: { $0.id == events[index].id }) else { return }
+                        
+                        if index % pageSize == (pageSize - 1) {
+                            Task {
+                                do {
+                                    // 서비스가 이벤트를 찾는 로직
+                                    events.append(contentsOf: try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: "startDate").contents)
+                                    currentPage += 1
+                                } catch {
+                                    print(error)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -114,6 +125,17 @@ struct FilteredEventListScreen: View {
         }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            Task {
+                do {
+                    // 서비스가 이벤트를 찾는 로직
+                    events = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: "startDate").contents
+                    currentPage += 1
+                } catch {
+                    print(error)
+                }
+            }
+        }
     }
 }
 
@@ -160,10 +182,7 @@ extension FilteredEventListScreen.Duration: CustomStringConvertible {
         FilteredEventListScreen(
             duration: .thisWeek,
             eventGenre: .init(id: 1, name: "장르"),
-            eventType: .init(id: 1, name: "타입"),
-            currentPage: 0,
-            maxPage: 10,
-            events: SimpleEventUIO.dummies
+            eventType: .init(id: 1, name: "타입")
         )
     }
 }
