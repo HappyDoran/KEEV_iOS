@@ -13,16 +13,12 @@ final class MockAccountService: AccountServiceProtocol {
     private var email: String? = nil
     
     
-    func autoSignIn() async throws -> DetailUserUIO {
-        userInfo = .dummy4
-        email = "test@test.com"
-        return userInfo!
+    func autoSignIn() async throws -> SignInStatus {
+        .failed
     }
     
     func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
-        self.userInfo = .dummy4
-        email = "test@test.com"
-        return .ok(user: userInfo!)
+        return .created
     }
     
     func signUp(email: String, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String?) async throws -> DetailUserUIO {
