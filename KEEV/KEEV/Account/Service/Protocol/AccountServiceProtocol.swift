@@ -20,8 +20,8 @@ protocol AccountServiceProtocol: AnyObject {
     ///
     /// 토큰를 서버에 보내, 자동로그인을 시도합니다.
     ///
-    /// - Throws: Refresh token이 만료되었거나 서버와의 통신이 불안정할 경우 에러를 던집니다.
-    /// - Returns: Refresh token를 통하여 로그인에 성공하면 `DetailUserUIO`을 반환합니다.
+    /// - Throws: JWT가 만료되었거나 서버와의 통신이 불안정할 경우 에러를 던집니다.
+    /// - Returns: JWT를 통하여 로그인에 성공하면 `DetailUserUIO`을 반환합니다.
     /// - Author: newJunsung
     func autoSignIn() async throws -> DetailUserUIO
     
