@@ -147,13 +147,13 @@ struct MultipartFormBuilder: Sendable {
         var data = Data()
         
         for (name, fileName, content) in forms {
-            data.append("\(boundary)\r\n".data(using: .utf8)!)
+            data.append("--\(boundary)\r\n".data(using: .utf8)!)
             data.append(deposition(name: name, fileName: fileName))
             data.append("Content-Type: \(content)\r\n\r\n".data(using: .utf8)!)
             data.append(content.data)
             data.append("\r\n".data(using: .utf8)!)
         }
-        data.append("\(boundary)--\r\n".data(using: .utf8)!)
+        data.append("--\(boundary)--\r\n".data(using: .utf8)!)
         
         return (boundary, data)
     }
