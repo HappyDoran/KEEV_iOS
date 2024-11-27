@@ -14,7 +14,7 @@ class ReplyService: ReplyServiceProtocol {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
         
-        let (statusCode, data) = try await networkUtility.requestWithStatusCode(router: router)
+        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         
         let replyDTOs = try JSONDecoder().decode([ReplyDTO].self, from: data)
         let replies = replyDTOs.map { ReplyUIO(ReplyDTO: $0) }
@@ -43,7 +43,7 @@ class ReplyService: ReplyServiceProtocol {
             updatedReply: updatedReply
         )
         
-        let (statusCode, data) = try await networkUtility.requestWithStatusCode(router: router)
+        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         
         let replyDTO = try JSONDecoder().decode(ReplyDTO.self, from: data)
         let reply = ReplyUIO(ReplyDTO: replyDTO)
@@ -61,12 +61,12 @@ class ReplyService: ReplyServiceProtocol {
 
 extension ReplyService {
     private func getAccessToken() throws -> String {
-//        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
-//              let token = String(data: accessTokenData, encoding: .utf8) else {
-//            print("accessToken not found")
-//            throw TokenKeyChainError.NotFound
-//        }
+        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
+              let token = String(data: accessTokenData, encoding: .utf8) else {
+            print("accessToken not found")
+            throw TokenKeyChainError.NotFound
+        }
         
-        return "accessToken"
+        return token
     }
 }
