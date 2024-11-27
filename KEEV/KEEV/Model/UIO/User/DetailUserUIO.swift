@@ -38,7 +38,7 @@ struct DetailUserUIO: Identifiable {
         self.description = description
     }
     
-    init(detailuserDTO user: UserDTO) {
+    init(detailuserDTO user: DetailUserDTO) {
         id = user.id
         nickname = user.nickname
         profileImageURL = URL(string :user.profileImageURL ?? "")

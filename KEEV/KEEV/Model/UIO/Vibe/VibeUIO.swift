@@ -47,6 +47,25 @@ struct VibeUIO: Identifiable, Equatable {
     
     let isMine: Bool
     
+    init(vibeDTO vibe: VibeDTO, isMine: Bool) {
+        self.id = vibe.id
+        self.userID = vibe.user.id
+        self.userNickname = vibe.user.nickname
+        if let profileImageURL = vibe.user.profileImageURL {
+            self.userProfileImageURL = URL(string: profileImageURL)
+        } else {
+            self.userProfileImageURL = nil
+        }
+        self.event = SimpleEventUIO(simpleEventDTO: vibe.event)
+        self.rating = vibe.rating
+        self.imageURLs = vibe.imageURLs.map { $0.flatMap { URL(string: $0) } }
+        self.comment = vibe.comment
+        self.createdDate = vibe.createdDate.toString(format: "yyyy.MM.dd")
+        self.likeCount = vibe.likeCount
+        self.replyCount = vibe.replyCount
+        self.isMine = isMine
+    }
+    
     init(
         id: Int,
         user: SimpleUserUIO, // SimpleUserDTO로 나중에 바꿔야합니다.
