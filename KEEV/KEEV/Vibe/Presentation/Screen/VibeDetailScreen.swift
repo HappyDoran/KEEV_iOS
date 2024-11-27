@@ -70,6 +70,9 @@ struct VibeDetailScreen: View {
                 // replyservice에서 댓글을 다는 메소드를 호출, ReplyUIO 반환
                 // 반환이 되면 그걸 `replies`에 삽입.
                 // 에러 처리는 해줘야겠죠?
+                Task {
+                    try? await replyService.addReply(to: 23, text: replyText)
+                }
                 replyText = ""
             }
             .padding(.top, 16)
@@ -139,13 +142,17 @@ struct VibeDetailScreen: View {
         }
         .task {
             // ReplyService에서 댓글을 불러오는 함수를 호출하면 됨.
-            
-            replies = [
-                .dummy0,
-                .dummy1,
-                .dummy3,
-                .dummy2
-            ]
+            do {
+                replies = try await replyService.fetchReplies(for: vibe.id)
+            } catch {
+                print("Failed to fetch replies: \(error.localizedDescription)")
+            }
+//            replies = [
+//                .dummy0,
+//                .dummy1,
+//                .dummy3,
+//                .dummy2
+//            ]
         }
         .onChange(of: vibe) { _, newValue in
             onUpdate?(newValue)

@@ -36,7 +36,7 @@ protocol ReplyServiceProtocol: ObservableObject {
     /// - Returns: 추가한 댓글
     ///
     /// - Author: Doran
-//    func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO
+    func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO
     
     /// 바이브에 대한 댓글을 수정하는 함수
     ///

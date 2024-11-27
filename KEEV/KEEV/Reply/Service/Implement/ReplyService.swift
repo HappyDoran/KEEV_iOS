@@ -14,19 +14,25 @@ class ReplyService: ReplyServiceProtocol {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
         
-        let (statusCode, data) = try await networkUtility.requestWithStatusCode(router: router)
-        
+        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         let replyDTOs = try JSONDecoder().decode([ReplyDTO].self, from: data)
-
         let replies = replyDTOs.map { ReplyUIO(ReplyDTO: $0) }
         
         return replies
     }
     
-//    func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO {
-//        <#code#>
-//    }
-//    
+    func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO {
+        let accessToken = try getAccessToken()
+        let router = ReplyHTTPRequestRouter.addReply(token: accessToken, vibeID: vibeID, text: text)
+        
+        let (statusCode, data) = try await networkUtility.requestWithStatusCode(router: router)
+        
+        let replyDTO = try JSONDecoder().decode(ReplyDTO.self, from: data)
+        let reply = ReplyUIO(ReplyDTO: replyDTO)
+        
+        return reply
+    }
+    
 //    func modifyReply(_ reply: ReplyUIO, updatedReply: String) async throws -> ReplyUIO {
 //        <#code#>
 //    }
