@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 신고하기에 대한 Router들을 나열한 열거형
+///
+/// accessToken을 header에 실어서 request 합니다.
+///
+/// - Author: 라움
 enum ReportHTTPRequestRouter {
     case commentReport(token: String, vibeId: Int, commentId: String, reason: String)
     case vibeReport(token: String, eventId: String, vibeId: Int, reason: String)
@@ -14,6 +19,9 @@ enum ReportHTTPRequestRouter {
     case eventReport(token: String, eventId: String, reason: String)
 }
 
+/// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
+///
+/// - Author: 라움
 extension ReportHTTPRequestRouter: HTTPRequestable {
     var scheme: String { "https" }
     var host: String { AppEnvironment.keevBaseURL }
