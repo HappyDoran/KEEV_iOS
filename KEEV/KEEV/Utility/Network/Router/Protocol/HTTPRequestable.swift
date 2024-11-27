@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Note: URLBaseComposable 프로토콜을 상속하여 configureURL() function을 사용하여 URL을 만들 수 있습니다.
 /// - Author: Doran
-protocol HTTPRequestable: URLEndpointComposable {
+protocol HTTPRequestable: URLBaseComposable {
     var method: HTTPMethod { get }
     var headers: [String: String]? { get }
     var body: Data? { get }

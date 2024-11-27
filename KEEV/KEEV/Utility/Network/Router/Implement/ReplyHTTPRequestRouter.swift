@@ -25,6 +25,10 @@ enum ReplyHTTPRequestRouter {
 ///
 /// - Author: Doran
 extension ReplyHTTPRequestRouter: HTTPRequestable {
+    var scheme: String { "https" }
+    var host: String { AppEnvironment.keevBaseURL }
+    var port: Int? { nil }
+    
     var body: Data? {
         switch self {
         case .fetchReplies:
@@ -51,8 +55,6 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
             return try? JSONSerialization.data(withJSONObject: json, options: [])
         }
     }
-    
-    var scheme: String { "https" }
     
     var method: HTTPMethod {
         switch self {
@@ -86,8 +88,6 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         }
     }
     
-    var baseURL: any URLBaseComposable { AppEnvironment.keevBaseURL }
-    
     var path: [String]? {
         var path = ["comment"]
         
@@ -105,5 +105,4 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         return path
     }
     
-    var queryItems: [URLQueryItem]? { nil }
 }
