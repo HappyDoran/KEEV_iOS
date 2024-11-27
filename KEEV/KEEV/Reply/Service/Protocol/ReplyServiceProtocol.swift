@@ -48,7 +48,7 @@ protocol ReplyServiceProtocol: ObservableObject {
     /// - Returns: 수정 완료한 객체
     ///
     /// - Author: Doran
-//    func modifyReply(_ reply: ReplyUIO, updatedReply: String) async throws -> ReplyUIO
+    func modifyReply(_ reply: ReplyUIO, updatedReply: String) async throws -> ReplyUIO
     
     /// 바이브에 대한 댓글을 삭제하는 함수
     ///

@@ -119,7 +119,18 @@ struct VibeDetailScreen: View {
             modifyReplySheet = nil
         }, content: { replyToModify in
             let index = replyToModify.index
-            ModifyReplyView(reply: replies[index]) { _ in
+            ModifyReplyView(reply: replies[index]) { updatedReply in
+                Task {
+                    do {
+                        let modifiedReply = try await replyService.modifyReply(replies[index], updatedReply: updatedReply)
+                        replies[index] = modifiedReply
+                        
+                        print(replies[index])
+                        
+                    } catch {
+                        print("Failed to modify reply: \(error.localizedDescription)")
+                    }
+                }
                 // replyservice로 댓글 수정을 요청하고
                 // 리턴받은 UIO로 replies[index]를 갈아끼운다.
                 // 에러 처리는 선택이 아닌 필수.
@@ -147,12 +158,12 @@ struct VibeDetailScreen: View {
             } catch {
                 print("Failed to fetch replies: \(error.localizedDescription)")
             }
-//            replies = [
-//                .dummy0,
-//                .dummy1,
-//                .dummy3,
-//                .dummy2
-//            ]
+            replies = [
+                .dummy0,
+                .dummy1,
+                .dummy3,
+                .dummy2
+            ]
         }
         .onChange(of: vibe) { _, newValue in
             onUpdate?(newValue)
