@@ -8,6 +8,21 @@
 import SwiftUI
 import Observation
 
+enum SortPattern: String {
+    case ascending = "asc"
+    case descending = "desc"
+}
+
+enum SortCase: String {
+    case createdDate
+    case startDate
+    case interestCount
+
+    func sortCase(with order: SortPattern) -> (key: String, value: String) {
+        return (key: self.rawValue, value: order.rawValue)
+    }
+}
+
 /// EventService는 이벤트와 관련된 비즈니스 로직을 구현한 클래스
 ///
 /// - Author: Doran
@@ -29,36 +44,34 @@ class EventService: EventServiceProtocol {
     /// - Returns: 페이지네이션이 적용된 이벤트 목록
     ///
     /// - Author: Doran
-    func loadPaginatedEvents(page: Int, size: Int, sort: String = "createdDate:desc") async throws -> PaginatedResponse<SimpleEventUIO> {
-        let sortParameters: [SortParameter] = sort.split(separator: ",").map {
-            let components = $0.split(separator: ":").map(String.init)
-            return (key: components[0], value: components.count > 1 ? components[1] : "asc")
-        }
+    func loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<SimpleEventUIO> {
+        let sortCases: [SortCase] = sort.map { $0.0 }
+        let sortPatterns: [SortPattern] = sort.map { $0.1 }
         
-        let router = EventHTTPRequestRouter.fetchEvents(page: page, size: size, sort: sortParameters)
+        let router = EventHTTPRequestRouter.fetchEvents(page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
-        
-        
+
         if let jsonString = String(data: data, encoding: .utf8) {
             print("Response Data: \(jsonString)")
         } else {
             print("Failed to convert data to String")
         }
-        
+
         let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
-        
+
         let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
-        
+
         let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
             totalPages: paginatedResponseDTO.totalElements,
             currentPage: paginatedResponseDTO.currentPage,
             totalElements: paginatedResponseDTO.totalPages,
             contents: contents
         )
-        
+
         return paginatedResponse
     }
+
     
     /// 이벤트 ID에 해당하는 이벤트 상세정보를 가져오는 함수
     ///

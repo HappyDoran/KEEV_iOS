@@ -27,7 +27,7 @@ protocol EventServiceProtocol: AnyObject {
     /// - Returns: 페이지네이션이 적용된 이벤트 목록
     ///
     /// - Author: 라움
-    func loadPaginatedEvents(page: Int, size: Int, sort: String) async throws -> PaginatedResponse<SimpleEventUIO>
+    func loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<SimpleEventUIO>
     
     /// 이벤트 ID에 해당하는 이벤트 상세정보를 가져오는 함수
     ///
