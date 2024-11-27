@@ -33,7 +33,7 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
     /// 이벤트 포스터의 URL 문자열
     let posterURLString: String
     /// 이벤트가 열리는 장소
-    let placeName: String
+    let placeNames: [String]
 }
 
 extension SimpleEventDTO {
@@ -56,7 +56,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2024, month: 8, day: 23),
         endDate: .startOfDay(year: 2024, month: 8, day: 23),
         posterURLString: "https://pbs.twimg.com/media/GTAcW8NWQAA2bJM.jpg",
-        placeName: "고양종합운동장"
+        placeNames: ["고양종합운동장"]
     )
     
     /// 이벤트 이름이 긴 더미데이터
@@ -68,7 +68,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2024, month: 12, day: 25),
         endDate: .startOfDay(year: 2024, month: 12, day: 25),
         posterURLString: "https://ticketimage.interpark.com/Play/image/large/24/24016374_p.gif",
-        placeName: "더미 장소 이름 1"
+        placeNames: ["더미 장소 이름 1"]
     )
     
     /// 뉴준성이 갈 예정인 이벤트1
@@ -80,7 +80,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2025, month: 03, day: 22),
         endDate: .startOfDay(year: 2025, month: 03, day: 23),
         posterURLString: "https://ticketimage.interpark.com/Play/image/large/24/24014669_p.gif",
-        placeName: "더미 장소 이름 2"
+        placeNames: ["더미 장소 이름 2"]
     )
     
     /// 유효하지 않은 포스터 URL을 가진 더미 데이터1
@@ -92,7 +92,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2025, month: 04, day: 22),
         endDate: .startOfDay(year: 2025, month: 05, day: 22),
         posterURLString: "error",
-        placeName: "더미 장소 이름 3"
+        placeNames: ["더미 장소 이름 3"]
     )
     
     /// 유효하지 않은 포스터 URL을 가진 더미 데이터2
@@ -104,7 +104,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2024, month: 11, day: 06),
         endDate: .startOfDay(year: 2024, month: 11, day: 06),
         posterURLString: "error!!!",
-        placeName: "더미 장소 이름 4"
+        placeNames: ["더미 장소 이름 4"]
     )
     
     /// 이벤트 장소 이름이 긴 더미데이터
@@ -116,7 +116,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2025, month: 03, day: 22),
         endDate: .startOfDay(year: 2025, month: 03, day: 22),
         posterURLString: "https://static.wixstatic.com/media/8ef5ed_0e3b85bb21fa46e4b40449638dd172b1~mv2.jpg/v1/fill/w_1468,h_1566,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/8ef5ed_0e3b85bb21fa46e4b40449638dd172b1~mv2.jpg",
-        placeName: "이 더미 장소는 장소일까요? 장소가 아닐까요? 혹시 이 세계는 허울이고 우리는 통속의 뇌가 아닐까요?를 고민하는 포항공과대학교 C5 5층 메인랩"
+        placeNames: ["이 더미 장소는 장소일까요? 장소가 아닐까요? 혹시 이 세계는 허울이고 우리는 통속의 뇌가 아닐까요?를 고민하는 포항공과대학교 C5 5층 메인랩"]
     )
     
     /// 뉴준성이 갈 예정인 이벤트2
@@ -128,7 +128,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2024, month: 12, day: 14),
         endDate: .startOfDay(year: 2024, month: 12, day: 14),
         posterURLString: "https://image.toast.com/aaaaab/ticketlink/TKL_2/m(19).jpg",
-        placeName: "더미 장소 이름 6"
+        placeNames: ["더미 장소 이름 6"]
     )
     
     /// 숭배해야만 하는 이벤트2
@@ -140,7 +140,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2024, month: 11, day: 06),
         endDate: .startOfDay(year: 2024, month: 11, day: 20),
         posterURLString: "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news/479fbae8853c412fb419677462e33e389a80a837-1920x1080.jpg?auto=format&fit=fill&q=80&w=1920",
-        placeName: "소환사의 협곡"
+        placeNames: ["소환사의 협곡"]
     )
     
     static let dummy8 = SimpleEventDTO(
@@ -151,7 +151,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2024, month: 11, day: 7),
         endDate: .startOfDay(year: 2024, month: 11, day: 7),
         posterURLString: "https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202307/19/67261eae-92a5-4a3c-bc5e-fff981e33110.jpg",
-        placeName: "알리안츠 아레나"
+        placeNames: ["알리안츠 아레나"]
     )
     
     static let dummy9 = SimpleEventDTO(
@@ -162,7 +162,7 @@ extension SimpleEventDTO {
         startDate: .startOfDay(year: 2024, month: 11, day: 08),
         endDate: .startOfDay(year: 2024, month: 11, day: 08),
         posterURLString: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp",
-        placeName: "대상혁"
+        placeNames: ["대상혁"]
     )
     
     /// 더미데이터 0~9까지를 담은 배열
