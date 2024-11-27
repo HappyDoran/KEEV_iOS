@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-enum ReplyRouter {
+enum ReplyHTTPRequestRouter {
     case fetchReplies(token: String, vibeID: Int)
     case addReply(token: String, vibeID: Int, text: String)
     case modifyReply(token: String, reply: ReplyDTO, updatedReply: String)
     case deleteReply(token: String, reply: ReplyDTO)
 }
 
-extension ReplyRouter: HTTPRequestable {
+extension ReplyHTTPRequestRouter: HTTPRequestable {
     var body: Data? {
         switch self {
         case .fetchReplies:
