@@ -36,7 +36,7 @@ protocol ReplyServiceProtocol: ObservableObject {
     /// - Returns: 추가한 댓글
     ///
     /// - Author: Doran
-    func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO
+//    func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO
     
     /// 바이브에 대한 댓글을 수정하는 함수
     ///
@@ -48,7 +48,7 @@ protocol ReplyServiceProtocol: ObservableObject {
     /// - Returns: 수정 완료한 객체
     ///
     /// - Author: Doran
-    func modifyReply(_ reply: ReplyUIO, updatedReply: String) async throws -> ReplyUIO
+//    func modifyReply(_ reply: ReplyUIO, updatedReply: String) async throws -> ReplyUIO
     
     /// 바이브에 대한 댓글을 삭제하는 함수
     ///
@@ -58,6 +58,6 @@ protocol ReplyServiceProtocol: ObservableObject {
     /// - Throws: 삭제할 댓글을 찾지 못할 경우 에러
     ///
     /// - Author: Doran
-    func deleteReply(_ replyID: Int) async throws
+//    func deleteReply(_ replyID: Int) async throws
 }
 

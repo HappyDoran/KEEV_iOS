@@ -27,6 +27,8 @@ struct VibeDetailScreen: View {
     @State private var navigateToReport: ReportType? = nil
     @State private var navigateToUserProfile: Int? = nil
     
+    @StateObject private var replyService = ReplyService()
+    
     init(
         vibe: VibeUIO,
         onUpdate: ((VibeUIO) -> Void)? = nil,
@@ -59,6 +61,9 @@ struct VibeDetailScreen: View {
             .refreshable {
                 // vibeservice로부터 바이브 정보를 가져오면 됩니다.
                 // replyservice로부터 댓글을 가져오면 됩니다.
+                Task {
+                    try? await replyService.fetchReplies(for: 23)
+                }
             }
             
             ReplyInputView(replyText: $replyText) { _ in
@@ -134,6 +139,7 @@ struct VibeDetailScreen: View {
         }
         .task {
             // ReplyService에서 댓글을 불러오는 함수를 호출하면 됨.
+            
             replies = [
                 .dummy0,
                 .dummy1,

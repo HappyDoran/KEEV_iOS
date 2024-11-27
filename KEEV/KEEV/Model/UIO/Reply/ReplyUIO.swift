@@ -64,6 +64,19 @@ struct ReplyUIO: Identifiable, Hashable {
         self.createdDate = createdDate
         self.isMine = isMine
     }
+    
+    init(ReplyDTO reply: ReplyDTO) {
+        id = reply.id
+        userID = reply.userID
+        userNickname = reply.userNickname
+        userProfileImageURL = reply.userProfileImageURL
+        vibeID = reply.vibeID
+        text = reply.text
+        isLiked = reply.isLiked
+        likeCount = reply.likeCount
+        createdDate = reply.createdDate
+        isMine = false
+    }
 }
 
 extension ReplyUIO {

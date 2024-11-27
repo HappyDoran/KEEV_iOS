@@ -358,8 +358,6 @@
 		};
 		0DF5F1D22CBE82570031DEF0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReferenceAnchor = 0DF5F1B12CBE82560031DEF0 /* KEEV */;
-			baseConfigurationReferenceRelativePath = Resource/Config/Secret.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
