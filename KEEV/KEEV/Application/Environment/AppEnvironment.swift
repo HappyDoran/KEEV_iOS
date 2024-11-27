@@ -22,16 +22,8 @@ struct AppEnvironment {
     /// KOPIS_API_KEY에 대한 value는 Secret.xcconfig에 저장되어있습니다.
     static let kopisApiKey = Bundle.main.infoDictionary?["KOPIS_API_KEY"] as? String ?? ""
     
-    /// KOPIS baseURL입니다.
-    static let kopisBaseURL: URL = .init(string: "kopis.or.kr")!
-    
-    /// KEEV 백엔드 서버의 ip주소입니다.
-    static let serverIPAddress: String = {
-        guard let ipAddress = Bundle.main.infoDictionary?["SERVER_IP_ADDRESS"] as? String else {
-            fatalError("SERVER_IP_ADDRESS를 찾을 수 없습니다.")
-        }
-        return ipAddress
-    }()
+    /// 서버와 통신하는 keevBaseURL입니다.
+    static let keevBaseURL = Bundle.main.infoDictionary?["SERVER_IP_ADDRESS"] as? String ?? ""
     
     /// 앱에서 사용하는 유틸리티와 서비스의 인스턴스를 `DIContainer`에 등록합니다.
     ///
