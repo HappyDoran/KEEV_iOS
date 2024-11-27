@@ -67,7 +67,8 @@ struct DetailEventUIO: Identifiable {
         self.places = places
         self.description = description
         self.descriptionImageURLs = descriptionImageURLs
-        self.placesName = places.map(\.name).joined(separator: ", ")
+        let tempPlacesName = places.map(\.name).joined(separator: ", ")
+        self.placesName = tempPlacesName.isEmpty ? "공연 장소가 없어요" : tempPlacesName
     }
     
     init(
@@ -91,7 +92,8 @@ struct DetailEventUIO: Identifiable {
         self.places = places
         self.description = description
         self.descriptionImageURLs = descriptionImageURLStrings.map(URL.init)
-        self.placesName = places.map(\.name).joined(separator: ", ")
+        let tempPlacesName = places.map(\.name).joined(separator: ", ")
+        self.placesName = tempPlacesName.isEmpty ? "공연 장소가 없습니다." : tempPlacesName
     }
     
     init(detailEventDTO event: DetailEventDTO) {
@@ -105,7 +107,8 @@ struct DetailEventUIO: Identifiable {
         self.places = event.places
         self.description = event.description
         self.descriptionImageURLs = event.descriptionImagesURLStrings.map(URL.init)
-        self.placesName = event.places.map(\.name).joined(separator: ", ")
+        let tempPlacesName = event.places.map(\.name).joined(separator: ", ")
+        self.placesName = tempPlacesName.isEmpty ? "공연 장소가 없습니다." : tempPlacesName
     }
     
     init(simpleEventUIO event: SimpleEventUIO) {
