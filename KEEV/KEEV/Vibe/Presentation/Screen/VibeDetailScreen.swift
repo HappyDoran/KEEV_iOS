@@ -27,8 +27,6 @@ struct VibeDetailScreen: View {
     @State private var navigateToReport: ReportType? = nil
     @State private var navigateToUserProfile: Int? = nil
     
-    @StateObject private var replyService = ReplyService()
-    
     init(
         vibe: VibeUIO,
         onUpdate: ((VibeUIO) -> Void)? = nil,
@@ -61,18 +59,12 @@ struct VibeDetailScreen: View {
             .refreshable {
                 // vibeservice로부터 바이브 정보를 가져오면 됩니다.
                 // replyservice로부터 댓글을 가져오면 됩니다.
-                Task {
-                    try? await replyService.fetchReplies(for: 23)
-                }
             }
             
             ReplyInputView(replyText: $replyText) { _ in
                 // replyservice에서 댓글을 다는 메소드를 호출, ReplyUIO 반환
                 // 반환이 되면 그걸 `replies`에 삽입.
                 // 에러 처리는 해줘야겠죠?
-                Task {
-                    try? await replyService.addReply(to: 23, text: replyText)
-                }
                 replyText = ""
             }
             .padding(.top, 16)
@@ -119,18 +111,7 @@ struct VibeDetailScreen: View {
             modifyReplySheet = nil
         }, content: { replyToModify in
             let index = replyToModify.index
-            ModifyReplyView(reply: replies[index]) { updatedReply in
-                Task {
-                    do {
-                        let modifiedReply = try await replyService.modifyReply(replies[index], updatedReply: updatedReply)
-                        replies[index] = modifiedReply
-                        
-                        print(replies[index])
-                        
-                    } catch {
-                        print("Failed to modify reply: \(error.localizedDescription)")
-                    }
-                }
+            ModifyReplyView(reply: replies[index]) { _ in
                 // replyservice로 댓글 수정을 요청하고
                 // 리턴받은 UIO로 replies[index]를 갈아끼운다.
                 // 에러 처리는 선택이 아닌 필수.
@@ -153,11 +134,6 @@ struct VibeDetailScreen: View {
         }
         .task {
             // ReplyService에서 댓글을 불러오는 함수를 호출하면 됨.
-            do {
-                replies = try await replyService.fetchReplies(for: vibe.id)
-            } catch {
-                print("Failed to fetch replies: \(error.localizedDescription)")
-            }
             replies = [
                 .dummy0,
                 .dummy1,
@@ -209,15 +185,8 @@ private extension VibeDetailScreen {
             } deleteHandler: {
                 guard let selectedReply else { return }
                 // 댓글 삭제하는 api 호출
-                Task {
-                    do {
-                        try await replyService.deleteReply(reply.id, vibeID: reply.vibeID)
-                    } catch {
-                        print("Error deleting reply: \(error.localizedDescription)")
-                    }
-                }
-//                replies.remove(at: selectedReply.index) // 성공하면 삭제, 실패하면 에러 처리
-//                showReplyActionSheet = nil
+                replies.remove(at: selectedReply.index) // 성공하면 삭제, 실패하면 에러 처리
+                showReplyActionSheet = nil
             }
             
         } else {

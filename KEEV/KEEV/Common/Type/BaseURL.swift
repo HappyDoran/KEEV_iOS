@@ -9,4 +9,5 @@ struct BaseURL: URLBaseComposable {
     let scheme: String
     let host: String
     let port: Int?
+    var path: [String]?
 }

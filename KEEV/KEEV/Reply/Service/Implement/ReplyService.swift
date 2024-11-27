@@ -14,7 +14,8 @@ class ReplyService: ReplyServiceProtocol {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
         
-        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
+        let (statusCode, data) = try await networkUtility.requestWithStatusCode(router: router)
+        
         let replyDTOs = try JSONDecoder().decode([ReplyDTO].self, from: data)
         let replies = replyDTOs.map { ReplyUIO(ReplyDTO: $0) }
         
