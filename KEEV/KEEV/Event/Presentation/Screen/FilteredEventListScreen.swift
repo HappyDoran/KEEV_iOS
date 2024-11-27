@@ -75,7 +75,7 @@ import SwiftUI
 /// - ToDo: EventService 객체 넣기, duration에 기간 Date를 지정하는 프로퍼티 생성, NavigationLink에 Destination 설정
 /// - Author: newJunsung
 struct FilteredEventListScreen: View {
-    @Injected private var eventService: any TempEventServiceProtocol
+    @Injected private var eventService: any EventServiceProtocol
     
     private let duration: Duration?
     private let eventGenre: GenreDTO?
