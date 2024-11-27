@@ -4,13 +4,13 @@
 <dict>
 	<key>KOPIS_API_KEY</key>
 	<string>$(KOPIS_API_KEY)</string>
-	<key>SERVER_IP_ADDRESS</key>
-	<string>$(SERVER_IP_ADDRESS)</string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>SERVER_IP_ADDRESS</key>
+	<string>$(SERVER_IP_ADDRESS)</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Pretendard-Thin.otf</string>
