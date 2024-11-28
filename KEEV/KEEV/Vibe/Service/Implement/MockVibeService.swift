@@ -46,7 +46,7 @@ class MockVibeService: TempVibeServiceProtocol {
         }
     }
     
-    func uploadVibe(rating: Float, comment: String?, images: [UIImage]) async throws -> VibeUIO {
+    func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
         let newVibe = VibeUIO(
             id: vibeCount + 1,
             user: SimpleUserUIO(id: 123, nickname: "가래떡강아지", profileImageURL: nil),
@@ -71,7 +71,7 @@ class MockVibeService: TempVibeServiceProtocol {
     }
     
     func modifyVibe(vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [UIImage]) async throws -> VibeUIO {
-        var vibe = VibeUIO(
+        let vibe = VibeUIO(
             id: vibeID,
             user: SimpleUserUIO(id: 1, nickname: "가나다", profileImageURL: nil),
             event: SimpleEventUIO(id: "dummyID", name: "Dummy Title", posterURL: nil, dDay: 7, startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장"),
@@ -87,7 +87,7 @@ class MockVibeService: TempVibeServiceProtocol {
         return vibe
     }
     
-    func checkIfUserUploadedVibe(userID: Int) async throws -> Int {
+    func checkIfUserUploadedVibe(eventID: String, userID: Int) async throws -> Int {
         1
     }
     
