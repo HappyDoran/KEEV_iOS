@@ -45,7 +45,7 @@ struct AppEnvironment {
         
         // Service(서비스는 해당 구역에 작성해주시면 됩니다.)
         diContainer.register(MockAccountService(), for: (any AccountServiceProtocol).self)
-        diContainer.register(EventService(), for: (any EventServiceProtocol).self)
+        diContainer.register(MockEventService(), for: (any EventServiceProtocol).self)
         diContainer.register(SettingService(), for: (any SettingServiceProtocol).self)
         diContainer.register(MockReplyService(), for: (any ReplyServiceProtocol).self)
         diContainer.register(MockVibeService(), for: (any TempVibeServiceProtocol).self)
