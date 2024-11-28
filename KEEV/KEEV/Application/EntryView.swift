@@ -17,6 +17,7 @@ import SwiftUI
 struct EntryView: View {
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
+    @State private var signInStatus: SignInStatus? = nil
     
     init() {
         let appearance = UITabBarAppearance()
@@ -31,27 +32,19 @@ struct EntryView: View {
     
     var body: some View {
         NavigationStack {
-            TabView(selection: $selectedItem) {
-                EventInfoScreen()
-                    .tabItem {
-                        TabbedItem.label(for: .info)
-                    }
-                    .tag(TabbedItem.info.rawValue)
-                
-                Text("")
-                    .tabItem {
-                        TabbedItem.label(for: .write)
-                    }
-                    .tag(TabbedItem.write.rawValue)
-                
-                ProfileScreen()
-                    .tabItem {
-                        TabbedItem.label(for: .profile)
-                    }
-                    .tag(TabbedItem.profile.rawValue)
+            if let signInStatus {
+                switch signInStatus {
+                case .failed:
+                    SignInScreen(status: $signInStatus)
+                case .ok(_):
+                    signInSuccessView
+                case .created:
+                    SignUpScreen(status: $signInStatus)
+                }
+            } else {
+                LaunchScreen(status: $signInStatus)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .tint(.brand500)
-            .sensoryFeedback(.impact, trigger: selectedItem)
         }
         .tint(.gray100)
         .onChange(of: selectedItem) { oldValue, newValue in
@@ -62,6 +55,47 @@ struct EntryView: View {
         }
         .fullScreenCover(isPresented: $isPresented) {
             VibeCreateScreen()
+        }
+    }
+    
+    private var signInSuccessView: some View {
+        TabView(selection: $selectedItem) {
+            EventInfoScreen()
+                .tabItem {
+                    TabbedItem.label(for: .info)
+                }
+                .tag(TabbedItem.info.rawValue)
+            
+            Text("")
+                .tabItem {
+                    TabbedItem.label(for: .write)
+                }
+                .tag(TabbedItem.write.rawValue)
+            
+            ProfileScreen()
+                .tabItem {
+                    TabbedItem.label(for: .profile)
+                }
+                .tag(TabbedItem.profile.rawValue)
+        }
+        .tint(.brand500)
+        .sensoryFeedback(.impact, trigger: selectedItem)
+    }
+}
+
+private extension EntryView {
+    struct LaunchScreen: View {
+        @Injected private var service: any AccountServiceProtocol
+        @Binding var status: SignInStatus?
+        
+        var body: some View {
+            Image("LogoLargeImage")
+                .resizable()
+                .frame(width: 250, height: 103.5)
+                .task {
+                    try! await Task.sleep(nanoseconds: 10000)
+                    status = await service.autoSignIn()
+                }
         }
     }
 }

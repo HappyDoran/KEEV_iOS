@@ -21,6 +21,8 @@ enum SignUpPage: Int {
 struct SignUpScreen: View {
     @Injected private var accountService: any AccountServiceProtocol
     
+    @Binding var status: SignInStatus?
+    
     @State private var email: String = ""
     @State private var nickname: String = ""
     @State private var profileImage: UIImage?
@@ -89,12 +91,18 @@ extension SignUpScreen {
                 email: email,
                 currentPage: $currentPage
             ) {
-                // 로그인 뷰로 가거나 이벤트 인포뷰로 넘거가면 됩니다.
+                Task {
+                    do {
+                        status = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: nil)
+                    } catch {
+                        print(error)
+                    }
+                }
             }
         }
     }
 }
 
 #Preview {
-    SignUpScreen()
+    SignUpScreen(status: .constant(.created))
 }
