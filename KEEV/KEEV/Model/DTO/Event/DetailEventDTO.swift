@@ -7,6 +7,7 @@
 
 import Foundation
 
+
 /// 이벤트 상세 정보입니다.
 ///
 /// id, 이름, 이벤트 유형, 장르, 날짜 정보 등으로 구성되어 있습니다.
@@ -89,18 +90,24 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         self.artists = artists
     }
     
+    /// 디코딩 데이터에 대해서 날짜를 포매팅 해주고 초기값을 생성
+    ///
+    /// - Author: Doran
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let tempCreatedDate = try container.decode(String.self, forKey: .createdDate)
+        let tempStartDate = try container.decode(String.self, forKey: .startDate)
+        let tempEndDate = try container.decode(String.self, forKey: .endDate)
+        let tempStartTime = try container.decode(String.self, forKey: .startTime)
+        
         self.id = try container.decode(String.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.types = try container.decode([EventTypeDTO].self, forKey: .types)
         self.genres = try container.decode([GenreDTO].self, forKey: .genres)
-        let tempCreatedDate = try container.decode(String.self, forKey: .createdDate)
         self.createdDate = tempCreatedDate.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
         self.reservationStartDate = try container.decodeIfPresent(Date.self, forKey: .reservationStartDate)
-        self.startDate = try container.decode(Date.self, forKey: .startDate)
-        self.endDate = try container.decode(Date.self, forKey: .endDate)
-        let tempStartTime = try container.decode(String.self, forKey: .startTime)
+        self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now
+        self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.startTime = tempStartTime.toDate(format: "HH:mm:ss") ?? .now
         self.posterURLString = try container.decode(String.self, forKey: .posterURLString)
         self.description = try container.decodeIfPresent(String.self, forKey: .description)
@@ -158,9 +165,4 @@ extension DetailEventDTO {
         places: [.init(id: 2313, name: "고척 스카이돔", address: "서울특별시 구로구 경인로 430", contry: "대한민국", latitude: 37.498333, longitude: 126.866667)],
         artists: [.init(id: 19970614, name: "후지이 카제", profileImageURLString: "https://i.namu.wiki/i/9RIQJx-tv1hv1KhBK63FT6cYCP392Kotd9EBBHmmbA-TENCTFnoNeuAzsyvwa_h-38W3Sk-Dt6Jx9Be-XhHi55A2_yi8_UPnwiEjmzMCbAuN2KhZbp4YTaGAPFDDGwaeX7eTyrj7MaXFJkpu911Ck9tKtkNMp4Sq0HOzFBmMVC0.webp")]
     )
-}
-
-struct EventTypeDTO: Decodable, Hashable, Identifiable {
-    let id: Int
-    let name: String
 }

@@ -29,13 +29,7 @@ enum SortCase: String {
 class EventService: EventServiceProtocol {
     
     private let networkUtility: NetworkUtility = NetworkUtility()
-    private let jsonDecoder: JSONDecoder = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(formatter)
-        return decoder
-    }()
+    private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     /// 이벤트 목록을 가져오는 함수
     ///
@@ -89,24 +83,13 @@ class EventService: EventServiceProtocol {
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         
-        if let jsonString = String(data: data, encoding: .utf8) {
-            print("Response Data: \(jsonString)")
-        } else {
-            print("Failed to convert data to String")
-        }
-        
         let eventResponseDTO = try jsonDecoder.decode(EventResponseDTO.self, from: data)
         guard let detailEventDTO = eventResponseDTO.events.first else {
             throw NSError(domain: "EventError", code: 404, userInfo: [NSLocalizedDescriptionKey: "Event not found"])
         }
         
         let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
-//        let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
         
         return detailEventUIO
     }
-}
-
-struct EventResponseDTO: Decodable {
-    let events: [DetailEventDTO]
 }

@@ -37,14 +37,14 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
     
     
     private enum CodingKeys: String, CodingKey {
-        case id = "id"
-        case name = "name"
-        case createdDate = "createdDate"
-        case reservationStartDate = "reservationStartDate"
-        case startDate = "startDate"
-        case endDate = "endDate"
+        case id
+        case name
+        case createdDate
+        case reservationStartDate
+        case startDate
+        case endDate
         case posterURLString = "posterURL"
-        case placeNames = "placeNames"
+        case placeNames
     }
     
     init(id: String, name: String, createdDate: Date, reservationStartDate: Date?, startDate: Date, endDate: Date, posterURLString: String, placeNames: [String]) {
@@ -58,15 +58,21 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
         self.placeNames = placeNames
     }
     
+    /// 디코딩 데이터에 대해서 날짜를 포매팅 해주고 초기값을 생성
+    ///
+    /// - Author: Doran
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let tempString = try container.decode(String.self, forKey: .createdDate)
+        let tempStartDate = try container.decode(String.self, forKey: .startDate)
+        let tempEndDate = try container.decode(String.self, forKey: .endDate)
+        
         self.id = try container.decode(String.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
-        let tempString = try container.decode(String.self, forKey: .createdDate)
         self.createdDate = tempString.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
         self.reservationStartDate = try container.decodeIfPresent(Date.self, forKey: .reservationStartDate)
-        self.startDate = try container.decode(Date.self, forKey: .startDate)
-        self.endDate = try container.decode(Date.self, forKey: .endDate)
+        self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now
+        self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.posterURLString = try container.decode(String.self, forKey: .posterURLString)
         self.placeNames = try container.decode([String].self, forKey: .placeNames)
     }

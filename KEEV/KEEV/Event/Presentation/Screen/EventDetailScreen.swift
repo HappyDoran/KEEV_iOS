@@ -92,13 +92,6 @@ struct EventDetailScreen: View {
         .task {
             if isLoadDetailEvent {
                 // 이벤트 ID로 새로 이벤트 정보를 불러오면 됨.
-                do {
-                    let response = try await eventService.loadDetailEvent(id: selectedEvent.id)
-                    selectedEvent = response
-                } catch {
-                    print(error.localizedDescription)
-                    print("Error loading events: \(error)")
-                }
             }
             
             if let dDay = selectedEvent.dDay, dDay >= 0 {

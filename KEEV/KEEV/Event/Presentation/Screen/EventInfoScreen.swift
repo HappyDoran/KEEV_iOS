@@ -51,20 +51,6 @@ struct EventInfoScreen: View {
         .onAppear {
             loadEventData()
         }
-        .task {
-            do {
-                let response = try await eventService.loadPaginatedEvents(page: 1, size: 10, sort: [(SortCase.createdDate, .descending), (SortCase.createdDate, .ascending)])
-                print("Total Events: \(response.totalElements), Current Page: \(response.currentPage)")
-                for event in response.contents {
-                    print("Event Name: \(event.name), Start Date: \(event.startDate), EventID: \(event.id)")
-                }
-                
-                // 응답 처리
-            } catch {
-                print(error.localizedDescription)
-                
-            }
-        }
         .backgroundForKEEV()
     }
 }
