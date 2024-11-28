@@ -6,89 +6,132 @@
 //
 
 import Foundation
+import SwiftUI
 
-/// 바이브를 생성, 불러오기, 수정, 삭제할 수 있는 VibeService입니다.
+/// 바이브와 관련된 기능들을 수행하는 VibeService
 ///
-/// UserDefaultsUtility를 사용하여 바이브의 생성, 불러오기, 수정, 삭제를 수행할 수 있습니다.
+/// 바이브와 관련된 기능들을 수행하는 VibeService입니다.
 ///
-/// - Note: ObservableObject로 구현하였습니다.
 /// - Author: 라움
 class VibeService: VibeServiceProtocol {
-    /// 불러온 바이브들의 목록을 저장하는 배열입니다.
-    @Published var vibes: [ReviewDTO] = []
+    private let networkUtility: NetworkUtility = NetworkUtility()
+    private let jsonDecoder: JSONDecoder = JSONDecoder()
     
-    private let userDefaultsUtility = UserDefaultsUtility()
-    
-    /// 바이브 목록을 가져오는 함수입니다.
-    ///
-    /// - Parameters:
-    ///   - key: 키 값
-    ///
-    /// 키 값을 인자로 받아서 UserDefaults에 저장되어 있는 바이브 목록을 가져옵니다.
-    ///
-    /// - Author: 라움
-    func getVibes(forKey key: String) {
-        do {
-            vibes = try userDefaultsUtility.get([ReviewDTO].self, forKey: key) ?? vibes
-        } catch {
-            print(error)
-        }
+    func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<VibeUIO> {
+        let sortCases: [SortCase] = sort.map { $0.0 }
+        let sortPatterns: [SortPattern] = sort.map { $0.1 }
+        
+        let router = VibeHTTPRequestRouter.getVibes(page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<VibeDTO>.self, from: data)
+        
+        let contents = paginatedResponseDTO.contents.map { VibeUIO(vibeDTO: $0, isMine: true) }
+        
+        let paginatedResponse = PaginatedResponse<VibeUIO>(
+            totalPages: paginatedResponseDTO.totalPages,
+            currentPage: paginatedResponseDTO.currentPage,
+            totalElements: paginatedResponseDTO.totalElements,
+            contents: contents
+        )
+        
+        return paginatedResponse
     }
     
-    /// 바이브를 저장하는 함수입니다.
-    ///
-    /// - Parameters:
-    ///   - key: 키 값
-    ///
-    /// 업데이트된 바이브 목록을 키 값에 해당하는 UserDefaults에 저장합니다.
-    /// 저장할 데이터가 많아지면 저장하는 시간이 길어지기 때문에 이를 해결하기 위해 async로 작성하였습니다.
-    ///
-    /// - Author: 라움
-    func setVibes(forKey key: String) async {
-        do {
-            try userDefaultsUtility.set(vibes, forKey: key)
-        } catch {
-            print(error)
+    func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
+        let accessToken = try getAccessToken()
+        var builder = MultipartFormBuilder()
+        
+        let inputData = try! JSONSerialization.data(withJSONObject: [
+            "rating": rating,
+            "comment": comment as Any
+        ])
+        
+        builder.append(name: "vibeData", content: .json(data: inputData))
+        for index in 0..<images.count {
+            builder.append(
+                name: "vibeImages",
+                fileName: "user1_firstVibeImage\(index).jpeg",
+                content: .jpeg(data: images[index].jpegData(compressionQuality: 0.8)!)
+            )
         }
+        let (boundary, data) = builder.build()!
+        
+        let router = VibeHTTPRequestRouter.uploadVibe(token: accessToken, eventID: eventID, data: data)
+        
+        let vibeData = try await networkUtility.request(router: router)
+        let vibeDTO = try jsonDecoder.decode(VibeDTO.self, from: vibeData)
+        let vibeUIO = VibeUIO(vibeDTO: vibeDTO, isMine: true)
+        
+        return vibeUIO
     }
     
-    /// 바이브를 저장하는 함수입니다.
-    ///
-    /// - Parameters:
-    ///   - newVibe: 새로 저장할 바이브
-    ///
-    /// 새로 저장할 바이브를 인자로 받아서 바이브 목록에 추가합니다.
-    ///
-    /// - Author: 라움
-    func createVibe(newVibe: ReviewDTO) {
-        vibes.append(newVibe)
+    func deleteVibe(eventID: String, vibeID: Int) async throws {
+        let accessToken = try getAccessToken()
+        let router = VibeHTTPRequestRouter.deleteVibe(token: accessToken, eventID: eventID, vibeID: vibeID)
+        
+        _ = try await networkUtility.request(router: router)
     }
     
-    /// 바이브를 수정하는 함수입니다.
-    ///
-    /// - Parameters:
-    ///   - newVibe: 바이브 목록에 업데이트할 수정된 바이브
-    ///
-    /// 수정된 바이브를 인자로 받아서 바이브 목록을 업데이트합니다.
-    ///
-    /// - Author: 라움
-    func editVibe(newVibe: ReviewDTO) {
-        if let index = vibes.firstIndex(where: { $0.id == newVibe.id }) {
-            vibes[index] = newVibe
+    func modifyVibe(vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [UIImage]) async throws -> VibeUIO {
+        let accessToken = try getAccessToken()
+        var builder = MultipartFormBuilder()
+        
+        let inputData = try! JSONSerialization.data(withJSONObject: [
+            "rating": rating,
+            "comment": comment as Any,
+            "previousImageURLs": previousImageURLs
+        ])
+        
+        builder.append(name: "vibeData", content: .json(data: inputData))
+        for index in 0..<images.count {
+            builder.append(
+                name: "vibeImages",
+                fileName: "user1_firstVibeImage\(index).jpeg",
+                content: .jpeg(data: images[index].jpegData(compressionQuality: 0.8)!)
+            )
         }
+        let (boundary, data) = builder.build()!
+        
+        let router = VibeHTTPRequestRouter.modifyVibe(token: accessToken, vibeID: vibeID, data: data)
+        
+        let vibeData = try await networkUtility.request(router: router)
+        let vibeDTO = try jsonDecoder.decode(VibeDTO.self, from: vibeData)
+        let vibeUIO = VibeUIO(vibeDTO: vibeDTO, isMine: true)
+        
+        return vibeUIO
     }
     
-    /// 바이브를 삭제하는 함수입니다.
-    ///
-    /// - Parameters:
-    ///   - vibe: 삭제할 바이브
-    ///
-    /// 삭제할 바이브를 인자로 받아서 해당 바이브와 id 값이 일치하는 바이브를 바이브 목록에서 삭제합니다.
-    ///
-    /// - Author: 라움
-    func removeVibe(vibe: ReviewDTO) {
-        if let index = vibes.firstIndex(where: { $0.id == vibe.id }) {
-            vibes.remove(at: index)
+    func checkIfUserUploadedVibe(eventID: String, userID: Int) async throws -> Int {
+        let accessToken = try getAccessToken()
+        let router = VibeHTTPRequestRouter.checkIfUserUploadedVibe(token: accessToken, eventID: eventID, userID: userID)
+        
+        let data = try await networkUtility.request(router: router)
+        let vibeID = try jsonDecoder.decode(Int.self, from: data)
+        
+        return vibeID
+    }
+    
+    func getVibeWithVibeID(vibeID: Int) async throws -> VibeUIO {
+        let router = VibeHTTPRequestRouter.getVibeWithVibeID(vibeID: vibeID)
+        
+        let data = try await networkUtility.request(router: router)
+        let vibeDTO = try jsonDecoder.decode(VibeDTO.self, from: data)
+        let vibeUIO = VibeUIO(vibeDTO: vibeDTO, isMine: true)
+        
+        return vibeUIO
+    }
+}
+
+extension VibeService {
+    private func getAccessToken() throws -> String {
+        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
+              let token = String(data: accessTokenData, encoding: .utf8) else {
+            print("accessToken not found")
+            throw TokenKeyChainError.NotFound
         }
+        
+        return token
     }
 }

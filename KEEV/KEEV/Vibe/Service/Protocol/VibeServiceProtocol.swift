@@ -27,7 +27,7 @@ protocol VibeServiceProtocol: AnyObject {
     /// - Returns: 페이지네이션이 적용된 바이브 목록
     ///
     /// - Author: 라움
-    func getPaginatedVibes(page: Int, size: Int, sort: String) async throws -> PaginatedResponse<VibeUIO>
+    func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO>
     
     /// 특정 이벤트에 바이브를 등록하는 함수
     ///

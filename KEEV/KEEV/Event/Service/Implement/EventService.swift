@@ -57,9 +57,9 @@ class EventService: EventServiceProtocol {
         let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
 
         let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
-            totalPages: paginatedResponseDTO.totalElements,
+            totalPages: paginatedResponseDTO.totalPages,
             currentPage: paginatedResponseDTO.currentPage,
-            totalElements: paginatedResponseDTO.totalPages,
+            totalElements: paginatedResponseDTO.totalElements,
             contents: contents
         )
 

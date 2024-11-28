@@ -15,9 +15,9 @@ import SwiftUI
 /// - Author: 라움
 enum VibeHTTPRequestRouter {
     case getVibes(page: Int, size: Int, sort: [SortParameter])
-    case uploadVibe(token: String, eventID: String, rating: Float, comment: String?, images: [UIImage])
+    case uploadVibe(token: String, eventID: String, data: Data)
     case deleteVibe(token: String, eventID: String, vibeID: Int)
-    case modifyVibe(token: String, vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [UIImage])
+    case modifyVibe(token: String, vibeID: Int, data: Data)
     case checkIfUserUploadedVibe(token: String, eventID: String, userID: Int)
     case getVibeWithVibeID(vibeID: Int)
 }
@@ -43,7 +43,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .getVibes, .getVibeWithVibeID:
             return nil
-        case .uploadVibe(let token, _, _, _, _), .deleteVibe(let token, _, _), .modifyVibe(let token, _, _, _, _, _), .checkIfUserUploadedVibe(let token, _, _):
+        case .uploadVibe(let token, _, _), .deleteVibe(let token, _, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -55,28 +55,16 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .getVibes, .getVibeWithVibeID:
             return nil
-        case .uploadVibe(_, _, let rating, let comment, let images):
-            let json: [String: Any] = [
-                "rating": rating,
-                "comment": comment as Any,
-                "images": images
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
+        case .uploadVibe(_, _, let data):
+            return data
         case .deleteVibe(_, let eventID, let vibeID):
             let json: [String: Any] = [
                 "eventId": eventID,
                 "vibeId": vibeID
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .modifyVibe(_, let vibeID, let rating, let comment, let previousImageURLs, let images):
-            let json: [String: Any] = [
-                "vibeId": vibeID,
-                "rating": rating,
-                "comment": comment as Any,
-                "previousImageURLs": previousImageURLs,
-                "images": images
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
+        case .modifyVibe(_, _, let data):
+            return data
         case .checkIfUserUploadedVibe(_, _, let userID):
             let json: [String: Int] = [
                 "userId": userID
@@ -95,11 +83,11 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .getVibes:
             path.append(contentsOf: ["get", "sortBy"])
-        case .uploadVibe(_, let eventID, _, _, _):
+        case .uploadVibe(_, let eventID, _):
             path.append(contentsOf: ["register", "\(eventID)"])
         case .deleteVibe:
             path.append(contentsOf: ["delete"])
-        case .modifyVibe(_, let vibeID, _, _, _, _):
+        case .modifyVibe(_, let vibeID, _):
             path.append(contentsOf: ["update", "\(vibeID)"])
         case .checkIfUserUploadedVibe(_, let eventID, _):
             path.append(contentsOf: ["find", "\(eventID)"])

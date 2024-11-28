@@ -12,13 +12,12 @@ import SwiftUI
 ///
 /// 서버와의 통신 없이 UI가 잘 나오는지 확인하기 위한 MockVibeService입니다.
 ///
-/// - Todo: 향후에 VibeService와 VibeServiceProtocol을 교체하면서 MockService의 프로토콜도 수정해주어야합니다.
 /// - Author: 라움
-class MockVibeService: TempVibeServiceProtocol {
+class MockVibeService: VibeServiceProtocol {
     private var vibes: [VibeUIO] = []
     private var vibeCount = 0
     
-    func getPaginatedVibes(page: Int, size: Int, sort: String) async throws -> PaginatedResponse<VibeUIO> {
+    func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO> {
         var vibeList: [VibeUIO] = []
         let startIndex = page*size
         

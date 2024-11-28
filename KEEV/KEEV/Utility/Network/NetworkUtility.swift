@@ -36,6 +36,27 @@ struct NetworkUtility {
         return data
     }
     
+    /// MultipartForm으로 데이터를 요청하고 서버에서 데이터를 가져오는 메소드
+    ///
+    /// - Parameters:
+    ///   - router: HTTPRequestable
+    ///   - boundary: MultipartForm에서의 바운더리 값
+    ///
+    ///  MultipartForm으로 요청을 보내서 서버로부터 가져온 데이터를 리턴하는 메소드입니다.
+    ///
+    /// - Throws: URL이 잘못 된 경우 badURL
+    /// - Returns: 서버로부터 가져온 데이터
+    ///
+    /// - Author: 라움
+    func requestWithMultipartForm(router: HTTPRequestable, boundary: String) async throws -> Data {
+        var request = try router.asURLRequest()
+        request.setValue("multipart/form-data; boundary=\"\(boundary)\"", forHTTPHeaderField: "Content-Type")
+        
+        let (data, _) = try await session.data(for: request)
+        
+        return data
+    }
+    
     /// 서버에서 데이터를 가져오는 메소드
     ///
     /// - Parameters:
