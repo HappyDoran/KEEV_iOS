@@ -29,7 +29,13 @@ enum SortCase: String {
 class EventService: EventServiceProtocol {
     
     private let networkUtility: NetworkUtility = NetworkUtility()
-    private let jsonDecoder: JSONDecoder = JSONDecoder()
+    private let jsonDecoder: JSONDecoder = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .formatted(formatter)
+        return decoder
+    }()
     
     /// 이벤트 목록을 가져오는 함수
     ///

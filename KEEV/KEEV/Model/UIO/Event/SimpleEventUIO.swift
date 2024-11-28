@@ -1,5 +1,5 @@
 //
-//  SimpleEventUI.swift
+//  SimpleEventUIO.swift
 //  KEEV
 //
 //  Created by 김준성 on 11/13/24.
@@ -82,7 +82,7 @@ extension SimpleEventUIO {
     /// 유효하지 않은 포스터 URL을 가진 더미 데이터1
     static let dummy3 = SimpleEventUIO(simpleEventDTO: .dummy3)
     
-    /// 유효하지 않은 포스터 URL을 가진 더미 데이터2 
+    /// 유효하지 않은 포스터 URL을 가진 더미 데이터2
     static let dummy4 = SimpleEventUIO(simpleEventDTO: .dummy4)
     
     /// 이벤트 장소 이름이 긴 더미데이터

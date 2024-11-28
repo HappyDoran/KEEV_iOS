@@ -54,6 +54,40 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
     
     /// 이벤트 참여 아티스트
     let artists: [SimpleArtistDTO]
+    
+    enum CodingKeys: CodingKey {
+        case id
+        case name
+        case types
+        case genres
+        case createdDate
+        case reservationStartDate
+        case startDate
+        case endDate
+        case startTime
+        case posterURLString
+        case description
+        case descriptionImagesURLStrings
+        case places
+        case artists
+    }
+    
+    init(id: String, name: String, types: [EventTypeDTO], genres: [GenreDTO], createdDate: Date, reservationStartDate: Date?, startDate: Date, endDate: Date, startTime: Date, posterURLString: String, description: String?, descriptionImagesURLStrings: [String], places: [PlaceDTO], artists: [SimpleArtistDTO]) {
+        self.id = id
+        self.name = name
+        self.types = types
+        self.genres = genres
+        self.createdDate = createdDate
+        self.reservationStartDate = reservationStartDate
+        self.startDate = startDate
+        self.endDate = endDate
+        self.startTime = startTime
+        self.posterURLString = posterURLString
+        self.description = description
+        self.descriptionImagesURLStrings = descriptionImagesURLStrings
+        self.places = places
+        self.artists = artists
+    }
 }
 
 extension DetailEventDTO {

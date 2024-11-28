@@ -34,6 +34,42 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
     let posterURLString: String
     /// 이벤트가 열리는 장소
     let placeNames: [String]
+    
+    
+    private enum CodingKeys: String, CodingKey {
+        case id = "id"
+        case name = "name"
+        case createdDate = "createdDate"
+        case reservationStartDate = "reservationStartDate"
+        case startDate = "startDate"
+        case endDate = "endDate"
+        case posterURLString = "posterURL"
+        case placeNames = "placeNames"
+    }
+    
+    init(id: String, name: String, createdDate: Date, reservationStartDate: Date?, startDate: Date, endDate: Date, posterURLString: String, placeNames: [String]) {
+        self.id = id
+        self.name = name
+        self.createdDate = createdDate
+        self.reservationStartDate = reservationStartDate
+        self.startDate = startDate
+        self.endDate = endDate
+        self.posterURLString = posterURLString
+        self.placeNames = placeNames
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        let tempString = try container.decode(String.self, forKey: .createdDate)
+        self.createdDate = tempString.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
+        self.reservationStartDate = try container.decodeIfPresent(Date.self, forKey: .reservationStartDate)
+        self.startDate = try container.decode(Date.self, forKey: .startDate)
+        self.endDate = try container.decode(Date.self, forKey: .endDate)
+        self.posterURLString = try container.decode(String.self, forKey: .posterURLString)
+        self.placeNames = try container.decode([String].self, forKey: .placeNames)
+    }
 }
 
 extension SimpleEventDTO {
