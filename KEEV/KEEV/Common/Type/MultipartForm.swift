@@ -160,9 +160,9 @@ struct MultipartFormBuilder: Sendable {
     
     private func deposition(name: String, fileName: String?) -> Data {
         if let fileName {
-            return "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\n\r\n".data(using: .utf8)!
+            return "Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!
         }
-        return "Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!
+        return "Content-Disposition: form-data; name=\"\(name)\"\r\n".data(using: .utf8)!
     }
 }
 
