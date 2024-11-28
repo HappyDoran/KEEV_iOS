@@ -1,5 +1,5 @@
 //
-//  TempVibeServiceProtocol.swift
+//  VibeServiceProtocol.swift
 //  KEEV
 //
 //  Created by Yune Cho on 11/24/24.
@@ -12,9 +12,8 @@ import SwiftUI
 ///
 /// VibeService를 구현하기 위한 프로토콜입니다.
 ///
-/// - ToDo: 향후에 VibeServiceProtocol을 이 TempVibeServiceProtocol로 교체해야합니다.
 /// - Author: 라움
-protocol TempVibeServiceProtocol: AnyObject {
+protocol VibeServiceProtocol: AnyObject {
     /// 바이브 목록을 가져오는 함수
     ///
     /// - Parameters:
