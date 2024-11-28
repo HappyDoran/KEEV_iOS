@@ -22,7 +22,7 @@ protocol AccountServiceProtocol: AnyObject {
     /// - Throws: JWT가 만료되었거나 서버와의 통신이 불안정할 경우 에러를 던집니다.
     /// - Returns: JWT를 통하여 로그인에 성공하면 `DetailUserUIO`을 반환합니다.
     /// - Author: newJunsung
-    func autoSignIn() async throws -> SignInStatus
+    func autoSignIn() async -> SignInStatus
     
     /// 애플 로그인을 위한 함수.
     ///
@@ -59,7 +59,7 @@ protocol AccountServiceProtocol: AnyObject {
         profileImage: UIImage?,
         backgroundImage: UIImage?,
         description: String?
-    ) async throws -> DetailUserUIO
+    ) async throws -> SignInStatus
     
     /// 회원가입 정보를 넣는 함수.
     ///
