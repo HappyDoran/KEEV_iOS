@@ -24,6 +24,12 @@ struct SimpleArtistDTO: Decodable, Hashable, Identifiable {
     let name: String
     /// 아티스트의 프로필 이미지 URL 문자열
     let profileImageURLString: String
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case profileImageURLString = "profileImageURL"
+    }
 }
 
 extension SimpleArtistDTO {

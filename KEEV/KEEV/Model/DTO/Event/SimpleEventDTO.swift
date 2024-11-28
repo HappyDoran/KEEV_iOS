@@ -34,6 +34,48 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
     let posterURLString: String
     /// 이벤트가 열리는 장소
     let placeNames: [String]
+    
+    
+    private enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case createdDate
+        case reservationStartDate
+        case startDate
+        case endDate
+        case posterURLString = "posterURL"
+        case placeNames
+    }
+    
+    init(id: String, name: String, createdDate: Date, reservationStartDate: Date?, startDate: Date, endDate: Date, posterURLString: String, placeNames: [String]) {
+        self.id = id
+        self.name = name
+        self.createdDate = createdDate
+        self.reservationStartDate = reservationStartDate
+        self.startDate = startDate
+        self.endDate = endDate
+        self.posterURLString = posterURLString
+        self.placeNames = placeNames
+    }
+    
+    /// 디코딩 데이터에 대해서 날짜를 포매팅 해주고 초기값을 생성
+    ///
+    /// - Author: Doran
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let tempString = try container.decode(String.self, forKey: .createdDate)
+        let tempStartDate = try container.decode(String.self, forKey: .startDate)
+        let tempEndDate = try container.decode(String.self, forKey: .endDate)
+        
+        self.id = try container.decode(String.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.createdDate = tempString.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
+        self.reservationStartDate = try container.decodeIfPresent(Date.self, forKey: .reservationStartDate)
+        self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now
+        self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
+        self.posterURLString = try container.decode(String.self, forKey: .posterURLString)
+        self.placeNames = try container.decode([String].self, forKey: .placeNames)
+    }
 }
 
 extension SimpleEventDTO {
@@ -49,7 +91,7 @@ extension SimpleEventDTO {
 extension SimpleEventDTO {
     /// 숭배해야만 하는 데이터1
     static let dummy0 = SimpleEventDTO(
-        id: "Christian Billionaire Ye",
+        id: "85ef3d7a-21e3-449b-b49c-e5b5d3861912",
         name: "¥$ VULTURES LISTENING EXPERIENCE",
         createdDate: .startOfDay(year: 2024, month: 11, day: 12),
         reservationStartDate: nil,

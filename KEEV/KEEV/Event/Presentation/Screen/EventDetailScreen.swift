@@ -31,6 +31,7 @@ enum EventDetailSection: Int, CaseIterable {
 ///
 /// - Author: Doran
 struct EventDetailScreen: View {
+    @Injected private var eventService: any EventServiceProtocol
     @State private var selectedEvent: DetailEventUIO
     @State private var vibeWriteState: VibeWriteState
     @State private var activeSection = EventDetailSection.detail
@@ -263,6 +264,6 @@ extension EventDetailScreen {
 
 #Preview {
     NavigationStack {
-        EventDetailScreen(detailEvent: .dummy0)
+        EventDetailScreen(simpleEvent: .dummy0)
     }
 }
