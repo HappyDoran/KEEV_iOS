@@ -53,17 +53,15 @@ struct EventInfoScreen: View {
         }
         .task {
             do {
-                let eventService = EventService()
                 let response = try await eventService.loadPaginatedEvents(page: 1, size: 10, sort: [(SortCase.createdDate, .descending), (SortCase.createdDate, .ascending)])
-                // 응답 처리
                 print("Total Events: \(response.totalElements), Current Page: \(response.currentPage)")
                 for event in response.contents {
-                    print("Event Name: \(event.name), Start Date: \(event.startDate)")
+                    print("Event Name: \(event.name), Start Date: \(event.startDate), EventID: \(event.id)")
                 }
+                
+                // 응답 처리
             } catch {
-                print("😡---------------😡")
                 print(error.localizedDescription)
-                print("Error loading events: \(error)")
                 
             }
         }

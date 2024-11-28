@@ -55,19 +55,19 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
     /// 이벤트 참여 아티스트
     let artists: [SimpleArtistDTO]
     
-    enum CodingKeys: CodingKey {
+    enum CodingKeys: String, CodingKey {
         case id
         case name
-        case types
+        case types = "eventType"
         case genres
-        case createdDate
+        case createdDate = "createDate"
         case reservationStartDate
         case startDate
         case endDate
         case startTime
-        case posterURLString
+        case posterURLString = "posterImageURL"
         case description
-        case descriptionImagesURLStrings
+        case descriptionImagesURLStrings = "descriptionImageURLS"
         case places
         case artists
     }
@@ -88,6 +88,27 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         self.places = places
         self.artists = artists
     }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.name = try container.decode(String.self, forKey: .name)
+        self.types = try container.decode([EventTypeDTO].self, forKey: .types)
+        self.genres = try container.decode([GenreDTO].self, forKey: .genres)
+        let tempCreatedDate = try container.decode(String.self, forKey: .createdDate)
+        self.createdDate = tempCreatedDate.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
+        self.reservationStartDate = try container.decodeIfPresent(Date.self, forKey: .reservationStartDate)
+        self.startDate = try container.decode(Date.self, forKey: .startDate)
+        self.endDate = try container.decode(Date.self, forKey: .endDate)
+        let tempStartTime = try container.decode(String.self, forKey: .startTime)
+        self.startTime = tempStartTime.toDate(format: "HH:mm:ss") ?? .now
+        self.posterURLString = try container.decode(String.self, forKey: .posterURLString)
+        self.description = try container.decodeIfPresent(String.self, forKey: .description)
+        self.descriptionImagesURLStrings = try container.decode([String].self, forKey: .descriptionImagesURLStrings)
+        self.places = try container.decode([PlaceDTO].self, forKey: .places)
+        self.artists = try container.decode([SimpleArtistDTO].self, forKey: .artists)
+    }
+    
 }
 
 extension DetailEventDTO {

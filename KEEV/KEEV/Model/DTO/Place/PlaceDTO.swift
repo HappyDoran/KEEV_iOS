@@ -25,4 +25,13 @@ struct PlaceDTO: Codable, Hashable, Identifiable {
     
     /// 경도
     let longitude: Double
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case name
+        case address
+        case contry = "countryName"
+        case latitude
+        case longitude
+    }
 }

@@ -85,7 +85,7 @@ extension SimpleEventDTO {
 extension SimpleEventDTO {
     /// 숭배해야만 하는 데이터1
     static let dummy0 = SimpleEventDTO(
-        id: "Christian Billionaire Ye",
+        id: "85ef3d7a-21e3-449b-b49c-e5b5d3861912",
         name: "¥$ VULTURES LISTENING EXPERIENCE",
         createdDate: .startOfDay(year: 2024, month: 11, day: 12),
         reservationStartDate: nil,

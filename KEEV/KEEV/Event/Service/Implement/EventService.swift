@@ -89,9 +89,24 @@ class EventService: EventServiceProtocol {
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         
-        let detailEventDTO = try jsonDecoder.decode(DetailEventDTO.self, from: data)
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("Response Data: \(jsonString)")
+        } else {
+            print("Failed to convert data to String")
+        }
+        
+        let eventResponseDTO = try jsonDecoder.decode(EventResponseDTO.self, from: data)
+        guard let detailEventDTO = eventResponseDTO.events.first else {
+            throw NSError(domain: "EventError", code: 404, userInfo: [NSLocalizedDescriptionKey: "Event not found"])
+        }
+        
         let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
+//        let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
         
         return detailEventUIO
     }
+}
+
+struct EventResponseDTO: Decodable {
+    let events: [DetailEventDTO]
 }

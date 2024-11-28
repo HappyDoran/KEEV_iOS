@@ -31,6 +31,7 @@ enum EventDetailSection: Int, CaseIterable {
 ///
 /// - Author: Doran
 struct EventDetailScreen: View {
+    @Injected private var eventService: any EventServiceProtocol
     @State private var selectedEvent: DetailEventUIO
     @State private var vibeWriteState: VibeWriteState
     @State private var activeSection = EventDetailSection.detail
@@ -91,6 +92,13 @@ struct EventDetailScreen: View {
         .task {
             if isLoadDetailEvent {
                 // 이벤트 ID로 새로 이벤트 정보를 불러오면 됨.
+                do {
+                    let response = try await eventService.loadDetailEvent(id: selectedEvent.id)
+                    selectedEvent = response
+                } catch {
+                    print(error.localizedDescription)
+                    print("Error loading events: \(error)")
+                }
             }
             
             if let dDay = selectedEvent.dDay, dDay >= 0 {
@@ -263,6 +271,6 @@ extension EventDetailScreen {
 
 #Preview {
     NavigationStack {
-        EventDetailScreen(detailEvent: .dummy0)
+        EventDetailScreen(simpleEvent: .dummy0)
     }
 }
