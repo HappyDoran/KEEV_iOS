@@ -60,7 +60,7 @@ class VibeService: VibeServiceProtocol {
         
         let router = VibeHTTPRequestRouter.uploadVibe(token: accessToken, eventID: eventID, data: data)
         
-        let vibeData = try await networkUtility.request(router: router)
+        let vibeData = try await networkUtility.requestWithMultipartForm(router: router, boundary: boundary)
         let vibeDTO = try jsonDecoder.decode(VibeDTO.self, from: vibeData)
         let vibeUIO = VibeUIO(vibeDTO: vibeDTO, isMine: true)
         
@@ -96,7 +96,7 @@ class VibeService: VibeServiceProtocol {
         
         let router = VibeHTTPRequestRouter.modifyVibe(token: accessToken, vibeID: vibeID, data: data)
         
-        let vibeData = try await networkUtility.request(router: router)
+        let vibeData = try await networkUtility.requestWithMultipartForm(router: router, boundary: boundary)
         let vibeDTO = try jsonDecoder.decode(VibeDTO.self, from: vibeData)
         let vibeUIO = VibeUIO(vibeDTO: vibeDTO, isMine: true)
         
