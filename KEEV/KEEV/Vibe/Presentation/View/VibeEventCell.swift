@@ -31,13 +31,13 @@ struct VibeEventCell: View {
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                } else if phase.error == nil {
-                    ProgressView()
-                } else {
-                    let _ = print(phase.error!)
+                } else if let error = phase.error {
+                    let _ = print(error)
                     Image(systemName: "xmark")
                         .resizable()
                         .scaledToFit()
+                } else {
+                    ProgressView()
                 }
             }
             .frame(width: 60, height: 82, alignment: .center)
