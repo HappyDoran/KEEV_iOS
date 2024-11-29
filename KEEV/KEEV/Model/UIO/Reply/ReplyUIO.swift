@@ -66,16 +66,20 @@ struct ReplyUIO: Identifiable, Hashable {
     }
     
     init(reply: ReplyDTO, currentUserID: Int?) {
-        id = reply.id
-        userID = reply.user.id
-        userNickname = reply.user.nickname
-        userProfileImageURL = URL(string: reply.user.profileImageURL ?? "")
-        vibeID = reply.vibeID
-        text = reply.text
-        isLiked = reply.isLiked
-        likeCount = reply.likeCount
-        createdDate = reply.createdDate ?? .now
-        isMine = (currentUserID != nil && reply.user.id == currentUserID)
+        self.id = reply.id
+        self.userID = reply.user.id
+        self.userNickname = reply.user.nickname
+        if let userProfileURL = reply.user.profileImageURL {
+            self.userProfileImageURL = URL(string: userProfileURL)
+        } else {
+            self.userProfileImageURL = nil
+        }
+        self.vibeID = reply.vibeID
+        self.text = reply.text
+        self.isLiked = reply.isLiked
+        self.likeCount = reply.likeCount
+        self.createdDate = reply.createdDate ?? .now
+        self.isMine = (currentUserID != nil && reply.user.id == currentUserID)
     }
 }
 
