@@ -12,13 +12,12 @@ import SwiftUI
 ///
 /// 서버와의 통신 없이 UI가 잘 나오는지 확인하기 위한 MockVibeService입니다.
 ///
-/// - Todo: 향후에 VibeService와 VibeServiceProtocol을 교체하면서 MockService의 프로토콜도 수정해주어야합니다.
 /// - Author: 라움
-class MockVibeService: TempVibeServiceProtocol {
+class MockVibeService: VibeServiceProtocol {
     private var vibes: [VibeUIO] = []
     private var vibeCount = 0
     
-    func getPaginatedVibes(page: Int, size: Int, sort: String) async throws -> PaginatedResponse<VibeUIO> {
+    func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO> {
         var vibeList: [VibeUIO] = []
         let startIndex = page*size
         
@@ -46,7 +45,7 @@ class MockVibeService: TempVibeServiceProtocol {
         }
     }
     
-    func uploadVibe(rating: Float, comment: String?, images: [UIImage]) async throws -> VibeUIO {
+    func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
         let newVibe = VibeUIO(
             id: vibeCount + 1,
             user: SimpleUserUIO(id: 123, nickname: "가래떡강아지", profileImageURL: nil),
@@ -71,7 +70,7 @@ class MockVibeService: TempVibeServiceProtocol {
     }
     
     func modifyVibe(vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [UIImage]) async throws -> VibeUIO {
-        var vibe = VibeUIO(
+        let vibe = VibeUIO(
             id: vibeID,
             user: SimpleUserUIO(id: 1, nickname: "가나다", profileImageURL: nil),
             event: SimpleEventUIO(id: "dummyID", name: "Dummy Title", posterURL: nil, dDay: 7, startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장"),
@@ -87,7 +86,7 @@ class MockVibeService: TempVibeServiceProtocol {
         return vibe
     }
     
-    func checkIfUserUploadedVibe(userID: Int) async throws -> Int {
+    func checkIfUserUploadedVibe(eventID: String, userID: Int) async throws -> Int {
         1
     }
     

@@ -1,5 +1,5 @@
 //
-//  TempVibeServiceProtocol.swift
+//  VibeServiceProtocol.swift
 //  KEEV
 //
 //  Created by Yune Cho on 11/24/24.
@@ -12,9 +12,8 @@ import SwiftUI
 ///
 /// VibeService를 구현하기 위한 프로토콜입니다.
 ///
-/// - ToDo: 향후에 VibeServiceProtocol을 이 TempVibeServiceProtocol로 교체해야합니다.
 /// - Author: 라움
-protocol TempVibeServiceProtocol: AnyObject {
+protocol VibeServiceProtocol: AnyObject {
     /// 바이브 목록을 가져오는 함수
     ///
     /// - Parameters:
@@ -28,11 +27,12 @@ protocol TempVibeServiceProtocol: AnyObject {
     /// - Returns: 페이지네이션이 적용된 바이브 목록
     ///
     /// - Author: 라움
-    func getPaginatedVibes(page: Int, size: Int, sort: String) async throws -> PaginatedResponse<VibeUIO>
+    func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO>
     
     /// 특정 이벤트에 바이브를 등록하는 함수
     ///
     /// - Parameters:
+    ///   - eventID: 이벤트 ID
     ///   - rating: 해당 이벤트의 평점
     ///   - comment: 이벤트 관람 후기
     ///   - images: 이벤트 관람 사진 배열
@@ -43,7 +43,7 @@ protocol TempVibeServiceProtocol: AnyObject {
     /// - Returns: 등록된 바이브의 UIO
     ///
     /// - Author: 라움
-    func uploadVibe(rating: Float, comment: String?, images: [UIImage]) async throws -> VibeUIO
+    func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO
     
     /// 특정 바이브를 삭제하는 함수
     ///
@@ -78,6 +78,7 @@ protocol TempVibeServiceProtocol: AnyObject {
     /// 사용자가 특정 이벤트에 바이브를 올렸는지에 대한 여부를 확인하는 함수
     ///
     /// - Parameters:
+    ///   - eventID: 이벤트 ID
     ///   - userID: 유저 ID
     ///
     /// 사용자가 특정 이벤트에 바이브를 올렸는지에 대한 여부를 확인하는 함수입니다.
@@ -86,7 +87,7 @@ protocol TempVibeServiceProtocol: AnyObject {
     /// - Returns: 등록된 바이브의 ID
     ///
     /// - Author: 라움
-    func checkIfUserUploadedVibe(userID: Int) async throws -> Int
+    func checkIfUserUploadedVibe(eventID: String, userID: Int) async throws -> Int
     
     /// 바이브 ID를 통해 바이브를 조회하는 함수
     ///

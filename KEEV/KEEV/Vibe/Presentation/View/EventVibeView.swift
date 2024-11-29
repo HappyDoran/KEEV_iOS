@@ -15,7 +15,7 @@ import SwiftUI
 struct EventVibeView: View {
     let eventID: String
     
-    @Injected private var vibeService: any TempVibeServiceProtocol
+    @Injected private var vibeService: any VibeServiceProtocol
     @State private var vibes: [VibeUIO] = []
     @State private var currentPage = 0
     private let pageSize = 5
@@ -45,7 +45,7 @@ struct EventVibeView: View {
                                 Task {
                                     do {
                                         // 서비스가 이벤트의 바이브를 찾는 로직
-                                        vibes.append(contentsOf: try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: "startDate").contents)
+                                        vibes.append(contentsOf: try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, SortPattern.ascending)]).contents)
                                         currentPage += 1
                                     } catch {
                                         print(error)
@@ -61,7 +61,7 @@ struct EventVibeView: View {
                         Task {
                             do {
                                 // 서비스가 이벤트의 바이브를 찾는 로직
-                                vibes = try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: "startDate").contents
+                                vibes = try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, SortPattern.ascending)]).contents
                                 currentPage += 1
                             } catch {
                                 print(error)
