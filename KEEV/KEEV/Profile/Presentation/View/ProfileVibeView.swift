@@ -44,11 +44,7 @@ struct ProfileVibeView: View {
                 case .list:
                     LazyVStack(spacing: 20) {
                         ForEach(vibes) { vibe in
-                            ProfileVibeListCell(vibe: vibe) { event in
-                                
-                            } onVibeTapped: { vibe in
-                                
-                            }
+                            ProfileVibeListCell(vibe: vibe)
                         }
                     }
                 case .table:
