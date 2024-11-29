@@ -15,7 +15,7 @@ import SwiftUI
 enum ReplyHTTPRequestRouter {
     case fetchReplies(token: String, vibeID: Int)
     case addReply(token: String, vibeID: Int, text: String)
-    case modifyReply(token: String, replyID: String, vibeID: String, updatedReply: String)
+    case modifyReply(token: String, replyID: String, vibeID: String, updatedText: String)
     case deleteReply(token: String, replyID: String)
 }
 
@@ -53,7 +53,10 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
                 "content-type": "application/json"
             ]
         case .deleteReply(let token, _):
-            return ["Authorization": "Bearer \(token)"]
+            return [
+                "Authorization": "Bearer \(token)",
+                "content-type": "application/json"
+            ]
         }
     }
     
@@ -67,17 +70,17 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
                 "content": text
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .modifyReply(_, let replyID, let vibeID, let updatedReply):
+        case .modifyReply(_, let replyID, let vibeID, let updatedText):
             let json: [String: Any] = [
-                "Id": replyID,
+                "id": replyID,
                 "vibeId": vibeID,
-                "content": updatedReply
+                "content": updatedText
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
         case .deleteReply(_, let replyID):
             
             let json: [String: Any] = [
-                "Id": replyID,
+                "id": replyID,
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
         }
@@ -107,3 +110,4 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
     var queryItems: [URLQueryItem]? { nil }
     
 }
+

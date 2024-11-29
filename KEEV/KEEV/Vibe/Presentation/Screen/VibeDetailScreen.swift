@@ -61,7 +61,7 @@ struct VibeDetailScreen: View {
                 // replyservice로부터 댓글을 가져오면 됩니다.
             }
             
-            ReplyInputView(replyText: $replyText) { _ in
+            ReplyInputView(replyText: $replyText) { newText in
                 // replyservice에서 댓글을 다는 메소드를 호출, ReplyUIO 반환
                 // 반환이 되면 그걸 `replies`에 삽입.
                 // 에러 처리는 해줘야겠죠?
@@ -111,7 +111,7 @@ struct VibeDetailScreen: View {
             modifyReplySheet = nil
         }, content: { replyToModify in
             let index = replyToModify.index
-            ModifyReplyView(reply: replies[index]) { _ in
+            ModifyReplyView(reply: replies[index]) { updatedText in
                 // replyservice로 댓글 수정을 요청하고
                 // 리턴받은 UIO로 replies[index]를 갈아끼운다.
                 // 에러 처리는 선택이 아닌 필수.
@@ -185,7 +185,6 @@ private extension VibeDetailScreen {
             } deleteHandler: {
                 guard let selectedReply else { return }
                 // 댓글 삭제하는 api 호출
-                replies.remove(at: selectedReply.index) // 성공하면 삭제, 실패하면 에러 처리
                 showReplyActionSheet = nil
             }
             
@@ -224,7 +223,7 @@ private extension VibeDetailScreen {
 
 #Preview {
     NavigationStack {
-        VibeDetailScreen(vibe: .dummy5) { _ in
+        VibeDetailScreen(vibe: .dummy2) { _ in
             
         } onDelete: { _ in
             
