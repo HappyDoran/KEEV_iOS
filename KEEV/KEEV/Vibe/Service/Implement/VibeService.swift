@@ -43,20 +43,24 @@ class VibeService: VibeServiceProtocol {
         let accessToken = try getAccessToken()
         var builder = MultipartFormBuilder()
         
-        let inputData = try! JSONSerialization.data(withJSONObject: [
+        let inputData = try JSONSerialization.data(withJSONObject: [
             "rating": rating,
             "comment": comment as Any
         ])
         
         builder.append(name: "vibeData", content: .json(data: inputData))
         for index in 0..<images.count {
-            builder.append(
-                name: "vibeImages",
-                fileName: "user1_firstVibeImage\(index).jpeg",
-                content: .jpeg(data: images[index].jpegData(compressionQuality: 0.8)!)
-            )
+            if let jpegData = images[index].jpegData(compressionQuality: 0.8) {
+                builder.append(
+                    name: "vibeImages",
+                    fileName: "\(eventID)_user1_\(index).jpeg",
+                    content: .jpeg(data: jpegData)
+                )
+            } else {
+                throw VibeError.multipartFormImageError
+            }
         }
-        let (boundary, data) = builder.build()!
+        guard let (boundary, data) = builder.build() else { throw VibeError.multipartFormBuilderError }
         
         let router = VibeHTTPRequestRouter.uploadVibe(token: accessToken, eventID: eventID, data: data)
         
@@ -78,7 +82,7 @@ class VibeService: VibeServiceProtocol {
         let accessToken = try getAccessToken()
         var builder = MultipartFormBuilder()
         
-        let inputData = try! JSONSerialization.data(withJSONObject: [
+        let inputData = try JSONSerialization.data(withJSONObject: [
             "rating": rating,
             "comment": comment as Any,
             "previousImageURLs": previousImageURLs
@@ -86,13 +90,17 @@ class VibeService: VibeServiceProtocol {
         
         builder.append(name: "vibeData", content: .json(data: inputData))
         for index in 0..<images.count {
-            builder.append(
-                name: "vibeImages",
-                fileName: "user1_firstVibeImage\(index).jpeg",
-                content: .jpeg(data: images[index].jpegData(compressionQuality: 0.8)!)
-            )
+            if let jpegData = images[index].jpegData(compressionQuality: 0.8) {
+                builder.append(
+                    name: "vibeImages",
+                    fileName: "user1_firstVibeImage\(index).jpeg",
+                    content: .jpeg(data: jpegData)
+                )
+            } else {
+                throw VibeError.multipartFormImageError
+            }
         }
-        let (boundary, data) = builder.build()!
+        guard let (boundary, data) = builder.build() else { throw VibeError.multipartFormBuilderError }
         
         let router = VibeHTTPRequestRouter.modifyVibe(token: accessToken, vibeID: vibeID, data: data)
         
@@ -134,4 +142,9 @@ extension VibeService {
         
         return token
     }
+}
+
+enum VibeError: Error {
+    case multipartFormBuilderError
+    case multipartFormImageError
 }
