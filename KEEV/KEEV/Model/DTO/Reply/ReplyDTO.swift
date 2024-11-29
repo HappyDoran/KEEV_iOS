@@ -20,7 +20,7 @@ struct ReplyDTO: Decodable, Hashable, Identifiable {
     
     let likeCount: Int
     
-    let createdDate: Date
+    let createdDate: Date?
     
     private enum CodingKeys: String, CodingKey {
         case id

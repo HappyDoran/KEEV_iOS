@@ -85,13 +85,13 @@ class ReplyService: ReplyServiceProtocol {
     /// - Returns: 수정 완료한 객체
     ///
     /// - Author: Doran
-    func modifyReply(_ reply: ReplyUIO, updatedReply: String) async throws -> ReplyUIO {
+    func modifyReply(_ reply: ReplyUIO, updatedText: String) async throws -> ReplyUIO {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.modifyReply(
             token: accessToken,
             replyID: "\(reply.id)",
             vibeID: "\(reply.vibeID)",
-            updatedReply: updatedReply
+            updatedText: updatedText
         )
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
@@ -115,18 +115,28 @@ class ReplyService: ReplyServiceProtocol {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.deleteReply(token: accessToken, replyID: "\(replyID)")
         
-        _ = try await networkUtility.request(router: router)
+        print(replyID)
+        
+        let (statuscode, data) = try await networkUtility.requestWithStatusCode(router: router)
+        
+        print(statuscode)
+        
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print("Response Data: \(jsonString)")
+        } else {
+            print("Failed to convert data to string.")
+        }
     }
 }
 
 extension ReplyService {
     private func getAccessToken() throws -> String {
-//        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
-//              let token = String(data: accessTokenData, encoding: .utf8) else {
-//            print("accessToken not found")
-//            throw TokenKeyChainError.NotFound
-//        }
+        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
+              let token = String(data: accessTokenData, encoding: .utf8) else {
+            print("accessToken not found")
+            throw TokenKeyChainError.NotFound
+        }
         
-        return "token"
+        return token
     }
 }

@@ -45,7 +45,7 @@ class MockReplyService: ReplyServiceProtocol {
         return newReply
     }
     
-    func modifyReply(_ reply: ReplyUIO, updatedReply: String) async throws -> ReplyUIO {
+    func modifyReply(_ reply: ReplyUIO, updatedText: String) async throws -> ReplyUIO {
         
         // 서버에 replyID, vibeID, text를 가지고 댓글을 수정
         
@@ -57,7 +57,7 @@ class MockReplyService: ReplyServiceProtocol {
             id: reply.id,
             user: SimpleUserUIO(id: reply.userID, nickname: reply.userNickname, profileImageURL: reply.userProfileImageURL),
             vibeID: reply.vibeID,
-            text: updatedReply,
+            text: updatedText,
             isLiked: reply.isLiked,
             likeCount: reply.likeCount,
             createdDate: reply.createdDate,

@@ -26,7 +26,6 @@ struct VibeDetailScreen: View {
     @State private var navigateToModifyVibe: Bool = false
     @State private var navigateToReport: ReportType? = nil
     @State private var navigateToUserProfile: Int? = nil
-    @StateObject private var replyService = ReplyService()
     
     init(
         vibe: VibeUIO,
@@ -60,28 +59,12 @@ struct VibeDetailScreen: View {
             .refreshable {
                 // vibeservice로부터 바이브 정보를 가져오면 됩니다.
                 // replyservice로부터 댓글을 가져오면 됩니다.
-                Task {
-                    do {
-                        replies = try await replyService.fetchReplies(for: vibe.id)
-                    } catch {
-                        // 에러 처리
-                        print("Failed to load replies: \(error)")
-                    }
-                }
             }
             
-            ReplyInputView(replyText: $replyText) { updateText in
+            ReplyInputView(replyText: $replyText) { newText in
                 // replyservice에서 댓글을 다는 메소드를 호출, ReplyUIO 반환
                 // 반환이 되면 그걸 `replies`에 삽입.
                 // 에러 처리는 해줘야겠죠?
-                Task{
-                    do {
-                        let newReply = try await replyService.addReply(to: vibe.id, text: updateText)
-                        replies.append(newReply) // 새 댓글을 replies에 추가
-                    } catch {
-                        // 에러 처리
-                        print("Failed to add reply: \(error)")
-                    }}
                 replyText = ""
             }
             .padding(.top, 16)
@@ -128,7 +111,15 @@ struct VibeDetailScreen: View {
             modifyReplySheet = nil
         }, content: { replyToModify in
             let index = replyToModify.index
-            ModifyReplyView(reply: replies[index]) { _ in
+            ModifyReplyView(reply: replies[index]) { updatedText in
+                Task{
+                    do {
+                        let newReply = try await replyService.modifyReply(replies[index], updatedText: updatedText)
+                        replies[index] = newReply
+                    } catch {
+                        // 에러 처리
+                        print("Failed to add reply: \(error)")
+                    }}
                 // replyservice로 댓글 수정을 요청하고
                 // 리턴받은 UIO로 replies[index]를 갈아끼운다.
                 // 에러 처리는 선택이 아닌 필수.
@@ -151,20 +142,12 @@ struct VibeDetailScreen: View {
         }
         .task {
             // ReplyService에서 댓글을 불러오는 함수를 호출하면 됨.
-//            replies = [
-//                .dummy0,
-//                .dummy1,
-//                .dummy3,
-//                .dummy2
-//            ]
-            Task {
-                do {
-                    replies = try await replyService.fetchReplies(for: vibe.id)
-                } catch {
-                    // 에러 처리
-                    print("Failed to load replies: \(error)")
-                }
-            }
+            replies = [
+                .dummy0,
+                .dummy1,
+                .dummy3,
+                .dummy2
+            ]
         }
         .onChange(of: vibe) { _, newValue in
             onUpdate?(newValue)
@@ -203,18 +186,18 @@ private extension VibeDetailScreen {
     
     func replyActionSheetContent(selectedReply: ReplyWithIndex?) -> [KEEVActionSheet.ButtonConfiguration] {
         if let reply = selectedReply?.reply,
-           reply.isMine { // 서비스로부터 id를 가져와야 합니다.
+           !reply.isMine { // 서비스로부터 id를 가져와야 합니다.
             return .myComment {
                 showReplyActionSheet = nil
                 modifyReplySheet = selectedReply
             } deleteHandler: {
                 guard let selectedReply else { return }
                 // 댓글 삭제하는 api 호출
-                replies.remove(at: selectedReply.index) // 성공하면 삭제, 실패하면 에러 처리
                 showReplyActionSheet = nil
             }
             
-        } else {
+        }
+        else {
             return .othersComment {
                 if let reply = selectedReply?.reply {
                     showReplyActionSheet = nil

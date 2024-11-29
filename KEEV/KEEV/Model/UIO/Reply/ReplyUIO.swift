@@ -74,7 +74,7 @@ struct ReplyUIO: Identifiable, Hashable {
         text = reply.text
         isLiked = reply.isLiked
         likeCount = reply.likeCount
-        createdDate = reply.createdDate
+        createdDate = reply.createdDate ?? .now
         isMine = (currentUserID != nil && reply.user.id == currentUserID)
     }
 }
