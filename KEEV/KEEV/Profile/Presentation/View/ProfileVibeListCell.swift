@@ -13,11 +13,9 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeListCell: View {
-    private let vibe: VibeUIO
-    
-    init(vibe: VibeUIO) {
-        self.vibe = vibe
-    }
+    let vibe: VibeUIO
+    let onEventTapped: (SimpleEventUIO) -> Void
+    let onVibeTapped: (VibeUIO) -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -174,5 +172,10 @@ private extension ProfileVibeListCell {
 }
 
 #Preview {
-    ProfileVibeListCell(vibe: VibeUIO.dummy5)
+    ProfileVibeListCell(vibe: .dummy0) { _ in
+        
+    } onVibeTapped: { _ in
+        
+    }
+
 }
