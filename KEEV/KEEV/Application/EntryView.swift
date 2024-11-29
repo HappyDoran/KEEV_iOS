@@ -69,7 +69,7 @@ struct EntryView: View {
                 }
                 .tag(TabbedItem.write.rawValue)
             
-            ProfileScreen(userID: userID, isMyProfile: false)
+            ProfileScreen(userID: userID, isMyProfile: true)
                 .tabItem {
                     TabbedItem.label(for: .profile)
                 }
