@@ -30,11 +30,11 @@ struct EventVibeView: View {
                 LazyVStack(spacing: 0) {
                     ForEach(vibes.indices, id: \.self) { index in
                         NavigationLink {
-                            VibeDetailScreen(vibe: vibes[index]) { vibe in
+                            LazyView(VibeDetailScreen(vibe: vibes[index]) { vibe in
                                 self.vibes[index] = vibe
                             } onDelete: { _ in
                                 self.vibes.remove(at: index)
-                            }
+                            })
                         } label: {
                             EventVibeCell(vibeData: vibes[index])
                         }
