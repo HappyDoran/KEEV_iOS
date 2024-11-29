@@ -14,6 +14,19 @@ import SwiftUI
 ///
 /// - Author: 라움
 protocol VibeServiceProtocol: AnyObject {
+    /// 바이브 갯수를 조회하는 함수
+    ///
+    /// - Parameters:
+    ///   - eventID: 이벤트 ID
+    ///
+    /// 이벤트 ID를 통해 이벤트에 현재까지 기록된 바이브의 갯수를 가져오는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 이벤트에 현재까지 기록된 바이브의 갯수
+    ///
+    /// - Author: 라움
+    func getVibeCount(eventID: String) async throws -> Int
+    
     /// 바이브 목록을 가져오는 함수
     ///
     /// - Parameters:

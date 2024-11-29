@@ -14,6 +14,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 enum VibeHTTPRequestRouter {
+    case getVibeCount(eventID: String)
     case getVibes(page: Int, size: Int, sort: [SortParameter])
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 업로드는 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
     case uploadVibe(token: String, eventID: String, data: Data)
@@ -30,7 +31,7 @@ enum VibeHTTPRequestRouter {
 extension VibeHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
-        case .getVibes, .checkIfUserUploadedVibe, .getVibeWithVibeID:
+        case .getVibeCount, .getVibes, .checkIfUserUploadedVibe, .getVibeWithVibeID:
                 .get
         case .uploadVibe:
                 .post
@@ -43,7 +44,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String : String]? {
         switch self {
-        case .getVibes, .getVibeWithVibeID:
+        case .getVibeCount, .getVibes, .getVibeWithVibeID:
             return nil
         case .uploadVibe(let token, _, _), .deleteVibe(let token, _, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _, _):
             return [
@@ -55,7 +56,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .getVibes, .getVibeWithVibeID:
+        case .getVibeCount, .getVibes, .getVibeWithVibeID:
             return nil
         case .uploadVibe(_, _, let data):
             return data
@@ -83,6 +84,8 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         var path = ["vibe"]
         
         switch self {
+        case .getVibeCount(let eventID):
+            path.append(contentsOf: ["count", "\(eventID)"])
         case .getVibes:
             path.append(contentsOf: ["get", "sortBy"])
         case .uploadVibe(_, let eventID, _):
@@ -115,7 +118,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
             }
             
             return queryItems
-        case .uploadVibe, .deleteVibe, .modifyVibe, .checkIfUserUploadedVibe, .getVibeWithVibeID:
+        case .getVibeCount, .uploadVibe, .deleteVibe, .modifyVibe, .checkIfUserUploadedVibe, .getVibeWithVibeID:
             return nil
         }
     }

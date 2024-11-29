@@ -44,7 +44,6 @@ struct EventVibeView: View {
                             if index % pageSize == (pageSize - 1) {
                                 Task {
                                     do {
-                                        // 서비스가 이벤트의 바이브를 찾는 로직
                                         vibes.append(contentsOf: try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, SortPattern.ascending)]).contents)
                                         currentPage += 1
                                     } catch {
@@ -60,7 +59,6 @@ struct EventVibeView: View {
                     .onAppear {
                         Task {
                             do {
-                                // 서비스가 이벤트의 바이브를 찾는 로직
                                 vibes = try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, SortPattern.ascending)]).contents
                                 currentPage += 1
                             } catch {

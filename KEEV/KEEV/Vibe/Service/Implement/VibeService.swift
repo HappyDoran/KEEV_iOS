@@ -17,6 +17,16 @@ class VibeService: VibeServiceProtocol {
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
+    func getVibeCount(eventID: String) async throws -> Int {
+        let router = VibeHTTPRequestRouter.getVibeCount(eventID: eventID)
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let vibesCount = try jsonDecoder.decode(Int.self, from: data)
+        
+        return vibesCount
+    }
+    
     func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<VibeUIO> {
         let sortCases: [SortCase] = sort.map { $0.0 }
         let sortPatterns: [SortPattern] = sort.map { $0.1 }
