@@ -67,15 +67,15 @@ struct ReplyUIO: Identifiable, Hashable {
     
     init(reply: ReplyDTO, currentUserID: Int?) {
         id = reply.id
-        userID = reply.userID
-        userNickname = reply.userNickname
-        userProfileImageURL = reply.userProfileImageURL
+        userID = reply.user.id
+        userNickname = reply.user.nickname
+        userProfileImageURL = URL(string: reply.user.profileImageURL ?? "")
         vibeID = reply.vibeID
         text = reply.text
         isLiked = reply.isLiked
         likeCount = reply.likeCount
         createdDate = reply.createdDate
-        isMine = (currentUserID != nil && reply.userID == currentUserID)
+        isMine = (currentUserID != nil && reply.user.id == currentUserID)
     }
 }
 

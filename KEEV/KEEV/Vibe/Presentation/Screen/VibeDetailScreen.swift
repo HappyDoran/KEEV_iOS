@@ -26,6 +26,7 @@ struct VibeDetailScreen: View {
     @State private var navigateToModifyVibe: Bool = false
     @State private var navigateToReport: ReportType? = nil
     @State private var navigateToUserProfile: Int? = nil
+    @StateObject private var replyService = ReplyService()
     
     init(
         vibe: VibeUIO,
@@ -59,12 +60,28 @@ struct VibeDetailScreen: View {
             .refreshable {
                 // vibeservice로부터 바이브 정보를 가져오면 됩니다.
                 // replyservice로부터 댓글을 가져오면 됩니다.
+                Task {
+                    do {
+                        replies = try await replyService.fetchReplies(for: vibe.id)
+                    } catch {
+                        // 에러 처리
+                        print("Failed to load replies: \(error)")
+                    }
+                }
             }
             
-            ReplyInputView(replyText: $replyText) { _ in
+            ReplyInputView(replyText: $replyText) { updateText in
                 // replyservice에서 댓글을 다는 메소드를 호출, ReplyUIO 반환
                 // 반환이 되면 그걸 `replies`에 삽입.
                 // 에러 처리는 해줘야겠죠?
+                Task{
+                    do {
+                        let newReply = try await replyService.addReply(to: vibe.id, text: updateText)
+                        replies.append(newReply) // 새 댓글을 replies에 추가
+                    } catch {
+                        // 에러 처리
+                        print("Failed to add reply: \(error)")
+                    }}
                 replyText = ""
             }
             .padding(.top, 16)
@@ -134,12 +151,20 @@ struct VibeDetailScreen: View {
         }
         .task {
             // ReplyService에서 댓글을 불러오는 함수를 호출하면 됨.
-            replies = [
-                .dummy0,
-                .dummy1,
-                .dummy3,
-                .dummy2
-            ]
+//            replies = [
+//                .dummy0,
+//                .dummy1,
+//                .dummy3,
+//                .dummy2
+//            ]
+            Task {
+                do {
+                    replies = try await replyService.fetchReplies(for: vibe.id)
+                } catch {
+                    // 에러 처리
+                    print("Failed to load replies: \(error)")
+                }
+            }
         }
         .onChange(of: vibe) { _, newValue in
             onUpdate?(newValue)
@@ -224,7 +249,7 @@ private extension VibeDetailScreen {
 
 #Preview {
     NavigationStack {
-        VibeDetailScreen(vibe: .dummy5) { _ in
+        VibeDetailScreen(vibe: .dummy2) { _ in
             
         } onDelete: { _ in
             
