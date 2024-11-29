@@ -18,6 +18,7 @@ struct EntryView: View {
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
     @State private var signInStatus: SignInStatus? = nil
+    @State private var userID: Int? = nil
     
     init() {
         let appearance = UITabBarAppearance()
@@ -46,16 +47,12 @@ struct EntryView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .tint(.gray100)
-        .onChange(of: selectedItem) { oldValue, newValue in
-            if newValue == TabbedItem.write.rawValue {
-                isPresented = true
-                selectedItem = oldValue
+        .onChange(of: signInStatus) {
+            if case let .ok(user) = signInStatus {
+                userID = user.id
             }
         }
-        .fullScreenCover(isPresented: $isPresented) {
-            VibeCreateScreen()
-        }
+        .tint(.gray100)
     }
     
     private var signInSuccessView: some View {
@@ -72,7 +69,7 @@ struct EntryView: View {
                 }
                 .tag(TabbedItem.write.rawValue)
             
-            ProfileScreen()
+            ProfileScreen(userID: userID, isMyProfile: false)
                 .tabItem {
                     TabbedItem.label(for: .profile)
                 }
@@ -80,6 +77,15 @@ struct EntryView: View {
         }
         .tint(.brand500)
         .sensoryFeedback(.impact, trigger: selectedItem)
+        .onChange(of: selectedItem) { oldValue, newValue in
+            if newValue == TabbedItem.write.rawValue {
+                isPresented = true
+                selectedItem = oldValue
+            }
+        }
+        .fullScreenCover(isPresented: $isPresented) {
+            VibeCreateScreen()
+        }
     }
 }
 
@@ -93,7 +99,6 @@ private extension EntryView {
                 .resizable()
                 .frame(width: 250, height: 103.5)
                 .task {
-                    try! await Task.sleep(nanoseconds: 10000)
                     status = await service.autoSignIn()
                 }
         }
