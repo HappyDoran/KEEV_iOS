@@ -11,10 +11,12 @@ import SwiftUI
 struct VibeDetailScreen: View {
     @Environment(\.dismiss) private var dismiss
     
+    @Injected private var replyService: any ReplyServiceProtocol
+    @Injected private var vibeService: any VibeServiceProtocol
+    
     @State private var vibe: VibeUIO
     @State private var replies: [ReplyUIO] = []
     
-    private let onUpdate: ((VibeUIO) -> Void)?
     private let onDelete: ((VibeUIO) -> Void)?
     
     @State private var imageIndexTag: Int = 0
@@ -33,7 +35,6 @@ struct VibeDetailScreen: View {
         onDelete: ((VibeUIO) -> Void)? = nil
     ) {
         self.vibe = vibe
-        self.onUpdate = onUpdate
         self.onDelete = onDelete
     }
     
@@ -57,16 +58,11 @@ struct VibeDetailScreen: View {
             .scrollDismissesKeyboard(.immediately)
             .scrollIndicators(.hidden)
             .refreshable {
-                // vibeservice로부터 바이브 정보를 가져오면 됩니다.
-                // replyservice로부터 댓글을 가져오면 됩니다.
+                fetchVibe()
+                fetchReplies()
             }
             
-            ReplyInputView(replyText: $replyText) { newText in
-                // replyservice에서 댓글을 다는 메소드를 호출, ReplyUIO 반환
-                // 반환이 되면 그걸 `replies`에 삽입.
-                // 에러 처리는 해줘야겠죠?
-                replyText = ""
-            }
+            ReplyInputView(replyText: $replyText, sendHandler: addReply)
             .padding(.top, 16)
             .padding(.horizontal, 20)
             .background(.grayBG800)
@@ -112,9 +108,7 @@ struct VibeDetailScreen: View {
         }, content: { replyToModify in
             let index = replyToModify.index
             ModifyReplyView(reply: replies[index]) { updatedText in
-                // replyservice로 댓글 수정을 요청하고
-                // 리턴받은 UIO로 replies[index]를 갈아끼운다.
-                // 에러 처리는 선택이 아닌 필수.
+                modifyReply(index: index, reply: replies[index], text: updatedText)
             }
             .presentationDetents([.height(120)])
             .presentationDragIndicator(.visible)
@@ -127,45 +121,22 @@ struct VibeDetailScreen: View {
             VibeModifyScreen(vibe: $vibe)
         }
         .navigationDestination(item: $navigateToUserProfile) { userID in
-            VStack {
-                Text("userID: \(userID)")
-                Text("유저 프로필 뷰로 이동해야 함.")
-            }
+            ProfileScreen(userID: userID, isMyProfile: false)
         }
-        .task {
-            // ReplyService에서 댓글을 불러오는 함수를 호출하면 됨.
-            replies = [
-                .dummy0,
-                .dummy1,
-                .dummy3,
-                .dummy2
-            ]
-        }
-        .onChange(of: vibe) { _, newValue in
-            onUpdate?(newValue)
-        }
+        .onAppear(perform: fetchReplies)
     }
 }
 
 // MARK: 스크린의 로직
 private extension VibeDetailScreen {
-    func sendReply() {
-        print(replyText)
-        // ReplyService에서 무언가를 수행하면 됩니다.
-        // 성공하면 replies에 replyUIO를 넣으면 됩니다.
-    }
-    
     func vibeActionSheetContent() -> [KEEVActionSheet.ButtonConfiguration] {
-        if 2 == vibe.userID {
-            //        if vibe.isMine {
+        if vibe.isMine {
             return .myVibe {
                 showVibeActionSheet = false
                 navigateToModifyVibe = true
             } deleteHandler: {
                 showVibeActionSheet = false
-                /// 삭제를 시도하는 api가 있어야 합니다.
-                onDelete?(vibe)
-                dismiss()
+                deleteVibe()
             }
         } else {
             return [
@@ -184,7 +155,7 @@ private extension VibeDetailScreen {
                 modifyReplySheet = selectedReply
             } deleteHandler: {
                 guard let selectedReply else { return }
-                // 댓글 삭제하는 api 호출
+                deleteReply(reply: selectedReply)
                 showReplyActionSheet = nil
             }
             
@@ -208,6 +179,74 @@ private extension VibeDetailScreen {
     
     func tapReplyLike(index: Int, reply: ReplyUIO) {
         // 좋아요를 눌렀을 때 문제 해결
+    }
+    
+    func fetchVibe() {
+        Task {
+            do {
+                vibe = try await vibeService.getVibeWithVibeID(vibeID: vibe.id)
+            } catch {
+                print("바이브를 불러오는데 실패했습니다.")
+            }
+        }
+    }
+    
+    func deleteVibe() {
+        Task {
+            do {
+                try await vibeService.deleteVibe(eventID: vibe.event.id, vibeID: vibe.id)
+                onDelete?(vibe)
+                dismiss()
+            } catch {
+                print("바이브를 삭제하는데 실패했습니다.")
+            }
+        }
+    }
+    
+    func fetchReplies() {
+        Task {
+            do {
+                replies = try await replyService.fetchReplies(for: vibe.id)
+            } catch {
+                print("댓글을 불러오는데 실패했습니다.")
+            }
+        }
+    }
+    
+    func addReply(_ text: String) {
+        replyText = ""
+        Task {
+            do {
+                let reply = try await replyService.addReply(to: vibe.id, text: text)
+                replies.insert(reply, at: 0)
+                
+            } catch {
+                print("댓글을 등록하는데 실패했습니다.")
+            }
+        }
+    }
+    
+    func modifyReply(index: Int, reply: ReplyUIO, text: String) {
+        modifyReplySheet = nil
+        Task {
+            do {
+                let reply = try await replyService.modifyReply(reply, updatedText: text)
+                replies[index] = reply
+            } catch {
+                print("댓글을 수정하는데 실패했습니다.")
+            }
+        }
+    }
+    
+    func deleteReply(reply: ReplyWithIndex) {
+        Task {
+            do {
+                try await replyService.deleteReply(reply.id)
+                replies.remove(at: reply.index)
+            } catch {
+                print("댓글을 삭제하는데 실패했습니다.")
+            }
+        }
     }
 }
 

@@ -9,6 +9,8 @@ import SwiftUI
 import PhotosUI
 
 struct VibeModifyScreen: View {
+    @Injected private var service: any VibeServiceProtocol
+    
     @Environment(\.dismiss) private var dismiss
     @Namespace private var recentPhoto
     
@@ -72,11 +74,7 @@ struct VibeModifyScreen: View {
             }
             
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {
-                    // 수정하는 로직 추가
-                    // 
-                    dismiss()
-                }){
+                Button(action: modifyVibe){
                     ZStack {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(Color.brand500)
@@ -248,8 +246,28 @@ private extension VibeModifyScreen {
             selectedImages = tempPhotos
         }
     }
+    
+    func modifyVibe() {
+        let previousImages = previousImages.compactMap(\.self)
+        Task {
+            do {
+                vibe = try await service.modifyVibe(
+                    vibeID: vibe.id,
+                    rating: rating,
+                    comment: comment.isEmpty ? nil : comment,
+                    previousImageURLs: [],
+                    images: previousImages + selectedImages
+                )
+                dismiss()
+            } catch {
+                print("바이브를 수정하는데 실패했어요.")
+            }
+        }
+    }
 }
 
 #Preview {
-    VibeModifyScreen(vibe: .constant(.dummy2))
+    NavigationStack {
+        VibeModifyScreen(vibe: .constant(.dummy2))
+    }
 }
