@@ -115,17 +115,7 @@ class ReplyService: ReplyServiceProtocol {
         let accessToken = try getAccessToken()
         let router = ReplyHTTPRequestRouter.deleteReply(token: accessToken, replyID: "\(replyID)")
         
-        print(replyID)
-        
-        let (statuscode, data) = try await networkUtility.requestWithStatusCode(router: router)
-        
-        print(statuscode)
-        
-        if let jsonString = String(data: data, encoding: .utf8) {
-            print("Response Data: \(jsonString)")
-        } else {
-            print("Failed to convert data to string.")
-        }
+        _ = try await networkUtility.requestWithStatusCode(router: router)
     }
 }
 

@@ -112,14 +112,6 @@ struct VibeDetailScreen: View {
         }, content: { replyToModify in
             let index = replyToModify.index
             ModifyReplyView(reply: replies[index]) { updatedText in
-                Task{
-                    do {
-                        let newReply = try await replyService.modifyReply(replies[index], updatedText: updatedText)
-                        replies[index] = newReply
-                    } catch {
-                        // 에러 처리
-                        print("Failed to add reply: \(error)")
-                    }}
                 // replyservice로 댓글 수정을 요청하고
                 // 리턴받은 UIO로 replies[index]를 갈아끼운다.
                 // 에러 처리는 선택이 아닌 필수.
@@ -186,7 +178,7 @@ private extension VibeDetailScreen {
     
     func replyActionSheetContent(selectedReply: ReplyWithIndex?) -> [KEEVActionSheet.ButtonConfiguration] {
         if let reply = selectedReply?.reply,
-           !reply.isMine { // 서비스로부터 id를 가져와야 합니다.
+           reply.isMine { // 서비스로부터 id를 가져와야 합니다.
             return .myComment {
                 showReplyActionSheet = nil
                 modifyReplySheet = selectedReply
@@ -196,8 +188,7 @@ private extension VibeDetailScreen {
                 showReplyActionSheet = nil
             }
             
-        }
-        else {
+        } else {
             return .othersComment {
                 if let reply = selectedReply?.reply {
                     showReplyActionSheet = nil
