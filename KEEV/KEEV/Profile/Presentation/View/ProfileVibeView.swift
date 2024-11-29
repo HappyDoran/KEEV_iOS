@@ -20,8 +20,6 @@ struct ProfileVibeView: View {
     private let userID: Int?
     private let isMyProfile: Bool
     @Binding private var selectedVibeViewType: VibeViewType
-    @State private var selectedVibe: VibeUIO? = nil
-    @State private var selectedEvent: SimpleEventUIO? = nil
     
     init(userID: Int?, isMyProfile: Bool, selectedVibeViewType: Binding<VibeViewType>) {
         self.userID = userID
