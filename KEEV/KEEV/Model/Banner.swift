@@ -12,6 +12,7 @@ protocol BannerProtocol {
     var description: String { get }
     var image: Image { get } // Image 타입으로 변경
     var detailImage: Image { get }
+    var detailDescriptionImage: Image { get }
 }
 
 struct Banner: BannerProtocol {
@@ -19,4 +20,5 @@ struct Banner: BannerProtocol {
     let description: String
     let image: Image // Image 타입으로 변경
     let detailImage: Image
+    let detailDescriptionImage: Image
 }

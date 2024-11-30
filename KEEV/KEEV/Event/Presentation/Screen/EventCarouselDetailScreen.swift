@@ -18,9 +18,10 @@ struct EventCarouselDetailScreen: View {
     }
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false) {
             VStack(spacing: 0) {
                 banner.detailImage
+                banner.detailDescriptionImage
             }
         }
             .navigationBarBackButtonHidden(true)
@@ -44,6 +45,6 @@ struct EventCarouselDetailScreen: View {
 
 #Preview {
     NavigationStack {
-        EventCarouselDetailScreen(bannerItem: Banner(title: "올해의 마무리,\n공연과 함께", description: "연말의 주요 공연을 확인해보세요!", image: Image("Banner2"), detailImage: Image("DetailBanner2")))
+        EventCarouselDetailScreen(bannerItem: Banner(title: "올해의 마무리,\n공연과 함께", description: "연말의 주요 공연을 확인해보세요!", image: Image("Banner2"), detailImage: Image("DetailBanner2"), detailDescriptionImage: Image("DetailDescription2")))
     }
 }
