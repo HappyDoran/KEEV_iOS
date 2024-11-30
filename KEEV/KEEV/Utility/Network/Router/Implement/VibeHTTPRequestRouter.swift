@@ -18,10 +18,10 @@ enum VibeHTTPRequestRouter {
     case getVibes(page: Int, size: Int, sort: [SortParameter])
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 업로드는 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
     case uploadVibe(token: String, eventID: String, data: Data)
-    case deleteVibe(token: String, eventID: String, vibeID: Int)
+    case deleteVibe(token: String, vibeID: Int)
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 수정은 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
     case modifyVibe(token: String, vibeID: Int, data: Data)
-    case checkIfUserUploadedVibe(token: String, eventID: String, userID: Int)
+    case checkIfUserUploadedVibe(token: String, eventID: String)
     case getVibeWithVibeID(vibeID: Int)
 }
 
@@ -46,7 +46,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .getVibeCount, .getVibes, .getVibeWithVibeID:
             return nil
-        case .uploadVibe(let token, _, _), .deleteVibe(let token, _, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _, _):
+        case .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -56,23 +56,17 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .getVibeCount, .getVibes, .getVibeWithVibeID:
+        case .getVibeCount, .getVibes, .getVibeWithVibeID, .checkIfUserUploadedVibe:
             return nil
         case .uploadVibe(_, _, let data):
             return data
-        case .deleteVibe(_, let eventID, let vibeID):
+        case .deleteVibe(_, let vibeID):
             let json: [String: Any] = [
-                "eventId": eventID,
-                "vibeId": vibeID
+                "id": vibeID
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
         case .modifyVibe(_, _, let data):
             return data
-        case .checkIfUserUploadedVibe(_, _, let userID):
-            let json: [String: Int] = [
-                "userId": userID
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
         }
     }
     
@@ -94,7 +88,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["delete"])
         case .modifyVibe(_, let vibeID, _):
             path.append(contentsOf: ["update", "\(vibeID)"])
-        case .checkIfUserUploadedVibe(_, let eventID, _):
+        case .checkIfUserUploadedVibe(_, let eventID):
             path.append(contentsOf: ["find", "\(eventID)"])
         case .getVibeWithVibeID(let vibeID):
             // 향후에 endpoint 나오면 수정해야합니다.

@@ -69,7 +69,7 @@ class MockVibeService: VibeServiceProtocol {
         return newVibe
     }
     
-    func deleteVibe(eventID: String, vibeID: Int) async throws {
+    func deleteVibe(vibeID: Int) async throws {
         
     }
     
@@ -90,7 +90,7 @@ class MockVibeService: VibeServiceProtocol {
         return vibe
     }
     
-    func checkIfUserUploadedVibe(eventID: String, userID: Int) async throws -> Int {
+    func checkIfUserUploadedVibe(eventID: String) async throws -> Int {
         1
     }
     
