@@ -14,6 +14,9 @@ import Foundation
 /// - Todo: 향후에 EventService와 EventServiceProtocol을 교체하면서 MockService의 프로토콜도 수정해주어야합니다.
 /// - Author: 라움
 class MockEventService: EventServiceProtocol {
+    private let networkUtility: NetworkUtility = NetworkUtility()
+    private let jsonDecoder: JSONDecoder = JSONDecoder()
+    
     func loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<SimpleEventUIO> {
         var events: [SimpleEventUIO] = []
         let startIndex = page*size
@@ -28,6 +31,21 @@ class MockEventService: EventServiceProtocol {
     }
     
     func loadDetailEvent(id: String) async throws -> DetailEventUIO {
-        .dummy0
+//        .dummy0
+        let router = EventHTTPRequestRouter.fetchDetailEvent(eventID: id)
+        
+        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
+        
+        let eventResponseDTO = try jsonDecoder.decode(EventResponseDTO.self, from: data)
+        
+        print(eventResponseDTO)
+        
+        guard let detailEventDTO = eventResponseDTO.events.first else {
+            throw NSError(domain: "EventError", code: 404, userInfo: [NSLocalizedDescriptionKey: "Event not found"])
+        }
+        
+        let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
+        
+        return detailEventUIO
     }
 }
