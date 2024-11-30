@@ -17,6 +17,7 @@ struct VibeCreateScreen: View {
     @Environment(\.dismiss) private var dismiss
     @Injected private var service: any VibeServiceProtocol
     
+    @State private var loadingForUpload: Bool = false // 바이브 업로드할 때 뜨는 로딩
     @State private var isPresented = false
     
     @State private var selectedEvent: SimpleEventUIO? = nil
@@ -35,6 +36,7 @@ struct VibeCreateScreen: View {
         VStack(spacing: 0) {
             // MARK: 헤더
             VibeHeader(selectedEvent: selectedEvent, rating: rating, showExitAlert: $showExitAlert) {
+                uploadVibe()
             }
                 .padding(.horizontal, 16)
             
@@ -104,6 +106,7 @@ struct VibeCreateScreen: View {
         )
         .edgesIgnoringSafeArea(.bottom)
         .backgroundForKEEV()
+        .loading(for: loadingForUpload)
     }
 }
 
@@ -128,7 +131,7 @@ extension VibeCreateScreen {
 private extension VibeCreateScreen {
     func uploadVibe() {
         guard let selectedEvent else { return }
-        
+        loadingForUpload = true
         Task {
             do {
                 _ = try await service.uploadVibe(
@@ -141,6 +144,7 @@ private extension VibeCreateScreen {
             } catch {
                 print("바이브를 업로드하는데 실패했습니다.")
             }
+            loadingForUpload = false
         }
     }
 }

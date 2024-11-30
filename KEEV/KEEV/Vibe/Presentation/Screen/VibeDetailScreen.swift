@@ -19,6 +19,7 @@ struct VibeDetailScreen: View {
     
     private let onDelete: ((VibeUIO) -> Void)?
     
+    @State private var loadingForDelete: Bool = false
     @State private var imageIndexTag: Int = 0
     @State private var replyText: String = ""
     
@@ -124,6 +125,7 @@ struct VibeDetailScreen: View {
             ProfileScreen(userID: userID, isMyProfile: vibe.isMine, isNavigation: true)
         }
         .onAppear(perform: fetchReplies)
+        .loading(for: loadingForDelete)
     }
 }
 
@@ -192,12 +194,15 @@ private extension VibeDetailScreen {
     }
     
     func deleteVibe() {
+        loadingForDelete = true
         Task {
             do {
                 try await vibeService.deleteVibe(vibeID: vibe.id)
                 onDelete?(vibe)
+                loadingForDelete = false
                 dismiss()
             } catch {
+                loadingForDelete = false
                 print("바이브를 삭제하는데 실패했습니다.")
             }
         }

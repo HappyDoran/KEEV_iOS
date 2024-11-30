@@ -23,6 +23,7 @@ struct VibeModifyScreen: View {
     @State private var isDelete = false
     private let maxSelectedCount: Int = 5
     
+    @State private var loadingForUpload: Bool = false
     @State private var showCancelAlert = false
     @State private var showExitAlert = false
     
@@ -105,6 +106,7 @@ struct VibeModifyScreen: View {
         .edgesIgnoringSafeArea(.bottom)
         .backgroundForKEEV()
         .task {
+            loadingForUpload = true
             var tempImages = [UIImage?]()
             for url in vibe.imageURLs {
                 if let url,
@@ -116,7 +118,9 @@ struct VibeModifyScreen: View {
                 }
             }
             previousImages = tempImages
+            loadingForUpload = false
         }
+        .loading(for: loadingForUpload)
     }
 }
 
@@ -248,6 +252,7 @@ private extension VibeModifyScreen {
     }
     
     func modifyVibe() {
+        loadingForUpload = true
         let previousImages = previousImages.compactMap(\.self)
         Task {
             do {
@@ -262,6 +267,7 @@ private extension VibeModifyScreen {
             } catch {
                 print("바이브를 수정하는데 실패했어요.")
             }
+            loadingForUpload = false
         }
     }
 }
