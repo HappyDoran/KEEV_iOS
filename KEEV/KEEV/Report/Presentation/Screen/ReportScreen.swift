@@ -27,6 +27,8 @@ import SwiftUI
 /// - Note: 신고하기를 사용하는 뷰 위치에 따라 reportType을 event, vibe, user, comment 중에서 고르면 됩니다.
 /// - Author: 라움
 struct ReportScreen: View {
+    @Injected private var service: any ReportServiceProtocol
+    
     private let reportType: ReportType
     
     init(reportType: ReportType) {
@@ -49,10 +51,7 @@ struct ReportScreen: View {
             
             CommonButton(
                 title: "작성완료",
-                action: {
-                    // do something from reportService
-                    showReportDoneAlert = true
-                },
+                action: sendReport,
                 style: .maxWidth,
                 disabled: buttonDisabled
             )
@@ -91,6 +90,28 @@ extension ReportScreen {
             buttonDisabled = true
         } else {
             buttonDisabled = false
+        }
+    }
+    
+    private func sendReport() {
+        guard !selectedCase.isEmpty else { return }
+        Task {
+            do {
+                switch reportType {
+                case .reply(let vibeID, let replyID):
+                    _ = try await service.sendReplyReport(vibeID: vibeID, replyID: replyID, reason: selectedCase)
+                case .event(eventID: let eventID):
+                    _ = try await service.sendEventReport(eventID: eventID, reason: selectedCase)
+                case .vibe(eventID: let eventID, vibeID: let vibeID):
+                    _ = try await service.sendVibeReport(eventID: eventID, vibeID: vibeID, reason: selectedCase)
+                case .user(userID: let userID):
+                    _ = try await service.sendUserReport(userID: userID, reason: selectedCase)
+                }
+                print("ReportScreen(.sendReport): 성공")
+                showReportDoneAlert = true
+            } catch {
+                print("ReportScreen(.sendReport): 신고하는데 실패했습니다.")
+            }
         }
     }
 }
