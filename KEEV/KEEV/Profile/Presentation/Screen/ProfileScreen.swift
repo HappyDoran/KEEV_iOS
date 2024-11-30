@@ -15,10 +15,13 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileScreen: View {
+    @Environment(\.dismiss) private var dismiss
+    
     @Injected private var service: any ActivityServiceProtocol
     
     let userID: Int?
     let isMyProfile: Bool
+    let isNavigation: Bool
     
     @State private var userProfile: DetailUserUIO? = nil
     @State private var showActionSheet = false
@@ -30,10 +33,12 @@ struct ProfileScreen: View {
     
     var body: some View {
         ScrollView {
-            ProfileTopView(userProfile: userProfile, isMyProfile: isMyProfile, showActionSheet: $showActionSheet)
-                .navigationDestination(item: $navigateToReport) { type in
-                    LazyView(ReportScreen(reportType: type))
-                }
+            ProfileTopView(
+                userProfile: userProfile,
+                isMyProfile: isMyProfile,
+                showActionSheet: $showActionSheet,
+                navigateToReport: $navigateToReport
+            )
             
             if isMyProfile {
                 profileEditButton
@@ -79,6 +84,30 @@ struct ProfileScreen: View {
                 })
             ]
         )
+        .navigationBarBackButtonHidden()
+        .toolbar(isNavigation ? .visible : .hidden)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .foregroundStyle(.gray100)
+                }
+            }
+            
+            if !isMyProfile {
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showActionSheet = true
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .foregroundStyle(.gray100)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -113,6 +142,6 @@ enum VibeViewType {
 
 #Preview {
     NavigationStack {
-        ProfileScreen(userID: nil, isMyProfile: false)
+        ProfileScreen(userID: nil, isMyProfile: false, isNavigation: false)
     }
 }

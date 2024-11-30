@@ -121,7 +121,7 @@ struct VibeDetailScreen: View {
             VibeModifyScreen(vibe: $vibe)
         }
         .navigationDestination(item: $navigateToUserProfile) { userID in
-            ProfileScreen(userID: userID, isMyProfile: false)
+            ProfileScreen(userID: userID, isMyProfile: vibe.isMine, isNavigation: true)
         }
         .onAppear(perform: fetchReplies)
     }
