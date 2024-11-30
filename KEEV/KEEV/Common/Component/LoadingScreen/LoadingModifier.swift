@@ -48,7 +48,7 @@ import SwiftUI
 ///
 struct LoadingModifier: ViewModifier {
     /// 로딩 오버레이의 가시성을 제어하는 바인딩 값입니다.
-    @Binding var isLoading: Bool
+    let isLoading: Bool
     
     func body(content: Content) -> some View {
         content

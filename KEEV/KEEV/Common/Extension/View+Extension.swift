@@ -264,7 +264,7 @@ extension View {
     /// - Note: 이 메서드는 내부적으로 `LoadingModifier`를 사용하여 로딩 화면을 구현합니다. 'LoadingModifier`의 동작 방식은 별도로 사용자화할 수 있습니다.
     ///
     /// - Author: newJunsung
-    func loading(for isLoading: Binding<Bool>) -> some View {
+    func loading(for isLoading: Bool) -> some View {
         modifier(LoadingModifier(isLoading: isLoading))
     }
 }
