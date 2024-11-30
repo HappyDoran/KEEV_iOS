@@ -38,8 +38,6 @@ class MockEventService: EventServiceProtocol {
         
         let eventResponseDTO = try jsonDecoder.decode(EventResponseDTO.self, from: data)
         
-        print(eventResponseDTO)
-        
         guard let detailEventDTO = eventResponseDTO.events.first else {
             throw NSError(domain: "EventError", code: 404, userInfo: [NSLocalizedDescriptionKey: "Event not found"])
         }
