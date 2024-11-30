@@ -68,6 +68,7 @@ struct EventDetailScreen: View {
             }
         }
         .backgroundForKEEV()
+        .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button {
