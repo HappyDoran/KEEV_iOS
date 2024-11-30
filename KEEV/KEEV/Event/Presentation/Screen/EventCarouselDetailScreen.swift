@@ -21,7 +21,11 @@ struct EventCarouselDetailScreen: View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 0) {
                 banner.detailImage
+                    .resizable()
+                    .scaledToFit()
                 banner.detailDescriptionImage
+                    .resizable()
+                    .scaledToFit()
             }
         }
             .navigationBarBackButtonHidden(true)
