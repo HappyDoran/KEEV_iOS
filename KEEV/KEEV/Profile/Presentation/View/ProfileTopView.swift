@@ -15,11 +15,11 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileTopView: View {
-    private let userProfile: DetailUserUIO
+    private let userProfile: DetailUserUIO?
     private let isMyProfile: Bool
     @Binding private var showActionSheet: Bool
     
-    init(userProfile: DetailUserUIO, isMyProfile: Bool, showActionSheet: Binding<Bool>) {
+    init(userProfile: DetailUserUIO?, isMyProfile: Bool, showActionSheet: Binding<Bool>) {
         self.userProfile = userProfile
         self.isMyProfile = isMyProfile
         self._showActionSheet = showActionSheet
@@ -27,37 +27,7 @@ struct ProfileTopView: View {
     
     var body: some View {
         ZStack {
-            VStack(spacing: 0) {
-                AsyncImage(url: userProfile.backgroundImageURL) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .frame(height: 202)
-                            .clipped()
-                            .overlay {
-                                Color.black
-                                    .opacity(0.2)
-                            }
-                    } else if phase.error == nil {
-                        ProgressView()
-                            .frame(height: 202)
-                            .overlay {
-                                Color.black
-                                    .opacity(0.2)
-                            }
-                    } else {
-                        Color.gray800
-                            .frame(height: 202)
-                            .overlay {
-                                Color.black
-                                    .opacity(0.2)
-                            }
-                    }
-                }
-                
-                Spacer()
-            }
+            backgroundImageView
             
             VStack(spacing: 0) {
                 HStack {
@@ -88,28 +58,84 @@ struct ProfileTopView: View {
                 
                 Spacer()
                 
-                URLProfileImage(url: userProfile.profileImageURL, size: 96, editable: false, strokeWidth: 3, strokeColor: .gray950)
+                URLProfileImage(url: userProfile?.profileImageURL, size: 96, editable: false, strokeWidth: 3, strokeColor: .gray950)
                     .padding(.bottom, 8)
                 
-                Text(userProfile.nickname)
+                Text(userProfile?.nickname ?? "게스트")
                     .figmaFont(PretendardFont.title(style: .md))
                     .foregroundStyle(.gray100)
                     .padding(.bottom, 8)
                 
-                if userProfile.description!.isEmpty && isMyProfile {
-                    Text("한 줄 소개를 입력해주세요.")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                        .foregroundStyle(.gray700)
-                } else if !userProfile.description!.isEmpty && isMyProfile {
-                    Text(userProfile.description!)
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                        .foregroundStyle(.gray300)
-                }
+                descriptionImageView
             }
             .padding(.horizontal, 16)
         }
         .frame(height: 300)
         .backgroundForKEEV()
+    }
+}
+
+private extension ProfileTopView {
+    var backgroundImageView: some View {
+        VStack(spacing: 0) {
+            if let backgroundImageURL = userProfile?.backgroundImageURL {
+                AsyncImage(url: backgroundImageURL) { phase in
+                    if let image = phase.image {
+                        image
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 202)
+                            .clipped()
+                            .overlay {
+                                Color.black
+                                    .opacity(0.2)
+                            }
+                    } else if phase.error == nil {
+                        ProgressView()
+                            .frame(height: 202)
+                            .overlay {
+                                Color.black
+                                    .opacity(0.2)
+                            }
+                    } else { // 에러가 났을 때의 뷰
+                        emptyBackgroundImageView
+                    }
+                }
+            } else { // 유저가 `nil`이거나 배경화면이 없을 때의 뷰
+                emptyBackgroundImageView
+            }
+            Spacer()
+        }
+    }
+    
+    var emptyBackgroundImageView: some View {
+        Color.gray800
+            .frame(height: 202)
+            .overlay {
+                Color.black
+                    .opacity(0.2)
+            }
+    }
+    
+    @ViewBuilder
+    var descriptionImageView: some View {
+        if let description = userProfile?.description {
+            if description.isEmpty && isMyProfile {
+                Text("한 줄 소개를 입력해주세요.")
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                    .foregroundStyle(.gray700)
+            } else if description.isEmpty && isMyProfile {
+                Text(description)
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                    .foregroundStyle(.gray300)
+            }
+        } else {
+            if isMyProfile {
+                Text("한 줄 소개를 입력해주세요.")
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                    .foregroundStyle(.gray700)
+            }
+        }
     }
 }
 

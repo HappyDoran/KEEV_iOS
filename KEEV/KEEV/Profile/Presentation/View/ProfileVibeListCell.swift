@@ -13,11 +13,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeListCell: View {
-    private let vibe: VibeUIO
-    
-    init(vibe: VibeUIO) {
-        self.vibe = vibe
-    }
+    let vibe: VibeUIO
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -36,7 +32,7 @@ struct ProfileVibeListCell: View {
             .padding(.horizontal, 16)
             
             NavigationLink {
-                EventDetailScreen(simpleEvent: vibe.event)
+                LazyView(EventDetailScreen(simpleEvent: vibe.event))
             } label: {
                 eventInfoArea
                     .padding(.horizontal, 16)
@@ -45,7 +41,7 @@ struct ProfileVibeListCell: View {
             Divider()
                 .padding(.vertical, 16)
             NavigationLink {
-                VibeDetailScreen(vibe: vibe)
+                LazyView(VibeDetailScreen(vibe: vibe))
             } label: {
                 vibeArea
             }
@@ -174,5 +170,6 @@ private extension ProfileVibeListCell {
 }
 
 #Preview {
-    ProfileVibeListCell(vibe: VibeUIO.dummy5)
+    ProfileVibeListCell(vibe: .dummy0)
+
 }

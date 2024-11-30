@@ -35,8 +35,8 @@ struct ProfileImage: View {
     
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            if profileImage != nil {
-                Image(uiImage: profileImage!)
+            if let profileImage {
+                Image(uiImage: profileImage)
                     .resizable()
                     .scaledToFill()
                     .frame(width: size, height: size)

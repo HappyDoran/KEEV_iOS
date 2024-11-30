@@ -44,7 +44,7 @@ class NavigationRouter: ObservableObject {
     func view(for route: Route) -> some View {
         switch route {
         case .signUpScreen:
-            SignUpScreen()
+            SignUpScreen(status: .constant(.created))
         case .dummyView:
             DummyView()
         }

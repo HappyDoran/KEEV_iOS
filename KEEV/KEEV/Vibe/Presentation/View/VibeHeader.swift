@@ -18,11 +18,13 @@ struct VibeHeader: View {
     private let selectedEvent: SimpleEventUIO?
     private let rating: Double
     @Binding private var showExitAlert: Bool
+    private let uploadHandler: (() -> Void)?
     
-    init(selectedEvent: SimpleEventUIO?, rating: Double, showExitAlert: Binding<Bool>) {
+    init(selectedEvent: SimpleEventUIO?, rating: Double, showExitAlert: Binding<Bool>, uploadHandler: (() -> Void)?) {
         self.selectedEvent = selectedEvent
         self.rating = rating
         self._showExitAlert = showExitAlert
+        self.uploadHandler = uploadHandler
     }
     
     @Environment(\.dismiss) private var dismiss
@@ -50,7 +52,7 @@ struct VibeHeader: View {
                 
                 if selectedEvent != nil {
                     Button(action: {
-                        dismiss()
+                        uploadHandler?()
                     }){
                         ZStack {
                             RoundedRectangle(cornerRadius: 16)
@@ -77,7 +79,9 @@ struct VibeHeader: View {
             .dummy0,
                rating: 0.0,
                showExitAlert: .constant(false)
-    )
+    ) {
+        
+    }
     .backgroundForKEEV()
 }
 

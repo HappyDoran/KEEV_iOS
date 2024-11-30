@@ -14,14 +14,14 @@ import SwiftUI
 /// - ToDo: 닫기 버튼을 탭할 시에 나오는 커스텀 알럿 수정 후 해당하는 코드 부분을 수정해야합니다.
 /// - Author: 라움
 struct ProfileEditScreen: View {
-    @Binding private var userProfile: DetailUserUIO
+    @Binding private var userProfile: DetailUserUIO?
     @Binding private var profileEditedToast: Toast?
     
-    init(userProfile: Binding<DetailUserUIO>, profileEditedToast: Binding<Toast?>) {
+    init(userProfile: Binding<DetailUserUIO?>, profileEditedToast: Binding<Toast?>) {
         self._userProfile = userProfile
         self._profileEditedToast = profileEditedToast
-        self.nickname = userProfile.wrappedValue.nickname
-        self.description = userProfile.wrappedValue.description ?? ""
+        self.nickname = userProfile.wrappedValue?.nickname ?? "먼저 회원가입을 해주세요."
+        self.description = userProfile.wrappedValue?.description ?? ""
     }
     
     @Injected private var service: any AccountServiceProtocol
@@ -81,7 +81,7 @@ struct ProfileEditScreen: View {
             .ignoresSafeArea(.keyboard)
         }
         .task { // 추후에 Task가 병렬적으로 수행되도록 리팩토링이 필요함.
-            if let userProfileURL = userProfile.profileImageURL {
+            if let userProfileURL = userProfile?.profileImageURL {
                 do {
                     let (data, _) = try await URLSession.shared.data(from: userProfileURL)
                     let image = UIImage(data: data)
@@ -91,7 +91,7 @@ struct ProfileEditScreen: View {
                 }
             }
             
-            if let backgroundImageURL = userProfile.backgroundImageURL {
+            if let backgroundImageURL = userProfile?.backgroundImageURL {
                 do {
                     let (data, _) = try await URLSession.shared.data(from: backgroundImageURL)
                     let image = UIImage(data: data)
