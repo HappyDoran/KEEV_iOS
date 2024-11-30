@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 enum ReportHTTPRequestRouter {
-    case commentReport(token: String, vibeID: Int, commentID: String, reason: String)
+    case replyReport(token: String, vibeID: Int, replyID: Int, reason: String)
     case vibeReport(token: String, eventID: String, vibeID: Int, reason: String)
     case userReport(token: String, userID: Int, reason: String)
     case eventReport(token: String, eventID: String, reason: String)
@@ -29,10 +29,10 @@ extension ReportHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .commentReport(_, let vibeID, let commentID, let reason):
+        case .replyReport(_, let vibeID, let replyID, let reason):
             let json: [String: Any] = [
                 "vibeId": vibeID,
-                "commentId": commentID,
+                "commentId": replyID,
                 "reason": reason
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
@@ -62,7 +62,7 @@ extension ReportHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String : String]? {
         switch self {
-        case .commentReport(let token, _, _, _), .vibeReport(let token, _, _, _), .userReport(let token, _, _), .eventReport(let token, _, _):
+        case .replyReport(let token, _, _, _), .vibeReport(let token, _, _, _), .userReport(let token, _, _), .eventReport(let token, _, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -74,7 +74,7 @@ extension ReportHTTPRequestRouter: HTTPRequestable {
         var path = ["report"]
         
         switch self {
-        case .commentReport:
+        case .replyReport:
             path.append("comment")
         case .vibeReport:
             path.append("vibe")

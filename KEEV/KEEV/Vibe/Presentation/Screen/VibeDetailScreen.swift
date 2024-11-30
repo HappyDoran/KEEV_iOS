@@ -163,7 +163,7 @@ private extension VibeDetailScreen {
             return .othersComment {
                 if let reply = selectedReply?.reply {
                     showReplyActionSheet = nil
-                    navigateToReport = .comment(vibeID: vibe.id, replyID: reply.id)
+                    navigateToReport = .reply(vibeID: vibe.id, replyID: reply.id)
                 }
             }
         }

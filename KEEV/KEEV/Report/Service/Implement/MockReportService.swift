@@ -26,7 +26,7 @@ class MockReportService: ReportServiceProtocol {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendCommentReport(vibeID: Int, commentID: String, reason: String) async throws -> String {
+    func sendReplyReport(vibeID: Int, replyID: Int, reason: String) async throws -> String {
         let response = "Comment report has been successfully submitted."
         return response
     }

@@ -20,12 +20,12 @@ class ReportService: ReportServiceProtocol {
         let message: String
     }
     
-    func sendCommentReport(vibeID: Int, commentID: String, reason: String) async throws -> String {
+    func sendReplyReport(vibeID: Int, replyID: Int, reason: String) async throws -> String {
         let accessToken = try getAccessToken()
-        let router = ReportHTTPRequestRouter.commentReport(
+        let router = ReportHTTPRequestRouter.replyReport(
             token: accessToken,
             vibeID: vibeID,
-            commentID: commentID,
+            replyID: replyID,
             reason: reason
         )
         
@@ -102,7 +102,7 @@ enum ReportType: CustomStringConvertible {
     case event(eventID: String)
     case vibe(eventID: String, vibeID: Int)
     case user(userID: Int)
-    case comment(vibeID: Int, replyID: Int)
+    case reply(vibeID: Int, replyID: Int)
     
     var description: String {
         switch self {
@@ -112,7 +112,7 @@ enum ReportType: CustomStringConvertible {
             "이 게시물에 어떤 문제가 있었나요?"
         case .user:
             "이 사용자에게 어떤 문제가 있었나요?"
-        case .comment:
+        case .reply:
             "이 댓글에 어떤 문제가 있었나요?"
         }
     }
@@ -128,7 +128,7 @@ extension ReportType {
             return ["성적/선정적인 게시물", "공연과 무관한 게시물", "욕설/혐오 발언이 포함된 게시물", "부적절한 거래를 유도하는 게시물", "거짓 정보가 포함된 게시물", "스팸/홍보 도배 게시물"]
         case .user:
             return ["욕설/비방 행위", "스팸/광고 계정", "부적절한 프로필", "사칭 계정", "허위 정보 유포", "개인정보 침해", "부정한 방법으로 이득 추구"]
-        case .comment:
+        case .reply:
             return ["성적/선정적인 댓글", "욕설/혐오 발언이 포함된 댓글", "부적절한 거래를 유도하는 댓글", "거짓정보가 포함된 댓글"]
         }
     }
