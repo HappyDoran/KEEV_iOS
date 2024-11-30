@@ -11,10 +11,12 @@ protocol BannerProtocol {
     var title: String { get }
     var description: String { get }
     var image: Image { get } // Image 타입으로 변경
+    var detailImage: Image { get }
 }
 
 struct Banner: BannerProtocol {
     let title: String
     let description: String
     let image: Image // Image 타입으로 변경
+    let detailImage: Image
 }

@@ -14,16 +14,20 @@ struct EventCarouselView: View {
     @State private var itemsArray: [BannerProtocol] = []
 
     let banners: [Banner] = [
-        Banner(title: "키브를 소개합니다", description: "개짜릿한 주말은 이 공연이 책임짐 진짜임", image: Image("MainBanner1")),
-        Banner(title: "올해의 마무리,\n공연과 함께", description: "연말의 주요 공연을 확인해보세요!", image: Image("MainBanner2")),
-        Banner(title: "2024\n한국을 찾은 아티스트", description: "연말의 주요 공연을 확인해보세요!", image: Image("MainBanner3")),
+        Banner(title: "키브를 소개합니다", description: "개짜릿한 주말은 이 공연이 책임짐 진짜임", image: Image("Banner1"), detailImage: Image("DetailBanner1")),
+        Banner(title: "올해의 마무리,\n공연과 함께", description: "연말의 주요 공연을 확인해보세요!", image: Image("Banner2"), detailImage: Image("DetailBanner2")),
+        Banner(title: "2024\n한국을 찾은 아티스트", description: "연말의 주요 공연을 확인해보세요!", image: Image("Banner3"), detailImage: Image("DetailBanner3")),
     ]
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
             TabView(selection: $selectedImageIndex) {
                 ForEach(0..<itemsArray.count, id: \.self) { index in
-                    banner(index: index)
+                    NavigationLink {
+                        EventCarouselDetailScreen(bannerItem: itemsArray[index] as! Banner)
+                    } label: {
+                        banner(index: index)
+                    }
                 }
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
