@@ -36,13 +36,6 @@ struct AppEnvironment {
     ///
     /// - Author: newJunsung
     static func setupDependency() {
-        // 주의!: 서비스와 유틸리티의 순서를 뒤바꾸면 앱이 터질 수 있습니다.
-        
-        // Utility(유틸리티는 해당 구역에 작성해주시면 됩니다.)
-        diContainer.register(UIImageCache.init(configuration: .init(countLimit: 0, totalCostLimit: .megabytes(of: 16), cleanTerm: .seconds(of: 0))), for: UIImageCache.self)
-        diContainer.register(TokenKeyChainUtility.init(), for: TokenKeyChainUtility.self)
-        diContainer.register(NetworkUtility(), for: NetworkUtility.self)
-        
         // Service(서비스는 해당 구역에 작성해주시면 됩니다.)
         diContainer.register(MockAccountService(), for: (any AccountServiceProtocol).self)
         diContainer.register(MockEventService(), for: (any EventServiceProtocol).self)
@@ -50,5 +43,6 @@ struct AppEnvironment {
         diContainer.register(MockReplyService(), for: (any ReplyServiceProtocol).self)
         diContainer.register(MockVibeService(), for: (any VibeServiceProtocol).self)
         diContainer.register(MockActivityService(), for: (any ActivityServiceProtocol).self)
+        diContainer.register(MockReportService(), for: (any ReportServiceProtocol).self)
     }
 }
