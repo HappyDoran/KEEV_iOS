@@ -14,7 +14,11 @@ struct CarouselSecondView: View {
         VStack(spacing: 0){
             Rectangle().frame(height: 15).foregroundColor(.grayBG800)
             ForEach(events) { event in
-                EventListCell(event: event)
+                NavigationLink {
+                    LazyView(EventDetailScreen(simpleEvent: event))
+                } label: {
+                    EventListCell(event: event)
+                }
             }
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
         }

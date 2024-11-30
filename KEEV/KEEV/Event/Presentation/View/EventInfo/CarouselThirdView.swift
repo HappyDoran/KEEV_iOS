@@ -42,9 +42,13 @@ extension CarouselThirdView {
                 .frame(height: 105)
                 .padding(.top, 8)
             
-            EventListCell(event: events[0])
-                .padding(.top, 24)
-                .padding(.bottom, 32)
+            NavigationLink {
+                LazyView(EventDetailScreen(simpleEvent: events[0]))
+            } label: {
+                EventListCell(event: events[0])
+                    .padding(.top, 24)
+                    .padding(.bottom, 32)
+            }
         }
     }
     
@@ -64,9 +68,13 @@ extension CarouselThirdView {
                 .frame(height: 105)
                 .padding(.top, 8)
             
-            EventListCell(event: events[1])
-                .padding(.top, 24)
-                .padding(.bottom, 32)
+            NavigationLink {
+                LazyView(EventDetailScreen(simpleEvent: events[1]))
+            } label: {
+                EventListCell(event: events[1])
+                    .padding(.top, 24)
+                    .padding(.bottom, 32)
+            }
             
         }
     }
@@ -87,9 +95,13 @@ extension CarouselThirdView {
                 .frame(height: 105)
                 .padding(.top, 8)
             
-            EventListCell(event: events[2])
-                .padding(.top, 24)
-                .padding(.bottom, 32)
+            NavigationLink {
+                LazyView(EventDetailScreen(simpleEvent: events[2]))
+            } label: {
+                EventListCell(event: events[2])
+                    .padding(.top, 24)
+                    .padding(.bottom, 32)
+            }
         }
     }
 }
