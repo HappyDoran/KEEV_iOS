@@ -14,23 +14,18 @@ import Foundation
 /// - Author: 라움
 class MockSearchService: SearchServiceProtocol {
     private let userDefaultsUtility = UserDefaultsUtility()
+    private var dummyRecentSearch: [RecentSearch] = []
     
     func setRecentSearch(newSearch: RecentSearch) throws {
-        var recentSearch = try getRecentSearch()
-        recentSearch.append(newSearch)
-        try userDefaultsUtility.set(recentSearch, forKey: "recentSearch")
+        dummyRecentSearch.append(newSearch)
     }
     
     func getRecentSearch() throws -> [RecentSearch] {
-        guard let recentSearch = try userDefaultsUtility.get([RecentSearch].self, forKey: "recentSearch") else { return [] }
-        
-        return recentSearch
+        return dummyRecentSearch
     }
     
     func deleteRecentSearch(id: UUID) throws {
-        var recentSearch = try getRecentSearch()
-        recentSearch.removeAll(where: { $0.id == id })
-        try userDefaultsUtility.set(recentSearch, forKey: "recentSearch")
+        dummyRecentSearch.removeAll(where: { $0.id == id })
     }
     
     func searchEventByNameWhenAddVibe(name: String) async throws -> [SimpleEventUIO] {
