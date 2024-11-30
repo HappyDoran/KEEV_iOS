@@ -26,6 +26,7 @@ struct EventCarouselDetailScreen: View {
                 banner.detailDescriptionImage
                     .resizable()
                     .scaledToFit()
+                banner.descriptionView
             }
         }
             .navigationBarBackButtonHidden(true)
