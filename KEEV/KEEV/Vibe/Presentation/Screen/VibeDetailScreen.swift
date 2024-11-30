@@ -194,7 +194,7 @@ private extension VibeDetailScreen {
     func deleteVibe() {
         Task {
             do {
-                try await vibeService.deleteVibe(eventID: vibe.event.id, vibeID: vibe.id)
+                try await vibeService.deleteVibe(vibeID: vibe.id)
                 onDelete?(vibe)
                 dismiss()
             } catch {
