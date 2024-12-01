@@ -230,4 +230,60 @@ extension View {
                 EventVibeActionSheet.Modifier(isPresented: isPresented, selectedAction: selectedAction)
             )
         }
+    
+    /// `View`에 로딩 화면을 쉽게 적용할 수 있도록 하는 메서드 확장입니다.
+    ///
+    /// 이 메서드는 `LoadingModifier`를 뷰에 적용하여 비동기 작업 중 로딩 화면을 표시합니다.
+    ///
+    /// ### 개요
+    /// `loading(for:)` 메서드는 `isLoading` 바인딩 값을 전달받아, 해당 값이 `true`일 때 로딩 오버레이를 표시합니다.
+    /// 이 메서드를 사용하면 `modifier`를 직접 호출하지 않고도 간단하게 로딩 기능을 추가할 수 있습니다.
+    ///
+    /// ```swift
+    /// struct ContentView: View {
+    ///     @State private var isLoading = false
+    ///
+    ///     var body: some View {
+    ///         VStack {
+    ///             Button("Show Loading") {
+    ///                 isLoading = true
+    ///             }
+    ///         }
+    ///         .loading(for: $isLoading) // 로딩 화면 적용
+    ///     }
+    /// }
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - `isLoading`: 로딩 화면의 표시 여부를 제어하는 Boolean 값의 바인딩.
+    ///
+    /// ### 논의
+    /// `loading(for:)` 메서드는 간단한 문법으로 기존의 뷰에 로딩 화면 기능을 추가할 수 있도록 돕습니다.
+    /// 이를 통해 `ViewModifier`를 직접 설정하는 번거로움을 줄이고 가독성을 높일 수 있습니다.
+    ///
+    /// - Note: 이 메서드는 내부적으로 `LoadingModifier`를 사용하여 로딩 화면을 구현합니다. 'LoadingModifier`의 동작 방식은 별도로 사용자화할 수 있습니다.
+    ///
+    /// - Author: newJunsung
+    func loading(for isLoading: Bool) -> some View {
+        modifier(LoadingModifier(isLoading: isLoading))
+    }
+    
+    func alertForError(_ error: Binding<Error?>) -> some View {
+        modifier(
+            CustomAlertViewModifier(
+                isPresented: .init(get: {
+                    error.wrappedValue != nil
+                }, set: { bool in
+                    if !bool {
+                        error.wrappedValue = nil
+                    }
+                }),
+                title: "오류",
+                message: "\((error.wrappedValue?.localizedDescription) ?? "\(error)")",
+                firstButtonText: "확인",
+                firstButtonStyle: .active,
+                firstButtonAction: {}
+            )
+        )
+    }
 }

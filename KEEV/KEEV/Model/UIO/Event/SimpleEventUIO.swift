@@ -69,8 +69,6 @@ struct SimpleEventUIO: Identifiable, Hashable {
     }
     
     init(detailEventUIO event: DetailEventUIO) {
-        let dateFormat = "yyyy. MM. dd"
-        
         self.id = event.id
         self.name = event.name
         self.posterURL = event.posterURL
@@ -79,7 +77,6 @@ struct SimpleEventUIO: Identifiable, Hashable {
         self.endDate = event.endDate
         self.placeName = event.placesName
     }
-    
 }
 
 extension SimpleEventUIO {

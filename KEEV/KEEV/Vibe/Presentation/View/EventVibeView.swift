@@ -44,7 +44,12 @@ struct EventVibeView: View {
                             if index % pageSize == (pageSize - 1) {
                                 Task {
                                     do {
-                                        vibes.append(contentsOf: try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, SortPattern.ascending)]).contents)
+                                        let newVibes = try await vibeService.getPaginatedVibes(
+                                            page: currentPage,
+                                            size: pageSize,
+                                            sort: [(SortCase.createdDate, SortPattern.ascending)]
+                                        ).contents.filter { $0.event.id == eventID }
+                                        vibes.append(contentsOf: newVibes)
                                         currentPage += 1
                                     } catch {
                                         print(error)
@@ -59,7 +64,12 @@ struct EventVibeView: View {
                     .onAppear {
                         Task {
                             do {
-                                vibes = try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, SortPattern.ascending)]).contents
+                                let allVibes = try await vibeService.getPaginatedVibes(
+                                    page: currentPage,
+                                    size: pageSize,
+                                    sort: [(SortCase.createdDate, SortPattern.ascending)]
+                                ).contents
+                                vibes = allVibes.filter { $0.event.id == eventID }
                                 currentPage += 1
                             } catch {
                                 print(error)

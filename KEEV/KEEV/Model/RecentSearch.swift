@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct RecentSearch: Identifiable {
-    var id = UUID()
+struct RecentSearch: Identifiable, Codable {
+    let id = UUID()
     let term: String
     let date: Date
 }

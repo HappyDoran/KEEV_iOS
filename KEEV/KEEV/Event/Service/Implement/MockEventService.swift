@@ -30,4 +30,17 @@ class MockEventService: EventServiceProtocol {
     func loadDetailEvent(id: String) async throws -> DetailEventUIO {
         .dummy0
     }
+    
+    func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
+        var events: [SimpleEventUIO] = []
+        let startIndex = page*size
+        
+        for index in startIndex..<startIndex + size {
+            events.append(
+                .init(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: SimpleEventUIO.dummy0.posterURL, dDay: Int.random(in: -10...10), startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)")
+            )
+        }
+        
+        return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: events)
+    }
 }

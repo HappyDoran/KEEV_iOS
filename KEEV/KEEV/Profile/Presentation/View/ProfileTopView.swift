@@ -18,11 +18,18 @@ struct ProfileTopView: View {
     private let userProfile: DetailUserUIO?
     private let isMyProfile: Bool
     @Binding private var showActionSheet: Bool
+    @Binding private var navigateToReport: ReportType?
     
-    init(userProfile: DetailUserUIO?, isMyProfile: Bool, showActionSheet: Binding<Bool>) {
+    init(
+        userProfile: DetailUserUIO?,
+        isMyProfile: Bool,
+        showActionSheet: Binding<Bool>,
+        navigateToReport: Binding<ReportType?>
+    ) {
         self.userProfile = userProfile
         self.isMyProfile = isMyProfile
         self._showActionSheet = showActionSheet
+        self._navigateToReport = navigateToReport
     }
     
     var body: some View {
@@ -43,15 +50,6 @@ struct ProfileTopView: View {
                                 .padding(.vertical, 8)
                         }
                         .tint(.gray100)
-                    } else {
-                        Button {
-                            showActionSheet = true
-                        } label: {
-                            Image(systemName: "ellipsis")
-                                .figmaFont(PretendardFont.title(style: .sm))
-                                .foregroundStyle(.gray100)
-                                .padding(.vertical, 8)
-                        }
                     }
                 }
                 .padding(.top, 54)
@@ -140,5 +138,5 @@ private extension ProfileTopView {
 }
 
 #Preview {
-    ProfileTopView(userProfile: .dummy4, isMyProfile: true, showActionSheet: .constant(false))
+    ProfileTopView(userProfile: .dummy4, isMyProfile: true, showActionSheet: .constant(false), navigateToReport: .constant(nil))
 }
