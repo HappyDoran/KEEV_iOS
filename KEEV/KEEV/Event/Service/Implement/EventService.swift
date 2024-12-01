@@ -27,7 +27,6 @@ enum SortCase: String {
 ///
 /// - Author: Doran
 class EventService: EventServiceProtocol {
-    
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
@@ -91,5 +90,24 @@ class EventService: EventServiceProtocol {
         let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
         
         return detailEventUIO
+    }
+    
+    func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
+        let router = EventHTTPRequestRouter.fetchFilteredEvents(size: size, page: page, eventTypeID: eventTypeID, genreID: genreID, startDate: startDate, endDate: endDate, mode: mode, desc: desc)
+        
+        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
+
+        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+        
+        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+        
+        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+            totalPages: paginatedResponseDTO.totalPages,
+            currentPage: paginatedResponseDTO.currentPage,
+            totalElements: paginatedResponseDTO.totalElements,
+            contents: contents
+        )
+
+        return paginatedResponse
     }
 }

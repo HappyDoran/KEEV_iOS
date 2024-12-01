@@ -15,6 +15,7 @@ typealias SortParameter = (key: String, value: String)
 /// - Author: Doran
 enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
+    case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
     case fetchDetailEvent(eventID: String)
 }
 
@@ -24,21 +25,21 @@ enum EventHTTPRequestRouter {
 extension EventHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
-        case .fetchEvents, .fetchDetailEvent:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent:
             return .get
         }
     }
     
     var headers: [String: String]? {
         switch self {
-        case .fetchEvents, .fetchDetailEvent:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent:
             return nil
         }
     }
     
     var body: Data? {
         switch self {
-        case .fetchEvents, .fetchDetailEvent:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent:
             return nil
         }
     }
@@ -53,6 +54,8 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchEvents:
             path.append(contentsOf: ["get", "sortBy"])
+        case .fetchFilteredEvents:
+            path.append(contentsOf: ["get", "filtered"])
         case .fetchDetailEvent(let eventID):
             path.append(contentsOf: ["get", "\(eventID)"])
         }
@@ -72,6 +75,31 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             for parameter in sort {
                 let sortItem = URLQueryItem(name: "sort", value: "\(parameter.key),\(parameter.value)")
                 queryItems.append(sortItem)
+            }
+            
+            return queryItems
+        case .fetchFilteredEvents(size: let size, page: let page, eventTypeID: let eventTypeID, genreID: let genreID, startDate: let startDate, endDate: let endDate, mode: let mode, desc: let desc):
+            var queryItems = [
+                URLQueryItem(name: "size", value: "\(size)"),
+                URLQueryItem(name: "page", value: "\(page)"),
+                URLQueryItem(name: "mode", value: mode),
+                URLQueryItem(name: "desc", value: "\(desc)")
+            ]
+            
+            if let eventTypeID = eventTypeID {
+                queryItems.append(URLQueryItem(name: "eventTypeID", value: "\(eventTypeID)"))
+            }
+            
+            if let genreID = genreID {
+                queryItems.append(URLQueryItem(name: "eventGenreID", value: "\(genreID)"))
+            }
+            
+            if let startDate = startDate {
+                queryItems.append(URLQueryItem(name: "startDate", value: startDate))
+            }
+            
+            if let endDate = endDate {
+                queryItems.append(URLQueryItem(name: "endDate", value: endDate))
             }
             
             return queryItems

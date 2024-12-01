@@ -14,6 +14,9 @@ import Foundation
 /// - Todo: 향후에 EventService와 EventServiceProtocol을 교체하면서 MockService의 프로토콜도 수정해주어야합니다.
 /// - Author: 라움
 class MockEventService: EventServiceProtocol {
+    private let networkUtility: NetworkUtility = NetworkUtility()
+    private let jsonDecoder: JSONDecoder = JSONDecoder()
+    
     func loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<SimpleEventUIO> {
         var events: [SimpleEventUIO] = []
         let startIndex = page*size
@@ -29,5 +32,27 @@ class MockEventService: EventServiceProtocol {
     
     func loadDetailEvent(id: String) async throws -> DetailEventUIO {
         .dummy0
+    }
+    
+    func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
+        
+        let router = EventHTTPRequestRouter.fetchFilteredEvents(size: size, page: page, eventTypeID: eventTypeID, genreID: genreID, startDate: startDate, endDate: endDate, mode: mode, desc: desc)
+        
+        let (status, data) = try await networkUtility.requestWithStatusCode(router: router)
+
+        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+        
+        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+        
+        print(contents)
+        
+        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+            totalPages: paginatedResponseDTO.totalPages,
+            currentPage: paginatedResponseDTO.currentPage,
+            totalElements: paginatedResponseDTO.totalElements,
+            contents: contents
+        )
+
+        return paginatedResponse
     }
 }

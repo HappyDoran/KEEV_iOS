@@ -41,4 +41,6 @@ protocol EventServiceProtocol: AnyObject {
     ///
     /// - Author: 라움
     func loadDetailEvent(id: String) async throws -> DetailEventUIO
+    
+    func loadPaginatedFilteredEvents(page: Int, size: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool) async throws -> PaginatedResponse<SimpleEventUIO>
 }
