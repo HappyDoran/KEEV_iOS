@@ -19,6 +19,8 @@ struct VibeDetailScreen: View {
     
     private let onDelete: ((VibeUIO) -> Void)?
     
+    @State private var errorForAlert: Error? = nil
+    @State private var loadingForDelete: Bool = false
     @State private var imageIndexTag: Int = 0
     @State private var replyText: String = ""
     
@@ -121,9 +123,11 @@ struct VibeDetailScreen: View {
             VibeModifyScreen(vibe: $vibe)
         }
         .navigationDestination(item: $navigateToUserProfile) { userID in
-            ProfileScreen(userID: userID, isMyProfile: false)
+            ProfileScreen(userID: userID, isMyProfile: vibe.isMine, isNavigation: true)
         }
         .onAppear(perform: fetchReplies)
+        .loading(for: loadingForDelete)
+        .alertForError($errorForAlert)
     }
 }
 
@@ -163,7 +167,7 @@ private extension VibeDetailScreen {
             return .othersComment {
                 if let reply = selectedReply?.reply {
                     showReplyActionSheet = nil
-                    navigateToReport = .comment(vibeID: vibe.id, replyID: reply.id)
+                    navigateToReport = .reply(vibeID: vibe.id, replyID: reply.id)
                 }
             }
         }
@@ -186,18 +190,23 @@ private extension VibeDetailScreen {
             do {
                 vibe = try await vibeService.getVibeWithVibeID(vibeID: vibe.id)
             } catch {
+                errorForAlert = error
                 print("바이브를 불러오는데 실패했습니다.")
             }
         }
     }
     
     func deleteVibe() {
+        loadingForDelete = true
         Task {
             do {
                 try await vibeService.deleteVibe(vibeID: vibe.id)
                 onDelete?(vibe)
+                loadingForDelete = false
                 dismiss()
             } catch {
+                loadingForDelete = false
+                errorForAlert = error
                 print("바이브를 삭제하는데 실패했습니다.")
             }
         }
@@ -221,6 +230,7 @@ private extension VibeDetailScreen {
                 replies.insert(reply, at: 0)
                 
             } catch {
+                errorForAlert = error
                 print("댓글을 등록하는데 실패했습니다.")
             }
         }
@@ -233,6 +243,7 @@ private extension VibeDetailScreen {
                 let reply = try await replyService.modifyReply(reply, updatedText: text)
                 replies[index] = reply
             } catch {
+                errorForAlert = error
                 print("댓글을 수정하는데 실패했습니다.")
             }
         }
@@ -244,6 +255,7 @@ private extension VibeDetailScreen {
                 try await replyService.deleteReply(reply.id)
                 replies.remove(at: reply.index)
             } catch {
+                errorForAlert = error
                 print("댓글을 삭제하는데 실패했습니다.")
             }
         }

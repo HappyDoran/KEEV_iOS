@@ -17,7 +17,7 @@ protocol ReportServiceProtocol {
     ///
     /// - Parameters:
     ///   - vibeID: 바이브 ID
-    ///   - commentID: 댓글 ID
+    ///   - replyID: 댓글 ID
     ///   - reason: 신고 사유
     ///
     /// 댓글 신고하기 함수입니다.
@@ -26,7 +26,7 @@ protocol ReportServiceProtocol {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendCommentReport(vibeID: Int, commentID: String, reason: String) async throws -> String
+    func sendReplyReport(vibeID: Int, replyID: Int, reason: String) async throws -> String
     
     /// 바이브 신고하기 함수
     ///
