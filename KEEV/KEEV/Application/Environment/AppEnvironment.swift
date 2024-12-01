@@ -49,6 +49,7 @@ struct AppEnvironment {
         diContainer.register(SettingService(), for: (any SettingServiceProtocol).self)
         diContainer.register(MockReplyService(), for: (any ReplyServiceProtocol).self)
         diContainer.register(MockVibeService(), for: (any VibeServiceProtocol).self)
+        diContainer.register(MockSearchService(), for: (any SearchServiceProtocol).self)
         diContainer.register(MockActivityService(), for: (any ActivityServiceProtocol).self)
     }
 }
