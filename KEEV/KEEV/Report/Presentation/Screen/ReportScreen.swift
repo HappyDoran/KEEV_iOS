@@ -38,6 +38,7 @@ struct ReportScreen: View {
     @State private var selectedCase = ""
     @State private var showReportDoneAlert = false
     @State private var buttonDisabled = true
+    @State private var errorForAlert: Error? = nil
     
     @Environment(\.dismiss) private var dismiss
     
@@ -81,6 +82,7 @@ struct ReportScreen: View {
                 dismiss()
             }
         )
+        .alertForError($errorForAlert)
     }
 }
 
@@ -110,6 +112,7 @@ extension ReportScreen {
                 print("ReportScreen(.sendReport): 성공")
                 showReportDoneAlert = true
             } catch {
+                errorForAlert = error
                 print("ReportScreen(.sendReport): 신고하는데 실패했습니다.")
             }
         }

@@ -88,7 +88,7 @@ struct EntryView: View {
             }
         }
         .fullScreenCover(isPresented: $isPresented) {
-            VibeCreateScreen()
+            VibeCreateScreen(selectedEvent: nil)
         }
     }
 }

@@ -38,6 +38,8 @@ struct EventDetailScreen: View {
     @State private var vibeCount: Int? = nil
     @State private var showEventDetailSheet = false
     @State private var navigateToReportEvent = false
+    @State private var navigateToWriteVibe = false
+    @State private var error: Error? = nil
     
     private let isLoadDetailEvent: Bool
     
@@ -91,7 +93,11 @@ struct EventDetailScreen: View {
         }
         .task {
             if isLoadDetailEvent {
-                // 이벤트 ID로 새로 이벤트 정보를 불러오면 됨.
+                do {
+                    selectedEvent = try await eventService.loadDetailEvent(id: selectedEvent.id)
+                } catch(let failToFetchEvent) {
+                    error = failToFetchEvent
+                }
             }
             
             if let dDay = selectedEvent.dDay, dDay >= 0 {
@@ -102,6 +108,10 @@ struct EventDetailScreen: View {
         .refreshable {
             // 이벤트 ID로 새로 이벤트 정보를 불러오면 됨.
         }
+        .navigationDestination(isPresented: $navigateToWriteVibe) {
+            VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: selectedEvent))
+        }
+        .alertForError($error)
     }
 }
 
@@ -122,7 +132,9 @@ extension EventDetailScreen {
                 detailSection
             }
             
-            CommonButton(title: "\(vibeWriteState)", action: { print("hello world") }, style: .maxWidth, disabled: isDisabled)
+            CommonButton(title: "\(vibeWriteState)", action: {
+                navigateToWriteVibe = true
+            }, style: .maxWidth, disabled: isDisabled)
                 .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
         }
     }
@@ -140,7 +152,7 @@ extension EventDetailScreen {
             }
             else {
                 VStack(spacing: 0) {
-                    EventVibeHeader()
+                    EventVibeHeader(event: selectedEvent)
                     EventVibeView(eventID: selectedEvent.id)
                 }
                 .padding(.horizontal, 16)

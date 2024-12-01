@@ -26,6 +26,7 @@ struct VibeModifyScreen: View {
     @State private var loadingForUpload: Bool = false
     @State private var showCancelAlert = false
     @State private var showExitAlert = false
+    @State private var errorForAlert: Error? = nil
     
     init(vibe: Binding<VibeUIO>) {
         self._vibe = vibe
@@ -121,6 +122,7 @@ struct VibeModifyScreen: View {
             loadingForUpload = false
         }
         .loading(for: loadingForUpload)
+        .alertForError($errorForAlert)
     }
 }
 
@@ -265,6 +267,7 @@ private extension VibeModifyScreen {
                 )
                 dismiss()
             } catch {
+                errorForAlert = error
                 print("바이브를 수정하는데 실패했어요.")
             }
             loadingForUpload = false
