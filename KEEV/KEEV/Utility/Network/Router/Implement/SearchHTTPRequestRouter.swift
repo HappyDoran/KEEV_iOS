@@ -51,7 +51,7 @@ extension SearchHTTPRequestRouter: HTTPRequestable {
     var queryItems: [URLQueryItem]? {
         switch self {
         case .searchEventByNameWhenAddVibe(name: let name, size: let size, page: let page), .searchEventByName(name: let name, size: let size, page: let page):
-            var queryItems = [
+            let queryItems = [
                 URLQueryItem(name: "name", value: name),
                 URLQueryItem(name: "size", value: "\(size)"),
                 URLQueryItem(name: "page", value: "\(page)")

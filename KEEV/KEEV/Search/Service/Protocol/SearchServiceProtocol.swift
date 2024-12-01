@@ -51,29 +51,33 @@ protocol SearchServiceProtocol: AnyObject {
     ///
     /// - Parameters:
     ///   - name: 이벤트 이름
+    ///   - size: 한 페이지에 담길 이벤트 개수
+    ///   - page: 페이지 번호
     ///
     /// 바이브를 추가할 때 이벤트 이름으로 검색하는 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 간단한 이벤트 정보가 담긴 UIO의 배열
+    /// - Returns: 페이지네이션이 적용된 이벤트 목록
     ///
     /// - Note: 리턴 값에 검색결과 나온 이벤트의 총 개수인 count 값은 보류라고 써있어서 일단 넣지 않았습니다.
     ///
     /// - Author: 라움
-    func searchEventByNameWhenAddVibe(name: String) async throws -> [SimpleEventUIO]
+    func searchEventByNameWhenAddVibe(name: String, size: Int, page: Int) async throws -> PaginatedResponse<SimpleEventUIO>
     
     /// 이벤트 이름으로 검색하는 함수
     ///
     /// - Parameters:
     ///   - name: 이벤트 이름
+    ///   - size: 한 페이지에 담길 이벤트 개수
+    ///   - page: 페이지 번호
     ///
     /// 이벤트 이름으로 검색하는 함수입니다.
     ///
     /// - Throws: 에러
-    /// - Returns: 간단한 이벤트 정보가 담긴 UIO의 배열
+    /// - Returns: 페이지네이션이 적용된 이벤트 목록
     ///
     /// - Note: 리턴 값에 검색결과 나온 이벤트의 총 개수인 count 값은 보류라고 써있어서 일단 넣지 않았습니다.
     ///
     /// - Author: 라움
-    func searchEventByName(name: String) async throws -> [SimpleEventUIO]
+    func searchEventByName(name: String, size: Int, page: Int) async throws -> PaginatedResponse<SimpleEventUIO>
 }

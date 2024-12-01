@@ -28,11 +28,15 @@ class MockSearchService: SearchServiceProtocol {
         dummyRecentSearch.removeAll(where: { $0.id == id })
     }
     
-    func searchEventByNameWhenAddVibe(name: String) async throws -> [SimpleEventUIO] {
-        SimpleEventUIO.dummies.filter { $0.name.contains(name) }
+    func searchEventByNameWhenAddVibe(name: String, size: Int, page: Int) async throws -> PaginatedResponse<SimpleEventUIO> {
+        let contents = SimpleEventUIO.dummies.filter { $0.name.contains(name) }
+        
+        return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: contents)
     }
     
-    func searchEventByName(name: String) async throws -> [SimpleEventUIO] {
-        SimpleEventUIO.dummies.filter { $0.name.contains(name) }
+    func searchEventByName(name: String, size: Int, page: Int) async throws -> PaginatedResponse<SimpleEventUIO> {
+        let contents = SimpleEventUIO.dummies.filter { $0.name.contains(name) }
+        
+        return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: contents)
     }
 }
