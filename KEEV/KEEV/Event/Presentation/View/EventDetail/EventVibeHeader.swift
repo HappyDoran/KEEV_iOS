@@ -13,6 +13,8 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventVibeHeader: View {
+    let event: DetailEventUIO
+    
     var body: some View {
         HStack(spacing: 0){
             Button(action: {
@@ -28,9 +30,9 @@ struct EventVibeHeader: View {
                 }
             }
             Spacer()
-            Button(action: {
-                // 버튼을 누르면 바이브 작성 시트(이미지가 선택되어 있음)가 올라오게 작동해야 합니다.
-            }){
+            NavigationLink {
+                VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: event))
+            } label: {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.grayBG700)
                     .frame(width: 75, height: 29)
@@ -51,5 +53,5 @@ struct EventVibeHeader: View {
 }
 
 #Preview {
-    EventVibeHeader()
+    EventVibeHeader(event: .dummy1)
 }
