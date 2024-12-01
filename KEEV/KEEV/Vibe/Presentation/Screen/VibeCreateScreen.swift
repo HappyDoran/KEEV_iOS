@@ -15,6 +15,7 @@ import PhotosUI
 /// - Author: Doran
 struct VibeCreateScreen: View {
     @Environment(\.dismiss) private var dismiss
+    @Injected private var service: any VibeServiceProtocol
     
     @State private var isPresented = false
     
@@ -33,7 +34,8 @@ struct VibeCreateScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             // MARK: 헤더
-            VibeHeader(selectedEvent: selectedEvent, rating: rating, showExitAlert: $showExitAlert)
+            VibeHeader(selectedEvent: selectedEvent, rating: rating, showExitAlert: $showExitAlert) {
+            }
                 .padding(.horizontal, 16)
             
             if let event = selectedEvent {
@@ -120,6 +122,26 @@ extension VibeCreateScreen {
         VibeCommentCell(comment: $comment, showCancelAlert: $showCancelAlert)
             .padding(.horizontal, 16)
             .padding(.bottom, 20)
+    }
+}
+
+private extension VibeCreateScreen {
+    func uploadVibe() {
+        guard let selectedEvent else { return }
+        
+        Task {
+            do {
+                _ = try await service.uploadVibe(
+                    eventID: selectedEvent.id,
+                    rating: rating,
+                    comment: comment,
+                    images: selectedImages
+                )
+                dismiss()
+            } catch {
+                print("바이브를 업로드하는데 실패했습니다.")
+            }
+        }
     }
 }
 

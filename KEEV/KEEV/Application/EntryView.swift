@@ -17,6 +17,8 @@ import SwiftUI
 struct EntryView: View {
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
+    @State private var signInStatus: SignInStatus? = nil
+    @State private var userID: Int? = nil
     
     init() {
         let appearance = UITabBarAppearance()
@@ -31,29 +33,50 @@ struct EntryView: View {
     
     var body: some View {
         NavigationStack {
-            TabView(selection: $selectedItem) {
-                EventInfoScreen()
-                    .tabItem {
-                        TabbedItem.label(for: .info)
-                    }
-                    .tag(TabbedItem.info.rawValue)
-                
-                Text("")
-                    .tabItem {
-                        TabbedItem.label(for: .write)
-                    }
-                    .tag(TabbedItem.write.rawValue)
-                
-                ProfileScreen()
-                    .tabItem {
-                        TabbedItem.label(for: .profile)
-                    }
-                    .tag(TabbedItem.profile.rawValue)
+            if let signInStatus {
+                switch signInStatus {
+                case .failed:
+                    SignInScreen(status: $signInStatus)
+                case .ok(_):
+                    signInSuccessView
+                case .created:
+                    SignUpScreen(status: $signInStatus)
+                }
+            } else {
+                LaunchScreen(status: $signInStatus)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
-            .tint(.brand500)
-            .sensoryFeedback(.impact, trigger: selectedItem)
+        }
+        .onChange(of: signInStatus) {
+            if case let .ok(user) = signInStatus {
+                userID = user.id
+            }
         }
         .tint(.gray100)
+    }
+    
+    private var signInSuccessView: some View {
+        TabView(selection: $selectedItem) {
+            EventInfoScreen()
+                .tabItem {
+                    TabbedItem.label(for: .info)
+                }
+                .tag(TabbedItem.info.rawValue)
+            
+            Text("")
+                .tabItem {
+                    TabbedItem.label(for: .write)
+                }
+                .tag(TabbedItem.write.rawValue)
+            
+            ProfileScreen(userID: userID, isMyProfile: true)
+                .tabItem {
+                    TabbedItem.label(for: .profile)
+                }
+                .tag(TabbedItem.profile.rawValue)
+        }
+        .tint(.brand500)
+        .sensoryFeedback(.impact, trigger: selectedItem)
         .onChange(of: selectedItem) { oldValue, newValue in
             if newValue == TabbedItem.write.rawValue {
                 isPresented = true
@@ -62,6 +85,22 @@ struct EntryView: View {
         }
         .fullScreenCover(isPresented: $isPresented) {
             VibeCreateScreen()
+        }
+    }
+}
+
+private extension EntryView {
+    struct LaunchScreen: View {
+        @Injected private var service: any AccountServiceProtocol
+        @Binding var status: SignInStatus?
+        
+        var body: some View {
+            Image("LogoLargeImage")
+                .resizable()
+                .frame(width: 250, height: 103.5)
+                .task {
+                    status = await service.autoSignIn()
+                }
         }
     }
 }

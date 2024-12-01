@@ -17,6 +17,16 @@ class VibeService: VibeServiceProtocol {
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
+    func getVibeCount(eventID: String) async throws -> Int {
+        let router = VibeHTTPRequestRouter.getVibeCount(eventID: eventID)
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let vibesCount = try jsonDecoder.decode(Int.self, from: data)
+        
+        return vibesCount
+    }
+    
     func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<VibeUIO> {
         let sortCases: [SortCase] = sort.map { $0.0 }
         let sortPatterns: [SortPattern] = sort.map { $0.1 }
@@ -71,9 +81,9 @@ class VibeService: VibeServiceProtocol {
         return vibeUIO
     }
     
-    func deleteVibe(eventID: String, vibeID: Int) async throws {
+    func deleteVibe(vibeID: Int) async throws {
         let accessToken = try getAccessToken()
-        let router = VibeHTTPRequestRouter.deleteVibe(token: accessToken, eventID: eventID, vibeID: vibeID)
+        let router = VibeHTTPRequestRouter.deleteVibe(token: accessToken, vibeID: vibeID)
         
         _ = try await networkUtility.request(router: router)
     }
@@ -111,9 +121,9 @@ class VibeService: VibeServiceProtocol {
         return vibeUIO
     }
     
-    func checkIfUserUploadedVibe(eventID: String, userID: Int) async throws -> Int {
+    func checkIfUserUploadedVibe(eventID: String) async throws -> Int {
         let accessToken = try getAccessToken()
-        let router = VibeHTTPRequestRouter.checkIfUserUploadedVibe(token: accessToken, eventID: eventID, userID: userID)
+        let router = VibeHTTPRequestRouter.checkIfUserUploadedVibe(token: accessToken, eventID: eventID)
         
         let data = try await networkUtility.request(router: router)
         let vibeID = try jsonDecoder.decode(Int.self, from: data)

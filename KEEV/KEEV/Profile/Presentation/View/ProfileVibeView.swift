@@ -15,15 +15,19 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeView: View {
+    @Injected private var service: any ActivityServiceProtocol
+    
+    private let userID: Int?
     private let isMyProfile: Bool
     @Binding private var selectedVibeViewType: VibeViewType
     
-    init(isMyProfile: Bool, selectedVibeViewType: Binding<VibeViewType>) {
+    init(userID: Int?, isMyProfile: Bool, selectedVibeViewType: Binding<VibeViewType>) {
+        self.userID = userID
         self.isMyProfile = isMyProfile
         self._selectedVibeViewType = selectedVibeViewType
     }
     
-    private let vibes = VibeUIO.dummies
+    @State private var vibes: [VibeUIO]? = nil
     private var columns: [GridItem] = [
         GridItem(.flexible(), spacing: 8),
         GridItem(.flexible(), spacing: 8),
@@ -33,24 +37,38 @@ struct ProfileVibeView: View {
     var body: some View {
         VStack(spacing: 12) {
             profileVibeViewHeader
-            
-            switch selectedVibeViewType {
-            case .list:
-                VStack(spacing: 20) {
-                    ForEach(vibes) { vibe in
-                        ProfileVibeListCell(vibe: vibe)
-                    }
-                }
-            case .table:
-                LazyVGrid(columns: columns, spacing: 8) {
-                    ForEach(vibes) { vibe in
-                        NavigationLink {
-                            VibeDetailScreen(vibe: vibe)
-                        } label: {
-                            ProfileVibeTableCell(vibe: vibe)
-                                .aspectRatio(114/152, contentMode: .fill)
+            if let vibes = vibes {
+                switch selectedVibeViewType {
+                case .list:
+                    LazyVStack(spacing: 20) {
+                        ForEach(vibes) { vibe in
+                            ProfileVibeListCell(vibe: vibe)
                         }
                     }
+                case .table:
+                    LazyVGrid(columns: columns, spacing: 8) {
+                        ForEach(vibes) { vibe in
+                            NavigationLink {
+                                LazyView(VibeDetailScreen(vibe: vibe))
+                            } label: {
+                                ProfileVibeTableCell(vibe: vibe)
+                            }
+                            .aspectRatio(114/152, contentMode: .fill)
+                        }
+                    }
+                }
+            } else {
+                if let userID {
+                    ProgressView()
+                        .task {
+                            do {
+                                vibes = try await service.getUserVibeList(userID: userID)
+                            } catch {
+                                print("ProfileVibeView(.task) error: \(error)")
+                            }
+                        }
+                } else {
+                    Text("회원가입을 하고 바이브를 남겨보세요!")
                 }
             }
         }
@@ -81,7 +99,7 @@ private extension ProfileVibeView {
                 .foregroundStyle(.gray100)
                 .padding(.trailing, 8)
             
-            Text("\(vibes.count)")
+            Text("\(vibes?.count ?? 0)")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 .foregroundStyle(.brand500)
                 .padding(.trailing, 2)
@@ -116,5 +134,5 @@ private extension ProfileVibeView {
 }
 
 #Preview {
-    ProfileVibeView(isMyProfile: true, selectedVibeViewType: .constant(.table))
+    ProfileVibeView(userID: 1, isMyProfile: true, selectedVibeViewType: .constant(.table))
 }

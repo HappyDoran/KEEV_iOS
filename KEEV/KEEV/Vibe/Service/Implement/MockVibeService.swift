@@ -17,6 +17,10 @@ class MockVibeService: VibeServiceProtocol {
     private var vibes: [VibeUIO] = []
     private var vibeCount = 0
     
+    func getVibeCount(eventID: String) async throws -> Int {
+        vibeCount
+    }
+    
     func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO> {
         var vibeList: [VibeUIO] = []
         let startIndex = page*size
@@ -65,7 +69,7 @@ class MockVibeService: VibeServiceProtocol {
         return newVibe
     }
     
-    func deleteVibe(eventID: String, vibeID: Int) async throws {
+    func deleteVibe(vibeID: Int) async throws {
         
     }
     
@@ -86,7 +90,7 @@ class MockVibeService: VibeServiceProtocol {
         return vibe
     }
     
-    func checkIfUserUploadedVibe(eventID: String, userID: Int) async throws -> Int {
+    func checkIfUserUploadedVibe(eventID: String) async throws -> Int {
         1
     }
     

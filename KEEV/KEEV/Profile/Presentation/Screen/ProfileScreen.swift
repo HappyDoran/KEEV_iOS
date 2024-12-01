@@ -15,12 +15,14 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileScreen: View {
-//    private let accountService = AccountService()
+    @Injected private var service: any ActivityServiceProtocol
     
-    @State private var userProfile: DetailUserUIO = .dummy4
-    let isMyProfile = false
+    let userID: Int?
+    let isMyProfile: Bool
+    
+    @State private var userProfile: DetailUserUIO? = nil
     @State private var showActionSheet = false
-    @State private var navigateToReport = false
+    @State private var navigateToReport: ReportType? = nil
     @State private var showProfileEdit = false
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
@@ -29,20 +31,37 @@ struct ProfileScreen: View {
     var body: some View {
         ScrollView {
             ProfileTopView(userProfile: userProfile, isMyProfile: isMyProfile, showActionSheet: $showActionSheet)
+                .navigationDestination(item: $navigateToReport) { type in
+                    LazyView(ReportScreen(reportType: type))
+                }
             
             if isMyProfile {
                 profileEditButton
             }
             
-            ProfileVibeView(isMyProfile: isMyProfile, selectedVibeViewType: $selectedVibeViewType)
+            ProfileVibeView(userID: userID, isMyProfile: isMyProfile, selectedVibeViewType: $selectedVibeViewType)
         }
         .backgroundForKEEV()
         .ignoresSafeArea(edges: .top)
-        .onAppear {
-//            userProfile = accountService.userProfile
+        .task {
+            if let userID {
+                do {
+                    userProfile = try await service.getUserInfo(userID: userID)
+                } catch {
+                    print("ProfileScreen(.task) error: \(error)")
+                }
+            }
         }
         .onChange(of: showProfileEdit) {
-//            userProfile = accountService.userProfile
+            if let userID {
+                Task {
+                    do {
+                        userProfile = try await service.getUserInfo(userID: userID)
+                    } catch {
+                        print("ProfileScreen(.onChange) error: \(error)")
+                    }
+                }
+            }
         }
         .sensoryFeedback(.impact, trigger: tapFeedback)
         .fullScreenCover(isPresented: $showProfileEdit) {
@@ -53,14 +72,13 @@ struct ProfileScreen: View {
             isPresented: $showActionSheet,
             configurations: [
                 KEEVActionSheet.ButtonConfiguration.report(title: "신고하기", action: {
-                    navigateToReport = true
+                    if let userID {
+                        navigateToReport = .user(userID: userID)
+                    }
                     showActionSheet = false
                 })
             ]
         )
-        .navigationDestination(isPresented: $navigateToReport) {
-            ReportScreen(reportType: .user(userID: 1))
-        }
     }
 }
 
@@ -95,6 +113,6 @@ enum VibeViewType {
 
 #Preview {
     NavigationStack {
-        ProfileScreen()
+        ProfileScreen(userID: nil, isMyProfile: false)
     }
 }

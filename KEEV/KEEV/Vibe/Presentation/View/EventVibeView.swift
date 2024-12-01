@@ -30,11 +30,11 @@ struct EventVibeView: View {
                 LazyVStack(spacing: 0) {
                     ForEach(vibes.indices, id: \.self) { index in
                         NavigationLink {
-                            VibeDetailScreen(vibe: vibes[index]) { vibe in
+                            LazyView(VibeDetailScreen(vibe: vibes[index]) { vibe in
                                 self.vibes[index] = vibe
                             } onDelete: { _ in
                                 self.vibes.remove(at: index)
-                            }
+                            })
                         } label: {
                             EventVibeCell(vibeData: vibes[index])
                         }
@@ -44,8 +44,12 @@ struct EventVibeView: View {
                             if index % pageSize == (pageSize - 1) {
                                 Task {
                                     do {
-                                        // 서비스가 이벤트의 바이브를 찾는 로직
-                                        vibes.append(contentsOf: try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, SortPattern.ascending)]).contents)
+                                        let newVibes = try await vibeService.getPaginatedVibes(
+                                            page: currentPage,
+                                            size: pageSize,
+                                            sort: [(SortCase.createdDate, SortPattern.ascending)]
+                                        ).contents.filter { $0.event.id == eventID }
+                                        vibes.append(contentsOf: newVibes)
                                         currentPage += 1
                                     } catch {
                                         print(error)
@@ -60,8 +64,12 @@ struct EventVibeView: View {
                     .onAppear {
                         Task {
                             do {
-                                // 서비스가 이벤트의 바이브를 찾는 로직
-                                vibes = try await vibeService.getPaginatedVibes(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, SortPattern.ascending)]).contents
+                                let allVibes = try await vibeService.getPaginatedVibes(
+                                    page: currentPage,
+                                    size: pageSize,
+                                    sort: [(SortCase.createdDate, SortPattern.ascending)]
+                                ).contents
+                                vibes = allVibes.filter { $0.event.id == eventID }
                                 currentPage += 1
                             } catch {
                                 print(error)

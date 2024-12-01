@@ -19,6 +19,7 @@ struct SignInScreen: View {
     @Injected private var accountService: any AccountServiceProtocol
     @Injected private var settingService: any SettingServiceProtocol
     
+    @Binding var status: SignInStatus?
     @State private var showTermsOfUse = false
     @State private var showPrivacyPolicy = false
     
@@ -64,7 +65,27 @@ private extension SignInScreen {
                     SignInWithAppleButton { _ in
                         
                     } onCompletion: { result in
-//                        accountService.signInHandler(result: result)
+                        switch result {
+                        case .success(let authorization):
+                            switch authorization.credential {
+                            case let appleIDCredential as ASAuthorizationAppleIDCredential:
+                                let user = appleIDCredential.user
+                                let token = appleIDCredential.identityToken!
+                                let code = appleIDCredential.authorizationCode!
+                                
+                                Task {
+                                    do {
+                                        status = try await accountService.signInWithApple(user: user, identityToken: token, authorizationCode: code)
+                                    } catch {
+                                        print(error)
+                                    }
+                                }
+                                
+                            default: print("gggg");break
+                            }
+                        case .failure(let error):
+                            print(error)
+                        }
                     }
                     .blendMode(.overlay)
                     .cornerRadius(14)
@@ -107,5 +128,5 @@ private extension SignInScreen {
 }
 
 #Preview {
-    SignInScreen()
+    SignInScreen(status: .constant(.failed))
 }

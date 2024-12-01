@@ -13,11 +13,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeTableCell: View {
-    private let vibe: VibeUIO
-    
-    init(vibe: VibeUIO) {
-        self.vibe = vibe
-    }
+    let vibe: VibeUIO
     
     var body: some View {
         URLCachedImage(

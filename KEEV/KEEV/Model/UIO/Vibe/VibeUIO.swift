@@ -11,7 +11,7 @@ import Foundation
 ///
 /// - ToDo: VibeDTO가 생기면 생성자 만들기
 /// - Author: newJunsung
-struct VibeUIO: Identifiable, Equatable {
+struct VibeUIO: Identifiable, Hashable {
     /// 바이브의 ID
     let id: Int
     

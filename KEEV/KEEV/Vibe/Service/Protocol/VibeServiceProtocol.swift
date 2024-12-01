@@ -14,6 +14,19 @@ import SwiftUI
 ///
 /// - Author: 라움
 protocol VibeServiceProtocol: AnyObject {
+    /// 바이브 갯수를 조회하는 함수
+    ///
+    /// - Parameters:
+    ///   - eventID: 이벤트 ID
+    ///
+    /// 이벤트 ID를 통해 이벤트에 현재까지 기록된 바이브의 갯수를 가져오는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 이벤트에 현재까지 기록된 바이브의 갯수
+    ///
+    /// - Author: 라움
+    func getVibeCount(eventID: String) async throws -> Int
+    
     /// 바이브 목록을 가져오는 함수
     ///
     /// - Parameters:
@@ -48,7 +61,6 @@ protocol VibeServiceProtocol: AnyObject {
     /// 특정 바이브를 삭제하는 함수
     ///
     /// - Parameters:
-    ///   - eventID: 이벤트 ID
     ///   - vibeID: 삭제할 바이브 ID
     ///
     /// 이벤트에 등록된 특정 바이브를 삭제하는 함수입니다.
@@ -56,7 +68,7 @@ protocol VibeServiceProtocol: AnyObject {
     /// - Throws: 에러
     ///
     /// - Author: 라움
-    func deleteVibe(eventID: String, vibeID: Int) async throws
+    func deleteVibe(vibeID: Int) async throws
     
     /// 기존의 바이브를 수정하는 함수
     ///
@@ -79,7 +91,6 @@ protocol VibeServiceProtocol: AnyObject {
     ///
     /// - Parameters:
     ///   - eventID: 이벤트 ID
-    ///   - userID: 유저 ID
     ///
     /// 사용자가 특정 이벤트에 바이브를 올렸는지에 대한 여부를 확인하는 함수입니다.
     ///
@@ -87,7 +98,7 @@ protocol VibeServiceProtocol: AnyObject {
     /// - Returns: 등록된 바이브의 ID
     ///
     /// - Author: 라움
-    func checkIfUserUploadedVibe(eventID: String, userID: Int) async throws -> Int
+    func checkIfUserUploadedVibe(eventID: String) async throws -> Int
     
     /// 바이브 ID를 통해 바이브를 조회하는 함수
     ///
