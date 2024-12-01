@@ -19,8 +19,8 @@ class VibeManager: ObservableObject {
     /// 앱을 사용중인 기기에서 작성한 바이브의 배열
     @Published var vibes: [VibeUIO] = []
     
-    /// 바이브의 개수를 리턴하는 함수
-    func getVibesCount() -> Int {
+    /// 바이브의 개수를 리턴하는 프로퍼티
+    var vibesCount: Int {
         return vibes.count
     }
     
