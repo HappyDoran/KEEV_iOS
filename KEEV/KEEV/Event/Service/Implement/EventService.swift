@@ -27,7 +27,6 @@ enum SortCase: String {
 ///
 /// - Author: Doran
 class EventService: EventServiceProtocol {
-    
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
@@ -91,5 +90,42 @@ class EventService: EventServiceProtocol {
         let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
         
         return detailEventUIO
+    }
+    
+    /// 필터링된 이벤트를 가져오는 함수
+    ///
+    /// - Parameters:
+    ///   - page: 가져오고자하는 페이지의 번호
+    ///   - size: 한 페이지에 넣을 이벤트의 갯수
+    ///   - eventTypeID: 이벤트 타입 아이디
+    ///   - genreID: 이벤트 장르 아이디
+    ///   - startDate: 이벤트 시작 날짜
+    ///   - eventDate: 이벤트 종료 날짜
+    ///   - mode: 이벤트 or 예약일
+    ///   - desc: 내림차순 여부
+    ///
+    /// 페이지네이션이 적용된 필터링 된 이벤트 목록을 가져오는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 페이지네이션이 적용된 이벤트 목록
+    ///
+    /// - Author: Doran
+    func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
+        let router = EventHTTPRequestRouter.fetchFilteredEvents(size: size, page: page, eventTypeID: eventTypeID, genreID: genreID, startDate: startDate, endDate: endDate, mode: mode, desc: desc)
+        
+        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
+
+        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+        
+        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+        
+        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+            totalPages: paginatedResponseDTO.totalPages,
+            currentPage: paginatedResponseDTO.currentPage,
+            totalElements: paginatedResponseDTO.totalElements,
+            contents: contents
+        )
+
+        return paginatedResponse
     }
 }
