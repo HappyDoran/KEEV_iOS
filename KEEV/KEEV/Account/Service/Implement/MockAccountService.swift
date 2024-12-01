@@ -14,7 +14,8 @@ final class MockAccountService: AccountServiceProtocol {
     
     
     func autoSignIn() async -> SignInStatus {
-        .failed
+//        .failed
+        .ok(user: .dummy4)
     }
     
     func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {

@@ -31,6 +31,8 @@ enum EventDetailSection: Int, CaseIterable {
 ///
 /// - Author: Doran
 struct EventDetailScreen: View {
+    @Environment(\.dismiss) private var dismiss
+    
     @Injected private var eventService: any EventServiceProtocol
     @State private var selectedEvent: DetailEventUIO
     @State private var vibeWriteState: VibeWriteState
@@ -68,7 +70,17 @@ struct EventDetailScreen: View {
             }
         }
         .backgroundForKEEV()
+        .navigationBarBackButtonHidden(true)
         .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .foregroundStyle(.gray100)
+                }
+            }
+            
             ToolbarItem(placement: .principal) {
                 Text(selectedEvent.name)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular)))
