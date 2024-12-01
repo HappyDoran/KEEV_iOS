@@ -13,27 +13,19 @@ import Foundation
 ///
 /// - Author: 라움
 protocol SearchServiceProtocol: AnyObject {
+    var recentSearch: [RecentSearch] { get }
+
     /// 최근 검색한 검색어를 저장하는 함수
     ///
     /// - Parameters:
-    ///   - newSearch: 새로운 검색어
+    ///   - searchItem: 새로운 검색어
     ///
     /// 최근 검색한 검색어를 저장하는 함수입니다.
     ///
     /// - Throws: 에러
     ///
     /// - Author: 라움
-    func setRecentSearch(newSearch: RecentSearch) throws
-    
-    /// 최근 검색한 검색어를 가져오는 함수
-    ///
-    /// 최근 검색한 검색어를 가져오는 함수입니다.
-    ///
-    /// - Throws: 에러
-    /// - Returns: 최근 검색한 검색어의 배열
-    ///
-    /// - Author: 라움
-    func getRecentSearch() throws -> [RecentSearch]
+    func setRecentSearch(searchItem: RecentSearch)
     
     /// 최근 검색한 검색어를 삭제하는 함수
     ///
@@ -45,7 +37,16 @@ protocol SearchServiceProtocol: AnyObject {
     /// - Throws: 에러
     ///
     /// - Author: 라움
-    func deleteRecentSearch(id: UUID) throws
+    func removeRecentSearch(id: UUID)
+    
+    /// 최근 검색한 검색어를 모두 삭제하는 함수
+    ///
+    /// 최근 검색한 검색어를 모두 삭제하는 함수입니다.
+    ///
+    /// - Throws: 에러
+    ///
+    /// - Author: 라움
+    func removeAllRecentSearch()
     
     /// 바이브를 추가할 때 이벤트 이름으로 검색하는 함수
     ///
