@@ -267,4 +267,23 @@ extension View {
     func loading(for isLoading: Bool) -> some View {
         modifier(LoadingModifier(isLoading: isLoading))
     }
+    
+    func alertForError(_ error: Binding<Error?>) -> some View {
+        modifier(
+            CustomAlertViewModifier(
+                isPresented: .init(get: {
+                    error.wrappedValue != nil
+                }, set: { bool in
+                    if !bool {
+                        error.wrappedValue = nil
+                    }
+                }),
+                title: "오류",
+                message: "\((error.wrappedValue?.localizedDescription) ?? "\(error)")",
+                firstButtonText: "확인",
+                firstButtonStyle: .active,
+                firstButtonAction: {}
+            )
+        )
+    }
 }
