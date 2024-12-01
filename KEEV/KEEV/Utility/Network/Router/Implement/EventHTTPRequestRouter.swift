@@ -103,7 +103,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             }
             
             return queryItems
-        case .fetchDetailEvent(eventID: let eventID):
+        case .fetchDetailEvent:
             return nil
         }
     }

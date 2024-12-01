@@ -32,7 +32,7 @@ enum SearchContent {
 ///
 /// - Author: Doran
 struct EventInfoScreen: View {
-//    @Injected private var eventService: any EventServiceProtocol
+    @Injected private var eventService: any EventServiceProtocol
     @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     @State private var error: String? = nil
     @State private var isLoading: Bool = false
@@ -49,17 +49,7 @@ struct EventInfoScreen: View {
             }
         }
         .onAppear {
-            let eventService = MockEventService()
-            Task {
-                do {
-                    let response = try await eventService.loadPaginatedFilteredEvents()
-                    for event in response.contents {
-                        print("Event Name: \(event.name),  Start Date: \(event.startDate), EventID: \(event.id)")
-                    }
-                } catch {
-                    print("Error loading events: \(error)")
-                }
-            }
+            loadEventData()
         }
         .backgroundForKEEV()
     }

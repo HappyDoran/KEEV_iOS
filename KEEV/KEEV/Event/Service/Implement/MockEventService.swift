@@ -35,24 +35,15 @@ class MockEventService: EventServiceProtocol {
     }
     
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
+        var events: [SimpleEventUIO] = []
+        let startIndex = page*size
         
-        let router = EventHTTPRequestRouter.fetchFilteredEvents(size: size, page: page, eventTypeID: eventTypeID, genreID: genreID, startDate: startDate, endDate: endDate, mode: mode, desc: desc)
+        for index in startIndex..<startIndex + size {
+            events.append(
+                .init(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: SimpleEventUIO.dummy0.posterURL, dDay: Int.random(in: -10...10), startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)")
+            )
+        }
         
-        let (status, data) = try await networkUtility.requestWithStatusCode(router: router)
-
-        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
-        
-        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
-        
-        print(contents)
-        
-        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
-            totalPages: paginatedResponseDTO.totalPages,
-            currentPage: paginatedResponseDTO.currentPage,
-            totalElements: paginatedResponseDTO.totalElements,
-            contents: contents
-        )
-
-        return paginatedResponse
+        return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: events)
     }
 }
