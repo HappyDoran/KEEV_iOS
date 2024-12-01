@@ -67,6 +67,16 @@ struct SimpleEventUIO: Identifiable, Hashable {
         self.endDate = event.endDate.toString(format: dateFormat)
         self.placeName = event.places.map(\.name).first ?? "공연 정보가 없어요"
     }
+    
+    init(detailEventUIO event: DetailEventUIO) {
+        self.id = event.id
+        self.name = event.name
+        self.posterURL = event.posterURL
+        self.dDay = event.dDay
+        self.startDate = event.startDate
+        self.endDate = event.endDate
+        self.placeName = event.placesName
+    }
 }
 
 extension SimpleEventUIO {
