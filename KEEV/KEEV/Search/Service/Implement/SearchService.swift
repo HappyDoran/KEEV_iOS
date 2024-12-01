@@ -31,12 +31,11 @@ class SearchService: SearchServiceProtocol {
     
     func deleteRecentSearch(id: UUID) throws {
         var recentSearch = try getRecentSearch()
-        print(recentSearch)
-        print("\(id)")
+        
         if let index = recentSearch.firstIndex(where: { $0.id == id }) {
             recentSearch.remove(at: index)
         }
-        print(recentSearch)
+        
         try userDefaultsUtility.set(recentSearch, forKey: "recentSearch")
     }
     
