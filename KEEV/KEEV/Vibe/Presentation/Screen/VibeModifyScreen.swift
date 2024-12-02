@@ -12,6 +12,7 @@ struct VibeModifyScreen: View {
     @Injected private var service: any VibeServiceProtocol
     
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var vibeManager: VibeManager
     @Namespace private var recentPhoto
     
     @Binding private var vibe: VibeUIO
@@ -258,13 +259,15 @@ private extension VibeModifyScreen {
         let previousImages = previousImages.compactMap(\.self)
         Task {
             do {
-                vibe = try await service.modifyVibe(
+                let uploadedVibe = try await service.modifyVibe(
                     vibeID: vibe.id,
                     rating: rating,
                     comment: comment.isEmpty ? nil : comment,
                     previousImageURLs: [],
                     images: previousImages + selectedImages
                 )
+                vibe = uploadedVibe
+                try vibeManager.modifyVibe(vibeID: vibe.id, modifiedVibe: uploadedVibe)
                 dismiss()
             } catch {
                 errorForAlert = error
