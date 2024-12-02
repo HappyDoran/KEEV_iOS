@@ -10,6 +10,7 @@ import SwiftUI
 // -MARK: 스크린 핵심부
 struct VibeDetailScreen: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var vibeManager: VibeManager
     
     @Injected private var replyService: any ReplyServiceProtocol
     @Injected private var vibeService: any VibeServiceProtocol
@@ -201,6 +202,7 @@ private extension VibeDetailScreen {
         Task {
             do {
                 try await vibeService.deleteVibe(vibeID: vibe.id)
+                vibeManager.deleteVibe(vibeID: vibe.id)
                 onDelete?(vibe)
                 loadingForDelete = false
                 dismiss()
