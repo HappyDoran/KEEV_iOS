@@ -43,6 +43,8 @@ struct SearchAfterView: View {
             }
         }
         .onAppear {
+            events = []
+            currentPage = 0
             loadSearchResult()
         }
     }
