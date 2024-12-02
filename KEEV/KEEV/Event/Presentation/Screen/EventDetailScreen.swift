@@ -81,7 +81,7 @@ struct EventDetailScreen: View {
                 }
             }
             
-            ToolbarItem(placement: .principal) {
+            ToolbarItem(placement: .navigation) {
                 Text(selectedEvent.name)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular)))
                     .foregroundStyle(.gray300)
