@@ -5,31 +5,30 @@
 //  Created by Doran on 12/2/24.
 //
 
-enum EventType: String {
-    case concert = "1"
-    case festival = "2"
-    case small = "3"
-    case club = "4"
+enum EventType: Int {
+    case concert = 1
+    case festival = 2
+    case small = 3
+    case club = 4
 }
 
-enum Genre: String {
-    case pop = "1"
-    case rock = "2"
-    case indie = "3"
-    case hiphop = "4"
-    case electronic = "5"
-    case kPop = "6"
-    case jazz = "7"
-    case classic = "8"
-    case jPop = "9"
-    case rnB = "10"
-    case ballad = "11"
+enum Genre: Int {
+    case pop = 1
+    case rock = 2
+    case indie = 3
+    case hiphop = 4
+    case electronic = 5
+    case kPop = 6
+    case jazz = 7
+    case classic = 8
+    case jPop = 9
+    case rnB = 10
+    case ballad = 11
 }
 
 enum Mode: String {
     case event = "event"
     case reservation = "reservation"
-}
 
 struct EventFilter {
     var page: Int
