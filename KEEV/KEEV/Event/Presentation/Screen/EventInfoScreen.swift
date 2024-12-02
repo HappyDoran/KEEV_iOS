@@ -57,7 +57,7 @@ struct EventInfoScreen: View {
                 themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents, eventFilter: .christmasFilter())
                 themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter())
                 themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter())
-                themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents, eventFilter: .recentFilter())
+                themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
             }
         }
         .onAppear {
@@ -109,7 +109,7 @@ extension EventInfoScreen {
 }
 
 extension EventInfoScreen {
-    private func themeScrollSectionView(themeName: String, events: [SimpleEventUIO], eventFilter: EventFilter) -> some View {
+    private func themeScrollSectionView(themeName: String, events: [SimpleEventUIO], eventFilter: EventFilter? = nil) -> some View {
         VStack(alignment: .leading, spacing: 12){
             NavigationLink {
                 FilteredEventListScreen(title: themeName, eventFilter: eventFilter)
@@ -181,18 +181,7 @@ extension EventInfoScreen {
             }
         }
     }
-    
-    
-//    private func loadEventData() {
-//        isLoading = true
-//        Task.detached {
-//            await MainActor.run {
-//                self.events = SimpleEventUIO.dummies
-//                self.isLoading = false
-//            }
-//        }
-//    }
-    
+
     private func loadEventDataByKeyword(keyword: String) {
         isLoading = true
     }

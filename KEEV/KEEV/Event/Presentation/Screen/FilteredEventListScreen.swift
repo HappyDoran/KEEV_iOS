@@ -72,10 +72,10 @@ struct FilteredEventListScreen: View {
     @State private var totalPages = 1
     private let pageSize = 7
     private let title: String
-    private let eventFilter: EventFilter
+    private let eventFilter: EventFilter?
     @State private var events: [SimpleEventUIO] = []
     
-    init(title: String, eventFilter: EventFilter){
+    init(title: String, eventFilter: EventFilter? = nil){
         self.title = title
         self.eventFilter = eventFilter
     }
@@ -94,12 +94,12 @@ struct FilteredEventListScreen: View {
                             Task {
                                 do {
                                     let response: PaginatedResponse<SimpleEventUIO>
-                                    if(eventFilter == .recentFilter()){
-                                        response = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending)])
-                                    }
-                                    else {
+                                    if let eventFilter = eventFilter {
                                         response = try await eventService.loadPaginatedFilteringEvents(
                                            filter: EventFilter(eventFilter: eventFilter, page: currentPage, size: pageSize))
+                                    }
+                                    else {
+                                        response = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending)])
                                     }
                                     events.append(contentsOf: response.contents)
                                     currentPage += 1
@@ -135,12 +135,14 @@ struct FilteredEventListScreen: View {
                     if currentPage >= totalPages { return }
                     
                     let response: PaginatedResponse<SimpleEventUIO>
-                    if(eventFilter == .recentFilter()){
-                        response = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending)])
+                    if let eventFilter = eventFilter {
+                        response = try await eventService.loadPaginatedFilteringEvents(
+                           filter: EventFilter(eventFilter: eventFilter, page: currentPage, size: pageSize))
                     }
                     else {
-                        response = try await eventService.loadPaginatedFilteringEvents(filter: eventFilter)
+                        response = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending)])
                     }
+                    
                     events.append(contentsOf: response.contents)
                     
                     self.totalPages = response.totalPages
@@ -155,6 +157,6 @@ struct FilteredEventListScreen: View {
 }
 #Preview {
     NavigationStack {
-        FilteredEventListScreen(title: "크리스마스 공연", eventFilter: .recentFilter())
+        FilteredEventListScreen(title: "크리스마스 공연")
     }
 }
