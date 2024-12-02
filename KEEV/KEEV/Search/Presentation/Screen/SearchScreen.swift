@@ -25,8 +25,11 @@ enum EventSearchStatus {
 ///
 /// - Author: Doran
 struct SearchScreen: View {
+    @Injected private var searchService: any SearchServiceProtocol
+    
     @Environment(\.dismiss) private var dismiss
     @State private var searchText: String = ""
+    @State private var recentKeywords: [RecentSearch] = []
     @State private var eventSearchStatus: EventSearchStatus = .beforeSearch
     @FocusState private var searchFieldFocus: Bool
     
@@ -50,27 +53,40 @@ struct SearchScreen: View {
             switch eventSearchStatus {
                 // MARK: 검색 결과가 나오기 전의 뷰
             case .beforeSearch:
-                SearchBeforeView(text: $searchText, isFocused: $searchFieldFocus)
-                    .padding(.horizontal, 16)
+                SearchBeforeView(
+                    text: $searchText,
+                    isFocused: $searchFieldFocus,
+                    recentKeywords: $recentKeywords
+                )
+                .padding(.horizontal, 16)
                 
                 // MARK: 텍스트 필드에 검색을 하는 중인 뷰
             case .searching:
-                SearchingView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                SearchingView(selectedEvent: $selectedEvent, searchText: $searchText, searchContent: searchContent){
                     handleSearching()
                 }
                 
                 // MARK: 검색 결과가 나온 후의 뷰
             case .afterSearch:
-                SearchAfterView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                SearchAfterView(selectedEvent: $selectedEvent, searchText: $searchText, searchContent: searchContent){
                     handleAfterSearch()
-                }.padding(.horizontal, 16)
+                }
+                .padding(.horizontal, 16)
+                .onAppear {
+                    searchService.setRecentSearch(searchItem: RecentSearch(term: searchText, date: .now))
+                }
             }
             Spacer()
         }
         .onChange(of: [searchFieldFocus, searchText.isEmpty]) {
             eventSearchStatus = searchCase()
         }
-        
+        .onChange(of: eventSearchStatus) {
+            recentKeywords = searchService.getRecentSearch().reversed()
+        }
+        .onAppear(perform: {
+            recentKeywords = searchService.getRecentSearch().reversed()
+        })
         .backgroundForKEEV()
     }
 }

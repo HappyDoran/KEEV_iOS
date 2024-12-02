@@ -17,16 +17,16 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct SearchBeforeView: View {
-    @State private var recentKeywords: [RecentSearch] = [
-        RecentSearch(term: "세상에서 제일 재밌는 공연", date: Date())
-    ]
+    @Injected private var searchService: any SearchServiceProtocol
     
     @Binding private var text: String
     private var isFocused: FocusState<Bool>.Binding
+    @Binding private var recentKeywords: [RecentSearch]
     
-    init(text: Binding<String>, isFocused: FocusState<Bool>.Binding) {
+    init(text: Binding<String>, isFocused: FocusState<Bool>.Binding, recentKeywords: Binding<[RecentSearch]>) {
         self._text = text
         self.isFocused = isFocused
+        self._recentKeywords = recentKeywords
     }
     
     var body: some View {
@@ -87,12 +87,17 @@ extension SearchBeforeView {
                 if let index = recentKeywords.firstIndex(where: { $0.id == recentSearchItem.id }) {
                     recentKeywords.remove(at: index)
                 }
+                searchService.removeRecentSearch(id: recentSearchItem.id)
             }
         }
     }
 }
 
 #Preview {
-    SearchBeforeView(text: .constant(""),isFocused:  FocusState<Bool>().projectedValue)
-        .backgroundForKEEV()
+    SearchBeforeView(
+        text: .constant(""),
+        isFocused:  FocusState<Bool>().projectedValue,
+        recentKeywords: .constant([])
+    )
+    .backgroundForKEEV()
 }

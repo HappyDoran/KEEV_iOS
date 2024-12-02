@@ -66,11 +66,12 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
         let tempString = try container.decode(String.self, forKey: .createdDate)
         let tempStartDate = try container.decode(String.self, forKey: .startDate)
         let tempEndDate = try container.decode(String.self, forKey: .endDate)
+        let tempReservationStartDate = try container.decodeIfPresent(String.self, forKey: .reservationStartDate)
         
         self.id = try container.decode(String.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.createdDate = tempString.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
-        self.reservationStartDate = try container.decodeIfPresent(Date.self, forKey: .reservationStartDate)
+        self.reservationStartDate = tempReservationStartDate?.toDate(format: "yyyy-MM-dd'T'HH:mm:ss")
         self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.posterURLString = try container.decode(String.self, forKey: .posterURLString)

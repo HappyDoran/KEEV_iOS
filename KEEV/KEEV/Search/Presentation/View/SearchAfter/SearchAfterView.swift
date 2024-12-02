@@ -13,14 +13,22 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct SearchAfterView: View {
-    @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
+    @Injected private var searchService: any SearchServiceProtocol
+    
+    @State private var events: [SimpleEventUIO] = []
+    @State private var totalEvents = 0
+    @State private var currentPage = 0
+    @State private var totalPages = 0
+    private let pageSize = 10
     
     @Binding private var selectedEvent: SimpleEventUIO?
+    @Binding private var searchText: String
     private var searchContent: SearchContent
     private let onClick: () -> Void
     
-    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), searchContent: SearchContent, onClick: @escaping ()-> Void) {
+    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), searchText: Binding<String>, searchContent: SearchContent, onClick: @escaping ()-> Void) {
         self._selectedEvent = selectedEvent
+        self._searchText = searchText
         self.searchContent = searchContent
         self.onClick = onClick
     }
@@ -34,6 +42,11 @@ struct SearchAfterView: View {
                 searchResult
             }
         }
+        .onAppear {
+            events = []
+            currentPage = 0
+            loadSearchResult()
+        }
     }
 }
 
@@ -43,7 +56,7 @@ extension SearchAfterView {
         HStack(spacing: 0) {
             Group {
                 HStack(spacing: 0){
-                    Text("\(events.count)")
+                    Text("\(totalEvents)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                         .foregroundColor(.gray100)
                     Text(" 건의 검색 결과")
@@ -75,17 +88,73 @@ extension SearchAfterView {
     // MARK: 검색 결과 뷰
     private var searchResult: some View {
         ScrollView(showsIndicators: false) {
-            ForEach(events) { event in
-                EventListCell(event: event)
-                    .onTapGesture {
-                        selectedEvent = event
-                        onClick()
-                    }
+            LazyVStack(spacing: 0) {
+                ForEach(events.indices, id: \.self) { index in
+                    EventListCell(event: events[index])
+                        .onTapGesture {
+                            selectedEvent = events[index]
+                            onClick()
+                        }
+                        .onAppear {
+                            if index == events.count - 1 && currentPage < totalPages {
+                                addSearchResult()
+                            }
+                        }
+                }
+            }
+        }
+    }
+}
+
+extension SearchAfterView {
+    private func loadSearchResult() {
+        Task {
+            do {
+                switch searchContent {
+                case .event:
+                    let paginatedResponse = try await searchService.searchEventByName(name: searchText, size: pageSize, page: currentPage)
+                    let allEvents = paginatedResponse.contents
+                    totalEvents = paginatedResponse.totalElements
+                    totalPages = paginatedResponse.totalPages
+                    events = allEvents
+                case .vibe:
+                    let paginatedResponse = try await searchService.searchEventByNameWhenAddVibe(name: searchText, size: pageSize, page: currentPage)
+                    let allEvents = paginatedResponse.contents
+                    totalEvents = paginatedResponse.totalElements
+                    totalPages = paginatedResponse.totalPages
+                    events = allEvents
+                }
+                currentPage += 1
+            } catch {
+                print(error)
+            }
+        }
+    }
+    
+    private func addSearchResult() {
+        Task {
+            do {
+                switch searchContent {
+                case .event:
+                    let newEvents = try await searchService.searchEventByName(name: searchText, size: pageSize, page: currentPage).contents
+                    events.append(contentsOf: newEvents)
+                case .vibe:
+                    let newEvents = try await searchService.searchEventByNameWhenAddVibe(name: searchText, size: pageSize, page: currentPage).contents
+                    events.append(contentsOf: newEvents)
+                }
+                currentPage += 1
+            } catch {
+                print(error)
             }
         }
     }
 }
 
 #Preview {
-    SearchAfterView(searchContent: .event, onClick: {}).backgroundForKEEV()
+    SearchAfterView(
+        searchText: .constant("칸예"),
+        searchContent: .event,
+        onClick: {}
+    )
+    .backgroundForKEEV()
 }
