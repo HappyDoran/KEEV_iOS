@@ -116,8 +116,10 @@ struct FilteredEventListScreen: View {
             }
         }
         .onAppear {
-            Task {
-                await loadEvents(page: currentPage)
+            if(currentPage == 0){
+                Task {
+                    await loadEvents(page: currentPage)
+                }
             }
         }
     }

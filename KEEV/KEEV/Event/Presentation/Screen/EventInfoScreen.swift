@@ -54,9 +54,9 @@ struct EventInfoScreen: View {
             MainHeader(selectedEvent: $selectedEvent)
             ScrollView(showsIndicators: false) {
                 EventCarouselView().padding(.top, 8)
-                themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents, eventFilter: .christmasFilter())
-                themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter())
-                themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter())
+                themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents, eventFilter: .christmasFilter)
+                themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter)
+                themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter)
                 themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
             }
         }
@@ -164,15 +164,15 @@ extension EventInfoScreen {
     
     private func loadEvents() {
         Task {
-            if let events = await loadFilteredEventData(filter: EventFilter.christmasFilter()){
+            if let events = await loadFilteredEventData(filter: EventFilter.christmasFilter){
                 christmasEvents = events
             }
             
-            if let events = await loadFilteredEventData(filter: EventFilter.rockFilter()) {
+            if let events = await loadFilteredEventData(filter: EventFilter.rockFilter) {
                 rockEvents = events
             }
             
-            if let events = await loadFilteredEventData(filter: EventFilter.indieFilter()) {
+            if let events = await loadFilteredEventData(filter: EventFilter.indieFilter) {
                 indieEvents = events
             }
             

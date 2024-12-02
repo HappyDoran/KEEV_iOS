@@ -49,7 +49,7 @@ class EventService: EventServiceProtocol {
         
         let router = EventHTTPRequestRouter.fetchEvents(page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
         
-        let (statusCode, data) = try await networkUtility.requestWithStatusCode(router: router)
+        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
         
         let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
 

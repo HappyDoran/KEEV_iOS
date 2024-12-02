@@ -77,27 +77,27 @@ struct EventFilter: Equatable {
         self.desc = eventFilter.desc
     }
     
-    static func christmasFilter() -> EventFilter {
+    static var christmasFilter: EventFilter {
         return EventFilter(startDate: "2024-12-23", endDate: "2024-12-27")
     }
     
-    static func rockFilter() -> EventFilter {
+    static var rockFilter: EventFilter {
         return EventFilter(genre: .rock, startDate: "2024-12-01", endDate: "2024-12-31")
     }
     
-    static func indieFilter() -> EventFilter {
+    static var indieFilter: EventFilter {
         return EventFilter(genre: .indie, startDate: "2024-12-01", endDate: "2024-12-31")
     }
     
-    static func electronicFilter() -> EventFilter {
+    static var electronicFilter: EventFilter {
         return EventFilter(genre: .electronic, startDate: "2024-12-01", endDate: "2024-12-31")
     }
     
-    static func jazzFilter() -> EventFilter {
+    static var jazzFilter: EventFilter {
         return EventFilter(genre: .jazz, startDate: "2024-12-01", endDate: "2024-12-31")
     }
     
-    static func recentFilter() -> EventFilter {
+    static var recentFilter: EventFilter {
         return EventFilter()
     }
 }
