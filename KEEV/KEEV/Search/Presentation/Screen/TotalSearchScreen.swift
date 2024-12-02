@@ -58,6 +58,9 @@ struct TotalSearchScreen: View {
         .onChange(of: eventSearchStatus) {
             recentKeywords = searchService.getRecentSearch()
         }
+        .onAppear(perform: {
+            recentKeywords = searchService.getRecentSearch()
+        })
         .backgroundForKEEV()
         .navigationDestination(item: $selectedEvent) { event in
             Text(event.name)

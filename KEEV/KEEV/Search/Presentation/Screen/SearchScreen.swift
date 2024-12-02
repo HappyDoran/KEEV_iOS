@@ -84,6 +84,9 @@ struct SearchScreen: View {
         .onChange(of: eventSearchStatus) {
             recentKeywords = searchService.getRecentSearch()
         }
+        .onAppear(perform: {
+            recentKeywords = searchService.getRecentSearch()
+        })
         .backgroundForKEEV()
     }
 }
