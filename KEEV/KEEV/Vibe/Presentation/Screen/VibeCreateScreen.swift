@@ -15,6 +15,7 @@ import PhotosUI
 /// - Author: Doran
 struct VibeCreateScreen: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var vibeManager: VibeManager
     @Injected private var service: any VibeServiceProtocol
     
     @State private var loadingForUpload: Bool = false // 바이브 업로드할 때 뜨는 로딩
@@ -140,12 +141,13 @@ private extension VibeCreateScreen {
         loadingForUpload = true
         Task {
             do {
-                _ = try await service.uploadVibe(
+                let uploadedVibe = try await service.uploadVibe(
                     eventID: selectedEvent.id,
                     rating: rating,
                     comment: comment,
                     images: selectedImages
                 )
+                vibeManager.addVibe(vibe: uploadedVibe)
                 dismiss()
             } catch {
                 errorForAlert = error
