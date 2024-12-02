@@ -17,6 +17,12 @@ class MockSearchService: SearchServiceProtocol {
     private var recentSearch: [RecentSearch] = []
     
     func setRecentSearch(searchItem: RecentSearch) {
+        if recentSearch.contains(where: { $0.term == searchItem.term }) {
+            if let index = recentSearch.firstIndex(where: { $0.term == searchItem.term }) {
+                recentSearch.remove(at: index)
+            }
+        }
+        
         recentSearch.append(searchItem)
     }
     
