@@ -108,7 +108,7 @@ struct FilteredEventListScreen: View {
             LazyVStack(spacing: 0) {
                 ForEach(events.indices, id: \.self) { index in
                     NavigationLink {
-                        LazyView(EventDetailScreen(simpleEvent: events[index]))
+                        EventDetailScreen(simpleEvent: events[index])
                     } label: {
                         EventListCell(event: events[index])
                     }

@@ -57,8 +57,6 @@ struct EventInfoScreen: View {
                 themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents, eventFilter: .christmasFilter())
                 themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter())
                 themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter())
-                themeScrollSectionView(themeName: "이달의 일렉트로닉 공연", events: electronicEvents, eventFilter: .electronicFilter())
-                themeScrollSectionView(themeName: "이달의 재즈 공연", events: jazzEvents, eventFilter: .jazzFilter())
                 themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents, eventFilter: .recentFilter())
             }
         }
@@ -165,14 +163,6 @@ extension EventInfoScreen {
             
             if let events = await loadFilteredEventData(filter: EventFilter.indieFilter()) {
                 indieEvents = events
-            }
-            
-            if let events = await loadFilteredEventData(filter: EventFilter.electronicFilter()) {
-                electronicEvents = events
-            }
-            
-            if let events = await loadFilteredEventData(filter: EventFilter.jazzFilter()) {
-                jazzEvents = events
             }
             
             if let events = await loadFilteredEventData(filter: EventFilter.recentFilter()) {

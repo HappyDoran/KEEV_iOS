@@ -47,23 +47,10 @@ class MockEventService: EventServiceProtocol {
         return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: events)
     }
     
+    
     func loadPaginatedFilteringEvents(filter: EventFilter) async throws -> PaginatedResponse<SimpleEventUIO> {
+        var events: [SimpleEventUIO] = []
         
-        let router = EventHTTPRequestRouter.fetchFilteredEvents(size: filter.size, page: filter.page, eventTypeID: filter.eventType?.rawValue, genreID: filter.genre?.rawValue, startDate: filter.startDate, endDate: filter.endDate, mode: filter.mode.rawValue, desc: filter.desc)
-        
-        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
-
-        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
-        
-        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
-        
-        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
-            totalPages: paginatedResponseDTO.totalPages,
-            currentPage: paginatedResponseDTO.currentPage,
-            totalElements: paginatedResponseDTO.totalElements,
-            contents: contents
-        )
-
-        return paginatedResponse
+        return PaginatedResponse(totalPages: 5, currentPage: 1, totalElements: 50, contents: events)
     }
 }
