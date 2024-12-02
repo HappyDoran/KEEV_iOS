@@ -62,13 +62,13 @@ struct SearchScreen: View {
                 
                 // MARK: 텍스트 필드에 검색을 하는 중인 뷰
             case .searching:
-                SearchingView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                SearchingView(selectedEvent: $selectedEvent, searchText: $searchText, searchContent: searchContent){
                     handleSearching()
                 }
                 
                 // MARK: 검색 결과가 나온 후의 뷰
             case .afterSearch:
-                SearchAfterView(selectedEvent: $selectedEvent, searchContent: searchContent){
+                SearchAfterView(selectedEvent: $selectedEvent, searchText: $searchText, searchContent: searchContent){
                     handleAfterSearch()
                 }
                 .padding(.horizontal, 16)
