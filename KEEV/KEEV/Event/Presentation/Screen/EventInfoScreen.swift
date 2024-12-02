@@ -39,14 +39,22 @@ struct EventInfoScreen: View {
     @State private var selectedEvent: SimpleEventUIO? = nil
     @State private var navigateToEventDetail: Bool = false
     
+    @State private var christmasEvents: [SimpleEventUIO] = []
+    @State private var rockEvents: [SimpleEventUIO] = []
+    @State private var indieEvents: [SimpleEventUIO] = []
+    @State private var electronicEvents: [SimpleEventUIO] = []
+    @State private var jazzEvents: [SimpleEventUIO] = []
+    @State private var recentEvents: [SimpleEventUIO] = []
+    
     var body: some View {
         VStack {
             MainHeader(selectedEvent: $selectedEvent)
             ScrollView(showsIndicators: false) {
-                EventCarouselView()
-                thumbnailSection.padding(.top, 16).padding(.horizontal, 16)
-                eventListSection.padding(.top, 48).padding(.horizontal, 16)
-                horizontalScrollSection.padding(.leading, 16)
+                EventCarouselView().padding(.top, 16)
+                themeScrollSectionView(themeName: "크리스마스 공연")
+//                thumbnailSection.padding(.top, 16).padding(.horizontal, 16)
+//                eventListSection.padding(.top, 48).padding(.horizontal, 16)
+//                horizontalScrollSection.padding(.leading, 16)
             }
         }
         .onAppear {
@@ -98,6 +106,41 @@ extension EventInfoScreen {
 }
 
 extension EventInfoScreen {
+    private func themeScrollSectionView(themeName: String) -> some View {
+        VStack(alignment: .leading, spacing: 12){
+            NavigationLink {
+            } label : {
+                HStack(spacing: 4){
+                    Text(themeName)
+                        .figmaFont(PretendardFont.title(style: .sm))
+                        .foregroundColor(.gray100)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.gray500)
+                }
+                .padding(.horizontal, 16)
+            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    Spacer().frame(width: 16)
+                    ForEach(0..<min(events.count, 3), id: \.self) { index in
+                        NavigationLink {
+                            EventDetailScreen(simpleEvent: events[index])
+                        } label: {
+                            EventThumbnailCell(event: events[index])
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.top, 48)
+    }
+    
+    private func loadFilteredEventData(filter: EventFilter) {
+        
+    }
+    
+    
     private func loadEventData() {
         isLoading = true
         Task.detached {

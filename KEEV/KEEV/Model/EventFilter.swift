@@ -1,0 +1,78 @@
+//
+//  EventFilter.swift
+//  KEEV
+//
+//  Created by Doran on 12/2/24.
+//
+
+enum EventType: String {
+    case concert = "1"
+    case festival = "2"
+    case small = "3"
+    case club = "4"
+}
+
+enum Genre: String {
+    case pop = "1"
+    case rock = "2"
+    case indie = "3"
+    case hiphop = "4"
+    case electronic = "5"
+    case kPop = "6"
+    case jazz = "7"
+    case classic = "8"
+    case jPop = "9"
+    case rnB = "10"
+    case ballad = "11"
+}
+
+enum Mode: String {
+    case event = "event"
+    case reservation = "reservation"
+}
+
+struct EventFilter {
+    var page: Int
+    var size: Int
+    var eventType: EventType?
+    var genre: Genre?
+    var startDate: String?
+    var endDate: String?
+    var mode: Mode
+    var desc: Bool
+    
+    init(page: Int = 0, size: Int = 10, eventType: EventType? = nil, genre: Genre? = nil, startDate: String? = nil, endDate: String? = nil, mode: Mode = .event, desc: Bool = true) {
+        self.page = page
+        self.size = size
+        self.eventType = eventType
+        self.genre = genre
+        self.startDate = startDate
+        self.endDate = endDate
+        self.mode = mode
+        self.desc = desc
+    }
+    
+    static func christmasFilter() -> EventFilter {
+        return EventFilter(startDate: "2024-12-23", endDate: "2024-12-27")
+    }
+    
+    static func rockFilter() -> EventFilter {
+        return EventFilter(genre: .rock, startDate: "2024-12-01", endDate: "2024-12-31")
+    }
+    
+    static func indieFilter() -> EventFilter {
+        return EventFilter(genre: .indie, startDate: "2024-12-01", endDate: "2024-12-31")
+    }
+    
+    static func electronicFilter() -> EventFilter {
+        return EventFilter(genre: .electronic, startDate: "2024-12-01", endDate: "2024-12-31")
+    }
+    
+    static func jazzFilter() -> EventFilter {
+        return EventFilter(genre: .jazz, startDate: "2024-12-01", endDate: "2024-12-31")
+    }
+    
+    static func recentFilter() -> EventFilter {
+        return EventFilter()
+    }
+}
