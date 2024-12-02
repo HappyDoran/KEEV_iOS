@@ -54,12 +54,12 @@ struct EventInfoScreen: View {
             MainHeader(selectedEvent: $selectedEvent)
             ScrollView(showsIndicators: false) {
                 EventCarouselView().padding(.top, 16)
-                themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents)
-                themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents)
-                themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents)
-                themeScrollSectionView(themeName: "이달의 일렉트로닉 공연", events: electronicEvents)
-                themeScrollSectionView(themeName: "이달의 재즈 공연", events: jazzEvents)
-                themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
+                themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents, eventFilter: .christmasFilter())
+                themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter())
+                themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter())
+                themeScrollSectionView(themeName: "이달의 일렉트로닉 공연", events: electronicEvents, eventFilter: .electronicFilter())
+                themeScrollSectionView(themeName: "이달의 재즈 공연", events: jazzEvents, eventFilter: .jazzFilter())
+                themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents, eventFilter: .recentFilter())
             }
         }
         .onAppear {
@@ -111,9 +111,10 @@ extension EventInfoScreen {
 }
 
 extension EventInfoScreen {
-    private func themeScrollSectionView(themeName: String, events: [SimpleEventUIO]) -> some View {
+    private func themeScrollSectionView(themeName: String, events: [SimpleEventUIO], eventFilter: EventFilter) -> some View {
         VStack(alignment: .leading, spacing: 12){
             NavigationLink {
+                FilteredEventListScreen(title: themeName, eventFilter: eventFilter)
             } label : {
                 HStack(spacing: 4){
                     Text(themeName)
@@ -128,7 +129,7 @@ extension EventInfoScreen {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     Spacer().frame(width: 16)
-                    ForEach(0..<min(events.count, 3), id: \.self) { index in
+                    ForEach(0..<min(events.count, 5), id: \.self) { index in
                         NavigationLink {
                             EventDetailScreen(simpleEvent: events[index])
                         } label: {

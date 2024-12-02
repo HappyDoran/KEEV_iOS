@@ -5,6 +5,16 @@
 //  Created by Doran on 12/2/24.
 //
 
+enum FilterType: String {
+    case christmas = "christmas"
+    case monthRock = "monthRock"
+    case monthIndie = "monthIndie"
+    case monthElectronic = "monthElectronic"
+    case monthJazz = "monthJazz"
+    case recent = "recent"
+    
+}
+
 enum EventType: Int {
     case concert = 1
     case festival = 2
@@ -32,6 +42,7 @@ enum Mode: String {
 }
 
 struct EventFilter {
+    var filterType: FilterType?
     var page: Int
     var size: Int
     var eventType: EventType?
@@ -41,7 +52,8 @@ struct EventFilter {
     var mode: Mode
     var desc: Bool
     
-    init(page: Int = 0, size: Int = 5, eventType: EventType? = nil, genre: Genre? = nil, startDate: String? = nil, endDate: String? = nil, mode: Mode = .event, desc: Bool = true) {
+    init(filterType: FilterType? = nil, page: Int = 0, size: Int = 7, eventType: EventType? = nil, genre: Genre? = nil, startDate: String? = nil, endDate: String? = nil, mode: Mode = .event, desc: Bool = true) {
+        self.filterType = filterType
         self.page = page
         self.size = size
         self.eventType = eventType
@@ -53,26 +65,26 @@ struct EventFilter {
     }
     
     static func christmasFilter() -> EventFilter {
-        return EventFilter(startDate: "2024-12-23", endDate: "2024-12-27")
+        return EventFilter(filterType: .christmas, startDate: "2024-12-23", endDate: "2024-12-27")
     }
     
     static func rockFilter() -> EventFilter {
-        return EventFilter(genre: .rock, startDate: "2024-12-01", endDate: "2024-12-31")
+        return EventFilter(filterType: .monthRock, genre: .rock, startDate: "2024-12-01", endDate: "2024-12-31")
     }
     
     static func indieFilter() -> EventFilter {
-        return EventFilter(genre: .indie, startDate: "2024-12-01", endDate: "2024-12-31")
+        return EventFilter(filterType: .monthIndie, genre: .indie, startDate: "2024-12-01", endDate: "2024-12-31")
     }
     
     static func electronicFilter() -> EventFilter {
-        return EventFilter(genre: .electronic, startDate: "2024-12-01", endDate: "2024-12-31")
+        return EventFilter(filterType: .monthElectronic, genre: .electronic, startDate: "2024-12-01", endDate: "2024-12-31")
     }
     
     static func jazzFilter() -> EventFilter {
-        return EventFilter(genre: .jazz, startDate: "2024-12-01", endDate: "2024-12-31")
+        return EventFilter(filterType: .monthJazz, genre: .jazz, startDate: "2024-12-01", endDate: "2024-12-31")
     }
     
     static func recentFilter() -> EventFilter {
-        return EventFilter()
+        return EventFilter(filterType: .recent)
     }
 }
