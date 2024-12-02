@@ -14,7 +14,7 @@ import Foundation
 /// - Author: 라움
 class MockSearchService: SearchServiceProtocol {
     private let userDefaultsUtility = UserDefaultsUtility()
-    private var recentSearch: [RecentSearch] = [RecentSearch(term: "세상에서 제일 재밌는 공연", date: Date())]
+    private var recentSearch: [RecentSearch] = []
     
     func setRecentSearch(searchItem: RecentSearch) {
         recentSearch.append(searchItem)
