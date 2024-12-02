@@ -82,10 +82,10 @@ struct SearchScreen: View {
             eventSearchStatus = searchCase()
         }
         .onChange(of: eventSearchStatus) {
-            recentKeywords = searchService.getRecentSearch()
+            recentKeywords = searchService.getRecentSearch().reversed()
         }
         .onAppear(perform: {
-            recentKeywords = searchService.getRecentSearch()
+            recentKeywords = searchService.getRecentSearch().reversed()
         })
         .backgroundForKEEV()
     }
