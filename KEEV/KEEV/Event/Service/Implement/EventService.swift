@@ -50,7 +50,7 @@ class EventService: EventServiceProtocol {
         let router = EventHTTPRequestRouter.fetchEvents(page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
-
+        
         let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
 
         let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
@@ -112,6 +112,44 @@ class EventService: EventServiceProtocol {
     /// - Author: Doran
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
         let router = EventHTTPRequestRouter.fetchFilteredEvents(size: size, page: page, eventTypeID: eventTypeID, genreID: genreID, startDate: startDate, endDate: endDate, mode: mode, desc: desc)
+        
+        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
+
+        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+        
+        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+        
+        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+            totalPages: paginatedResponseDTO.totalPages,
+            currentPage: paginatedResponseDTO.currentPage,
+            totalElements: paginatedResponseDTO.totalElements,
+            contents: contents
+        )
+
+        return paginatedResponse
+    }
+    
+    /// 필터링된 이벤트를 가져오는 함수
+    ///
+    /// - Parameters:
+    ///   - filter: 페이지 넘버,
+    ///    이벤트의 갯수,
+    ///    이벤트 타입,
+    ///    이벤트 장르,
+    ///    이벤트 시작일,
+    ///    이벤트 종료일,
+    ///    이벤트 모드,
+    ///    이벤트 정렬을 프로퍼티로 가지는 구조체
+    ///
+    ///  인자로 받은 구조체 파라미터로 필터링 된 이벤트를 가져옵니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 페이지네이션이 적용된 이벤트 목록
+    ///
+    /// - Author: Doran
+    func loadPaginatedFilteringEvents(filter: EventFilter) async throws -> PaginatedResponse<SimpleEventUIO> {
+        
+        let router = EventHTTPRequestRouter.fetchFilteredEvents(size: filter.size, page: filter.page, eventTypeID: filter.eventType?.rawValue, genreID: filter.genre?.rawValue, startDate: filter.startDate, endDate: filter.endDate, mode: filter.mode.rawValue, desc: filter.desc)
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
 

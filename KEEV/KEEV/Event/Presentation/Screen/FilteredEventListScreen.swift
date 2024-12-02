@@ -11,12 +11,8 @@ import SwiftUI
 ///
 /// 필터링된 이벤트를 보여주기 위해선, 다음과 같은 프로퍼티가 필요합니다.
 ///
-/// - `Duration`: 필터링해서 보여줄 이벤트의 기간을 의미합니다.
-/// - `eventGenre`: 이벤트의 장르 입니다. `nil`이 들어갈 수 있습니다.
-/// - `eventType`: 이벤트의 타입입니다.
-/// - `currentPage`: 현재 페이지 입니다. 스크린이 onAppear되면, `currentPage`의 이벤트 목록을 가져오기 시작합니다.
-/// - `maxPage`: 해당 필터의 마지막 페이지 입니다.
-/// - `events`: 현재 가지고 있는 배열입니다.
+/// - `title`: 헤더에 보여줄 타이틀
+/// - `EventFilter`: 어떠한 필터링 이벤트인지를 의미합니다.
 ///
 /// 여기서 피그마의 이벤트 정보 스크린에서 이미 필터링된 이벤트의 일부를 보여주고 있다고 가정해보겠습니다.
 ///
@@ -38,14 +34,7 @@ import SwiftUI
 ///                 if !events.isEmpty {
 ///                     VStack {
 ///                         NavigationLink {
-///                             FilteredEventListScreen(
-///                                 duration: nil,
-///                                 eventGenre: eventGenre,
-///                                 eventType: eventType,
-///                                 currentPage: current + 1,
-///                                 maxPage: max,
-///                                 events: events
-///                             )
+///                             FilteredEventListScreen(title: themeName, eventFilter: eventFilter)
 ///                         } label: {
 ///                             Text("\(eventGenre.name) \(eventType.name)")
 ///                         }
@@ -77,45 +66,33 @@ import SwiftUI
 struct FilteredEventListScreen: View {
     @Injected private var eventService: any EventServiceProtocol
     
-    private let duration: Duration?
-    private let eventGenre: GenreDTO?
-    private let eventType: EventTypeDTO
-    
-    init(
-        duration: Duration,
-        eventGenre: GenreDTO?,
-        eventType: EventTypeDTO
-    ) {
-        self.duration = duration
-        self.eventGenre = eventGenre
-        self.eventType = eventType
-    }
+    @Environment(\.dismiss) private var dismiss
     
     @State private var currentPage = 0
+    @State private var totalPages = 1
     private let pageSize = 7
+    private let title: String
+    private let eventFilter: EventFilter?
     @State private var events: [SimpleEventUIO] = []
     
+    init(title: String, eventFilter: EventFilter? = nil){
+        self.title = title
+        self.eventFilter = eventFilter
+    }
+    
     var body: some View {
-        ScrollView(.vertical) {
+        ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 0) {
                 ForEach(events.indices, id: \.self) { index in
                     NavigationLink {
-                        LazyView(EventDetailScreen(simpleEvent: events[index]))
+                        EventDetailScreen(simpleEvent: events[index])
                     } label: {
                         EventListCell(event: events[index])
                     }
                     .onAppear {
-                        guard let index = events.firstIndex(where: { $0.id == events[index].id }) else { return }
-                        
-                        if index % pageSize == (pageSize - 1) {
+                        if index == events.count - 1 && currentPage < totalPages {
                             Task {
-                                do {
-                                    // 서비스가 이벤트를 찾는 로직
-                                    events.append(contentsOf: try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending), (SortCase.startDate, .ascending)]).contents)
-                                    currentPage += 1
-                                } catch {
-                                    print(error)
-                                }
+                                await loadEvents(page: currentPage)
                             }
                         }
                     }
@@ -125,64 +102,52 @@ struct FilteredEventListScreen: View {
         }
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    HStack(spacing: 24){
+                        Image(systemName: "chevron.backward")
+                            .foregroundStyle(.gray100)
+                    }
+                }
+            }
+        }
         .onAppear {
-            Task {
-                do {
-                    // 서비스가 이벤트를 찾는 로직
-                    events = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending), (SortCase.startDate, .ascending)]).contents
-                    currentPage += 1
-                } catch {
-                    print(error)
+            if(currentPage == 0){
+                Task {
+                    await loadEvents(page: currentPage)
                 }
             }
         }
     }
 }
 
-private extension FilteredEventListScreen {
-    var title: String {
-        var components = [String]()
-        
-        if let duration {
-            components.append(duration.description)
-        }
-        
-        if let eventGenre {
-            components.append(eventGenre.name)
-        }
-        
-        components.append(eventType.name)
-        
-        return components.joined(separator: " ")
-    }
-}
-
 extension FilteredEventListScreen {
-    enum Duration {
-        case today
-        case thisWeek
-        case thisMonth
-        case thisYear
-    }
-}
-
-extension FilteredEventListScreen.Duration: CustomStringConvertible {
-    var description: String {
-        switch self {
-        case .today: return "오늘의"
-        case .thisWeek: return "이 주의"
-        case .thisMonth: return "이 달의"
-        case .thisYear: return "올해의"
+    private func loadEvents(page: Int) async {
+        do {
+            let response: PaginatedResponse<SimpleEventUIO>
+            if let eventFilter = eventFilter {
+                response = try await eventService.loadPaginatedFilteringEvents(
+                    filter: EventFilter(eventFilter: eventFilter, page: page, size: pageSize)
+                )
+            } else {
+                response = try await eventService.loadPaginatedEvents(page: page, size: pageSize, sort: [(SortCase.createdDate, .descending)])
+            }
+            events.append(contentsOf: response.contents)
+            totalPages = response.totalPages
+            currentPage += 1
+            
+        } catch {
+            print(error)
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        FilteredEventListScreen(
-            duration: .thisWeek,
-            eventGenre: .init(id: 1, name: "장르"),
-            eventType: .init(id: 1, name: "타입")
-        )
+        FilteredEventListScreen(title: "크리스마스 공연")
     }
 }

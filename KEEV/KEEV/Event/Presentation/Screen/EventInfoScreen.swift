@@ -39,18 +39,29 @@ struct EventInfoScreen: View {
     @State private var selectedEvent: SimpleEventUIO? = nil
     @State private var navigateToEventDetail: Bool = false
     
+    @State private var christmasEvents: [SimpleEventUIO] = []
+    @State private var rockEvents: [SimpleEventUIO] = []
+    @State private var indieEvents: [SimpleEventUIO] = []
+    @State private var electronicEvents: [SimpleEventUIO] = []
+    @State private var jazzEvents: [SimpleEventUIO] = []
+    @State private var recentEvents: [SimpleEventUIO] = []
+    
+    @State private var currentPage = 0
+    private let pageSize = 4
+    
     var body: some View {
         VStack {
             MainHeader(selectedEvent: $selectedEvent)
             ScrollView(showsIndicators: false) {
-                EventCarouselView()
-                thumbnailSection.padding(.top, 16).padding(.horizontal, 16)
-                eventListSection.padding(.top, 48).padding(.horizontal, 16)
-                horizontalScrollSection.padding(.leading, 16)
+                EventCarouselView().padding(.top, 8)
+                themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents, eventFilter: .christmasFilter)
+                themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter)
+                themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter)
+                themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
             }
         }
         .onAppear {
-            loadEventData()
+            loadEvents()
         }
         .backgroundForKEEV()
     }
@@ -98,16 +109,79 @@ extension EventInfoScreen {
 }
 
 extension EventInfoScreen {
-    private func loadEventData() {
-        isLoading = true
-        Task.detached {
-                await MainActor.run {
-                    self.events = SimpleEventUIO.dummies
-                    self.isLoading = false
+    private func themeScrollSectionView(themeName: String, events: [SimpleEventUIO], eventFilter: EventFilter? = nil) -> some View {
+        VStack(alignment: .leading, spacing: 12){
+            NavigationLink {
+                FilteredEventListScreen(title: themeName, eventFilter: eventFilter)
+            } label : {
+                HStack(spacing: 4){
+                    Text(themeName)
+                        .figmaFont(PretendardFont.title(style: .sm))
+                        .foregroundColor(.gray100)
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundColor(.gray500)
                 }
+                .padding(.horizontal, 16)
+            }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    Spacer().frame(width: 16)
+                    ForEach(0..<min(events.count, 5), id: \.self) { index in
+                        NavigationLink {
+                            EventDetailScreen(simpleEvent: events[index])
+                        } label: {
+                            EventThumbnailCell(event: events[index])
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.top, 20)
+    }
+    
+    private func loadFilteredEventData(filter: EventFilter) async -> [SimpleEventUIO]? {
+        do {
+            let paginatedResponse = try await eventService.loadPaginatedFilteringEvents(filter: filter)
+            
+            return paginatedResponse.contents
+        } catch {
+            print("Error loading events: \(error)")
+            return nil
         }
     }
     
+    private func loadEventData() async -> [SimpleEventUIO]? {
+        do {
+            let response = try await eventService.loadPaginatedEvents(page: 0, size: 10, sort: [(SortCase.createdDate, .descending)])
+            return response.contents
+            
+        } catch {
+            print("Error loading events: \(error)")
+            return nil
+        }
+    }
+    
+    private func loadEvents() {
+        Task {
+            if let events = await loadFilteredEventData(filter: EventFilter.christmasFilter){
+                christmasEvents = events
+            }
+            
+            if let events = await loadFilteredEventData(filter: EventFilter.rockFilter) {
+                rockEvents = events
+            }
+            
+            if let events = await loadFilteredEventData(filter: EventFilter.indieFilter) {
+                indieEvents = events
+            }
+            
+            if let events = await loadEventData(){
+                recentEvents = events
+            }
+        }
+    }
+
     private func loadEventDataByKeyword(keyword: String) {
         isLoading = true
     }
