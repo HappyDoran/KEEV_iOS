@@ -96,8 +96,6 @@ extension SearchAfterView {
                             onClick()
                         }
                         .onAppear {
-                            guard let index = events.firstIndex(where: { $0.id == events[index].id }) else { return }
-                            
                             if index == events.count - 1 && currentPage < totalPages {
                                 addSearchResult()
                             }
@@ -117,14 +115,15 @@ extension SearchAfterView {
                     let paginatedResponse = try await searchService.searchEventByName(name: searchText, size: pageSize, page: currentPage)
                     let allEvents = paginatedResponse.contents
                     totalEvents = paginatedResponse.totalElements
+                    totalPages = paginatedResponse.totalPages
                     events = allEvents
                 case .vibe:
                     let paginatedResponse = try await searchService.searchEventByNameWhenAddVibe(name: searchText, size: pageSize, page: currentPage)
                     let allEvents = paginatedResponse.contents
                     totalEvents = paginatedResponse.totalElements
+                    totalPages = paginatedResponse.totalPages
                     events = allEvents
                 }
-                totalPages = Int(ceil(Double(totalEvents) / Double(pageSize)))
                 currentPage += 1
             } catch {
                 print(error)

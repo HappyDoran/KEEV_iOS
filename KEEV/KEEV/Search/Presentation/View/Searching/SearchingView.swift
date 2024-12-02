@@ -12,8 +12,7 @@ struct SearchingView: View {
     
     @Environment(\.dismiss) private var dismiss
     @State private var events: [SimpleEventUIO] = []
-    @State private var currentPage = 0
-    @State private var totalPages = 0
+    private let currentPage = 0
     private let pageSize = 5
     
     @Binding private var selectedEvent: SimpleEventUIO?
@@ -44,27 +43,18 @@ struct SearchingView: View {
 extension SearchingView {
     // MARK: searchText에 텍스트를 입력하는 동안에 나오는 검색 결과
     private var searching: some View {
-        ScrollView {            
-            LazyVStack(spacing: 0) {
-                ForEach(events.indices, id: \.self) { index in
-                    SearchCell(text: events[index].name)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 12)
-                        .onTapGesture {
-                            selectedEvent = events[index]
-                            if searchContent == .vibe {
-                                dismiss()
-                            }
-                            onClick()
+        VStack(spacing: 0) {
+            ForEach(events.indices, id: \.self) { index in
+                SearchCell(text: events[index].name)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+                    .onTapGesture {
+                        selectedEvent = events[index]
+                        if searchContent == .vibe {
+                            dismiss()
                         }
-                        .onAppear {
-                            guard let index = events.firstIndex(where: { $0.id == events[index].id }) else { return }
-                            
-                            if index == events.count - 1 && currentPage < totalPages {
-                                addSearchResult()
-                            }
-                        }
-                }
+                        onClick()
+                    }
             }
         }
         .padding(.top, 12)
@@ -83,25 +73,6 @@ extension SearchingView {
                     let allEvents = try await searchService.searchEventByNameWhenAddVibe(name: searchText, size: pageSize, page: currentPage).contents
                     events = allEvents
                 }
-                currentPage += 1
-            } catch {
-                print(error)
-            }
-        }
-    }
-    
-    private func addSearchResult() {
-        Task {
-            do {
-                switch searchContent {
-                case .event:
-                    let newEvents = try await searchService.searchEventByName(name: searchText, size: pageSize, page: currentPage).contents
-                    events.append(contentsOf: newEvents)
-                case .vibe:
-                    let newEvents = try await searchService.searchEventByNameWhenAddVibe(name: searchText, size: pageSize, page: currentPage).contents
-                    events.append(contentsOf: newEvents)
-                }
-                currentPage += 1
             } catch {
                 print(error)
             }
