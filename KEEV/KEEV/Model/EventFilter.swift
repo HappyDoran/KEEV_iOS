@@ -45,7 +45,7 @@ enum Mode: String {
 /// 각각의 상황에 맞게 생성하고 필터에 맞는 인스턴스를 생성합니다.
 ///
 /// - Author: Doran
-struct EventFilter {
+struct EventFilter: Equatable {
     var page: Int
     var size: Int
     var eventType: EventType?

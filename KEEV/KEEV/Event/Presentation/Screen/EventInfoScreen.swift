@@ -151,6 +151,17 @@ extension EventInfoScreen {
         }
     }
     
+    private func loadEventData() async -> [SimpleEventUIO]? {
+        do {
+            let response = try await eventService.loadPaginatedEvents(page: 0, size: 10, sort: [(SortCase.createdDate, .descending)])
+            return response.contents
+            
+        } catch {
+            print("Error loading events: \(error)")
+            return nil
+        }
+    }
+    
     private func loadEvents() {
         Task {
             if let events = await loadFilteredEventData(filter: EventFilter.christmasFilter()){
@@ -165,22 +176,22 @@ extension EventInfoScreen {
                 indieEvents = events
             }
             
-            if let events = await loadFilteredEventData(filter: EventFilter.recentFilter()) {
+            if let events = await loadEventData(){
                 recentEvents = events
             }
         }
     }
     
     
-    private func loadEventData() {
-        isLoading = true
-        Task.detached {
-            await MainActor.run {
-                self.events = SimpleEventUIO.dummies
-                self.isLoading = false
-            }
-        }
-    }
+//    private func loadEventData() {
+//        isLoading = true
+//        Task.detached {
+//            await MainActor.run {
+//                self.events = SimpleEventUIO.dummies
+//                self.isLoading = false
+//            }
+//        }
+//    }
     
     private func loadEventDataByKeyword(keyword: String) {
         isLoading = true

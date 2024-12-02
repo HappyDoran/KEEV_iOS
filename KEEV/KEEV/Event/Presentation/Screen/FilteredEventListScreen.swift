@@ -67,21 +67,9 @@ struct FilteredEventListScreen: View {
     @Injected private var eventService: any EventServiceProtocol
     
     @Environment(\.dismiss) private var dismiss
-//    private let duration: Duration?
-//    private let eventGenre: GenreDTO?
-//    private let eventType: EventTypeDTO
-//    
-//    init(
-//        duration: Duration,
-//        eventGenre: GenreDTO?,
-//        eventType: EventTypeDTO
-//    ) {
-//        self.duration = duration
-//        self.eventGenre = eventGenre
-//        self.eventType = eventType
-//    }
     
     @State private var currentPage = 0
+    @State private var totalPages = 1
     private let pageSize = 7
     private let title: String
     private let eventFilter: EventFilter
@@ -102,15 +90,20 @@ struct FilteredEventListScreen: View {
                         EventListCell(event: events[index])
                     }
                     .onAppear {
-                        guard let index = events.firstIndex(where: { $0.id == events[index].id }) else { return }
-                        
-                        if index % pageSize == (pageSize - 1) {
+                        if index == events.count - 1 && currentPage < totalPages {
                             Task {
                                 do {
-                                    // 서비스가 이벤트를 찾는 로직
-                                    events.append(contentsOf: try await eventService.loadPaginatedFilteringEvents(
-                                        filter: EventFilter(eventFilter: eventFilter, page: currentPage, size: pageSize)).contents)
+                                    let response: PaginatedResponse<SimpleEventUIO>
+                                    if(eventFilter == .recentFilter()){
+                                        response = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending)])
+                                    }
+                                    else {
+                                        response = try await eventService.loadPaginatedFilteringEvents(
+                                           filter: EventFilter(eventFilter: eventFilter, page: currentPage, size: pageSize))
+                                    }
+                                    events.append(contentsOf: response.contents)
                                     currentPage += 1
+
                                 } catch {
                                     print(error)
                                 }
@@ -139,64 +132,29 @@ struct FilteredEventListScreen: View {
         .onAppear {
             Task {
                 do {
-                    // 서비스가 이벤트를 찾는 로직
-                    events = try await eventService.loadPaginatedFilteringEvents(filter: eventFilter).contents
+                    if currentPage >= totalPages { return }
+                    
+                    let response: PaginatedResponse<SimpleEventUIO>
+                    if(eventFilter == .recentFilter()){
+                        response = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending)])
+                    }
+                    else {
+                        response = try await eventService.loadPaginatedFilteringEvents(filter: eventFilter)
+                    }
+                    events.append(contentsOf: response.contents)
+                    
+                    self.totalPages = response.totalPages
                     currentPage += 1
+                    
                 } catch {
                     print(error)
                 }
-                
-                
             }
         }
     }
 }
-
-//private extension FilteredEventListScreen {
-//    var title: String {
-//        var components = [String]()
-//        
-//        if let duration {
-//            components.append(duration.description)
-//        }
-//        
-//        if let eventGenre {
-//            components.append(eventGenre.name)
-//        }
-//        
-//        components.append(eventType.name)
-//        
-//        return components.joined(separator: " ")
-//    }
-//}
-//
-//extension FilteredEventListScreen {
-//    enum Duration {
-//        case today
-//        case thisWeek
-//        case thisMonth
-//        case thisYear
-//    }
-//}
-//
-//extension FilteredEventListScreen.Duration: CustomStringConvertible {
-//    var description: String {
-//        switch self {
-//        case .today: return "오늘의"
-//        case .thisWeek: return "이 주의"
-//        case .thisMonth: return "이 달의"
-//        case .thisYear: return "올해의"
-//        }
-//    }
-//}
-
 #Preview {
     NavigationStack {
-//        FilteredEventListScreen(
-//            duration: .thisWeek,
-//            eventGenre: .init(id: 1, name: "장르"),
-//            eventType: .init(id: 1, name: "타입")
-//        )
-        FilteredEventListScreen(title: "크리스마스 공연", eventFilter: .christmasFilter())
+        FilteredEventListScreen(title: "크리스마스 공연", eventFilter: .recentFilter())
     }
 }
