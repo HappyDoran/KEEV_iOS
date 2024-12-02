@@ -16,6 +16,7 @@ struct KEEVApp: App {
     var body: some Scene {
         WindowGroup {
             EntryView()
+                .environmentObject(VibeManager())
         }
     }
 }
