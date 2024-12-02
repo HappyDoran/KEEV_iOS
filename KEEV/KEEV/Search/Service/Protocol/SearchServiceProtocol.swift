@@ -13,8 +13,6 @@ import Foundation
 ///
 /// - Author: 라움
 protocol SearchServiceProtocol: AnyObject {
-    var recentSearch: [RecentSearch] { get }
-
     /// 최근 검색한 검색어를 저장하는 함수
     ///
     /// - Parameters:
@@ -22,10 +20,17 @@ protocol SearchServiceProtocol: AnyObject {
     ///
     /// 최근 검색한 검색어를 저장하는 함수입니다.
     ///
-    /// - Throws: 에러
-    ///
     /// - Author: 라움
     func setRecentSearch(searchItem: RecentSearch)
+    
+    /// 최근 검색한 검색어를 가져오는 함수
+    ///
+    /// 최근 검색한 검색어를 가져오는 함수입니다.
+    ///
+    /// - Returns: 최근 검색한 검색어의 배열
+    ///
+    /// - Author: 라움
+    func getRecentSearch() -> [RecentSearch]
     
     /// 최근 검색한 검색어를 삭제하는 함수
     ///
@@ -34,16 +39,12 @@ protocol SearchServiceProtocol: AnyObject {
     ///
     /// 최근 검색한 검색어를 삭제하는 함수입니다.
     ///
-    /// - Throws: 에러
-    ///
     /// - Author: 라움
     func removeRecentSearch(id: UUID)
     
     /// 최근 검색한 검색어를 모두 삭제하는 함수
     ///
     /// 최근 검색한 검색어를 모두 삭제하는 함수입니다.
-    ///
-    /// - Throws: 에러
     ///
     /// - Author: 라움
     func removeAllRecentSearch()

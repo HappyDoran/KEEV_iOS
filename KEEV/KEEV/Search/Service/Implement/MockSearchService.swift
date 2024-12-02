@@ -14,10 +14,14 @@ import Foundation
 /// - Author: 라움
 class MockSearchService: SearchServiceProtocol {
     private let userDefaultsUtility = UserDefaultsUtility()
-    private(set) var recentSearch: [RecentSearch] = [RecentSearch(term: "세상에서 제일 재밌는 공연", date: Date())]
+    private var recentSearch: [RecentSearch] = [RecentSearch(term: "세상에서 제일 재밌는 공연", date: Date())]
     
     func setRecentSearch(searchItem: RecentSearch) {
         recentSearch.append(searchItem)
+    }
+    
+    func getRecentSearch() -> [RecentSearch] {
+        recentSearch
     }
     
     func removeRecentSearch(id: UUID) {

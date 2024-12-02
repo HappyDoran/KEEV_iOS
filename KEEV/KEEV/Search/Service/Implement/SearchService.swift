@@ -16,7 +16,7 @@ class SearchService: SearchServiceProtocol {
     private let userDefaultsUtility: UserDefaultsUtility = UserDefaultsUtility()
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
-    private(set) var recentSearch: [RecentSearch] = []
+    private var recentSearch: [RecentSearch] = []
     
     init() {
         loadRecentSearch()
@@ -42,6 +42,10 @@ class SearchService: SearchServiceProtocol {
         recentSearch.append(searchItem)
         
         updateUserDefaults(recendSearch: recentSearch)
+    }
+    
+    func getRecentSearch() -> [RecentSearch] {
+        recentSearch
     }
     
     func removeRecentSearch(id: UUID) {
