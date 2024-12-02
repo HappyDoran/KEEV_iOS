@@ -11,12 +11,8 @@ import SwiftUI
 ///
 /// 필터링된 이벤트를 보여주기 위해선, 다음과 같은 프로퍼티가 필요합니다.
 ///
-/// - `Duration`: 필터링해서 보여줄 이벤트의 기간을 의미합니다.
-/// - `eventGenre`: 이벤트의 장르 입니다. `nil`이 들어갈 수 있습니다.
-/// - `eventType`: 이벤트의 타입입니다.
-/// - `currentPage`: 현재 페이지 입니다. 스크린이 onAppear되면, `currentPage`의 이벤트 목록을 가져오기 시작합니다.
-/// - `maxPage`: 해당 필터의 마지막 페이지 입니다.
-/// - `events`: 현재 가지고 있는 배열입니다.
+/// - `title`: 헤더에 보여줄 타이틀
+/// - `EventFilter`: 어떠한 필터링 이벤트인지를 의미합니다.
 ///
 /// 여기서 피그마의 이벤트 정보 스크린에서 이미 필터링된 이벤트의 일부를 보여주고 있다고 가정해보겠습니다.
 ///
@@ -38,14 +34,7 @@ import SwiftUI
 ///                 if !events.isEmpty {
 ///                     VStack {
 ///                         NavigationLink {
-///                             FilteredEventListScreen(
-///                                 duration: nil,
-///                                 eventGenre: eventGenre,
-///                                 eventType: eventType,
-///                                 currentPage: current + 1,
-///                                 maxPage: max,
-///                                 events: events
-///                             )
+///                             FilteredEventListScreen(title: themeName, eventFilter: eventFilter)
 ///                         } label: {
 ///                             Text("\(eventGenre.name) \(eventType.name)")
 ///                         }

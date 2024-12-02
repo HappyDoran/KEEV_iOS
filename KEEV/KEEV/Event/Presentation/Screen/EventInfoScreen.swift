@@ -53,7 +53,7 @@ struct EventInfoScreen: View {
         VStack {
             MainHeader(selectedEvent: $selectedEvent)
             ScrollView(showsIndicators: false) {
-                EventCarouselView().padding(.top, 16)
+                EventCarouselView().padding(.top, 8)
                 themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents, eventFilter: .christmasFilter())
                 themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter())
                 themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter())
@@ -137,7 +137,7 @@ extension EventInfoScreen {
                 }
             }
         }
-        .padding(.top, 48)
+        .padding(.top, 20)
     }
     
     private func loadFilteredEventData(filter: EventFilter) async -> [SimpleEventUIO]? {
