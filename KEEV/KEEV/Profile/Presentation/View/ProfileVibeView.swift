@@ -78,8 +78,9 @@ struct ProfileVibeView: View {
             vibes = vibeManager.vibes
         }
         .onAppear {
-            print(vibeManager.vibesCount)
-            vibes = vibeManager.vibes
+            if isMyProfile {
+                vibes = vibeManager.vibes
+            }
         }
         .padding(.top, 24)
         .padding(.bottom, 20)
