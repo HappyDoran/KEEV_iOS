@@ -92,21 +92,7 @@ struct FilteredEventListScreen: View {
                     .onAppear {
                         if index == events.count - 1 && currentPage < totalPages {
                             Task {
-                                do {
-                                    let response: PaginatedResponse<SimpleEventUIO>
-                                    if let eventFilter = eventFilter {
-                                        response = try await eventService.loadPaginatedFilteringEvents(
-                                           filter: EventFilter(eventFilter: eventFilter, page: currentPage, size: pageSize))
-                                    }
-                                    else {
-                                        response = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending)])
-                                    }
-                                    events.append(contentsOf: response.contents)
-                                    currentPage += 1
-
-                                } catch {
-                                    print(error)
-                                }
+                                await loadEvents(page: currentPage)
                             }
                         }
                     }
@@ -131,30 +117,33 @@ struct FilteredEventListScreen: View {
         }
         .onAppear {
             Task {
-                do {
-                    if currentPage >= totalPages { return }
-                    
-                    let response: PaginatedResponse<SimpleEventUIO>
-                    if let eventFilter = eventFilter {
-                        response = try await eventService.loadPaginatedFilteringEvents(
-                           filter: EventFilter(eventFilter: eventFilter, page: currentPage, size: pageSize))
-                    }
-                    else {
-                        response = try await eventService.loadPaginatedEvents(page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending)])
-                    }
-                    
-                    events.append(contentsOf: response.contents)
-                    
-                    self.totalPages = response.totalPages
-                    currentPage += 1
-                    
-                } catch {
-                    print(error)
-                }
+                await loadEvents(page: currentPage)
             }
         }
     }
 }
+
+extension FilteredEventListScreen {
+    private func loadEvents(page: Int) async {
+        do {
+            let response: PaginatedResponse<SimpleEventUIO>
+            if let eventFilter = eventFilter {
+                response = try await eventService.loadPaginatedFilteringEvents(
+                    filter: EventFilter(eventFilter: eventFilter, page: page, size: pageSize)
+                )
+            } else {
+                response = try await eventService.loadPaginatedEvents(page: page, size: pageSize, sort: [(SortCase.createdDate, .descending)])
+            }
+            events.append(contentsOf: response.contents)
+            totalPages = response.totalPages
+            currentPage += 1
+            
+        } catch {
+            print(error)
+        }
+    }
+}
+
 #Preview {
     NavigationStack {
         FilteredEventListScreen(title: "크리스마스 공연")
