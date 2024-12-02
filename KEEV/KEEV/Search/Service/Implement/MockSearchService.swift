@@ -14,25 +14,47 @@ import Foundation
 /// - Author: 라움
 class MockSearchService: SearchServiceProtocol {
     private let userDefaultsUtility = UserDefaultsUtility()
-    private var dummyRecentSearch: [RecentSearch] = []
+    private var recentSearch: [RecentSearch] = [RecentSearch(term: "세상에서 제일 재밌는 공연", date: Date())]
     
-    func setRecentSearch(newSearch: RecentSearch) throws {
-        dummyRecentSearch.append(newSearch)
+    func setRecentSearch(searchItem: RecentSearch) {
+        recentSearch.append(searchItem)
     }
     
-    func getRecentSearch() throws -> [RecentSearch] {
-        return dummyRecentSearch
+    func getRecentSearch() -> [RecentSearch] {
+        recentSearch
     }
     
-    func deleteRecentSearch(id: UUID) throws {
-        dummyRecentSearch.removeAll(where: { $0.id == id })
+    func removeRecentSearch(id: UUID) {
+        recentSearch.removeAll(where: { $0.id == id })
     }
     
-    func searchEventByNameWhenAddVibe(name: String) async throws -> [SimpleEventUIO] {
-        SimpleEventUIO.dummies.filter { $0.name.contains(name) }
+    func removeAllRecentSearch() {
+        recentSearch.removeAll()
     }
     
-    func searchEventByName(name: String) async throws -> [SimpleEventUIO] {
-        SimpleEventUIO.dummies.filter { $0.name.contains(name) }
+    func searchEventByNameWhenAddVibe(name: String, size: Int, page: Int) async throws -> PaginatedResponse<SimpleEventUIO> {
+        var contents: [SimpleEventUIO] = []
+        let startIndex = page * size
+        
+        for index in startIndex..<startIndex + size {
+            contents.append(
+                .init(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: SimpleEventUIO.dummy0.posterURL, dDay: Int.random(in: -10...10), startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)")
+            )
+        }
+        
+        return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: contents)
+    }
+    
+    func searchEventByName(name: String, size: Int, page: Int) async throws -> PaginatedResponse<SimpleEventUIO> {
+        var contents: [SimpleEventUIO] = []
+        let startIndex = page * size
+        
+        for index in startIndex..<startIndex + size {
+            contents.append(
+                .init(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: SimpleEventUIO.dummy0.posterURL, dDay: Int.random(in: -10...10), startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)")
+            )
+        }
+        
+        return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: contents)
     }
 }
