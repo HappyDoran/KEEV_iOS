@@ -128,4 +128,10 @@ class EventService: EventServiceProtocol {
 
         return paginatedResponse
     }
+    
+    func loadPaginatedFilteringEvents(filter: EventFilter) async throws -> PaginatedResponse<SimpleEventUIO> {
+        var events: [SimpleEventUIO] = []
+        
+        return PaginatedResponse(totalPages: 5, currentPage: 1, totalElements: 50, contents: events)
+    }
 }

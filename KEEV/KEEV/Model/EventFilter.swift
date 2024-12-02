@@ -29,6 +29,7 @@ enum Genre: Int {
 enum Mode: String {
     case event = "event"
     case reservation = "reservation"
+}
 
 struct EventFilter {
     var page: Int
@@ -40,7 +41,7 @@ struct EventFilter {
     var mode: Mode
     var desc: Bool
     
-    init(page: Int = 0, size: Int = 10, eventType: EventType? = nil, genre: Genre? = nil, startDate: String? = nil, endDate: String? = nil, mode: Mode = .event, desc: Bool = true) {
+    init(page: Int = 0, size: Int = 5, eventType: EventType? = nil, genre: Genre? = nil, startDate: String? = nil, endDate: String? = nil, mode: Mode = .event, desc: Bool = true) {
         self.page = page
         self.size = size
         self.eventType = eventType
