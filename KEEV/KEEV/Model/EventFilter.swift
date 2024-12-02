@@ -64,6 +64,18 @@ struct EventFilter {
         self.desc = desc
     }
     
+    init(eventFilter: EventFilter, page: Int, size: Int){
+        self.filterType = eventFilter.filterType
+        self.page = page
+        self.size = size
+        self.eventType = eventFilter.eventType
+        self.genre = eventFilter.genre
+        self.startDate = eventFilter.startDate
+        self.endDate = eventFilter.endDate
+        self.mode = eventFilter.mode
+        self.desc = eventFilter.desc
+    }
+    
     static func christmasFilter() -> EventFilter {
         return EventFilter(filterType: .christmas, startDate: "2024-12-23", endDate: "2024-12-27")
     }

@@ -104,7 +104,7 @@ struct FilteredEventListScreen: View {
     }
     
     var body: some View {
-        ScrollView(.vertical) {
+        ScrollView(.vertical, showsIndicators: false) {
             LazyVStack(spacing: 0) {
                 ForEach(events.indices, id: \.self) { index in
                     NavigationLink {
@@ -120,16 +120,7 @@ struct FilteredEventListScreen: View {
                                 do {
                                     // 서비스가 이벤트를 찾는 로직
                                     events.append(contentsOf: try await eventService.loadPaginatedFilteringEvents(
-                                        filter: EventFilter(filterType: eventFilter.filterType,
-                                                            page: currentPage,
-                                                            size: pageSize,
-                                                            eventType: eventFilter.eventType,
-                                                            genre: eventFilter.genre,
-                                                            startDate: eventFilter.startDate,
-                                                            endDate: eventFilter.endDate,
-                                                            mode: eventFilter.mode,
-                                                            desc: eventFilter.desc
-                                                           )).contents)
+                                        filter: EventFilter(eventFilter: eventFilter, page: currentPage, size: pageSize)).contents)
                                     currentPage += 1
                                 } catch {
                                     print(error)
@@ -152,9 +143,6 @@ struct FilteredEventListScreen: View {
                     HStack(spacing: 24){
                         Image(systemName: "chevron.backward")
                             .foregroundStyle(.gray100)
-                        Text(title)
-                            .figmaFont(PretendardFont.title(style: .xs))
-                            .foregroundStyle(.gray300)
                     }
                 }
             }
