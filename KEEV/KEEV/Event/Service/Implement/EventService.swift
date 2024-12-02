@@ -129,6 +129,24 @@ class EventService: EventServiceProtocol {
         return paginatedResponse
     }
     
+    /// 필터링된 이벤트를 가져오는 함수
+    ///
+    /// - Parameters:
+    ///   - filter: 페이지 넘버,
+    ///    이벤트의 갯수,
+    ///    이벤트 타입,
+    ///    이벤트 장르,
+    ///    이벤트 시작일,
+    ///    이벤트 종료일,
+    ///    이벤트 모드,
+    ///    이벤트 정렬을 프로퍼티로 가지는 구조체
+    ///
+    ///  인자로 받은 구조체 파라미터로 필터링 된 이벤트를 가져옵니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 페이지네이션이 적용된 이벤트 목록
+    ///
+    /// - Author: Doran
     func loadPaginatedFilteringEvents(filter: EventFilter) async throws -> PaginatedResponse<SimpleEventUIO> {
         
         let router = EventHTTPRequestRouter.fetchFilteredEvents(size: filter.size, page: filter.page, eventTypeID: filter.eventType?.rawValue, genreID: filter.genre?.rawValue, startDate: filter.startDate, endDate: filter.endDate, mode: filter.mode.rawValue, desc: filter.desc)
