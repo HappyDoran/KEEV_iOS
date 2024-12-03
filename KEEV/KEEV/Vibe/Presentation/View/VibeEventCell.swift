@@ -33,7 +33,7 @@ struct VibeEventCell: View {
                         .aspectRatio(contentMode: .fill)
                 } else if let error = phase.error {
                     let _ = print(error)
-                    Image(systemName: "xmark")
+                    Image("PosterError")
                         .resizable()
                         .scaledToFit()
                 } else {
