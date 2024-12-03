@@ -100,4 +100,8 @@ struct EventFilter: Equatable {
     static var recentFilter: EventFilter {
         return EventFilter()
     }
+    
+    static var monthFilter: EventFilter {
+        return EventFilter(startDate: "2024-12-01", endDate: "2024-12-31")
+    }
 }
