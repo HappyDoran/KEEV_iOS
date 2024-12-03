@@ -225,7 +225,7 @@ extension EventDetailScreen {
                         ProgressView()
                     } else {
                         let _ = print(phase.error!)
-                        Image(systemName: "xmark")
+                        Image("PosterError")
                             .resizable()
                             .scaledToFit()
                     }

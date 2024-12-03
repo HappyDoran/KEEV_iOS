@@ -99,14 +99,14 @@ private extension VibeContentView {
     func imageView(for url: URL?) -> some View {
         URLCachedImage(url: url) { phase in
             if let image = phase.image {
-                image
+                image  
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } else if let error = phase.error {
                 let _ = print(error)
-                Image(systemName: "xmark")
+                Image("PosterError")
                     .resizable()
-                    .scaledToFit()
+                    .aspectRatio(contentMode: .fill)
             } else {
                 ProgressView()
             }

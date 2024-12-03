@@ -135,7 +135,7 @@ private extension VibeModifyScreen {
     
     var photoPickerContent: some View {
         ScrollViewReader { proxy in
-            ScrollView(.horizontal) {
+            ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
                     PhotosPicker(
                         selection: $selectedItems,
