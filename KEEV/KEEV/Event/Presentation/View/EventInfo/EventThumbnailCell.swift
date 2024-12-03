@@ -23,15 +23,25 @@ struct EventThumbnailCell: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0){
             // MARK: 포스터
-            AsyncImage(url: event.posterURL) { image in
-                image
-                    .resizable()
-            } placeholder: {
-                ProgressView()
+            URLCachedImage(url: event.posterURL) { phase in
+                if let image = phase.image {
+                    // Image가 성공적으로 불러졌을 때
+                    image
+                        .resizable()
+                } else if phase.error != nil {
+                    // 에러가 발생했을 때
+                    Image("PosterError")
+                        .resizable()
+                } else {
+                    // 로딩 중일 때
+                    ProgressView()
+                        .frame(width: 87, height: 116)
+                }
             }
-            .mask {
-                RoundedRectangle(cornerRadius: 8)
-            }
+            .mask(
+                RoundedRectangle(cornerRadius: 6)
+                    .foregroundStyle(.gray500)
+            )
             .frame(width: 117, height: 160)
             
             // MARK: D-Day Box

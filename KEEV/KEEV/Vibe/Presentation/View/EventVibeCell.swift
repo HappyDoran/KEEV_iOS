@@ -100,7 +100,7 @@ extension EventVibeCell {
             } else if phase.error == nil { // 이미지를 불러오는 중일 때
                 ProgressView()
             } else { // 에러가 발생했을 때
-                Image(systemName: "xmark.circle.fill")
+                Image("ProfileImage")
                     .resizable()
                     .frame(width: 40, height: 40)
             }

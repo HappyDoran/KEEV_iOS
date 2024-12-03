@@ -54,7 +54,7 @@ struct URLProfileImage: View {
                                 }
                             }
                     } else if phase.error != nil {
-                        Image(systemName: "xmark.circle.fill")
+                        Image("ProfileImage")
                             .resizable()
                             .scaledToFill()
                             .frame(width: size, height: size)
@@ -90,8 +90,6 @@ struct URLProfileImage: View {
                     Image("ProfileImage")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: size * 0.72, height: size * 0.82)
-                        .padding(.top, size * 0.185)
                 }
                 .overlay {
                     if let strokeWidth, let strokeColor {

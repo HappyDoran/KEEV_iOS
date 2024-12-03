@@ -36,7 +36,7 @@ private extension EventListCell {
                     .resizable()
             } else if phase.error != nil {
                 // 에러가 발생했을 때
-                Image(systemName: "xmark.circle.fill")
+                Image("PosterError")
                     .resizable()
             } else {
                 // 로딩 중일 때
