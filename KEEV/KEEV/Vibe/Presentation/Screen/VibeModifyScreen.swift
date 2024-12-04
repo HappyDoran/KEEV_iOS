@@ -72,7 +72,8 @@ struct VibeModifyScreen: View {
                     showExitAlert = true
                 } label: {
                     Image(systemName: "chevron.backward")
-                        .foregroundStyle(.gray100)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.gray100)
                 }
             }
             

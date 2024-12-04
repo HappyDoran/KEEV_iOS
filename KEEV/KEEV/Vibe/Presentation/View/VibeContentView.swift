@@ -118,6 +118,9 @@ private extension VibeContentView {
             ForEach(0..<maxIndex, id: \.self) { index in
                 imageView(for: vibe.imageURLs[index])
                     .tag(index)
+                    .onTapGesture {
+                        print("click")
+                    }
             }
         }
         .mask(RoundedRectangle(cornerRadius: 16))
@@ -137,7 +140,7 @@ private extension VibeContentView {
     }
     
     func countLabel(for type: CountType, count: Int) -> some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 8) {
             type.image
                 .resizable()
                 .frame(width: 21, height: 19)
@@ -165,4 +168,6 @@ private extension VibeContentView {
 
 #Preview {
     VibeContentView(vibe: .dummy0)
+        .padding(.top, 20)
+        .padding(.horizontal, 16)
 }

@@ -92,8 +92,8 @@ struct ProfileScreen: View {
                     dismiss()
                 } label: {
                     Image(systemName: "chevron.backward")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(.gray100)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.gray100)
                 }
             }
             
@@ -143,6 +143,6 @@ enum VibeViewType {
 
 #Preview {
     NavigationStack {
-        ProfileScreen(userID: nil, isMyProfile: false, isNavigation: false)
+        ProfileScreen(userID: nil, isMyProfile: false, isNavigation: false).environmentObject(VibeManager())
     }
 }

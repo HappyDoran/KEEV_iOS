@@ -77,8 +77,8 @@ struct EventDetailScreen: View {
                     dismiss()
                 } label: {
                     Image(systemName: "chevron.backward")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(.gray100)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.gray100)
                 }
             }
             
@@ -202,7 +202,9 @@ extension EventDetailScreen {
             }
             
             if let description = selectedEvent.description {
-                descriptionPart(text: description)
+                if (description != ""){
+                    descriptionPart(text: description)
+                }
             }
             
             if !selectedEvent.descriptionImageURLs.isEmpty {
@@ -237,9 +239,12 @@ extension EventDetailScreen {
     ///
     /// - Author: newJunsung
     private func descriptionPart(text: String) -> some View {
-        Text(text)
-            .foregroundStyle(.gray100)
-            .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .medium)))
+        HStack(spacing: 0){
+            Text(text.splitWords())
+                .foregroundStyle(.gray100)
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .medium)))
+            Spacer()
+        }
     }
     
     private func determineSheetForSection() {

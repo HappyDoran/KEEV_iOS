@@ -48,25 +48,29 @@ struct VibeDetailScreen: View {
                     VibeContentView(vibe: vibe)
                         .padding(.top, 20)
                         .padding(.horizontal, 16)
-                    ReplyListView(
-                        userID: 2,
-                        replies: $replies,
-                        userTapHandler: tapReplyUser,
-                        moreTapHandler: tapReplyMore,
-                        likeTapHandler: tapReplyLike
-                    )
-                    .background(.grayBG700)
+                    Rectangle().frame(height: 1).foregroundColor(.gray800)
+                    if(vibe.replyCount > 0){
+                        ReplyListView(
+                            userID: 2,
+                            replies: $replies,
+                            userTapHandler: tapReplyUser,
+                            moreTapHandler: tapReplyMore,
+                            likeTapHandler: tapReplyLike
+                        )
+                        .background(.grayBG700)
+                    }
                 }
             }
             .scrollDismissesKeyboard(.immediately)
             .scrollIndicators(.hidden)
             .refreshable {
-                fetchVibe()
+                //바이브 아이디로 하나의 바이브를 가져 오는게 작동이 안됩니다. 나중에 수정이후에 fetchVibe를 추가하면 됩니다.
                 fetchReplies()
             }
             
             ReplyInputView(replyText: $replyText, sendHandler: addReply)
             .padding(.top, 16)
+            .padding(.bottom, 16)
             .padding(.horizontal, 20)
             .background(.grayBG800)
         }
@@ -79,8 +83,8 @@ struct VibeDetailScreen: View {
                     dismiss()
                 } label: {
                     Image(systemName: "chevron.backward")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(.gray100)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.gray100)
                 }
             }
             
@@ -89,7 +93,8 @@ struct VibeDetailScreen: View {
                     showVibeActionSheet = true
                 } label: {
                     Image(systemName: "ellipsis")
-                        .foregroundStyle(.gray100)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.gray100)
                 }
             }
         }
