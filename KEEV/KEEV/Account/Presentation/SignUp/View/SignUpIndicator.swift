@@ -34,6 +34,7 @@ struct SignUpIndicator: View {
                         }
                     } label: {
                         Image(systemName: "chevron.backward")
+                            .font(.system(size: 15, weight: .semibold))
                             .foregroundStyle(.gray300)
                     }
                 }

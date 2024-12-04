@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TotalSearchScreen: View {
     @Injected private var searchService: any SearchServiceProtocol
+    @Environment(\.dismiss) private var dismiss
     
     @State private var searchText: String = ""
     @State private var recentKeywords: [RecentSearch] = []
@@ -51,6 +52,20 @@ struct TotalSearchScreen: View {
                 }
             }
             Spacer()
+        }
+        .navigationBarBackButtonHidden()
+        .navigationTitle("검색")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 15, weight: .semibold))
+                        .foregroundStyle(.gray100)
+                }
+            }
         }
         .onChange(of: [searchFieldFocus, searchText.isEmpty]) {
             eventSearchStatus = searchCase()
@@ -106,5 +121,7 @@ extension TotalSearchScreen {
 }
 
 #Preview {
-    TotalSearchScreen()
+    NavigationStack {
+        TotalSearchScreen()
+    }
 }

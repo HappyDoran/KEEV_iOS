@@ -79,6 +79,7 @@ struct VibeDetailScreen: View {
                     dismiss()
                 } label: {
                     Image(systemName: "chevron.backward")
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.gray100)
                 }
             }
