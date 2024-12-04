@@ -40,10 +40,10 @@ struct VibeUIO: Identifiable, Hashable {
     let createdDate: String
     
     /// 좋아요 수
-    let likeCount: Int
+    var likeCount: Int
     
     /// 댓글 수
-    let replyCount: Int
+    var replyCount: Int
     
     let isMine: Bool
     
@@ -60,7 +60,7 @@ struct VibeUIO: Identifiable, Hashable {
         self.rating = vibe.rating
         self.imageURLs = vibe.imageURLs.map { $0.flatMap { URL(string: $0) } }
         self.comment = vibe.comment
-        self.createdDate = vibe.createdDate.toString(format: "yyyy.MM.dd")
+        self.createdDate = vibe.createdDate.toString(format: "MM월 dd일")
         self.likeCount = vibe.likeCount
         self.replyCount = vibe.replyCount
         self.isMine = isMine
@@ -101,8 +101,7 @@ extension VibeUIO {
         event: .dummy0,
         rating: 3.5,
         imageURLs: [
-            URL(string: "https://xx.bstatic.com/xdata/images/xphoto/1182x887/217150575.jpg?k=193ffc3138dcca4e4790fb91a57da63cbe10aa87b57ab0587ebfc0334265815b&o=?size=M"),
-            URL(string: "https://cdn.donggukmedia.com/news/photo/202310/80909_43499_2816.png"),
+            URL(string: "https://i.namu.wiki/i/7Uuzidn1EcLXJPolvEHmRR4CDwtQwfgpvXZ0HigeTiW6QCoPWXQ67n5anRe1wRMegTHPRQ5sfBwVdzdJ2MPVWQ.webp"),
             URL(string: "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2022%2F07%2F2022-summer-music-festivals-in-korea-water2.jpg?w=1260&cbr=1&q=90&fit=max"),
             nil
                    ],
