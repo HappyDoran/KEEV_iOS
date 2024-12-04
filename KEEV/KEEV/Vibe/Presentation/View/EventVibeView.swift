@@ -18,7 +18,7 @@ struct EventVibeView: View {
     @Injected private var vibeService: any VibeServiceProtocol
     @State private var vibes: [VibeUIO] = []
     @State private var currentPage = 0
-    private let pageSize = 5
+    private let pageSize = 50
     
     init (eventID: String) {
         self.eventID = eventID
@@ -67,13 +67,21 @@ struct EventVibeView: View {
                                 let allVibes = try await vibeService.getPaginatedVibes(
                                     page: currentPage,
                                     size: pageSize,
-                                    sort: [(SortCase.createdDate, SortPattern.ascending)]
+                                    sort: [(SortCase.createdDate, SortPattern.descending)]
                                 ).contents
                                 vibes = allVibes.filter { $0.event.id == eventID }
                                 currentPage += 1
                             } catch {
                                 print(error)
                             }
+                        }
+                    }
+                    .refreshable {
+                        do {
+                            vibes = try await vibeService.getPaginatedVibes(page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents
+                            currentPage = 1
+                        } catch(let replyError) {
+                            print(replyError)
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
