@@ -118,9 +118,6 @@ private extension VibeContentView {
             ForEach(0..<maxIndex, id: \.self) { index in
                 imageView(for: vibe.imageURLs[index])
                     .tag(index)
-                    .onTapGesture {
-                        print("click")
-                    }
             }
         }
         .mask(RoundedRectangle(cornerRadius: 16))
