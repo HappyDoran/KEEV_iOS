@@ -36,7 +36,7 @@ class VibeManager: ObservableObject {
     
     /// 바이브가 수정되었을 때 바이브 목록에도 수정된 것을 반영해주는 함수
     func modifyVibe(vibeID: Int, modifiedVibe: VibeUIO) throws {
-        guard let index = vibes.firstIndex(where: { $0.id == vibeID }) else { throw VibeError.multipartFormBuilderError }
+        guard let index = vibes.firstIndex(where: { $0.id == vibeID }) else { return }
         vibes[index] = modifiedVibe
     }
 }
