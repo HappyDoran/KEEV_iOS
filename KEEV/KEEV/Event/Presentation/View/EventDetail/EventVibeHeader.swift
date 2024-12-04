@@ -31,7 +31,7 @@ struct EventVibeHeader: View {
             }
             Spacer()
             NavigationLink {
-                VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: event))
+                VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: event), isNavigation: true)
             } label: {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.grayBG700)
