@@ -25,7 +25,7 @@ struct EventCarouselDetailScreen: View {
                     .scaledToFit()
                 banner.detailDescriptionImage
                     .resizable()
-                    .scaledToFit()
+                    .padding(.bottom, 16)
                 banner.descriptionView
             }
         }
@@ -37,10 +37,11 @@ struct EventCarouselDetailScreen: View {
                     } label: {
                         HStack(spacing: 24){
                             Image(systemName: "chevron.backward")
+                                .font(.system(size: 15, weight: .semibold))
                                 .foregroundStyle(.gray100)
                             Text(title)
                                 .figmaFont(PretendardFont.title(style: .xs))
-                                .foregroundStyle(.gray300)
+                                .foregroundStyle(.gray100)
                         }
                     }
                 }
