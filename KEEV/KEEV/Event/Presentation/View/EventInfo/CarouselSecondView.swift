@@ -18,7 +18,9 @@ struct CarouselSecondView: View {
     
     var body: some View {
         LazyVStack(spacing: 0){
-            Rectangle().frame(height: 15).foregroundColor(.grayBG800)
+            Rectangle().frame(height: 15)
+                .foregroundColor(.grayBG800)
+                .padding(.bottom, 16)
             ForEach(events.indices, id: \.self) { index in
                 NavigationLink {
                     EventDetailScreen(simpleEvent: events[index])

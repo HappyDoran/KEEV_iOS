@@ -14,7 +14,7 @@ struct EventCarouselView: View {
     @State private var itemsArray: [BannerProtocol] = []
 
     let banners: [Banner] = [
-        Banner(title: "키브를 소개합니다", description: "키브의 A to Z, 키브에 대해 알아봅시다", image: Image("Banner1"), detailImage: Image("DetailBanner1"), detailDescriptionImage: Image("DetailDescription1")),
+        Banner(title: "키브를 소개합니다", description: "키브의 A to Z, 키브에 대해 알아봅시다", image: Image("banner1"), detailImage: Image("DetailBanner1"), detailDescriptionImage: Image("DetailDescription1")),
         Banner(title: "올해의 마무리,\n공연과 함께", description: "연말의 주요 공연을 확인해보세요!", image: Image("Banner2"), detailImage: Image("DetailBanner2"), detailDescriptionImage: Image("DetailDescription2")),
         Banner(title: "2024\n한국을 찾은 아티스트", description: "연말의 주요 공연을 확인해보세요!", image: Image("Banner3"), detailImage: Image("DetailBanner3"), detailDescriptionImage: Image("DetailDescription3")),
     ]
