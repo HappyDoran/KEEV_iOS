@@ -231,7 +231,7 @@ private extension VibeDetailScreen {
             do {
                 let reply = try await replyService.addReply(to: vibe.id, text: text)
                 replies.insert(reply, at: 0)
-                
+                vibe.replyCount += 1
             } catch {
                 errorForAlert = error
                 print("댓글을 등록하는데 실패했습니다.")
@@ -257,6 +257,7 @@ private extension VibeDetailScreen {
             do {
                 try await replyService.deleteReply(reply.id)
                 replies.remove(at: reply.index)
+                vibe.replyCount -= 1
             } catch {
                 errorForAlert = error
                 print("댓글을 삭제하는데 실패했습니다.")
