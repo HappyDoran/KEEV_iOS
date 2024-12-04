@@ -71,8 +71,6 @@ struct NetworkUtility {
     func requestWithStatusCode(router: HTTPRequestable) async throws -> (Int, Data) {
         let request = try router.asURLRequest()
         
-        print("Request URL: \(request.url?.absoluteString ?? "Invalid URL")")
-        
         let (data, response) = try await session.data(for: request)
         
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
