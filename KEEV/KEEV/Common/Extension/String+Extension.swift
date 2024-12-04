@@ -29,4 +29,8 @@ extension String {
         String.dateFormatter.dateFormat = format
         return String.dateFormatter.date(from: self)
     }
+    
+    func splitWords() -> String {
+        return split(separator: "").joined(separator: "\u{200B}")
+    }
 }
