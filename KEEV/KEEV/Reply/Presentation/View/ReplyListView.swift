@@ -48,12 +48,12 @@ struct ReplyListView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 16)
-        .background(.grayBG800)
+        .background(replies.count == 0 ? .grayBG950 : .grayBG800)
     }
 }
 
 #Preview {
     ReplyListView(userID: 2, replies: .constant([
-        .dummy0, .dummy1, .dummy2
+//        .dummy0, .dummy1, .dummy2
     ]))
 }

@@ -49,22 +49,20 @@ struct VibeDetailScreen: View {
                         .padding(.top, 20)
                         .padding(.horizontal, 16)
                     Rectangle().frame(height: 1).foregroundColor(.gray800)
-                    if(vibe.replyCount > 0){
-                        ReplyListView(
-                            userID: 2,
-                            replies: $replies,
-                            userTapHandler: tapReplyUser,
-                            moreTapHandler: tapReplyMore,
-                            likeTapHandler: tapReplyLike
-                        )
-                        .background(.grayBG700)
-                    }
+                    ReplyListView(
+                        userID: 2,
+                        replies: $replies,
+                        userTapHandler: tapReplyUser,
+                        moreTapHandler: tapReplyMore,
+                        likeTapHandler: tapReplyLike
+                    )
+                    .background(.grayBG700)
                 }
             }
             .scrollDismissesKeyboard(.immediately)
             .scrollIndicators(.hidden)
             .refreshable {
-                fetchVibe()
+                //바이브 아이디로 하나의 바이브를 가져 오는게 작동이 안됩니다. 나중에 수정이후에 fetchVibe를 추가하면 됩니다.
                 fetchReplies()
             }
             
