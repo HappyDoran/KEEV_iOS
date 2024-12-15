@@ -55,7 +55,7 @@ struct EventInfoScreen: View {
             ScrollView(showsIndicators: false) {
                 EventCarouselView().padding(.top, 8)
                 themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
-                themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents, eventFilter: .christmasFilter)
+                themeScrollSectionView(themeName: "성탄절엔 캐롤만 들어야 하나요?", events: christmasEvents, eventFilter: .christmasFilter)
                 themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter)
                 themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter)
             }

@@ -149,6 +149,6 @@ extension FilteredEventListScreen {
 
 #Preview {
     NavigationStack {
-        FilteredEventListScreen(title: "크리스마스 공연")
+        FilteredEventListScreen(title: "성탄절엔 캐롤만 들어야 하나요?")
     }
 }
