@@ -24,6 +24,7 @@ struct ProfileEditTopView: View {
             } label: {
                 HStack {
                     Image(systemName: "xmark")
+                        .imageScale(.large)
                         .fontWeight(.semibold)
                         .foregroundStyle(.gray100)
                     

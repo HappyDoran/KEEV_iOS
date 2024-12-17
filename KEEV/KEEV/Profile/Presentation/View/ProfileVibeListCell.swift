@@ -115,10 +115,10 @@ private extension ProfileVibeListCell {
             }
             
             HStack(spacing: 4) {
-                Image(systemName: "heart.fill")
-                
-                Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
-                    .padding(.trailing, 8)
+//                Image(systemName: "heart.fill")
+//                
+//                Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
+//                    .padding(.trailing, 8)
                 
                 Image(systemName: "bubble.middle.bottom.fill")
                 

@@ -110,7 +110,8 @@ struct FilteredEventListScreen: View {
                 } label: {
                     HStack(spacing: 24){
                         Image(systemName: "chevron.backward")
-                            .foregroundStyle(.gray100)
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(.gray100)
                     }
                 }
             }
@@ -148,6 +149,6 @@ extension FilteredEventListScreen {
 
 #Preview {
     NavigationStack {
-        FilteredEventListScreen(title: "크리스마스 공연")
+        FilteredEventListScreen(title: "성탄절엔 캐롤만 들어야 하나요?")
     }
 }

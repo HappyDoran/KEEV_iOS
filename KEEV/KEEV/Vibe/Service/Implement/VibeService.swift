@@ -144,13 +144,14 @@ class VibeService: VibeServiceProtocol {
 
 extension VibeService {
     private func getAccessToken() throws -> String {
-        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
-              let token = String(data: accessTokenData, encoding: .utf8) else {
-            print("accessToken not found")
-            throw TokenKeyChainError.NotFound
-        }
-        
-        return token
+//        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
+//              let token = String(data: accessTokenData, encoding: .utf8) else {
+//            print("accessToken not found")
+//            throw TokenKeyChainError.NotFound
+//        }
+//        
+//        return token
+        ""
     }
 }
 

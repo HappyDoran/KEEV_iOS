@@ -35,14 +35,14 @@ struct EventThumbnailCell: View {
                 } else {
                     // 로딩 중일 때
                     ProgressView()
-                        .frame(width: 87, height: 116)
+                        .frame(width: 87, height: 114)
                 }
             }
             .mask(
                 RoundedRectangle(cornerRadius: 6)
                     .foregroundStyle(.gray500)
             )
-            .frame(width: 117, height: 160)
+            .frame(width: 114, height: 160)
             
             // MARK: D-Day Box
             //이후 모델의 날짜 타입이 Date가 되면 수정될 예정입니다.
@@ -53,18 +53,17 @@ struct EventThumbnailCell: View {
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 .foregroundColor(.gray300)
                 .multilineTextAlignment(.leading)
-                .frame(width: 115)
                 .lineLimit(2)
                 .truncationMode(.tail)
+                .frame(width: 114, alignment: .topLeading)
                 .padding(.top, 8)
-                .frame(alignment: .leading)
+            
+            Spacer()
         }
-        .frame(width: 115)
     }
 }
 
 #Preview {
-    @Previewable let smallThumbnailEvent: EventDTO = EventDTO(id : "1", title: "Fiji Blue LIVE IN SEOUL 'The Glide Tour Asia'", startDate: "2024.12.13", endDate: "2024.12.25", place: "홍대 일대", poster: "http://www.kopis.or.kr/upload/pfmPoster/PF_PF252023_241024_110002.jpg")
-    EventThumbnailCell(event: .dummy0)
+    EventThumbnailCell(event: .init(id: "www.google.com", name: "쏜애플 콘서트 '도시전설'", posterURL: nil, dDay: 1, startDate: "2024.12.04", endDate: "2024.12.08", placeName: "가나다"))
         .backgroundForKEEV()
 }

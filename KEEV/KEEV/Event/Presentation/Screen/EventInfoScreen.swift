@@ -54,12 +54,13 @@ struct EventInfoScreen: View {
             MainHeader(selectedEvent: $selectedEvent)
             ScrollView(showsIndicators: false) {
                 EventCarouselView().padding(.top, 8)
-                themeScrollSectionView(themeName: "크리스마스 공연", events: christmasEvents, eventFilter: .christmasFilter)
+                themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
+                themeScrollSectionView(themeName: "성탄절엔 캐롤만 들어야 하나요?", events: christmasEvents, eventFilter: .christmasFilter)
                 themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter)
                 themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter)
-                themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
             }
         }
+        .padding(.bottom, 16)
         .onAppear {
             loadEvents()
         }
@@ -126,7 +127,6 @@ extension EventInfoScreen {
             }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    Spacer().frame(width: 16)
                     ForEach(0..<min(events.count, 5), id: \.self) { index in
                         NavigationLink {
                             EventDetailScreen(simpleEvent: events[index])
@@ -136,6 +136,7 @@ extension EventInfoScreen {
                     }
                 }
             }
+            .safeAreaPadding(.horizontal, 16)
         }
         .padding(.top, 20)
     }

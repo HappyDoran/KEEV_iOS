@@ -44,6 +44,7 @@ struct VibeHeader: View {
                     }
                 }) {
                     Image(systemName: "xmark")
+                        .imageScale(.large)
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundColor(.gray100)
                 }

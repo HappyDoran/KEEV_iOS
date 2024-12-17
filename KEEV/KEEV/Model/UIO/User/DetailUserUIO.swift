@@ -49,7 +49,7 @@ struct DetailUserUIO: Identifiable {
 
 extension DetailUserUIO {
     /// 프사 배경화면 한 줄 소개가 없는 더미 사용자
-    static let dummy0 = DetailUserUIO(id: 1, nickname: "dummy0", profileImageURL: nil, backgroundImageURL: nil, description: nil)
+    static let dummy0 = DetailUserUIO(id: 1, nickname: "abcd", profileImageURL: nil, backgroundImageURL: nil, description: nil)
     
     /// 닉네임이 긴 더미 사용자
     static let dummy1 = DetailUserUIO(id: 2, nickname: "김수한무 거북이와 두루미 삼천갑자 동방삭 치치카포 사리사리센타 워리워리 세브리깡 무두셀라 구름이 허리케인에 담벼락 담벼락에 서생원 서생원에 고양이 고양이엔 바둑이 바둑이는 돌돌이", profileImageURL: nil, backgroundImageURL: nil, description: nil)

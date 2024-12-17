@@ -33,18 +33,22 @@ struct VibeCreateScreen: View {
     @State private var comment: String = ""
     @State private var showCancelAlert = false
     @State private var showExitAlert = false
+    let isNavigation: Bool
     
-    init(selectedEvent: SimpleEventUIO?) {
+    init(selectedEvent: SimpleEventUIO?, isNavigation: Bool) {
         self._selectedEvent = .init(wrappedValue: selectedEvent)
+        self.isNavigation = isNavigation
     }
     
     var body: some View {
         VStack(spacing: 0) {
             // MARK: 헤더
-            VibeHeader(selectedEvent: selectedEvent, rating: rating, showExitAlert: $showExitAlert) {
-                uploadVibe()
+            if !isNavigation {
+                VibeHeader(selectedEvent: selectedEvent, rating: rating, showExitAlert: $showExitAlert) {
+                    uploadVibe()
+                }
+                .padding(.horizontal, 16)
             }
-            .padding(.horizontal, 16)
             
             if let event = selectedEvent {
                 VStack(spacing: 0){
@@ -87,7 +91,7 @@ struct VibeCreateScreen: View {
                         Rectangle().fill(.gray800).frame(height: 1)
                         
                         commentSection
-                    }                
+                    }
                     .opacity(selectedEvent == nil ? 0.2 : 1)
                     .disabled(selectedEvent == nil)
                 }
@@ -114,6 +118,47 @@ struct VibeCreateScreen: View {
         .backgroundForKEEV()
         .loading(for: loadingForUpload)
         .alertForError($errorForAlert)
+        .navigationBarBackButtonHidden()
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    if selectedEvent != nil {
+                        showExitAlert = true
+                    } else {
+                        dismiss()
+                    }
+                }) {
+                    Image(systemName: "chevron.backward")
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.gray100)
+                }
+            }
+            
+            ToolbarItem(placement: .principal) {
+                Text("글쓰기")
+                    .figmaFont(PretendardFont.title(style: .xs))
+                    .foregroundColor(.gray100)
+            }
+            
+            if selectedEvent != nil {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: uploadVibe) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.brand500)
+                                .frame(width: 58, height: 32)
+                                .opacity(rating == 0 ? 0.2 : 1)
+                            
+                            Text("완료")
+                                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                                .foregroundColor(rating == 0 ? .gray700 : .brand50)
+                        }
+                    }
+                    .disabled(rating == 0)
+                }
+            }
+        }
     }
 }
 
@@ -161,5 +206,5 @@ private extension VibeCreateScreen {
 }
 
 #Preview {
-    VibeCreateScreen(selectedEvent: nil)
+    VibeCreateScreen(selectedEvent: nil, isNavigation: false)
 }

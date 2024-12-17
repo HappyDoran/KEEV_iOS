@@ -45,8 +45,7 @@ struct DDayBox: View {
                     .background {
                         RoundedRectangle(cornerRadius: 4)
                             .frame(height: 19)
-                            .foregroundStyle(.brand500.opacity(0.2))
-                            .opacity(0.2)
+                            .foregroundStyle(.brand50020)
                     }
             } else {
                 Text("D+\(difference)")

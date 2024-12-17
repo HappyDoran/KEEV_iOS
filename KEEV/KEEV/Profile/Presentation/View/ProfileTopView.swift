@@ -45,9 +45,11 @@ struct ProfileTopView: View {
                             SettingScreen()
                         } label: {
                             Image(systemName: "gearshape.fill")
-                                .figmaFont(PretendardFont.title(style: .sm))
+                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
+                                .font(.system(size: 20))
                                 .foregroundStyle(.gray100)
                                 .padding(.vertical, 8)
+                                .frame(height: 48)
                         }
                         .tint(.gray100)
                     }
@@ -138,5 +140,5 @@ private extension ProfileTopView {
 }
 
 #Preview {
-    ProfileTopView(userProfile: .dummy4, isMyProfile: true, showActionSheet: .constant(false), navigateToReport: .constant(nil))
+    ProfileTopView(userProfile: .dummy0, isMyProfile: true, showActionSheet: .constant(false), navigateToReport: .constant(nil))
 }

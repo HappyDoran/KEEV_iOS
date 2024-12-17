@@ -61,16 +61,16 @@ struct EventVibeCell: View {
                 
                 Spacer()
                 
-//                HStack(spacing: 4) {
-//                    Image(.heartFill)
-//                    
-//                    Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
-//                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-//                }
+                //                HStack(spacing: 4) {
+                //                    Image(.heartFill)
+                //
+                //                    Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
+                //                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                //                }
                 
                 HStack(spacing: 4) {
                     Image(.replyFill)
-
+                    
                     Text(vibeData.replyCount > 99 ? "99+" : "\(vibeData.replyCount)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                 }
@@ -112,28 +112,45 @@ extension EventVibeCell {
         .frame(width: 40, height: 40, alignment: .center)
     }
     
+    @ViewBuilder
     private func vibeImage(url: URL?) -> some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 12)
-                .frame(height: 160)
-                .foregroundColor(.gray900)
-            
+        if let url {
             URLCachedImage(
                 url: url
             ) { phase in
                 if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
                     image
                         .resizable()
-                        .mask(
-                            RoundedRectangle(cornerRadius: 12)
-                        )
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: .infinity)
+
+                        .frame(height: 160)
+                        .clipped()
+                        .contentShape(Rectangle().inset(by: 10))
+
                 } else if phase.error == nil { // 이미지를 불러오는 중일 때
                     ProgressView()
+                        .frame(height: 160)
+                        .frame(maxWidth: .infinity)
+                        .background {
+                            RoundedRectangle(cornerRadius: 12)
+                                .foregroundStyle(Color.grayBG700)
+                        }
                 } else { // 에러가 발생했을 때
-                    Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
+                    Image(.posterError)
+                        .resizable()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 160)
                 }
             }
+            .mask(RoundedRectangle(cornerRadius: 12))
+            .frame(maxWidth: .infinity)
             .frame(height: 160)
+        } else {
+            Image(.posterError)
+                .resizable()
+                .frame(height: 160)
+                
         }
     }
 }

@@ -28,6 +28,7 @@ struct FullScreenCoverTopView: View {
             } label: {
                 HStack {
                     Image(systemName: "xmark")
+                        .imageScale(.large)
                         .font(.custom("SF Pro", size: 17))
                         .fontWeight(.semibold)
                         .foregroundStyle(.gray100)

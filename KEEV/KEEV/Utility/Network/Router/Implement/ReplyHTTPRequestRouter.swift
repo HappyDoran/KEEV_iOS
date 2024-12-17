@@ -41,20 +41,21 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
     var headers: [String: String]? {
         switch self {
         case .fetchReplies(let token, _):
-            return ["Authorization": "Bearer \(token)"]
+//            return ["Authorization": "Bearer \(token)"]
+            return nil
         case .addReply(let token, _, _):
             return [
-                "Authorization": "Bearer \(token)",
+//                "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
         case .modifyReply(let token, _, _, _):
             return [
-                "Authorization": "Bearer \(token)",
+//                "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
         case .deleteReply(let token, _):
             return [
-                "Authorization": "Bearer \(token)",
+//                "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
         }

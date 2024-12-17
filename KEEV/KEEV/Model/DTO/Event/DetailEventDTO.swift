@@ -97,6 +97,7 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let tempCreatedDate = try container.decode(String.self, forKey: .createdDate)
         let tempStartDate = try container.decode(String.self, forKey: .startDate)
+        let tempReservationStartDate = try container.decodeIfPresent(String.self, forKey: .reservationStartDate)
         let tempEndDate = try container.decode(String.self, forKey: .endDate)
         let tempStartTime = try container.decode(String.self, forKey: .startTime)
         
@@ -105,7 +106,7 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         self.types = try container.decode([EventTypeDTO].self, forKey: .types)
         self.genres = try container.decode([GenreDTO].self, forKey: .genres)
         self.createdDate = tempCreatedDate.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
-        self.reservationStartDate = try container.decodeIfPresent(Date.self, forKey: .reservationStartDate)
+        self.reservationStartDate = tempReservationStartDate?.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
         self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.startTime = tempStartTime.toDate(format: "HH:mm:ss") ?? .now

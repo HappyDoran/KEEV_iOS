@@ -77,13 +77,14 @@ struct EventDetailScreen: View {
                     dismiss()
                 } label: {
                     Image(systemName: "chevron.backward")
-                        .foregroundStyle(.gray100)
+                        .font(.system(size: 17, weight: .semibold))
+                        .foregroundColor(.gray100)
                 }
             }
             
             ToolbarItem(placement: .navigation) {
                 Text(selectedEvent.name)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular)))
+                    .figmaFont(PretendardFont.title(style: .xs))
                     .foregroundStyle(.gray300)
                 
             }
@@ -121,7 +122,7 @@ struct EventDetailScreen: View {
             // 이벤트 ID로 새로 이벤트 정보를 불러오면 됨.
         }
         .navigationDestination(isPresented: $navigateToWriteVibe) {
-            VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: selectedEvent))
+            VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: selectedEvent), isNavigation: true)
         }
         .alertForError($error)
     }
@@ -191,26 +192,26 @@ extension EventDetailScreen {
     
     private var detailSection: some View {
         VStack(spacing: 12) {
-            VStack(spacing: 12) {
-                if selectedEvent.description != nil
-                    || !selectedEvent.descriptionImageURLs.isEmpty {              
-                    HStack {
-                        Text("공연 상세 정보")
-                            .figmaFont(PretendardFont.title(style: .sm))
-                        Spacer()
-                    }
+            if selectedEvent.description != nil
+                || !selectedEvent.descriptionImageURLs.isEmpty {
+                HStack {
+                    Text("공연 상세 정보")
+                        .figmaFont(PretendardFont.title(style: .xs))
+                    Spacer()
                 }
-                
-                if let description = selectedEvent.description {
+            }
+            
+            if let description = selectedEvent.description {
+                if (description != ""){
                     descriptionPart(text: description)
                 }
             }
-            .padding(.horizontal, 20)
             
             if !selectedEvent.descriptionImageURLs.isEmpty {
                 detailImagePart
             }
         }
+        .padding(.horizontal, 20)
     }
     
     private var detailImagePart: some View {
@@ -238,9 +239,12 @@ extension EventDetailScreen {
     ///
     /// - Author: newJunsung
     private func descriptionPart(text: String) -> some View {
-        Text(text)
-            .foregroundStyle(.gray50)
-            .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+        HStack(spacing: 0){
+            Text(text.splitWords())
+                .foregroundStyle(.gray100)
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .medium, bodyWeight: .medium)))
+            Spacer()
+        }
     }
     
     private func determineSheetForSection() {

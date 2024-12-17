@@ -48,7 +48,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
             return nil
         case .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _):
             return [
-                "Authorization": "Bearer \(token)",
+//                "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
         }
