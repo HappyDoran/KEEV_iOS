@@ -77,7 +77,7 @@ struct RateSettingView: View {
                     if x > 0 {
                         Rectangle()
                             .foregroundStyle(brandColor)
-                            .frame(maxWidth: x)
+                            .frame(width: x)
                     }
                     Spacer()
                 }
