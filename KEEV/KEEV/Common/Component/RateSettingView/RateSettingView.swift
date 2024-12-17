@@ -103,21 +103,30 @@ struct RateSettingView: View {
     }
     
     private func calculate(from x: CGFloat) -> (Double, CGFloat) {
-        let double = maxRating
-        let half = starWidth / 2.0
-        var stC = 0.0
-        var temp: CGFloat = 0
+        var left = 0
+        var right = 10
         
-        while temp < x {
-            temp += half
-            stC += 0.5
-            if temp >= x { break }
-            temp += half + spacing
-            stC += 0.5
+        while left < right {
+            let mid = CGFloat((left + right) / 2)
+            let tempSpace: CGFloat
+            
+            if Int(mid).isMultiple(of: 2) {
+                tempSpace = (mid / 2 - 1) * spacing
+            } else {
+                tempSpace = (mid + 1) / 2 * spacing
+            }
+            
+            let tempX = (mid / 2) * starWidth + tempSpace
+            
+            if tempX < x {
+                left = (left + right) / 2 + 1
+            } else {
+                right = (left + right) / 2
+            }
         }
-        stC = stC > double ? double : stC
         
-        return (stC, starWidth * Double(stC) + spacing * (round(stC) - 1))
+        let correctedRating = Double(left) / 2
+        return (correctedRating, starWidth * Double(correctedRating) + spacing * (round(correctedRating) - 1))
     }
 }
 
