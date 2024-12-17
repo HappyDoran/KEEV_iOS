@@ -226,10 +226,10 @@ extension View {
     ///
     /// - Author: Doran
     func actionSheetForEventVibe(isPresented: Binding<Bool>, selectedAction: Binding<EventVibeActionSheet.ActionType?>) -> some View {
-            modifier(
-                EventVibeActionSheet.Modifier(isPresented: isPresented, selectedAction: selectedAction)
-            )
-        }
+        modifier(
+            EventVibeActionSheet.Modifier(isPresented: isPresented, selectedAction: selectedAction)
+        )
+    }
     
     /// `View`에 로딩 화면을 쉽게 적용할 수 있도록 하는 메서드 확장입니다.
     ///
@@ -285,5 +285,20 @@ extension View {
                 firstButtonAction: {}
             )
         )
+    }
+    
+    @ViewBuilder
+    func wrappedInScrollView(when condition: Bool) -> some View {
+        if condition {
+            ScrollView(showsIndicators: false){
+                self
+            }
+        } else {
+            self
+        }
+    }
+    
+    func scrollOnOverflow() -> some View {
+        modifier(OverflowContentViewModifier())
     }
 }

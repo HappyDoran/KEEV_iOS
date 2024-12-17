@@ -58,6 +58,7 @@ struct SearchScreen: View {
                     isFocused: $searchFieldFocus,
                     recentKeywords: $recentKeywords
                 )
+                .scrollOnOverflow()
                 .padding(.horizontal, 16)
                 
                 // MARK: 텍스트 필드에 검색을 하는 중인 뷰
