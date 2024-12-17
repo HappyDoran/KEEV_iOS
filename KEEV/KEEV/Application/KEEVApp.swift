@@ -9,14 +9,14 @@ import SwiftUI
 
 @main
 struct KEEVApp: App {
+    @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    
     init() {
         AppEnvironment.setupDependency()
     }
     
     var body: some Scene {
         WindowGroup {
-            EntryView()
-                .environmentObject(VibeManager())
         }
     }
 }
