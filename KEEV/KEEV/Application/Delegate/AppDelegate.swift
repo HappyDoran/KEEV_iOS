@@ -8,6 +8,11 @@
 import Foundation
 import UIKit
 
+/// 앱의 전반적인 생명주기와 앱 수준의 이벤트를 관리하는 AppDelegate
+///
+/// 앱의 전반적인 생명주기와 앱 수준의 이벤트를 관리하는 AppDelegate입니다.
+///
+/// - Author: 라움
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         return true
