@@ -31,11 +31,15 @@ struct SearchingView: View {
         VStack(spacing: 0) {
             searching
                 .onAppear(perform: {
-                    loadSearchResult()
+                    if(searchText.count >= 2){
+                        loadSearchResult()
+                    }
                 })
-                .onChange(of: searchText, {
-                    loadSearchResult()
-                })
+                .onChange(of: searchText) { _, newValue in
+                    if newValue.count >= 2 {
+                        loadSearchResult()
+                    }
+                }
         }
     }
 }
