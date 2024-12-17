@@ -126,7 +126,7 @@ struct RateSettingView: View {
         }
         
         let correctedRating = Double(left) / 2
-        return (correctedRating, starWidth * Double(correctedRating) + spacing * (round(correctedRating) - 1))
+        return (correctedRating, starWidth * correctedRating + spacing * floor(correctedRating))
     }
 }
 
