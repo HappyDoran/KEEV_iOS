@@ -31,7 +31,7 @@ struct SearchingView: View {
         VStack(spacing: 0) {
             searching
                 .onAppear(perform: {
-                    if(searchText.count >= 2){
+                    if searchText.count >= 2 {
                         loadSearchResult()
                     }
                 })

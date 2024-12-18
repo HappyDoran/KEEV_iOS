@@ -286,39 +286,4 @@ extension View {
             )
         )
     }
-    
-    /// 조건에 따른 스크롤의 활성화를 ViewBuilder로 표현한 함수
-    ///
-    /// - Parameters:
-    ///   - condition: 콘텐츠의 크기가 전체 화면 사이즈보다 큰지를 판별하는 bool 타입 변수
-    ///
-    /// - Returns: 판별된 뷰
-    ///
-    /// - Author: Doran
-    @ViewBuilder
-    func wrappedInScrollView(when condition: Bool) -> some View {
-        if condition {
-            ScrollView(showsIndicators: false){
-                self
-            }
-        } else {
-            self
-        }
-    }
-    
-    /// 조건에 따른 스크롤뷰를 표시하는 ViewModifier를 적용하는 함수
-    ///
-    /// ```swift
-    /// VStack {
-    ///     ...
-    /// }
-    /// .scrollOnOverflow()
-    /// ```
-    ///
-    /// - Returns: 조건에 따라 적용된 스크롤뷰
-    ///
-    /// - Author: Doran
-    func scrollOnOverflow() -> some View {
-        modifier(OverflowContentViewModifier())
-    }
 }
