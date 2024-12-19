@@ -28,11 +28,14 @@ struct TotalSearchScreen: View {
             switch eventSearchStatus {
                 // MARK: 검색 결과가 나오기 전의 뷰
             case .beforeSearch:
-                SearchBeforeView(
-                    text: $searchText,
-                    isFocused: $searchFieldFocus,
-                    recentKeywords: $recentKeywords
-                )
+                ScrollView(showsIndicators: false){
+                    SearchBeforeView(
+                        text: $searchText,
+                        isFocused: $searchFieldFocus,
+                        recentKeywords: $recentKeywords
+                    )
+                }
+                .scrollBounceBehavior(.basedOnSize, axes: [.vertical])
                 .padding(.horizontal, 16)
                 
                 // MARK: 텍스트 필드에 검색을 하는 중인 뷰
