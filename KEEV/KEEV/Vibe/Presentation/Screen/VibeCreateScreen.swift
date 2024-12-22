@@ -20,14 +20,14 @@ struct VibeCreateScreen: View {
     
     @State private var loadingForUpload: Bool = false // 바이브 업로드할 때 뜨는 로딩
     @State private var isPresented = false
-    
     @State private var errorForAlert: Error? = nil
     @State private var selectedEvent: SimpleEventUIO?
-    
     @State private var rating: Double = 0
     
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var selectedImages: [UIImage] = []
+    @State private var previousImages: [UIImage?] = []
+    
     private let maxSelectedCount: Int = 5
     
     @State private var comment: String = ""
@@ -169,7 +169,7 @@ extension VibeCreateScreen {
     }
     
     private var photoPickerSection: some View {
-        VibePhotoPickerCell(selectedItems: $selectedItems, selectedImages: $selectedImages, maxSelectedCount: maxSelectedCount)
+        VibePhotoPickerCell(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: $previousImages, maxSelectedCount: maxSelectedCount)
             .frame(maxWidth: .infinity)
     }
     

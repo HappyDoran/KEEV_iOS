@@ -19,9 +19,9 @@ struct VibeModifyScreen: View {
     @Binding private var vibe: VibeUIO
     @State private var rating: Double
     @State private var comment: String
-    @State private var previousImages: [UIImage?] = []
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var selectedImages: [UIImage] = []
+    @State private var previousImages: [UIImage?] = []
     @State private var isDelete = false
     
     private let maxSelectedCount: Int = 5
@@ -138,76 +138,8 @@ private extension VibeModifyScreen {
     }
     
     var photoPickerContent: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    PhotosPicker(
-                        selection: $selectedItems,
-                        maxSelectionCount: maxSelectedCount - previousImages.count,
-                        matching: .images,
-                        photoLibrary: PHPhotoLibrary.shared()
-                    ) {
-                        RoundedRectangle(cornerRadius: 16)
-                            .frame(width: 100, height: 100)
-                            .foregroundColor(.grayBG700)
-                            .overlay{
-                                Image(systemName: "plus")
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 32, height: 32)
-                                    .foregroundColor(.gray500)
-                            }
-                    }
-                    .tint(.brand500)
-                    .onChange(of: selectedItems) { _, _ in
-                        if !isDelete {
-                            handleSelectedPhotos()
-                        }
-                        isDelete = false
-                    }
-                    
-                    ForEach(0..<previousImages.count, id: \.self) { index in
-                        Image(uiImage: previousImages[index] ?? UIImage(systemName: "xmark.circle.fill")!)
-                            .resizable()
-                            .frame(width: 100, height: 100)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .overlay(
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.white.opacity(0.8))
-                                    .frame(width: 20, height: 20)
-                                    .onTapGesture {
-                                        deletePreviousPhoto(at: index)
-                                    }
-                                    .padding(8),
-                                alignment: .topTrailing
-                            )
-                    }
-                    
-                    ForEach(0..<selectedImages.count, id: \.self) { index in
-                        Image(uiImage: selectedImages[index])
-                            .resizable()
-                            .frame(width: 100, height: 100)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .overlay(
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.white.opacity(0.8))
-                                    .frame(width: 20, height: 20)
-                                    .onTapGesture {
-                                        deleteSelectedPhotos(at: index)
-                                    }
-                                    .padding(8),
-                                alignment: .topTrailing
-                            )
-                            .id(index + previousImages.count + 1)
-                    }
-                    .onChange(of: selectedImages) {
-                        withAnimation {
-                            proxy.scrollTo(previousImages.count + selectedItems.count, anchor: .trailing)
-                        }
-                    }
-                }
-            }
-        }
+        VibePhotoPickerCell(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: $previousImages, maxSelectedCount: maxSelectedCount)
+            .frame(maxWidth: .infinity)
     }
     
     var photoHeader: some View {

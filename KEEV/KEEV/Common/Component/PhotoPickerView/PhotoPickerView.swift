@@ -5,6 +5,7 @@ import PhotosUI
 ///
 /// - `selectedItems`:  picker에서 선택하는 Item, Picker에서 check되는 PhotosPickerItem 타입 배열
 /// - `selectedImages`: UI에서 실제로 보여지는 이미지 타입 배열
+/// - `previousImages`: 기존에 담겨있었던 이미지 타입 배열. 바이브 생성시에는 빈값, 수정시에는 기존에 있던 이미지.
 /// - `maxSelectedCount`: 최대 이미지 수. 5장으로 고정
 ///
 /// - Note: picker에서 Add 버튼 클릭시 SelectedItems가 변하게 되어 onChange modifier가 실행된다.
@@ -12,108 +13,131 @@ import PhotosUI
 ///  Image의 수에 따라서 빈 RoundRectangle이 Image로 바뀌는 형식으로 구현되었다.
 /// - Author: Doran
 struct PhotoPickerView: View {
-    @Binding private var selectedItems: [PhotosPickerItem]
-    @Binding private var selectedImages: [UIImage]
-    private let maxSelectedCount: Int
+    @Binding var selectedItems: [PhotosPickerItem]
+    @Binding var selectedImages: [UIImage]
+    @Binding var previousImages: [UIImage?]
+    @State private var isDelete = false
+    let maxSelectedCount: Int
     
     private var availableSelectedCount: Int {
-        maxSelectedCount - selectedImages.count
-    }
-    
-    init(selectedItems: Binding<[PhotosPickerItem]>, selectedImages: Binding<[UIImage]>, maxSelectedCount: Int) {
-        self._selectedItems = selectedItems
-        self._selectedImages = selectedImages
-        self.maxSelectedCount = maxSelectedCount
+        maxSelectedCount - previousImages.count
     }
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack {
-                PhotosPicker(
-                    selection: $selectedItems,
-                    maxSelectionCount: maxSelectedCount,
-                    matching: .images,
-                    photoLibrary: PHPhotoLibrary.shared()
-                ) {
-                    RoundedRectangle(cornerRadius: 16)
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.grayBG700)
-                        .overlay{
-                            Image(systemName: "plus")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 32, height: 32)
-                                .foregroundColor(.gray500)
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8){
+                    PhotosPicker(
+                        selection: $selectedItems,
+                        maxSelectionCount: availableSelectedCount,
+                        matching: .images,
+                        photoLibrary: PHPhotoLibrary.shared()
+                    ) {
+                        RoundedRectangle(cornerRadius: 16)
+                            .frame(width: 100, height: 100)
+                            .foregroundColor(.grayBG700)
+                            .overlay {
+                                Image(systemName: "plus")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 32, height: 32)
+                                    .foregroundColor(.gray500)
+                            }
+                    }
+                    .tint(.brand500)
+                    .onChange(of: selectedItems) { _, _ in
+                        if !isDelete {
+                            handleSelectedPhotos()
                         }
-                }
-                .tint(.brand500)
-                
-                // MARK: 이미지가 있을 때는 이미지, 이미지가 없을 때는 빈 사각형을 띄우는 뷰
-                ForEach(0..<maxSelectedCount, id: \.self) { index in
-                    if index < selectedImages.count {
-                        ZStack {
-                            Image(uiImage: selectedImages[index])
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 100, height: 100)
-                                .cornerRadius(16)
-                                .overlay(
-                                    Button(action: {
-                                        deleteImage(at: index)
-                                    }) {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(.white.opacity(0.8))
-                                            .frame(width: 20, height: 20)
+                        isDelete = false
+                    }
+                    
+                    ForEach(0..<previousImages.count, id: \.self) { index in
+                        Image(uiImage: previousImages[index] ?? UIImage(systemName: "xmark.circle.fill")!)
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .overlay(
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.white.opacity(0.8))
+                                    .frame(width: 20, height: 20)
+                                    .onTapGesture {
+                                        deletePreviousPhoto(at: index)
                                     }
-                                        .padding(8),
-                                    alignment: .topTrailing
-                                )
+                                    .padding(8),
+                                alignment: .topTrailing
+                            )
+                    }
+                    
+                    ForEach(0..<selectedImages.count, id: \.self) { index in
+                        Image(uiImage: selectedImages[index])
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .overlay(
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.white.opacity(0.8))
+                                    .frame(width: 20, height: 20)
+                                    .onTapGesture {
+                                        deleteSelectedPhotos(at: index)
+                                    }
+                                    .padding(8),
+                                alignment: .topTrailing
+                            )
+                            .id(index + previousImages.count + 1)
+                    }
+                    .onChange(of: selectedImages) {
+                        withAnimation {
+                            proxy.scrollTo(previousImages.count + selectedItems.count, anchor: .trailing)
                         }
                     }
                 }
             }
         }
-        .onChange(of: selectedItems) { _, _ in
-            handleSelectedPhotos()
-        }
     }
 }
 
-
-
-extension PhotoPickerView {
-    // MARK: photoPicker에서 add 이벤트 완료 시 발생하는 함수
-    private func handleSelectedPhotos() {
+private extension PhotoPickerView {
+    func deletePreviousPhoto(at index: Int) {
+        previousImages.remove(at: index)
+    }
+    
+    func deleteSelectedPhotos(at index: Int) {
+        selectedImages.remove(at: index)
+        isDelete = true
+        selectedItems.remove(at: index)
+    }
+    
+    func handleSelectedPhotos() {
+        selectedImages.removeAll()
+        var tempPhotos = [UIImage]()
         Task {
-            selectedImages.removeAll()
             for item in selectedItems {
                 do {
                     if let data = try await item.loadTransferable(type: Data.self)
                         , let newImage = UIImage(data: data) {
-                        selectedImages.append(newImage)   
+                        tempPhotos.append(newImage)
                     }
                 } catch {
                     print(error.localizedDescription)
                 }
             }
+            selectedImages = tempPhotos
+            print(selectedItems)
+            print(selectedImages)
+            print(availableSelectedCount)
         }
-    }
-    
-    // MARK: 이미지 삭제
-    private func deleteImage(at index: Int) {
-        guard index < selectedImages.count, index < selectedItems.count else { return }
-        selectedItems.remove(at: index)
     }
 }
 
-struct PhotoPickerView_Previews: PreviewProvider {
+struct PhotoPicker_Previews: PreviewProvider {
     struct PreviewWrapper: View {
         @State private var selectedItems: [PhotosPickerItem] = []
         @State private var selectedImages: [UIImage] = []
-        @State private var isPresentedError: Bool = false
-
+        @State private var previousImages: [UIImage?] = []
+        
         var body: some View {
-            PhotoPickerView(selectedItems: $selectedItems, selectedImages: $selectedImages, maxSelectedCount: 5)
+            PhotoPickerView(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: $previousImages, maxSelectedCount: 5)
         }
     }
 
