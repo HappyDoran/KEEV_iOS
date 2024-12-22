@@ -92,6 +92,6 @@ struct EventVibeView: View {
 
 #Preview {
     ScrollView(showsIndicators: false) {
-        EventVibeView(eventID: "efefweaff")
+        EventVibeView(eventID: "d97bcc7a-88aa-4fcd-9411-5785a8ad3e55")
     }
 }

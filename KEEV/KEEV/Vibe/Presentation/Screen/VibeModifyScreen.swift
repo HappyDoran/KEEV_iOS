@@ -11,6 +11,7 @@ import PhotosUI
 struct VibeModifyScreen: View {
     @Injected private var service: any VibeServiceProtocol
     
+    private let cache = UIImageCache.shared
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var vibeManager: VibeManager
     @Namespace private var recentPhoto
@@ -22,6 +23,7 @@ struct VibeModifyScreen: View {
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var selectedImages: [UIImage] = []
     @State private var isDelete = false
+    
     private let maxSelectedCount: Int = 5
     
     @State private var loadingForUpload: Bool = false
@@ -43,7 +45,7 @@ struct VibeModifyScreen: View {
             VibeEventCell(event: vibe.event, onClick: nil)
                 .padding(EdgeInsets(top: 28, leading: 16, bottom: 36, trailing: 16))
             
-            ScrollView {
+            ScrollView(showsIndicators: false){
                 VStack(spacing : 0) {
                     // MARK: 만족도 뷰
                     ratingSection
@@ -116,6 +118,7 @@ struct VibeModifyScreen: View {
                    let data = try? await URLSession.shared.data(from: url).0,
                    let image = UIImage(data: data) {
                     tempImages.append(image)
+                    await cache.remove(for: url)
                 } else {
                     tempImages.append(nil)
                 }
