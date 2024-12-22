@@ -48,7 +48,7 @@ extension VibePhotoPickerCell {
                 .figmaFont(PretendardFont.title(style: .xs))
                 .foregroundColor(.gray50)
             Spacer()
-            Text("\(selectedItems.count) / \(maxSelectedCount)장")
+            Text("\(previousImages.count + selectedImages.count) / \(maxSelectedCount)장")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                 .foregroundColor(.gray500)
         }
