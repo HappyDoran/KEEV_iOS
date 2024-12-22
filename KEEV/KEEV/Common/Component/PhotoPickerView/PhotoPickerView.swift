@@ -123,9 +123,6 @@ private extension PhotoPickerView {
                 }
             }
             selectedImages = tempPhotos
-            print(selectedItems)
-            print(selectedImages)
-            print(availableSelectedCount)
         }
     }
 }
