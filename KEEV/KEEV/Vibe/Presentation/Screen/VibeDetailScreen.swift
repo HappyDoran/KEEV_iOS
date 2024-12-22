@@ -63,6 +63,7 @@ struct VibeDetailScreen: View {
             .scrollIndicators(.hidden)
             .refreshable {
                 //바이브 아이디로 하나의 바이브를 가져 오는게 작동이 안됩니다. 나중에 수정이후에 fetchVibe를 추가하면 됩니다.
+                fetchVibe()
                 fetchReplies()
             }
             
@@ -130,7 +131,10 @@ struct VibeDetailScreen: View {
         .navigationDestination(item: $navigateToUserProfile) { userID in
             ProfileScreen(userID: userID, isMyProfile: vibe.isMine, isNavigation: true)
         }
-        .onAppear(perform: fetchReplies)
+        .onAppear{
+            fetchVibe()
+            fetchReplies()
+        }
         .loading(for: loadingForDelete)
         .alertForError($errorForAlert)
     }
