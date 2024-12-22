@@ -133,24 +133,7 @@ private extension VibeModifyScreen {
             .frame(maxWidth: .infinity)
     }
     
-//    var photoPickerContent: some View {
-//        PhotoPickerView(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: $previousImages, maxSelectedCount: maxSelectedCount)
-//            .frame(maxWidth: .infinity)
-//    }
-//    
-//    var photoHeader: some View {
-//        HStack(spacing: 0){
-//            Text("사진")
-//                .figmaFont(PretendardFont.title(style: .xs))
-//                .foregroundColor(.gray50)
-//            Spacer()
-//            Text("\(previousImages.count + selectedImages.count) / \(maxSelectedCount)장")
-//                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-//                .foregroundColor(.gray500)
-//        }
-//    }
-    
-    private var photoPickerSection: some View {
+    var photoPickerSection: some View {
         VibePhotoPickerCell(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: $previousImages, maxSelectedCount: maxSelectedCount)
             .frame(maxWidth: .infinity)
     }
