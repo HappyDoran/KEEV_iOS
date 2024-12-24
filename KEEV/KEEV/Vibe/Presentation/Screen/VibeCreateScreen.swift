@@ -26,7 +26,6 @@ struct VibeCreateScreen: View {
     
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var selectedImages: [UIImage] = []
-    @State private var previousImages: [UIImage?] = []
     
     private let maxSelectedCount: Int = 5
     private let onCreate: ((VibeUIO) -> Void)?
@@ -173,7 +172,7 @@ extension VibeCreateScreen {
     }
     
     private var photoPickerSection: some View {
-        VibePhotoPickerCell(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: $previousImages, maxSelectedCount: maxSelectedCount)
+        VibePhotoPickerCell(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: .constant([]), maxSelectedCount: maxSelectedCount)
             .frame(maxWidth: .infinity)
     }
     

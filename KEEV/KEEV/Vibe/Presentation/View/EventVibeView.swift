@@ -20,7 +20,7 @@ struct EventVibeView: View {
     @State private var currentPage = 0
     private let pageSize = 50
     
-    init (event: DetailEventUIO) {
+    init(event: DetailEventUIO) {
         self.event = event
     }
     

@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventVibeHeader: View {
-    let event: DetailEventUIO
+    private let event: DetailEventUIO
     private let onCreate: ((VibeUIO) -> Void)?
     
     init(event: DetailEventUIO, onCreate: ((VibeUIO) -> Void)? = nil) {
