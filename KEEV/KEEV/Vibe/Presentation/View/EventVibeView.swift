@@ -43,7 +43,6 @@ struct EventVibeView: View {
                         }
                         .onAppear {
                             guard let index = vibes.firstIndex(where: { $0.id == vibes[index].id }) else { return }
-                            print("EventVibeView 스크롤시")
                             if index % pageSize == (pageSize - 1) {
                                 Task {
                                     do {
@@ -66,7 +65,6 @@ struct EventVibeView: View {
                 ProgressView()
                     .onAppear {
                         Task {
-                            print("EventVibeView 제일 초창기")
                             do {
                                 let allVibes = try await vibeService.getPaginatedVibes(
                                     page: currentPage,
@@ -84,29 +82,12 @@ struct EventVibeView: View {
             }
         }
         .refreshable {
-            print("EventVibeView Refreshable")
             do {
                 vibes = try await vibeService.getPaginatedVibes(page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents.filter { $0.event.id == event.id }
                 currentPage = 1
             } catch(let replyError) {
                 print(replyError)
             }
-        }
-    }
-}
-
-extension EventVibeView {
-    private func loadVibes() async {
-        do {
-            let allVibes = try await vibeService.getPaginatedVibes(
-                page: 0,
-                size: pageSize,
-                sort: [(.createdDate, .descending)]
-            ).contents
-            vibes = allVibes.filter { $0.event.id == event.id }
-            currentPage = 1
-        } catch {
-            print(error)
         }
     }
 }
