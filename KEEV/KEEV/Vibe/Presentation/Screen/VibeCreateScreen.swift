@@ -29,15 +29,19 @@ struct VibeCreateScreen: View {
     @State private var previousImages: [UIImage?] = []
     
     private let maxSelectedCount: Int = 5
+    private let onCreate: ((VibeUIO) -> Void)?
     
     @State private var comment: String = ""
     @State private var showCancelAlert = false
     @State private var showExitAlert = false
     let isNavigation: Bool
     
-    init(selectedEvent: SimpleEventUIO?, isNavigation: Bool) {
+    init(selectedEvent: SimpleEventUIO?,
+         isNavigation: Bool,
+         onCreate: ((VibeUIO) -> Void)? = nil) {
         self._selectedEvent = .init(wrappedValue: selectedEvent)
         self.isNavigation = isNavigation
+        self.onCreate = onCreate
     }
     
     var body: some View {
@@ -186,13 +190,13 @@ private extension VibeCreateScreen {
         loadingForUpload = true
         Task {
             do {
-                let uploadedVibe = try await service.uploadVibe(
+                let newVibe = try await service.uploadVibe(
                     eventID: selectedEvent.id,
                     rating: rating,
                     comment: comment,
                     images: selectedImages
                 )
-                vibeManager.addVibe(vibe: uploadedVibe)
+                onCreate?(newVibe)
                 dismiss()
             } catch {
                 errorForAlert = error

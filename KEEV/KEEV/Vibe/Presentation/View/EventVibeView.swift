@@ -13,18 +13,21 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventVibeView: View {
-    let eventID: String
+    let event: DetailEventUIO
     
     @Injected private var vibeService: any VibeServiceProtocol
     @State private var vibes: [VibeUIO] = []
     @State private var currentPage = 0
     private let pageSize = 50
     
-    init (eventID: String) {
-        self.eventID = eventID
+    init (event: DetailEventUIO) {
+        self.event = event
     }
     
     var body: some View {
+        EventVibeHeader(event: event, onCreate: {newVibe in
+            vibes.insert(newVibe, at: 0)
+        })
         ScrollView(showsIndicators: false) {
             if !vibes.isEmpty {
                 LazyVStack(spacing: 0) {
@@ -48,7 +51,7 @@ struct EventVibeView: View {
                                             page: currentPage,
                                             size: pageSize,
                                             sort: [(SortCase.createdDate, SortPattern.ascending)]
-                                        ).contents.filter { $0.event.id == eventID }
+                                        ).contents.filter { $0.event.id == event.id }
                                         vibes.append(contentsOf: newVibes)
                                         currentPage += 1
                                     } catch {
@@ -70,7 +73,7 @@ struct EventVibeView: View {
                                     size: pageSize,
                                     sort: [(SortCase.createdDate, SortPattern.descending)]
                                 ).contents
-                                vibes = allVibes.filter { $0.event.id == eventID }
+                                vibes = allVibes.filter { $0.event.id == event.id }
                                 currentPage += 1
                             } catch {
                                 print(error)
@@ -83,7 +86,7 @@ struct EventVibeView: View {
         .refreshable {
             print("EventVibeView Refreshable")
             do {
-                vibes = try await vibeService.getPaginatedVibes(page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents.filter { $0.event.id == eventID }
+                vibes = try await vibeService.getPaginatedVibes(page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents.filter { $0.event.id == event.id }
                 currentPage = 1
             } catch(let replyError) {
                 print(replyError)
@@ -100,7 +103,7 @@ extension EventVibeView {
                 size: pageSize,
                 sort: [(.createdDate, .descending)]
             ).contents
-            vibes = allVibes.filter { $0.event.id == eventID }
+            vibes = allVibes.filter { $0.event.id == event.id }
             currentPage = 1
         } catch {
             print(error)
@@ -109,7 +112,9 @@ extension EventVibeView {
 }
 
 #Preview {
-    ScrollView(showsIndicators: false) {
-        EventVibeView(eventID: "d97bcc7a-88aa-4fcd-9411-5785a8ad3e55")
+    NavigationStack {
+        ScrollView(showsIndicators: false) {
+            EventVibeView(event: .dummy0)
+        }
     }
 }

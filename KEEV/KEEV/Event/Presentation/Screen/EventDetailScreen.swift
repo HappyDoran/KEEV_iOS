@@ -165,8 +165,7 @@ extension EventDetailScreen {
             }
             else {
                 VStack(spacing: 0) {
-                    EventVibeHeader(event: selectedEvent)
-                    EventVibeView(eventID: selectedEvent.id)
+                    EventVibeView(event: selectedEvent)
                 }
                 .padding(.horizontal, 16)
             }
