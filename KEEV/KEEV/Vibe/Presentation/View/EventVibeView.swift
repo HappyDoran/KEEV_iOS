@@ -17,7 +17,7 @@ struct EventVibeView: View {
     
     @Injected private var vibeService: any VibeServiceProtocol
     @State private var vibes: [VibeUIO] = []
-    @State private var vibesLoaded = false
+    @State private var eventVibesState: EventVibeViewState = .loading
     @State private var currentPage = 0
     private let pageSize = 50
     
@@ -26,17 +26,21 @@ struct EventVibeView: View {
     }
     
     var body: some View {
-        if vibesLoaded {
-            if !vibes.isEmpty {
-                vibeList
-            } else {
-                vibeNotExist
-                    .frame(maxHeight: .infinity)
-            }
-        } else {
+        switch eventVibesState {
+        case .loading:
             vibeLoading
+        case .loaded:
+            vibeList
+        case .empty:
+            vibeNotExist
         }
     }
+}
+
+private enum EventVibeViewState {
+    case loading
+    case loaded
+    case empty
 }
 
 extension EventVibeView {
@@ -44,7 +48,7 @@ extension EventVibeView {
     ///
     /// - Returns: 이벤트에 대한 바이브 목록
     ///
-    /// - Author: 라움
+    /// - Author: Doran, 라움
     private var vibeList: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(spacing: 0) {
@@ -98,13 +102,14 @@ extension EventVibeView {
                 .foregroundColor(.gray500)
         }
         .padding(.bottom, 61)
+        .frame(maxHeight: .infinity)
     }
     
     /// 바이브를 불러올때 표시되는 뷰
     ///
     /// - Returns: 바이브를 불러올때 표시되는 ProgressView
     ///
-    /// - Author: 라움
+    /// - Author: Doran, 라움
     private var vibeLoading: some View {
         ProgressView()
             .onAppear {
@@ -116,7 +121,13 @@ extension EventVibeView {
                             sort: [(SortCase.createdDate, SortPattern.descending)]
                         ).contents
                         vibes = allVibes.filter { $0.event.id == eventID }
-                        vibesLoaded = true
+                        
+                        if vibes.isEmpty {
+                            eventVibesState = .empty
+                        } else {
+                            eventVibesState = .loaded
+                        }
+                        
                         currentPage += 1
                     } catch {
                         print(error)
@@ -126,7 +137,13 @@ extension EventVibeView {
             .refreshable {
                 do {
                     vibes = try await vibeService.getPaginatedVibes(page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents
-                    vibesLoaded = true
+                    
+                    if vibes.isEmpty {
+                        eventVibesState = .empty
+                    } else {
+                        eventVibesState = .loaded
+                    }
+                    
                     currentPage = 1
                 } catch(let replyError) {
                     print(replyError)
