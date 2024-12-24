@@ -25,14 +25,16 @@ struct VibeModifyScreen: View {
     @State private var isDelete = false
     
     private let maxSelectedCount: Int = 5
+    private let onUpdate: ((VibeUIO) -> Void)?
     
     @State private var loadingForUpload: Bool = false
     @State private var showCancelAlert = false
     @State private var showExitAlert = false
     @State private var errorForAlert: Error? = nil
     
-    init(vibe: Binding<VibeUIO>) {
+    init(vibe: Binding<VibeUIO>, onUpdate: ((VibeUIO) -> Void)? = nil) {
         self._vibe = vibe
+        self.onUpdate = onUpdate
         let wrappedVibe = vibe.wrappedValue
         self.rating = wrappedVibe.rating
         self.comment = wrappedVibe.comment ?? ""
@@ -187,6 +189,8 @@ private extension VibeModifyScreen {
                     images: previousImages + selectedImages
                 )
                 vibe = uploadedVibe
+                onUpdate?(uploadedVibe)
+                
                 try vibeManager.modifyVibe(vibeID: vibe.id, modifiedVibe: uploadedVibe)
                 dismiss()
             } catch {
