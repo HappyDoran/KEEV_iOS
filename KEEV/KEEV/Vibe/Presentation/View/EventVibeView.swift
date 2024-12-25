@@ -75,7 +75,7 @@ extension EventVibeView {
                                         page: currentPage,
                                         size: pageSize,
                                         sort: [(SortCase.createdDate, SortPattern.ascending)]
-                                    ).contents.filter { $0.event.id == eventID }
+                                    ).contents.filter { $0.event.id == event.id }
                                     vibes.append(contentsOf: newVibes)
                                     currentPage += 1
                                 } catch {
@@ -123,7 +123,7 @@ extension EventVibeView {
                             size: pageSize,
                             sort: [(SortCase.createdDate, SortPattern.descending)]
                         ).contents
-                        vibes = allVibes.filter { $0.event.id == eventID }
+                        vibes = allVibes.filter { $0.event.id == event.id }
                         
                         if vibes.isEmpty {
                             eventVibesState = .empty
