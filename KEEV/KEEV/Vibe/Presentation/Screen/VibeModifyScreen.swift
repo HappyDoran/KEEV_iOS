@@ -11,6 +11,7 @@ import PhotosUI
 struct VibeModifyScreen: View {
     @Injected private var service: any VibeServiceProtocol
     
+    private let cache = UIImageCache.shared
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var vibeManager: VibeManager
     @Namespace private var recentPhoto
@@ -18,19 +19,22 @@ struct VibeModifyScreen: View {
     @Binding private var vibe: VibeUIO
     @State private var rating: Double
     @State private var comment: String
-    @State private var previousImages: [UIImage?] = []
     @State private var selectedItems: [PhotosPickerItem] = []
     @State private var selectedImages: [UIImage] = []
+    @State private var previousImages: [UIImage?] = []
     @State private var isDelete = false
+    
     private let maxSelectedCount: Int = 5
+    private let onUpdate: ((VibeUIO) -> Void)?
     
     @State private var loadingForUpload: Bool = false
     @State private var showCancelAlert = false
     @State private var showExitAlert = false
     @State private var errorForAlert: Error? = nil
     
-    init(vibe: Binding<VibeUIO>) {
+    init(vibe: Binding<VibeUIO>, onUpdate: ((VibeUIO) -> Void)? = nil) {
         self._vibe = vibe
+        self.onUpdate = onUpdate
         let wrappedVibe = vibe.wrappedValue
         self.rating = wrappedVibe.rating
         self.comment = wrappedVibe.comment ?? ""
@@ -43,18 +47,14 @@ struct VibeModifyScreen: View {
             VibeEventCell(event: vibe.event, onClick: nil)
                 .padding(EdgeInsets(top: 28, leading: 16, bottom: 36, trailing: 16))
             
-            ScrollView {
+            ScrollView(showsIndicators: false){
                 VStack(spacing : 0) {
                     // MARK: 만족도 뷰
                     ratingSection
                     Rectangle().fill(.gray800).frame(height: 1)
                     
                     // MARK: 사진 선택 뷰
-                    VStack(spacing: 12) {
-                        photoHeader
-                        photoPickerContent
-                    }
-                    .padding(16)
+                    photoPickerSection
                     Rectangle().fill(.gray800).frame(height: 1)
                     
                     // MARK: 코멘트 뷰
@@ -116,6 +116,7 @@ struct VibeModifyScreen: View {
                    let data = try? await URLSession.shared.data(from: url).0,
                    let image = UIImage(data: data) {
                     tempImages.append(image)
+                    await cache.remove(for: url)
                 } else {
                     tempImages.append(nil)
                 }
@@ -134,89 +135,9 @@ private extension VibeModifyScreen {
             .frame(maxWidth: .infinity)
     }
     
-    var photoPickerContent: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    PhotosPicker(
-                        selection: $selectedItems,
-                        maxSelectionCount: maxSelectedCount - previousImages.count,
-                        matching: .images,
-                        photoLibrary: PHPhotoLibrary.shared()
-                    ) {
-                        RoundedRectangle(cornerRadius: 16)
-                            .frame(width: 100, height: 100)
-                            .foregroundColor(.grayBG700)
-                            .overlay{
-                                Image(systemName: "plus")
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 32, height: 32)
-                                    .foregroundColor(.gray500)
-                            }
-                    }
-                    .tint(.brand500)
-                    .onChange(of: selectedItems) { _, _ in
-                        if !isDelete {
-                            handleSelectedPhotos()
-                        }
-                        isDelete = false
-                    }
-                    
-                    ForEach(0..<previousImages.count, id: \.self) { index in
-                        Image(uiImage: previousImages[index] ?? UIImage(systemName: "xmark.circle.fill")!)
-                            .resizable()
-                            .frame(width: 100, height: 100)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .overlay(
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.white.opacity(0.8))
-                                    .frame(width: 20, height: 20)
-                                    .onTapGesture {
-                                        deletePreviousPhoto(at: index)
-                                    }
-                                    .padding(8),
-                                alignment: .topTrailing
-                            )
-                    }
-                    
-                    ForEach(0..<selectedImages.count, id: \.self) { index in
-                        Image(uiImage: selectedImages[index])
-                            .resizable()
-                            .frame(width: 100, height: 100)
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .overlay(
-                                Image(systemName: "xmark.circle.fill")
-                                    .foregroundColor(.white.opacity(0.8))
-                                    .frame(width: 20, height: 20)
-                                    .onTapGesture {
-                                        deleteSelectedPhotos(at: index)
-                                    }
-                                    .padding(8),
-                                alignment: .topTrailing
-                            )
-                            .id(index + previousImages.count + 1)
-                    }
-                    .onChange(of: selectedImages) {
-                        withAnimation {
-                            proxy.scrollTo(previousImages.count + selectedItems.count, anchor: .trailing)
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-    var photoHeader: some View {
-        HStack(spacing: 0){
-            Text("사진")
-                .figmaFont(PretendardFont.title(style: .xs))
-                .foregroundColor(.gray50)
-            Spacer()
-            Text("\(previousImages.count + selectedImages.count) / \(maxSelectedCount)장")
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                .foregroundColor(.gray500)
-        }
+    var photoPickerSection: some View {
+        VibePhotoPickerCell(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: $previousImages, maxSelectedCount: maxSelectedCount)
+            .frame(maxWidth: .infinity)
     }
     
     var commentSection: some View {
@@ -268,6 +189,8 @@ private extension VibeModifyScreen {
                     images: previousImages + selectedImages
                 )
                 vibe = uploadedVibe
+                onUpdate?(uploadedVibe)
+                
                 try vibeManager.modifyVibe(vibeID: vibe.id, modifiedVibe: uploadedVibe)
                 dismiss()
             } catch {

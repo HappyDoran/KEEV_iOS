@@ -19,11 +19,13 @@ import PhotosUI
 struct VibePhotoPickerCell: View {
     @Binding private var selectedItems: [PhotosPickerItem]
     @Binding private var selectedImages: [UIImage]
+    @Binding private var previousImages: [UIImage?]
     private let maxSelectedCount: Int
     
-    init(selectedItems: Binding<[PhotosPickerItem]>, selectedImages: Binding<[UIImage]>, maxSelectedCount: Int) {
+    init(selectedItems: Binding<[PhotosPickerItem]>, selectedImages: Binding<[UIImage]>, previousImages: Binding<[UIImage?]>,  maxSelectedCount: Int) {
         self._selectedItems = selectedItems
         self._selectedImages = selectedImages
+        self._previousImages = previousImages
         self.maxSelectedCount = maxSelectedCount
     }
     
@@ -33,7 +35,7 @@ struct VibePhotoPickerCell: View {
             photoHeader.padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
             
             // MARK: 사진 선택 영역
-            PhotoPickerView(selectedItems: $selectedItems, selectedImages: $selectedImages, maxSelectedCount: maxSelectedCount)
+            PhotoPickerView(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: $previousImages, maxSelectedCount: maxSelectedCount)
                 .padding(EdgeInsets(top: 12, leading: 16, bottom: 16, trailing: 0))
         }
     }
@@ -46,7 +48,7 @@ extension VibePhotoPickerCell {
                 .figmaFont(PretendardFont.title(style: .xs))
                 .foregroundColor(.gray50)
             Spacer()
-            Text("\(selectedItems.count) / \(maxSelectedCount)장")
+            Text("\(previousImages.count + selectedImages.count) / \(maxSelectedCount)장")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                 .foregroundColor(.gray500)
         }
@@ -54,6 +56,6 @@ extension VibePhotoPickerCell {
 }
 
 #Preview {
-    VibePhotoPickerCell(selectedItems: .constant([]), selectedImages: .constant([]), maxSelectedCount: 5)
+    VibePhotoPickerCell(selectedItems: .constant([]), selectedImages: .constant([]), previousImages: .constant([]), maxSelectedCount: 5)
         .backgroundForKEEV()
 }

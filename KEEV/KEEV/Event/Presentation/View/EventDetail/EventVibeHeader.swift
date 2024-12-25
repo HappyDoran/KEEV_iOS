@@ -13,7 +13,13 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventVibeHeader: View {
-    let event: DetailEventUIO
+    private let event: DetailEventUIO
+    private let onCreate: ((VibeUIO) -> Void)?
+    
+    init(event: DetailEventUIO, onCreate: ((VibeUIO) -> Void)? = nil) {
+        self.event = event
+        self.onCreate = onCreate
+    }
     
     var body: some View {
         HStack(spacing: 0){
@@ -31,7 +37,7 @@ struct EventVibeHeader: View {
             }
             Spacer()
             NavigationLink {
-                VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: event), isNavigation: true)
+                VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: event), isNavigation: true, onCreate: onCreate)
             } label: {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.grayBG700)

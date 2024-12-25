@@ -135,6 +135,7 @@ class VibeService: VibeServiceProtocol {
         let router = VibeHTTPRequestRouter.getVibeWithVibeID(vibeID: vibeID)
         
         let data = try await networkUtility.request(router: router)
+        
         let vibeDTO = try jsonDecoder.decode(VibeDTO.self, from: data)
         let vibeUIO = VibeUIO(vibeDTO: vibeDTO, isMine: true)
         

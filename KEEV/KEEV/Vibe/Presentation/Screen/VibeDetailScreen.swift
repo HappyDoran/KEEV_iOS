@@ -19,6 +19,7 @@ struct VibeDetailScreen: View {
     @State private var replies: [ReplyUIO] = []
     
     private let onDelete: ((VibeUIO) -> Void)?
+    private let onUpdate: ((VibeUIO) -> Void)?
     
     @State private var errorForAlert: Error? = nil
     @State private var loadingForDelete: Bool = false
@@ -38,6 +39,7 @@ struct VibeDetailScreen: View {
         onDelete: ((VibeUIO) -> Void)? = nil
     ) {
         self.vibe = vibe
+        self.onUpdate = onUpdate
         self.onDelete = onDelete
     }
     
@@ -62,7 +64,7 @@ struct VibeDetailScreen: View {
             .scrollDismissesKeyboard(.immediately)
             .scrollIndicators(.hidden)
             .refreshable {
-                //바이브 아이디로 하나의 바이브를 가져 오는게 작동이 안됩니다. 나중에 수정이후에 fetchVibe를 추가하면 됩니다.
+                fetchVibe()
                 fetchReplies()
             }
             
@@ -125,12 +127,15 @@ struct VibeDetailScreen: View {
             ReportScreen(reportType: type)
         }
         .navigationDestination(isPresented: $navigateToModifyVibe) {
-            VibeModifyScreen(vibe: $vibe)
+            VibeModifyScreen(vibe: $vibe, onUpdate: onUpdate)
         }
         .navigationDestination(item: $navigateToUserProfile) { userID in
             ProfileScreen(userID: userID, isMyProfile: vibe.isMine, isNavigation: true)
         }
-        .onAppear(perform: fetchReplies)
+        .onAppear{
+            fetchVibe()
+            fetchReplies()
+        }
         .loading(for: loadingForDelete)
         .alertForError($errorForAlert)
     }
@@ -235,6 +240,7 @@ private extension VibeDetailScreen {
                 let reply = try await replyService.addReply(to: vibe.id, text: text)
                 replies.insert(reply, at: 0)
                 vibe.replyCount += 1
+                onUpdate?(vibe)
             } catch {
                 errorForAlert = error
                 print("댓글을 등록하는데 실패했습니다.")
@@ -261,6 +267,7 @@ private extension VibeDetailScreen {
                 try await replyService.deleteReply(reply.id)
                 replies.remove(at: reply.index)
                 vibe.replyCount -= 1
+                onUpdate?(vibe)
             } catch {
                 errorForAlert = error
                 print("댓글을 삭제하는데 실패했습니다.")

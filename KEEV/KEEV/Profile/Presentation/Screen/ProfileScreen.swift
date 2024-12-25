@@ -32,7 +32,7 @@ struct ProfileScreen: View {
     @State private var tapFeedback = false
     
     var body: some View {
-        ScrollView {
+        ScrollView(showsIndicators: false){
             ProfileTopView(
                 userProfile: userProfile,
                 isMyProfile: isMyProfile,

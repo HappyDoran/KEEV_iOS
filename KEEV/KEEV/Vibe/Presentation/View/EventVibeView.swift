@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventVibeView: View {
-    let eventID: String
+    let event: DetailEventUIO
     
     @Injected private var vibeService: any VibeServiceProtocol
     @State private var vibes: [VibeUIO] = []
@@ -21,11 +21,14 @@ struct EventVibeView: View {
     @State private var currentPage = 0
     private let pageSize = 50
     
-    init (eventID: String) {
-        self.eventID = eventID
+    init(event: DetailEventUIO) {
+        self.event = event
     }
     
     var body: some View {
+        EventVibeHeader(event: event, onCreate: {newVibe in
+            vibes.insert(newVibe, at: 0)
+        })
         switch eventVibesState {
         case .loading:
             vibeLoading
@@ -154,7 +157,9 @@ extension EventVibeView {
 }
 
 #Preview {
-    ScrollView(showsIndicators: false) {
-        EventVibeView(eventID: "efefweaff")
+    NavigationStack {
+        ScrollView(showsIndicators: false) {
+            EventVibeView(event: .dummy0)
+        }
     }
 }
