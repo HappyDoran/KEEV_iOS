@@ -51,7 +51,7 @@ struct VibeDTO: Decodable, Hashable, Identifiable {
         self.rating = try container.decode(Double.self, forKey: .rating)
         self.comment = try container.decodeIfPresent(String.self, forKey: .comment)
         self.imageURLs = try container.decode([String?].self, forKey: .imageURLs)
-        self.createdDate = dateString.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
+        self.createdDate = dateString.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS") ?? .now
         self.likeCount = try container.decode(Int.self, forKey: .likeCount)
         self.replyCount = try container.decode(Int.self, forKey: .replyCount)
     }
