@@ -60,7 +60,7 @@ class VibeService: VibeServiceProtocol {
         
         builder.append(name: "vibeData", content: .json(data: inputData))
         for index in 0..<images.count {
-            if let jpegData = images[index].jpegData(compressionQuality: 0.8) {
+            if let jpegData = images[index].jpegData(compressionQuality: 0.7) {
                 builder.append(
                     name: "vibeImages",
                     fileName: "\(eventID)_user1_\(index).jpeg",
@@ -100,7 +100,7 @@ class VibeService: VibeServiceProtocol {
         
         builder.append(name: "vibeData", content: .json(data: inputData))
         for index in 0..<images.count {
-            if let jpegData = images[index].jpegData(compressionQuality: 0.8) {
+            if let jpegData = images[index].jpegData(compressionQuality: 0.7) {
                 builder.append(
                     name: "vibeImages",
                     fileName: "user1_firstVibeImage\(index).jpeg",
