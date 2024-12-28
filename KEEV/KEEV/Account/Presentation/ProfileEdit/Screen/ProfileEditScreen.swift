@@ -33,13 +33,13 @@ struct ProfileEditScreen: View {
     @State private var backgroundImage: UIImage?
     @State private var profileImage: UIImage?
     
-    
     @State private var showProfileImageActionSheet = false
     @State private var showProfileImageSelectSheet = false
     @State private var showBackgroundActionSheet = false
     @State private var showBackgroundImageSelectSheet = false
+    @State private var profileModified = false
     @State private var showCloseAlert = false
-    @State private var disableButton = true
+    @State private var buttonDisabled = false
     
     @FocusState private var isFocused: Bool
     
@@ -52,17 +52,22 @@ struct ProfileEditScreen: View {
             )
             
             VStack {
-                ProfileEditTopView(showCloseAlert: $showCloseAlert, isFocused: $isFocused)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 8)
-                    .padding(.bottom, 36)
+                ProfileEditTopView(
+                    profileModified: $profileModified,
+                    showCloseAlert: $showCloseAlert,
+                    isFocused: $isFocused
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                .padding(.bottom, 36)
                 
                 ProfileEditCenterView(
                     nickname: $nickname,
                     profileImage: $profileImage,
                     description: $description,
                     showProfileImageActionSheet: $showProfileImageActionSheet,
-                    disableButton: $disableButton,
+                    profileModified: $profileModified,
+                    buttonDisabled: $buttonDisabled,
                     isFocused: $isFocused
                 )
                 .padding(.horizontal, 24)
@@ -73,7 +78,7 @@ struct ProfileEditScreen: View {
                     title: "수정 완료",
                     action: sendModifiedProfile,
                     style: .maxWidth,
-                    disabled: disableButton
+                    disabled: buttonDisabled ? buttonDisabled : !profileModified
                 )
                 .padding(.top, 12)
                 .padding(.horizontal, 16)
@@ -115,6 +120,9 @@ struct ProfileEditScreen: View {
         .fullScreenCover(isPresented: $showProfileImageSelectSheet) {
             ImageSelectView(image: $profileImage)
         }
+        .onChange(of: profileImage) {
+            profileModified = true
+        }
         .actionSheetForKEEV(
             isPresented: $showBackgroundActionSheet,
             defaults: .setBackgroundImage(
@@ -127,6 +135,9 @@ struct ProfileEditScreen: View {
                 }))
         .fullScreenCover(isPresented: $showBackgroundImageSelectSheet) {
             ImageSelectView(image: $backgroundImage)
+        }
+        .onChange(of: backgroundImage) {
+            profileModified = true
         }
         .customAlert(
             isPresented: $showCloseAlert,
