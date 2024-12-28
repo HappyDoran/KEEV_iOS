@@ -18,6 +18,9 @@ struct DetailUserUIO: Identifiable {
     /// 사용자의 ID
     let id: Int
     
+    /// 사용자의 이메일, 앱에 로그인 사람이 아닐 경우, 무조건 `nil`을 반환합니다.
+    let email: String?
+    
     /// 사용자의 닉네임
     let nickname: String
     
@@ -30,8 +33,9 @@ struct DetailUserUIO: Identifiable {
     /// 한 줄 소개
     let description: String?
     
-    init(id: Int, nickname: String, profileImageURL: URL?, backgroundImageURL: URL?, description: String?) {
+    init(id: Int, email: String? = nil, nickname: String, profileImageURL: URL?, backgroundImageURL: URL?, description: String?) {
         self.id = id
+        self.email = email
         self.nickname = nickname
         self.profileImageURL = profileImageURL
         self.backgroundImageURL = backgroundImageURL
@@ -40,10 +44,20 @@ struct DetailUserUIO: Identifiable {
     
     init(detailuserDTO user: DetailUserDTO) {
         id = user.id
+        email = nil
         nickname = user.nickname
         profileImageURL = URL(string :user.profileImageURL ?? "")
         backgroundImageURL = URL(string :user.backgroundImageURL ?? "")
         description = user.description
+    }
+    
+    init(account: AccountDTO) {
+        self.id = account.id
+        self.email = account.email
+        self.nickname = account.nickname ?? "닉네임이 없습니다."
+        self.profileImageURL = account.profileImageURL != nil ? URL(string: account.profileImageURL!) : nil
+        self.backgroundImageURL = account.backgroundImageURL != nil ? URL(string: account.backgroundImageURL!) : nil
+        self.description = account.description
     }
 }
 
