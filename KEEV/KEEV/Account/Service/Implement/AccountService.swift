@@ -82,14 +82,6 @@ final class AccountService: AccountServiceProtocol {
             )
         }
         
-        if let profileJpeg {
-            builder.append(
-                name: "backgroundImage",
-                fileName: "user\(account.id)-backgroundImage.jpeg",
-                content: .jpeg(data: profileJpeg)
-            )
-        }
-        
         if let backgroundJpeg {
             builder.append(
                 name: "backgroundImage",
