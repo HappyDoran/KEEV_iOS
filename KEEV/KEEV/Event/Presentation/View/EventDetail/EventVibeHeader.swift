@@ -23,18 +23,18 @@ struct EventVibeHeader: View {
     
     var body: some View {
         HStack(spacing: 0){
-            Button(action: {
-                // 정렬 기능을 보여주는 ActionSheet가 올라와야 합니다.
-            }){
-                HStack(spacing: 2){
-                    Image(systemName: "arrow.up.arrow.down")
-                        .font(.system(size: 12, weight: .semibold))
-                        .foregroundColor(.brand500)
-                    Text("최신순")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                        .foregroundColor(.gray500)
-                }
-            }
+//            Button(action: {
+//                // 정렬 기능을 보여주는 ActionSheet가 올라와야 합니다.
+//            }){
+//                HStack(spacing: 2){
+//                    Image(systemName: "arrow.up.arrow.down")
+//                        .font(.system(size: 12, weight: .semibold))
+//                        .foregroundColor(.brand500)
+//                    Text("최신순")
+//                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+//                        .foregroundColor(.gray500)
+//                }
+//            }
             Spacer()
             NavigationLink {
                 VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: event), isNavigation: true, onCreate: onCreate)
