@@ -29,13 +29,30 @@ struct EventVibeView: View {
         EventVibeHeader(event: event, onCreate: {newVibe in
             vibes.insert(newVibe, at: 0)
         })
-        switch eventVibesState {
-        case .loading:
-            vibeLoading
-        case .loaded:
-            vibeList
-        case .empty:
-            vibeNotExist
+        Group{
+            switch eventVibesState {
+            case .loading:
+                vibeLoading
+            case .loaded:
+                vibeList
+            case .empty:
+                vibeNotExist
+            }
+        }
+        .refreshable {
+            do {
+                vibes = try await vibeService.getPaginatedVibes(page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents.filter { $0.event.id == event.id }
+                
+                if vibes.isEmpty {
+                    eventVibesState = .empty
+                } else {
+                    eventVibesState = .loaded
+                }
+                
+                currentPage = 1
+            } catch {
+                print(error)
+            }
         }
     }
 }
@@ -135,21 +152,6 @@ extension EventVibeView {
                     } catch {
                         print(error)
                     }
-                }
-            }
-            .refreshable {
-                do {
-                    vibes = try await vibeService.getPaginatedVibes(page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents
-                    
-                    if vibes.isEmpty {
-                        eventVibesState = .empty
-                    } else {
-                        eventVibesState = .loaded
-                    }
-                    
-                    currentPage = 1
-                } catch(let replyError) {
-                    print(replyError)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
