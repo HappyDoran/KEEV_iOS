@@ -23,7 +23,8 @@ struct ProfileEditCenterView: View {
     @Binding var description: String
     
     @Binding var showProfileImageActionSheet: Bool
-    @Binding var disableButton: Bool
+    @Binding var profileModified: Bool
+    @Binding var buttonDisabled: Bool
     var isFocused: FocusState<Bool>.Binding
     
     @State private var errorMessage = ""
@@ -58,6 +59,7 @@ struct ProfileEditCenterView: View {
             .focused(isFocused)
             .onChange(of: nickname) {
                 validityTest(nickname)
+                profileModified = true
             }
             
             Text("한 줄 소개")
@@ -73,6 +75,9 @@ struct ProfileEditCenterView: View {
             )
             .submitLabel(.done)
             .focused(isFocused)
+            .onChange(of: description) {
+                profileModified = true
+            }
         }
     }
 }
@@ -82,10 +87,10 @@ extension ProfileEditCenterView {
         do {
             try service.isValidNickname(nickname)
             errorMessage = ""
-            disableButton = false
+            buttonDisabled = false
         } catch {
             errorMessage = error.localizedDescription
-            disableButton = true
+            buttonDisabled = true
         }
     }
 }
@@ -98,7 +103,8 @@ extension ProfileEditCenterView {
         profileImage: .constant(nil),
         description: .constant("dummy descriptionfefefefefe"),
         showProfileImageActionSheet: .constant(false),
-        disableButton: .constant(false),
+        profileModified: .constant(false),
+        buttonDisabled: .constant(false),
         isFocused: $isFocused
     )
 }

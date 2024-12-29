@@ -13,6 +13,9 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileEditTopView: View {
+    @Environment(\.dismiss) private var dismiss
+    
+    @Binding var profileModified: Bool
     @Binding var showCloseAlert: Bool
     var isFocused: FocusState<Bool>.Binding
     
@@ -20,7 +23,11 @@ struct ProfileEditTopView: View {
         HStack {
             Button {
                 isFocused.wrappedValue = false
-                showCloseAlert = true
+                if profileModified {
+                    showCloseAlert = true
+                } else {
+                    dismiss()
+                }
             } label: {
                 HStack {
                     Image(systemName: "xmark")
@@ -51,5 +58,5 @@ struct ProfileEditTopView: View {
 #Preview {
     @Previewable @FocusState var isFocused: Bool
     
-    ProfileEditTopView(showCloseAlert: .constant(false), isFocused: $isFocused)
+    ProfileEditTopView(profileModified: .constant(false), showCloseAlert: .constant(false), isFocused: $isFocused)
 }

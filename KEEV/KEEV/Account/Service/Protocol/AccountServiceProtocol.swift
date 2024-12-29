@@ -58,7 +58,7 @@ protocol AccountServiceProtocol: AnyObject {
         nickname: String,
         profileImage: UIImage?,
         backgroundImage: UIImage?,
-        description: String?
+        description: String
     ) async throws -> SignInStatus
     
     /// 회원가입 정보를 넣는 함수.
@@ -78,7 +78,7 @@ protocol AccountServiceProtocol: AnyObject {
         nickname: String,
         profileImage: UIImage?,
         backgroundImage: UIImage?,
-        description: String?
+        description: String
     ) async throws -> DetailUserUIO
     
     /// 이메일이 형식에 맞는지 검사하는 함수

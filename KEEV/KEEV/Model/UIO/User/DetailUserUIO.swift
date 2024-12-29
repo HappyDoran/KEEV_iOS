@@ -18,6 +18,9 @@ struct DetailUserUIO: Identifiable {
     /// 사용자의 ID
     let id: Int
     
+    /// 사용자의 이메일, 앱에 로그인 사람이 아닐 경우, 무조건 `nil`을 반환합니다.
+    let email: String?
+    
     /// 사용자의 닉네임
     let nickname: String
     
@@ -28,10 +31,11 @@ struct DetailUserUIO: Identifiable {
     let backgroundImageURL: URL?
     
     /// 한 줄 소개
-    let description: String?
+    let description: String
     
-    init(id: Int, nickname: String, profileImageURL: URL?, backgroundImageURL: URL?, description: String?) {
+    init(id: Int, email: String? = nil, nickname: String, profileImageURL: URL?, backgroundImageURL: URL?, description: String) {
         self.id = id
+        self.email = email
         self.nickname = nickname
         self.profileImageURL = profileImageURL
         self.backgroundImageURL = backgroundImageURL
@@ -40,25 +44,35 @@ struct DetailUserUIO: Identifiable {
     
     init(detailuserDTO user: DetailUserDTO) {
         id = user.id
+        email = nil
         nickname = user.nickname
         profileImageURL = URL(string :user.profileImageURL ?? "")
         backgroundImageURL = URL(string :user.backgroundImageURL ?? "")
         description = user.description
     }
+    
+    init(account: AccountDTO) {
+        self.id = account.id
+        self.email = account.email
+        self.nickname = account.nickname ?? "닉네임이 없습니다."
+        self.profileImageURL = account.profileImageURL.isEmpty ? nil : URL(string: account.profileImageURL)
+        self.backgroundImageURL = account.backgroundImageURL.isEmpty ? nil : URL(string: account.backgroundImageURL)
+        self.description = account.description
+    }
 }
 
 extension DetailUserUIO {
     /// 프사 배경화면 한 줄 소개가 없는 더미 사용자
-    static let dummy0 = DetailUserUIO(id: 1, nickname: "abcd", profileImageURL: nil, backgroundImageURL: nil, description: nil)
+    static let dummy0 = DetailUserUIO(id: 1, nickname: "abcd", profileImageURL: nil, backgroundImageURL: nil, description: "")
     
     /// 닉네임이 긴 더미 사용자
-    static let dummy1 = DetailUserUIO(id: 2, nickname: "김수한무 거북이와 두루미 삼천갑자 동방삭 치치카포 사리사리센타 워리워리 세브리깡 무두셀라 구름이 허리케인에 담벼락 담벼락에 서생원 서생원에 고양이 고양이엔 바둑이 바둑이는 돌돌이", profileImageURL: nil, backgroundImageURL: nil, description: nil)
+    static let dummy1 = DetailUserUIO(id: 2, nickname: "김수한무 거북이와 두루미 삼천갑자 동방삭 치치카포 사리사리센타 워리워리 세브리깡 무두셀라 구름이 허리케인에 담벼락 담벼락에 서생원 서생원에 고양이 고양이엔 바둑이 바둑이는 돌돌이", profileImageURL: nil, backgroundImageURL: nil, description: "")
     
     /// 한 줄 설명이 긴 더미 사용자
     static let dummy2 = DetailUserUIO(id: 3, nickname: "dummy0", profileImageURL: nil, backgroundImageURL: nil, description: "김수한무 거북이와 두루미 삼천갑자 동방삭 치치카포 사리사리센타 워리워리 세브리깡 무두셀라 구름이 허리케인에 담벼락 담벼락에 서생원 서생원에 고양이 고양이엔 바둑이 바둑이는 돌돌이")
     
     /// 프로필 사진이 있는 더미 사용자
-    static let dummy3 = DetailUserUIO(id: 4, nickname: "대상혁", profileImageURL: URL(string: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp"), backgroundImageURL: nil, description: nil)
+    static let dummy3 = DetailUserUIO(id: 4, nickname: "대상혁", profileImageURL: URL(string: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp"), backgroundImageURL: nil, description: "")
     
     /// 프사와 배경화면이 둘 다 있는 더미 사용자
     static let dummy4 = DetailUserUIO(id: 5, nickname: "대상혁", profileImageURL: URL(string: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp"), backgroundImageURL: URL(string: "https://image.kmib.co.kr/online_image/2024/1103/2024110311070142113_1730599621_0020687410.jpg"), description: "화이팅!")

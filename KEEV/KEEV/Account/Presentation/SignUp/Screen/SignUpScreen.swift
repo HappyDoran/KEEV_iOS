@@ -93,7 +93,7 @@ extension SignUpScreen {
             ) {
                 Task {
                     do {
-                        status = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: nil)
+                        status = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: "")
                     } catch {
                         print(error)
                     }
