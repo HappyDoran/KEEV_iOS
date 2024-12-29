@@ -11,11 +11,11 @@ struct AccountDTO: Decodable {
     let id: Int
     let nickname: String?
     let email: String?
-    let description: String?
-    let backgroundImageURL: String?
-    let profileImageURL: String?
+    let description: String
+    let backgroundImageURL: String
+    let profileImageURL: String
     let signUpDate: String?
     
-    let accessToken: String
+    let accessToken: String?
     let keevRefreshToken: String?
 }
