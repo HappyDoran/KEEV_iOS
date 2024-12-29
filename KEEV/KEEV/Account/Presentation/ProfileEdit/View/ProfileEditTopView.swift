@@ -32,7 +32,7 @@ struct ProfileEditTopView: View {
                 HStack {
                     Image(systemName: "xmark")
                         .imageScale(.large)
-                        .fontWeight(.semibold)
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(.gray100)
                     
                     Spacer()
