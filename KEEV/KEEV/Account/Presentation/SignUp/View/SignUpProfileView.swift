@@ -78,7 +78,7 @@ struct SignUpProfileView: View {
                 action: {
                     Task {
                         do {
-                            _ = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: nil)
+                            _ = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: "")
                             transitionDirection = .trailing
                             currentPage = .complete
                         } catch {

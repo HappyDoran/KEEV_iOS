@@ -18,10 +18,6 @@ struct AppEnvironment {
     /// KEEV의 현재 버전 정보를 담고 있는 프로퍼티입니다.
     static let version: String = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
     
-    /// KOPIS API Key입니다.
-    /// KOPIS_API_KEY에 대한 value는 Secret.xcconfig에 저장되어있습니다.
-    static let kopisApiKey = Bundle.main.infoDictionary?["KOPIS_API_KEY"] as? String ?? ""
-    
     /// 서버와 통신하는 keevBaseURL입니다.
     static let keevBaseURL: BaseURL = {
         guard let host = Bundle.main.infoDictionary?["KEEV_SERVER_ADDRESS"] as? String else {
@@ -37,7 +33,7 @@ struct AppEnvironment {
     /// - Author: newJunsung
     static func setupDependency() {
         // Service(서비스는 해당 구역에 작성해주시면 됩니다.)
-        diContainer.register(MockAccountService(), for: (any AccountServiceProtocol).self)
+        diContainer.register(AccountService(), for: (any AccountServiceProtocol).self)
         diContainer.register(EventService(), for: (any EventServiceProtocol).self)
         diContainer.register(SettingService(), for: (any SettingServiceProtocol).self)
         diContainer.register(ReplyService(), for: (any ReplyServiceProtocol).self)

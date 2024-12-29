@@ -12,6 +12,6 @@ struct DetailUserDTO: Decodable, Hashable, Identifiable {
     let nickname: String
     let profileImageURL: String?
     let backgroundImageURL: String?
-    let description: String?
+    let description: String
     let signupDate: Date
 }
