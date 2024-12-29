@@ -56,7 +56,7 @@ final class AccountService: AccountServiceProtocol {
         return isRegistered(from: fetchedAccount) ? .ok(user: user) : .created
     }
     
-    func signUp(email: String, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String?) async throws -> SignInStatus {
+    func signUp(email: String, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
         guard let account else {
             debugPrint("nono account")
             return .failed
@@ -95,8 +95,13 @@ final class AccountService: AccountServiceProtocol {
             return .failed
         }
         
+        guard let accessToken = account.accessToken else {
+            debugPrint("AccountService->signUp: fail to get accessToken")
+            return .failed
+        }
+        
         let router = AccountHTTPRequestRouter.signUp(
-            accessToken: account.accessToken,
+            accessToken: accessToken,
             boundary: boundary,
             multipartData: data
         )
@@ -105,7 +110,7 @@ final class AccountService: AccountServiceProtocol {
         return isRegistered(from: fetchedAccount) ? .ok(user: .init(account: fetchedAccount)) : .failed
     }
     
-    func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String?) async throws -> DetailUserUIO {
+    func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
         .dummy0
     }
     
