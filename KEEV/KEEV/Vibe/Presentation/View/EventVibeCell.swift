@@ -47,12 +47,14 @@ struct EventVibeCell: View {
             }
             
             if let comment = vibeData.comment {
-                Text(comment)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+                if !comment.isEmpty {
+                    Text(comment)
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+                }
             }
             
             HStack(spacing: 12) {
