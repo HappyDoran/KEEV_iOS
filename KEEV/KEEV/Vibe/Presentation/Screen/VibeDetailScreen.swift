@@ -69,6 +69,7 @@ struct VibeDetailScreen: View {
             }
             
             ReplyInputView(replyText: $replyText, sendHandler: addReply)
+            .frame(height: 46)
             .padding(.top, 16)
             .padding(.bottom, 16)
             .padding(.horizontal, 20)
