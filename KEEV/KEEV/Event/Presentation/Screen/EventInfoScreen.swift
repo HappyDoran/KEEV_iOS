@@ -33,6 +33,9 @@ enum SearchContent {
 /// - Author: Doran
 struct EventInfoScreen: View {
     @Injected private var eventService: any EventServiceProtocol
+    
+    @Binding var selectedItem: TabbedItem.RawValue
+    
     @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     @State private var error: String? = nil
     @State private var isLoading: Bool = false
@@ -51,7 +54,6 @@ struct EventInfoScreen: View {
     
     var body: some View {
         VStack {
-            MainHeader(selectedEvent: $selectedEvent)
             ScrollView(showsIndicators: false) {
                 EventCarouselView().padding(.top, 8)
                 themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
@@ -65,6 +67,28 @@ struct EventInfoScreen: View {
             loadEvents()
         }
         .backgroundForKEEV()
+        .toolbar {
+            if selectedItem == TabbedItem.info.rawValue {
+                ToolbarItem(placement: .topBarLeading) {
+                    Image("LogoImage")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 75, height: 32)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink {
+                        TotalSearchScreen()
+                    } label: {
+                        Image(systemName: "magnifyingglass")
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
+                            .font(.system(size: 20))
+                            .foregroundColor(Color.gray100)
+                            .imageScale(.medium)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -191,7 +215,7 @@ extension EventInfoScreen {
 
 #Preview {
     NavigationStack {
-        EventInfoScreen()
+        EventInfoScreen(selectedItem: .constant("info"))
             .backgroundForKEEV()
     }
 }

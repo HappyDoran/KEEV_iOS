@@ -57,7 +57,7 @@ struct EntryView: View {
     
     private var signInSuccessView: some View {
         TabView(selection: $selectedItem) {
-            EventInfoScreen()
+            EventInfoScreen(selectedItem: $selectedItem)
                 .tabItem {
                     TabbedItem.label(for: .info)
                 }
@@ -70,14 +70,15 @@ struct EntryView: View {
                 .tag(TabbedItem.write.rawValue)
             
             ProfileScreen(
+                selectedItem: $selectedItem,
                 userID: userID,
                 isMyProfile: userID == nil ? false : true,
                 isNavigation: false
             )
-                .tabItem {
-                    TabbedItem.label(for: .profile)
-                }
-                .tag(TabbedItem.profile.rawValue)
+            .tabItem {
+                TabbedItem.label(for: .profile)
+            }
+            .tag(TabbedItem.profile.rawValue)
         }
         .tint(.brand500)
         .sensoryFeedback(.impact, trigger: selectedItem)

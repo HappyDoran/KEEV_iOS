@@ -37,25 +37,6 @@ struct ProfileTopView: View {
             backgroundImageView
             
             VStack(spacing: 0) {
-                HStack {
-                    Spacer()
-                    
-                    if isMyProfile {
-                        NavigationLink {
-                            SettingScreen()
-                        } label: {
-                            Image(systemName: "gearshape.fill")
-                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
-                                .font(.system(size: 20))
-                                .foregroundStyle(.gray100)
-                                .padding(.vertical, 8)
-                                .frame(height: 48)
-                        }
-                        .tint(.gray100)
-                    }
-                }
-                .padding(.top, 54)
-                
                 Spacer()
                 
                 URLProfileImage(url: userProfile?.profileImageURL, size: 96, editable: false, strokeWidth: 3, strokeColor: .gray950)
@@ -70,7 +51,7 @@ struct ProfileTopView: View {
             }
             .padding(.horizontal, 16)
         }
-        .frame(height: 300)
+        .frame(height: 310)
         .backgroundForKEEV()
     }
 }
