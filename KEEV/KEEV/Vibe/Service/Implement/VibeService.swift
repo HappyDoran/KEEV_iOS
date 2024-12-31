@@ -15,6 +15,7 @@ import SwiftUI
 /// - Author: 라움
 class VibeService: VibeServiceProtocol {
     private let networkUtility: NetworkUtility = NetworkUtility()
+    private let tokenUitility = TokenUtility.shared
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     func getVibeCount(eventID: String) async throws -> Int {
@@ -50,7 +51,7 @@ class VibeService: VibeServiceProtocol {
     }
     
     func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         var builder = MultipartFormBuilder()
         
         let inputData = try JSONSerialization.data(withJSONObject: [
@@ -82,14 +83,14 @@ class VibeService: VibeServiceProtocol {
     }
     
     func deleteVibe(vibeID: Int) async throws {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = VibeHTTPRequestRouter.deleteVibe(token: accessToken, vibeID: vibeID)
         
         _ = try await networkUtility.request(router: router)
     }
     
     func modifyVibe(vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [UIImage]) async throws -> VibeUIO {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         var builder = MultipartFormBuilder()
         
         let inputData = try JSONSerialization.data(withJSONObject: [
@@ -122,7 +123,7 @@ class VibeService: VibeServiceProtocol {
     }
     
     func checkIfUserUploadedVibe(eventID: String) async throws -> Int {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = VibeHTTPRequestRouter.checkIfUserUploadedVibe(token: accessToken, eventID: eventID)
         
         let data = try await networkUtility.request(router: router)
@@ -144,15 +145,8 @@ class VibeService: VibeServiceProtocol {
 }
 
 extension VibeService {
-    private func getAccessToken() throws -> String {
-//        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
-//              let token = String(data: accessTokenData, encoding: .utf8) else {
-//            print("accessToken not found")
-//            throw TokenKeyChainError.NotFound
-//        }
-//        
-//        return token
-        ""
+    private func getAccessToken() async throws -> String {
+        await tokenUitility.fetchToken(for: .access)!
     }
 }
 
