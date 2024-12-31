@@ -4,8 +4,8 @@ import UIKit
 final class AccountService: AccountServiceProtocol {
     private static let refreshTokenTag = "keevRefreshToken"
     
-    private let keychain = TokenKeyChainUtility()
-    private let network = NetworkUtility()
+    private let networkUtil = NetworkUtility()
+    private let tokenUtil = TokenUtility.shared
     
     private let multipartBuilder = MultipartFormBuilder()
     private let decoder = JSONDecoder()
@@ -17,19 +17,20 @@ final class AccountService: AccountServiceProtocol {
             return isRegistered(from: account) ? .ok(user: .init(account: account)) : .created
         }
         
-        guard let tokenData = keychain.read(tokenTag: "keevRefreshToken") else {
+        guard let tokenData = KeyChain.read(tag: Self.refreshTokenTag) else {
             debugPrint("AccountService->autoSignIn: nono token")
             return .failed
         }
         
         guard let tokenString = String(data: tokenData, encoding: .utf8) else {
             debugPrint("AccountService->autoSignIn: token to String failed")
-            try? keychain.delete(tokenTag: "keevRefreshToken")
+            try? KeyChain.delete(tag: Self.refreshTokenTag)
             return .failed
         }
         
         do {
-            let fetchedAccount = try await getAccountDTO(from: .refreshAccessToken(refreshToken: tokenString))
+            let fetchedAccount = try await fetchAccountDTO(from: .refreshAccessToken(refreshToken: tokenString))
+            try await storeToken(fetchedAccount.accessToken, for: .access)
             return isRegistered(from: fetchedAccount) ? .ok(user: .init(account: fetchedAccount)) : .created
         } catch {
             debugPrint("AccountService->autoSignIn: \(error)")
@@ -38,17 +39,18 @@ final class AccountService: AccountServiceProtocol {
     }
     
     func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
-        let fetchedAccount = try await getAccountDTO(from: .signInWithApple(code: authorizationCode))
+        let fetchedAccount = try await fetchAccountDTO(from: .signInWithApple(code: authorizationCode))
         
         if isRegistered(from: fetchedAccount) {
             return .created
         }
         
         do {
-            try store(fetchedAccount.keevRefreshToken)
+            try await storeToken(fetchedAccount.accessToken, for: .access)
+            try await storeToken(fetchedAccount.keevRefreshToken, for: .refresh)
             debugPrint("Successfully stored refresh token!!!")
         } catch {
-            debugPrint(error)
+            debugPrint("AccountService->signInWithApple Error: \(error)")
         }
         
         let user = DetailUserUIO(account: fetchedAccount)
@@ -106,7 +108,7 @@ final class AccountService: AccountServiceProtocol {
             multipartData: data
         )
         
-        let fetchedAccount = try await getAccountDTO(from: router)
+        let fetchedAccount = try await fetchAccountDTO(from: router)
         return isRegistered(from: fetchedAccount) ? .ok(user: .init(account: fetchedAccount)) : .failed
     }
     
@@ -122,20 +124,20 @@ final class AccountService: AccountServiceProtocol {
         
     }
     
-    private func getAccountDTO(from router: AccountHTTPRequestRouter) async throws -> AccountDTO {
-        let data = try await network.request(router: router)
+    private func fetchAccountDTO(from router: AccountHTTPRequestRouter) async throws -> AccountDTO {
+        let data = try await networkUtil.request(router: router)
         let fetchedAccount = try decoder.decode(AccountDTO.self, from: data)
         account = fetchedAccount
         return fetchedAccount
     }
     
-    private func store(_ token: String?) throws {
-        if let token {
-            try keychain.create(token, tokenTag: Self.refreshTokenTag)
-        }
-    }
-    
     private func isRegistered(from account: AccountDTO) -> Bool {
         account.email != nil
+    }
+    
+    private func storeToken(_ token: String?, for type: TokenUtility.TokenType) async throws {
+        if let token {
+            try await tokenUtil.storeToken(token, for: type)
+        }
     }
 }
