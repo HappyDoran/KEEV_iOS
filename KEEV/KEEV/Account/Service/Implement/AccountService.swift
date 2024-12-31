@@ -4,8 +4,8 @@ import UIKit
 final class AccountService: AccountServiceProtocol {
     private static let refreshTokenTag = "keevRefreshToken"
     
-    private let networkUtil = NetworkUtility()
-    private let tokenUtil = TokenUtility.shared
+    private let networkUtility = NetworkUtility()
+    private let tokenUtility = TokenUtility.shared
     
     private let multipartBuilder = MultipartFormBuilder()
     private let decoder = JSONDecoder()
@@ -125,7 +125,7 @@ final class AccountService: AccountServiceProtocol {
     }
     
     private func fetchAccountDTO(from router: AccountHTTPRequestRouter) async throws -> AccountDTO {
-        let data = try await networkUtil.request(router: router)
+        let data = try await networkUtility.request(router: router)
         let fetchedAccount = try decoder.decode(AccountDTO.self, from: data)
         account = fetchedAccount
         return fetchedAccount
@@ -137,7 +137,7 @@ final class AccountService: AccountServiceProtocol {
     
     private func storeToken(_ token: String?, for type: TokenUtility.TokenType) async throws {
         if let token {
-            try await tokenUtil.storeToken(token, for: type)
+            try await tokenUtility.storeToken(token, for: type)
         }
     }
 }
