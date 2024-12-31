@@ -1,5 +1,5 @@
 //
-//  KeyChainUtility.swift
+//  KeyChain.swift
 //  KEEV
 //
 //  Created by Doran on 10/29/24.
@@ -20,7 +20,7 @@ import Security
 ///
 /// - Note: 해당 클래스는 shared 를 사용하여 싱글톤으로 구현되어 있습니다.
 /// - Author: Doran
-final class TokenKeyChainUtility {
+struct KeyChain {
     private static let applicationLabel = Bundle.main.bundleIdentifier ?? "com.HMHZ.KEEV"
     
     /// KeyChain에 데이터를 저장하는 함수
@@ -35,22 +35,22 @@ final class TokenKeyChainUtility {
     /// - Throws: 작업 실패 시 `KeyChainError`
     ///
     /// - Author: Doran
-    func create(_ token: String, tokenTag: String) throws {
-        guard let tokenData = token.data(using: .utf8) else {
-            throw TokenKeyChainError.invalidToken
+    static func create(_ string: String, tag: String) throws {
+        guard let data = string.data(using: .utf8) else {
+            throw KeyChainError.invalidToken
         }
         
         let query: [CFString: Any] = [
             kSecClass: kSecClassKey,
-            kSecAttrApplicationTag: tokenTag,
-            kSecAttrApplicationLabel: TokenKeyChainUtility.applicationLabel,
-            kSecValueData: tokenData
+            kSecAttrApplicationTag: tag,
+            kSecAttrApplicationLabel: KeyChain.applicationLabel,
+            kSecValueData: data
         ]
         
         SecItemDelete(query as CFDictionary)
         
         if SecItemAdd(query as CFDictionary, nil) != errSecSuccess {
-            throw TokenKeyChainError.AddFailed
+            throw KeyChainError.addFailed
         }
     }
     
@@ -62,11 +62,11 @@ final class TokenKeyChainUtility {
     /// - Returns: 저장된 데이터 (`Data?`타입). 데이터가 없거나 읽기에 실패한 경우 `nil`을 반환
     ///
     /// - Author: Doran
-    func read(tokenTag: String) -> Data? {
+    static func read(tag: String) -> Data? {
         let query: [CFString: Any] = [
             kSecClass: kSecClassKey,
-            kSecAttrApplicationTag: tokenTag,
-            kSecAttrApplicationLabel: TokenKeyChainUtility.applicationLabel,
+            kSecAttrApplicationTag: tag,
+            kSecAttrApplicationLabel: KeyChain.applicationLabel,
             kSecReturnData: kCFBooleanTrue!,
             kSecMatchLimit: kSecMatchLimitOne
         ]
@@ -88,15 +88,15 @@ final class TokenKeyChainUtility {
     /// - Throws: 삭제 실패 시 `KeyChainError`
     ///
     /// - Author: Doran
-    func delete(tokenTag: String) throws {
+    static func delete(tag: String) throws {
         let query: [CFString: Any] = [
             kSecClass: kSecClassKey,
-            kSecAttrApplicationTag: tokenTag,
-            kSecAttrApplicationLabel: TokenKeyChainUtility.applicationLabel,
+            kSecAttrApplicationTag: tag,
+            kSecAttrApplicationLabel: KeyChain.applicationLabel,
         ]
         
         if SecItemDelete(query as CFDictionary) != errSecSuccess {
-            throw TokenKeyChainError.DeleteFailed
+            throw KeyChainError.deleteFailed
         }
     }
 }
