@@ -52,6 +52,12 @@ struct ProfileEditTopView: View {
                 .frame(width: 58, height: 32)
                 .foregroundStyle(.clear)
         }
+        .background {
+            // 프로필 수정화면 상단 바 배경영역 터치가 되지 않도록 하기 위한 코드입니다.
+            Button(action: {}) {
+                Color.clear
+            }
+        }
     }
 }
 
