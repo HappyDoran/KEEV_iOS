@@ -122,6 +122,7 @@ struct VibeCreateScreen: View {
                 modified = false
             }
         }
+        .gesture(modified ? DragGesture() : nil)
         .fullScreenCover(isPresented: $isPresented) {
             SearchScreen(selectedEvent: $selectedEvent, searchContent: .vibe)
         }
