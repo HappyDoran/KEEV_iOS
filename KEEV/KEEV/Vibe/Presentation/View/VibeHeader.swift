@@ -17,12 +17,14 @@ import SwiftUI
 struct VibeHeader: View {
     private let selectedEvent: SimpleEventUIO?
     private let rating: Double
+    @Binding private var modified: Bool
     @Binding private var showExitAlert: Bool
     private let uploadHandler: (() -> Void)?
     
-    init(selectedEvent: SimpleEventUIO?, rating: Double, showExitAlert: Binding<Bool>, uploadHandler: (() -> Void)?) {
+    init(selectedEvent: SimpleEventUIO?, rating: Double, modified: Binding<Bool>, showExitAlert: Binding<Bool>, uploadHandler: (() -> Void)?) {
         self.selectedEvent = selectedEvent
         self.rating = rating
+        self._modified = modified
         self._showExitAlert = showExitAlert
         self.uploadHandler = uploadHandler
     }
@@ -37,7 +39,7 @@ struct VibeHeader: View {
             // MARK: 검색 시트 아래로 내리는 버튼
             HStack {
                 Button(action: {
-                    if selectedEvent != nil {
+                    if modified {
                         showExitAlert = true
                     } else {
                         dismiss()
@@ -48,8 +50,8 @@ struct VibeHeader: View {
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundColor(.gray100)
                 }
-                Spacer()
                 
+                Spacer()
                 
                 if selectedEvent != nil {
                     Button(action: {
@@ -68,7 +70,6 @@ struct VibeHeader: View {
                     }
                     .disabled(rating == 0)
                 }
-                
             }
             .frame(height: 48)
         }
@@ -76,13 +77,6 @@ struct VibeHeader: View {
 }
 
 #Preview {
-    VibeHeader(selectedEvent:
-            .dummy0,
-               rating: 0.0,
-               showExitAlert: .constant(false)
-    ) {
-        
-    }
-    .backgroundForKEEV()
+    VibeHeader(selectedEvent: .dummy0, rating: 0.0, modified: .constant(false), showExitAlert: .constant(false)) {}
+        .backgroundForKEEV()
 }
-

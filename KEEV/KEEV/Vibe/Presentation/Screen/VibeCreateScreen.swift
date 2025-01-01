@@ -31,6 +31,7 @@ struct VibeCreateScreen: View {
     private let onCreate: ((VibeUIO) -> Void)?
     
     @State private var comment: String = ""
+    @State private var modified = false
     @State private var showCancelAlert = false
     @State private var showExitAlert = false
     let isNavigation: Bool
@@ -47,7 +48,7 @@ struct VibeCreateScreen: View {
         VStack(spacing: 0) {
             // MARK: 헤더
             if !isNavigation {
-                VibeHeader(selectedEvent: selectedEvent, rating: rating, showExitAlert: $showExitAlert) {
+                VibeHeader(selectedEvent: selectedEvent, rating: rating, modified: $modified, showExitAlert: $showExitAlert) {
                     uploadVibe()
                 }
                 .padding(.horizontal, 16)
@@ -78,12 +79,11 @@ struct VibeCreateScreen: View {
                     .scrollDisabled(selectedEvent == nil)
                     .background(Color.grayBG800)
                 }
-            }
-            
-            else {
+            } else {
                 VStack(spacing : 0) {
                     EventSelectCell(isPresented: $isPresented)
                         .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
+                    
                     ScrollView {
                         ratingSection
                         
@@ -99,6 +99,27 @@ struct VibeCreateScreen: View {
                     .disabled(selectedEvent == nil)
                 }
                 .scrollDisabled(false)
+            }
+        }
+        .onChange(of: rating) {
+            if rating != 0 {
+                modified = true
+            } else if rating == 0 && selectedImages.isEmpty && comment.isEmpty {
+                modified = false
+            }
+        }
+        .onChange(of: selectedImages) {
+            if !selectedImages.isEmpty {
+                modified = true
+            } else if rating == 0 && selectedImages.isEmpty && comment.isEmpty {
+                modified = false
+            }
+        }
+        .onChange(of: comment) {
+            if !comment.isEmpty {
+                modified = true
+            } else if rating == 0 && selectedImages.isEmpty && comment.isEmpty {
+                modified = false
             }
         }
         .fullScreenCover(isPresented: $isPresented) {
@@ -126,7 +147,7 @@ struct VibeCreateScreen: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
-                    if selectedEvent != nil {
+                    if modified {
                         showExitAlert = true
                     } else {
                         dismiss()
