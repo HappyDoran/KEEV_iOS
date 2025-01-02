@@ -12,8 +12,12 @@ enum AccountHTTPRequestRouter {
     case signInWithApple(code: Data)
     /// AccessToken을 갱신할 때 사용하는 라우터
     case refreshAccessToken(refreshToken: String)
-    /// 이 앱을 처음 사용하는 사용자가 회원정보를 기입할 때 사용하는 라우터
-    case signUp(accessToken: String, boundary: String, multipartData: Data)
+    /// 사용자가 회원정보를 기입할 때 사용하는 라우터
+    case modifyAccount(accessToken: String, boundary: String, multipartData: Data)
+    /// 로그아웃 라우터
+    case signOut(accessToken: String)
+    /// 회원탈퇴 라우터
+    case deleteAccount(accessToken: String)
 }
 
 extension AccountHTTPRequestRouter: HTTPRequestable {
@@ -21,7 +25,9 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .signInWithApple: .post
         case .refreshAccessToken: .post
-        case .signUp: .post
+        case .modifyAccount: .post
+        case .signOut: .post
+        case .deleteAccount: .delete
         }
     }
     
@@ -29,10 +35,12 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .signInWithApple: ["Content-Type": "application/json"]
         case .refreshAccessToken(let token): ["Authorization": "Bearer \(token)"]
-        case .signUp(let token, let boundary, _): [
+        case .modifyAccount(let token, let boundary, _): [
             "Authorization": "Bearer \(token)",
             "Content-Type": "multipart/form-data; boundary=\(boundary)"
         ]
+        case .signOut(let token): ["Authorization": "Bearer \(token)"]
+        case .deleteAccount(let token): ["Authorization": "Bearer \(token)"]
         }
     }
     
@@ -41,7 +49,9 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
         case .signInWithApple(let code):
             try? JSONSerialization.data(withJSONObject: ["code": String(data: code, encoding: .utf8)!])
         case .refreshAccessToken: nil
-        case .signUp(_, _, let multipartData): multipartData
+        case .modifyAccount(_, _, let multipartData): multipartData
+        case .signOut: nil
+        case .deleteAccount: nil
         }
     }
     
@@ -53,7 +63,9 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .signInWithApple: ["auth", "signup", "apple"]
         case .refreshAccessToken: ["auth", "reissue"]
-        case .signUp: ["user", "register", "userinfo"]
+        case .modifyAccount: ["user", "register", "userinfo"]
+        case .signOut: ["auth", "signOut"]
+        case .deleteAccount: ["user", "delete"]
         }
     }
     
