@@ -69,6 +69,7 @@ struct VibeDetailScreen: View {
             }
             
             ReplyInputView(replyText: $replyText, sendHandler: addReply)
+            .frame(height: 46)
             .padding(.top, 16)
             .padding(.bottom, 16)
             .padding(.horizontal, 20)
@@ -130,7 +131,7 @@ struct VibeDetailScreen: View {
             VibeModifyScreen(vibe: $vibe, onUpdate: onUpdate)
         }
         .navigationDestination(item: $navigateToUserProfile) { userID in
-            ProfileScreen(userID: userID, isMyProfile: vibe.isMine, isNavigation: true)
+            ProfileScreen(selectedItem: .constant("profile"), userID: userID, isMyProfile: vibe.isMine, isNavigation: true)
         }
         .onAppear{
             fetchVibe()

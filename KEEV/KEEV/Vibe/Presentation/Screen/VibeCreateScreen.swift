@@ -31,6 +31,7 @@ struct VibeCreateScreen: View {
     private let onCreate: ((VibeUIO) -> Void)?
     
     @State private var comment: String = ""
+    @State private var modified = false
     @State private var showCancelAlert = false
     @State private var showExitAlert = false
     let isNavigation: Bool
@@ -47,10 +48,16 @@ struct VibeCreateScreen: View {
         VStack(spacing: 0) {
             // MARK: 헤더
             if !isNavigation {
-                VibeHeader(selectedEvent: selectedEvent, rating: rating, showExitAlert: $showExitAlert) {
+                VibeHeader(selectedEvent: selectedEvent, rating: rating, modified: $modified, showExitAlert: $showExitAlert) {
                     uploadVibe()
                 }
                 .padding(.horizontal, 16)
+            }
+            
+            if isNavigation && showExitAlert {
+                fakeNavigationBar
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 6)
             }
             
             if let event = selectedEvent {
@@ -78,12 +85,11 @@ struct VibeCreateScreen: View {
                     .scrollDisabled(selectedEvent == nil)
                     .background(Color.grayBG800)
                 }
-            }
-            
-            else {
+            } else {
                 VStack(spacing : 0) {
                     EventSelectCell(isPresented: $isPresented)
                         .padding(EdgeInsets(top: 16, leading: 16, bottom: 24, trailing: 16))
+                    
                     ScrollView {
                         ratingSection
                         
@@ -100,6 +106,31 @@ struct VibeCreateScreen: View {
                 }
                 .scrollDisabled(false)
             }
+        }
+        .onChange(of: rating) {
+            if rating != 0 {
+                modified = true
+            } else if rating == 0 && selectedImages.isEmpty && comment.isEmpty {
+                modified = false
+            }
+        }
+        .onChange(of: selectedImages) {
+            if !selectedImages.isEmpty {
+                modified = true
+            } else if rating == 0 && selectedImages.isEmpty && comment.isEmpty {
+                modified = false
+            }
+        }
+        .onChange(of: comment) {
+            if !comment.isEmpty {
+                modified = true
+            } else if rating == 0 && selectedImages.isEmpty && comment.isEmpty {
+                modified = false
+            }
+        }
+        .gesture(modified ? DragGesture() : nil)
+        .transaction { transaction in
+            transaction.animation = nil
         }
         .fullScreenCover(isPresented: $isPresented) {
             SearchScreen(selectedEvent: $selectedEvent, searchContent: .vibe)
@@ -123,10 +154,11 @@ struct VibeCreateScreen: View {
         .alertForError($errorForAlert)
         .navigationBarBackButtonHidden()
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(showExitAlert ? .hidden : .visible)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
-                    if selectedEvent != nil {
+                    if modified {
                         showExitAlert = true
                     } else {
                         dismiss()
@@ -165,21 +197,51 @@ struct VibeCreateScreen: View {
     }
 }
 
-extension VibeCreateScreen {
-    private var ratingSection: some View {
+private extension VibeCreateScreen {
+    var ratingSection: some View {
         VibeRatingCell(rating: $rating)
             .frame(maxWidth: .infinity)
     }
     
-    private var photoPickerSection: some View {
+    var photoPickerSection: some View {
         VibePhotoPickerCell(selectedItems: $selectedItems, selectedImages: $selectedImages, previousImages: .constant([]), maxSelectedCount: maxSelectedCount)
             .frame(maxWidth: .infinity)
     }
     
-    private var commentSection: some View {
+    var commentSection: some View {
         VibeCommentCell(comment: $comment, showCancelAlert: $showCancelAlert)
             .padding(.horizontal, 16)
             .padding(.bottom, 20)
+    }
+    
+    var fakeNavigationBar: some View {
+        ZStack {
+            Text("글쓰기")
+                .figmaFont(PretendardFont.title(style: .xs)).foregroundColor(.gray100)
+            
+            HStack {
+                Image(systemName: "chevron.backward")
+                    .imageScale(.large)
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundColor(.gray100)
+                
+                Spacer()
+                
+                if selectedEvent != nil {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color.brand500)
+                            .frame(width: 58, height: 32)
+                            .opacity(rating == 0 ? 0.2 : 1)
+                        
+                        Text("완료")
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium)))
+                            .foregroundColor(rating == 0 ? .gray700 : .brand50)
+                    }
+                }
+            }
+            .frame(height: 32)
+        }
     }
 }
 

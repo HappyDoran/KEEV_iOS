@@ -19,6 +19,7 @@ struct ProfileScreen: View {
     
     @Injected private var service: any ActivityServiceProtocol
     
+    @Binding var selectedItem: TabbedItem.RawValue
     let userID: Int?
     let isMyProfile: Bool
     let isNavigation: Bool
@@ -85,26 +86,43 @@ struct ProfileScreen: View {
             ]
         )
         .navigationBarBackButtonHidden()
-        .toolbar(isNavigation ? .visible : .hidden)
         .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.gray100)
+            if selectedItem == TabbedItem.profile.rawValue {
+                if isNavigation {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Image(systemName: "chevron.backward")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundColor(.gray100)
+                        }
+                    }
                 }
-            }
-            
-            if !isMyProfile {
                 
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showActionSheet = true
-                    } label: {
-                        Image(systemName: "ellipsis")
-                            .foregroundStyle(.gray100)
+                if isMyProfile {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink {
+                            SettingScreen()
+                        } label: {
+                            Image(systemName: "gearshape.fill")
+                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
+                                .font(.system(size: 20))
+                                .foregroundStyle(.gray100)
+                                .padding(.vertical, 8)
+                                .frame(height: 48)
+                                .imageScale(.medium)
+                        }
+                        .tint(.gray100)
+                    }
+                } else {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button {
+                            showActionSheet = true
+                        } label: {
+                            Image(systemName: "ellipsis")
+                                .foregroundStyle(.gray100)
+                        }
                     }
                 }
             }
@@ -143,6 +161,7 @@ enum VibeViewType {
 
 #Preview {
     NavigationStack {
-        ProfileScreen(userID: nil, isMyProfile: false, isNavigation: false).environmentObject(VibeManager())
+        ProfileScreen(selectedItem: .constant("profile"), userID: nil, isMyProfile: false, isNavigation: false)
+            .environmentObject(VibeManager())
     }
 }

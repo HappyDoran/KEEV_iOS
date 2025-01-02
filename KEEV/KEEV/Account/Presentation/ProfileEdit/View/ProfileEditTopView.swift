@@ -32,7 +32,7 @@ struct ProfileEditTopView: View {
                 HStack {
                     Image(systemName: "xmark")
                         .imageScale(.large)
-                        .fontWeight(.semibold)
+                        .font(.system(size: 17, weight: .semibold))
                         .foregroundStyle(.gray100)
                     
                     Spacer()
@@ -51,6 +51,12 @@ struct ProfileEditTopView: View {
             Rectangle()
                 .frame(width: 58, height: 32)
                 .foregroundStyle(.clear)
+        }
+        .background {
+            // 프로필 수정화면 상단 바 배경영역 터치가 되지 않도록 하기 위한 코드입니다.
+            Button(action: {}) {
+                Color.clear
+            }
         }
     }
 }

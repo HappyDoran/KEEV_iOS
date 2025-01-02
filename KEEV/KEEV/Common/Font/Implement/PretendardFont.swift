@@ -53,7 +53,7 @@ enum PretendardFont: FigmaFontable {
     var uiFont: UIFont {
         switch self {
         case .title(let style):
-            UIFont(name: "\(name)-Bold", size: style.fontSize)!
+            UIFont(name: "\(name)-\(style.fontWeight)", size: style.fontSize)!
         case .body(let style):
             UIFont(name: "\(name)-\(style.weight)", size: style.fontSize)!
         }
@@ -91,12 +91,25 @@ extension PretendardFont {
     ///
     /// `xl`, `lg`, `md`, `sm`, `xs`로 구성되어 있습니다.
     ///
+    /// - Font의 weight의 경우 아래와 같습니다.
+    /// ```swift
+    /// var fontWeight: String {
+    ///     switch self {
+    ///     case .xl: "ExtraBold"
+    ///     case .lg: "Bold"
+    ///     case .md: "Bold"
+    ///     case .sm: "SemiBold"
+    ///     case .xs: "Medium"
+    ///     }
+    /// }
+    /// ```
+    ///
     /// - Font의 size의 경우 아래와 같습니다.
     /// ```swift
     /// var size: CGFloat {
     ///     switch self {
     ///     case .xl: 34
-    ///     case .lg: 28
+    ///     case .lg: 24
     ///     case .md: 22
     ///     case .sm: 20
     ///     case .xs: 17
@@ -106,13 +119,13 @@ extension PretendardFont {
     ///
     /// - Font의 lineHeight의 경우 아래와 같습니다.
     /// ```swift
-    /// var size: CGFloat {
+    /// var lineHeight: CGFloat {
     ///     switch self {
-    ///     case .xl: 34
-    ///     case .lg: 28
-    ///     case .md: 22
-    ///     case .sm: 20
-    ///     case .xs: 17
+    ///     case .xl: 40
+    ///     case .lg: 30
+    ///     case .md: 24
+    ///     case .sm: 28
+    ///     case .xs: 22
     ///     }
     /// }
     /// ```
@@ -134,21 +147,31 @@ extension PretendardFont {
     ///
     /// - Author: newJunsung
     enum TitleStyle: LineHeightable, LetterSpaceable, FontSizeable {
-        /// size: 34, lineHeight: 40, letterSpace: 0
+        /// weight: ExtraBold, size: 34, lineHeight: 40, letterSpace: 0
         case xl
-        /// size: 28, lineHeight: 36, letterSpace: 0
+        /// weight: Bold, size: 24, lineHeight: 30, letterSpace: 0
         case lg
-        /// size: 22, lineHeight: 30, letterSpace: 0
+        /// weight: Bold, size: 22, lineHeight: 24, letterSpace: 0
         case md
-        /// size: 20, lineHeight: 28, letterSpace: 0
+        /// weight: SemiBold, size: 20, lineHeight: 28, letterSpace: 0
         case sm
-        /// size: 17, lineHeight: 22, letterSpace: 0
+        /// weight: Medium, size: 17, lineHeight: 22, letterSpace: 0
         case xs
+        
+        var fontWeight: String {
+            switch self {
+            case .xl: "ExtraBold"
+            case .lg: "Bold"
+            case .md: "Bold"
+            case .sm: "SemiBold"
+            case .xs: "Medium"
+            }
+        }
         
         var fontSize: CGFloat {
             switch self {
             case .xl: 34
-            case .lg: 28
+            case .lg: 24
             case .md: 22
             case .sm: 20
             case .xs: 17
@@ -158,8 +181,8 @@ extension PretendardFont {
         var lineHeight: CGFloat {
             switch self {
             case .xl: 40
-            case .lg: 36
-            case .md: 30
+            case .lg: 30
+            case .md: 24
             case .sm: 28
             case .xs: 22
             }
@@ -240,8 +263,6 @@ extension PretendardFont.BodyStyle {
         case xsmall3
         /// size: 10, lineHeight: 12, letterSpace: 0
         case xsmall4
-        
-        
         
         var fontSize: CGFloat {
             switch self {
