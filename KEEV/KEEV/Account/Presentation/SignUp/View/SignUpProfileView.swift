@@ -17,6 +17,8 @@ import SwiftUI
 struct SignUpProfileView: View {
     @Injected private var accountService: any AccountServiceProtocol
     
+    @Binding var result: SignInStatus
+    
     let email: String
     @Binding var nickname: String
     @Binding var profileImage: UIImage?
@@ -78,7 +80,7 @@ struct SignUpProfileView: View {
                 action: {
                     Task {
                         do {
-                            _ = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: "")
+                            result = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: "")
                             transitionDirection = .trailing
                             currentPage = .complete
                         } catch {
@@ -120,7 +122,7 @@ extension SignUpProfileView {
 
 #Preview {
     SignUpProfileView(
-        email: "hihi@fjefj.com", nickname: .constant("fefe"), profileImage: .constant(nil),
+        result: .constant(.created), email: "hihi@fjefj.com", nickname: .constant("fefe"), profileImage: .constant(nil),
         showActionSheet: .constant(false),
         currentPage: .constant(.profile),
         transitionDirection: .constant(.leading)
