@@ -23,6 +23,7 @@ struct SignUpScreen: View {
     
     @Binding var status: SignInStatus?
     
+    @State private var result = SignInStatus.created
     @State private var email: String = ""
     @State private var nickname: String = ""
     @State private var profileImage: UIImage?
@@ -78,6 +79,7 @@ extension SignUpScreen {
             )
         case .profile:
             SignUpProfileView(
+                result: $result,
                 email: email,
                 nickname: $nickname, profileImage: $profileImage,
                 showActionSheet: $showActionSheet,
@@ -91,13 +93,7 @@ extension SignUpScreen {
                 email: email,
                 currentPage: $currentPage
             ) {
-                Task {
-                    do {
-                        status = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: "")
-                    } catch {
-                        print(error)
-                    }
-                }
+                status = result
             }
         }
     }

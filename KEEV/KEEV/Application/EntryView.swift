@@ -53,6 +53,14 @@ struct EntryView: View {
             }
         }
         .tint(.gray100)
+        .onReceive(
+            NotificationCenter.Publisher
+                .signInStatusPublisher
+                .receive(on: DispatchQueue.main)
+        ) { status in
+            selectedItem = TabbedItem.info.rawValue
+            signInStatus = status
+        }
     }
     
     private var signInSuccessView: some View {

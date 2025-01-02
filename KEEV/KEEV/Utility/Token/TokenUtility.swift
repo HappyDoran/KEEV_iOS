@@ -81,6 +81,15 @@ actor TokenUtility {
         }
     }
     
+    func deleteToken(for type: TokenType) throws {
+        switch type {
+        case .access:
+            accessToken = nil
+        case .refresh:
+            try KeyChain.delete(tag: Self.refreshTokenTag)
+        }
+    }
+    
     private func fetchAccessToken() async throws -> String {
         if let accessToken = accessToken {
             return accessToken

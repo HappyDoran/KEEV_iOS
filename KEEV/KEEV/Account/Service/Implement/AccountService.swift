@@ -6,12 +6,11 @@ final class AccountService: AccountServiceProtocol {
     
     private let networkUtility = NetworkUtility()
     private let tokenUtility = TokenUtility.shared
-    
-    private let multipartBuilder = MultipartFormBuilder()
     private let decoder = JSONDecoder()
     
     private var account: AccountDTO?
     
+    // MARK: Default Functions
     func autoSignIn() async -> SignInStatus {
         if let account = account {
             return isRegistered(from: account) ? .ok(user: .init(account: account)) : .created
@@ -29,9 +28,9 @@ final class AccountService: AccountServiceProtocol {
         }
         
         do {
-            let fetchedAccount = try await fetchAccountDTO(from: .refreshAccessToken(refreshToken: tokenString))
+            let (code, fetchedAccount) = try await fetchAccountDTO(from: .refreshAccessToken(refreshToken: tokenString))
             try await storeToken(fetchedAccount.accessToken, for: .access)
-            return isRegistered(from: fetchedAccount) ? .ok(user: .init(account: fetchedAccount)) : .created
+            return determineStatus(from: fetchedAccount, with: code)
         } catch {
             debugPrint("AccountService->autoSignIn: \(error)")
             return .failed
@@ -39,11 +38,7 @@ final class AccountService: AccountServiceProtocol {
     }
     
     func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
-        let fetchedAccount = try await fetchAccountDTO(from: .signInWithApple(code: authorizationCode))
-        
-        if isRegistered(from: fetchedAccount) {
-            return .created
-        }
+        let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(code: authorizationCode))
         
         do {
             try await storeToken(fetchedAccount.accessToken, for: .access)
@@ -53,9 +48,7 @@ final class AccountService: AccountServiceProtocol {
             debugPrint("AccountService->signInWithApple Error: \(error)")
         }
         
-        let user = DetailUserUIO(account: fetchedAccount)
-        
-        return isRegistered(from: fetchedAccount) ? .ok(user: user) : .created
+        return determineStatus(from: fetchedAccount, with: code)
     }
     
     func signUp(email: String, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
@@ -64,71 +57,90 @@ final class AccountService: AccountServiceProtocol {
             return .failed
         }
         
-        let json = try JSONSerialization.data(withJSONObject: [
-            "email": email,
-            "nickName": nickname,
-        ])
+        let json = try buildUserDataJSON(email: email, nickname: nickname)
+        let (profileJPEG, backgroundJPEG) = convertToJPEG(profileImage: profileImage, backgroundImage: backgroundImage)
         
-        let profileJpeg = profileImage?.jpegData(compressionQuality: 0.3)
-        let backgroundJpeg = backgroundImage?.jpegData(compressionQuality: 0.5)
-        
-        var builder = MultipartFormBuilder()
-        
-        builder.append(name: "userData", content: .json(data: json))
-        
-        if let profileJpeg {
-            builder.append(
-                name: "profileImage",
-                fileName: "user\(account.id)-profileImage.jpeg",
-                content: .jpeg(data: profileJpeg)
-            )
-        }
-        
-        if let backgroundJpeg {
-            builder.append(
-                name: "backgroundImage",
-                fileName: "user\(account.id)-backgroundImage.jpeg",
-                content: .jpeg(data: backgroundJpeg)
-            )
-        }
-        
-        guard let (boundary, data) = builder.build() else {
-            debugPrint("AccountService->signUp: fail to build multipart")
+        guard let (boundary, data) = buildMultipartFormData(
+            id: account.id,
+            userJSON: json,
+            profileJPEG: profileJPEG,
+            backgroundJPEG: backgroundJPEG
+        ) else {
+            debugPrint("AccountService->signUp: fail to build multipartFormData")
             return .failed
         }
         
-        guard let accessToken = account.accessToken else {
-            debugPrint("AccountService->signUp: fail to get accessToken")
-            return .failed
-        }
+        let accessToken = try await tokenUtility.fetchToken(for: .access)
         
-        let router = AccountHTTPRequestRouter.signUp(
+        let router = AccountHTTPRequestRouter.modifyAccount(
             accessToken: accessToken,
             boundary: boundary,
             multipartData: data
         )
         
-        let fetchedAccount = try await fetchAccountDTO(from: router)
-        return isRegistered(from: fetchedAccount) ? .ok(user: .init(account: fetchedAccount)) : .failed
+        let (code, fetchedAccount) = try await fetchAccountDTO(from: router)
+        return determineStatus(from: fetchedAccount, with: code)
     }
     
     func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
-        .dummy0
+        guard let account, let email = account.email else {
+            throw AccountServiceError.unknownError(description: "이메일이 없습니다.")
+        }
+        
+        let result = try await signUp(
+            email: email,
+            nickname: nickname,
+            profileImage: profileImage,
+            backgroundImage: backgroundImage,
+            description: description
+        )
+        
+        if case .ok(let user) = result {
+            return user
+        } else {
+            throw AccountServiceError.unknownError(description: "알 수 없는 에러가 발생했습니다.")
+        }
     }
     
     func signOut() async throws {
-        
+        let token = try await tokenUtility.fetchToken(for: .access)
+        let router = AccountHTTPRequestRouter.signOut(accessToken: token)
+        let _ = try await networkUtility.request(router: router)
+        try await deleteAllTokens()
+        resetStatus()
     }
     
     func deleteAccount() async throws {
-        
+        let token = try await tokenUtility.fetchToken(for: .access)
+        let router = AccountHTTPRequestRouter.deleteAccount(accessToken: token)
+        let _ = try await networkUtility.request(router: router)
+        try await deleteAllTokens()
+        resetStatus()
     }
     
-    private func fetchAccountDTO(from router: AccountHTTPRequestRouter) async throws -> AccountDTO {
-        let data = try await networkUtility.request(router: router)
+    // MARK: Private Functions
+    private func determineStatus(from account: AccountDTO, with code: Int) -> SignInStatus {
+        if code == 200 {
+            let user = DetailUserUIO(account: account)
+            updateStatus(with: user)
+            return .ok(user: user)
+        } else if code == 201 {
+            return .created
+        } else {
+            return .failed
+        }
+    }
+    
+    private func fetchAccountDTO(from router: AccountHTTPRequestRouter) async throws -> (Int, AccountDTO) {
+        let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
+        debugPrint("code: \(code)")
+        debugPrint("Fetched account: \(String(data: data, encoding: .utf8)!)")
         let fetchedAccount = try decoder.decode(AccountDTO.self, from: data)
         account = fetchedAccount
-        return fetchedAccount
+        if code == 200 {
+            NotificationCenter.default.post(name: .init("sendDetailUserUIO"), object: DetailUserUIO(account: fetchedAccount))
+        }
+        return (code, fetchedAccount)
     }
     
     private func isRegistered(from account: AccountDTO) -> Bool {
@@ -139,5 +151,57 @@ final class AccountService: AccountServiceProtocol {
         if let token {
             try await tokenUtility.storeToken(token, for: type)
         }
+    }
+    
+    private func buildUserDataJSON(email: String, nickname: String) throws -> Data {
+        try JSONSerialization.data(withJSONObject: [
+            "email": email,
+            "nickname": nickname,
+        ])
+    }
+    
+    private func buildMultipartFormData(id: Int, userJSON: Data, profileJPEG: Data?, backgroundJPEG: Data?) -> (String, Data)? {
+        var builder = MultipartFormBuilder()
+        
+        builder.append(name: "userData", content: .json(data: userJSON))
+        
+        if let profileJPEG {
+            builder.append(
+                name: "profileImage",
+                fileName: "user\(id)-profileImage.jpeg",
+                content: .jpeg(data: profileJPEG)
+            )
+        }
+        
+        if let backgroundJPEG {
+            builder.append(
+                name: "backgroundImage",
+                fileName: "user\(id)-backgroundImage.jpeg",
+                content: .jpeg(data: backgroundJPEG)
+            )
+        }
+        
+        return builder.build()
+    }
+    
+    private func convertToJPEG(profileImage: UIImage?, backgroundImage: UIImage?) -> (Data?, Data?) {
+        let profileJPEG = profileImage?.jpegData(compressionQuality: 0.3)
+        let backgroundJPEG = backgroundImage?.jpegData(compressionQuality: 0.5)
+        
+        return (profileJPEG, backgroundJPEG)
+    }
+    
+    private func deleteAllTokens() async throws {
+        try await tokenUtility.deleteToken(for: .access)
+        try await tokenUtility.deleteToken(for: .refresh)
+    }
+    
+    private func resetStatus() {
+        NotificationCenter.default.post(name: .updateUserInfo, object: nil)
+        NotificationCenter.default.post(name: .updateSignInStatus, object: SignInStatus.failed)
+    }
+    
+    private func updateStatus(with user: DetailUserUIO) {
+        NotificationCenter.default.post(name: .updateUserInfo, object: user)
     }
 }

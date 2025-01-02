@@ -146,7 +146,7 @@ class VibeService: VibeServiceProtocol {
 
 extension VibeService {
     private func getAccessToken() async throws -> String {
-        await tokenUitility.fetchToken(for: .access)!
+        try await tokenUitility.fetchToken(for: .access)
     }
 }
 

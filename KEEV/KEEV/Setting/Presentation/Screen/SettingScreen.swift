@@ -34,7 +34,9 @@ import SwiftUI
 /// - Author: 라움
 struct SettingScreen: View {
     @Injected private var settingService: any SettingServiceProtocol
+    @Injected private var accountService: any AccountServiceProtocol
     
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) var openURL
     
     @State private var showTermsOfUse = false
@@ -111,9 +113,7 @@ struct SettingScreen: View {
             firstButtonAction: { },
             secondButtonText: "로그아웃",
             secondButtonStyle: .destructive,
-            secondButtonAction: {
-                // 로그아웃 기능 추가해야합니다.
-            }
+            secondButtonAction: signOut
         )
         .customAlert(
             isPresented: $showWithdrawAlert,
@@ -124,10 +124,32 @@ struct SettingScreen: View {
             firstButtonAction: { },
             secondButtonText: "회원탈퇴",
             secondButtonStyle: .normal,
-            secondButtonAction: {
-                // 회원탈퇴 기능 추가해야합니다.
-            }
+            secondButtonAction: deleteAccount
         )
+    }
+}
+
+extension SettingScreen {
+    private func signOut() {
+        Task {
+            do {
+                try await accountService.signOut()
+                dismiss()
+            } catch {
+                debugPrint(error)
+            }
+        }
+    }
+    
+    private func deleteAccount() {
+        Task {
+            do {
+                try await accountService.deleteAccount()
+                dismiss()
+            } catch {
+                debugPrint(error)
+            }
+        }
     }
 }
 
