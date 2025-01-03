@@ -119,5 +119,5 @@ private extension EntryView {
 }
 
 #Preview {
-    EntryView().environmentObject(VibeManager())
+    EntryView()
 }
