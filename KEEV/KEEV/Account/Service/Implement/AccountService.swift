@@ -138,7 +138,7 @@ final class AccountService: AccountServiceProtocol {
         let fetchedAccount = try decoder.decode(AccountDTO.self, from: data)
         account = fetchedAccount
         if code == 200 {
-            NotificationCenter.default.post(name: .init("sendDetailUserUIO"), object: DetailUserUIO(account: fetchedAccount))
+            NotificationCenter.default.post(name: .updateUserInfo, object: DetailUserUIO(account: fetchedAccount))
         }
         return (code, fetchedAccount)
     }
@@ -168,7 +168,7 @@ final class AccountService: AccountServiceProtocol {
         if let profileJPEG {
             builder.append(
                 name: "profileImage",
-                fileName: "user\(id)-profileImage.jpeg",
+                fileName: "user\(id)-\(UUID().uuidString)-profileImage.jpeg",
                 content: .jpeg(data: profileJPEG)
             )
         }
@@ -176,7 +176,7 @@ final class AccountService: AccountServiceProtocol {
         if let backgroundJPEG {
             builder.append(
                 name: "backgroundImage",
-                fileName: "user\(id)-backgroundImage.jpeg",
+                fileName: "user\(id)-\(UUID().uuidString)-backgroundImage.jpeg",
                 content: .jpeg(data: backgroundJPEG)
             )
         }
