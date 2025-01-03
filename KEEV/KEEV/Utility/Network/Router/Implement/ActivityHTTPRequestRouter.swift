@@ -25,11 +25,7 @@ extension ActivityHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .userInfo(let userID), .userVibeList(let userID):
-            let json: [String: Any] = [
-                "userId": userID,
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
+        case .userInfo, .userVibeList: nil
         }
     }
     
@@ -43,16 +39,10 @@ extension ActivityHTTPRequestRouter: HTTPRequestable {
     var headers: [String : String]? { nil }
     
     var path: [String]? {
-        var path = ["activity"]
-        
         switch self {
-        case .userInfo:
-            path.append("userInfo")
-        case .userVibeList:
-            path.append("userVibeList")
+        case .userInfo(let id): ["user", "activity", "\(id)"]
+        case .userVibeList(let id): ["vibe", "activity", "get", "\(id)"]
         }
-        
-        return path
     }
     
     var queryItems: [URLQueryItem]? { nil }
