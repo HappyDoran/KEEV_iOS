@@ -13,7 +13,6 @@ struct VibeModifyScreen: View {
     
     private let cache = UIImageCache.shared
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject private var vibeManager: VibeManager
     @Namespace private var recentPhoto
     
     @Binding private var vibe: VibeUIO
@@ -190,8 +189,6 @@ private extension VibeModifyScreen {
                 )
                 vibe = uploadedVibe
                 onUpdate?(uploadedVibe)
-                
-                try vibeManager.modifyVibe(vibeID: vibe.id, modifiedVibe: uploadedVibe)
                 dismiss()
             } catch {
                 errorForAlert = error
