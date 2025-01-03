@@ -31,9 +31,13 @@ struct ProfileScreen: View {
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
     @State private var tapFeedback = false
+    @State private var originOffset: CGFloat = 0
+    @State private var scrollOffset: CGFloat = 0
     
     var body: some View {
         ScrollView(showsIndicators: false){
+            scrollCheckView
+            
             ProfileTopView(
                 userProfile: userProfile,
                 isMyProfile: isMyProfile,
@@ -46,6 +50,9 @@ struct ProfileScreen: View {
             }
             
             ProfileVibeView(userID: userID, isMyProfile: isMyProfile, selectedVibeViewType: $selectedVibeViewType)
+        }
+        .onPreferenceChange(ScrollOffsetKey.self) {
+            scrollOffset = $0
         }
         .backgroundForKEEV()
         .ignoresSafeArea(edges: .top)
@@ -96,32 +103,40 @@ struct ProfileScreen: View {
                             Image(systemName: "chevron.backward")
                                 .font(.system(size: 17, weight: .semibold))
                                 .foregroundColor(.gray100)
+                                .padding(.top, 8)
+                                .padding(.bottom, 16)
                         }
                     }
                 }
                 
-                if isMyProfile {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink {
-                            SettingScreen()
-                        } label: {
-                            Image(systemName: "gearshape.fill")
-                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
-                                .font(.system(size: 20))
-                                .foregroundStyle(.gray100)
-                                .padding(.vertical, 8)
-                                .frame(height: 48)
-                                .imageScale(.medium)
+                if originOffset - scrollOffset < 100 {
+                    switch isMyProfile {
+                    case true:
+                        ToolbarItem(placement: .topBarTrailing) {
+                            NavigationLink {
+                                SettingScreen()
+                            } label: {
+                                Image(systemName: "gearshape.fill")
+                                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
+                                    .font(.system(size: 20))
+                                    .foregroundStyle(.gray100)
+                                    .frame(height: 48)
+                                    .imageScale(.medium)
+                                    .padding(.top, 8)
+                                    .padding(.bottom, 16)
+                            }
+                            .tint(.gray100)
                         }
-                        .tint(.gray100)
-                    }
-                } else {
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
-                            showActionSheet = true
-                        } label: {
-                            Image(systemName: "ellipsis")
-                                .foregroundStyle(.gray100)
+                    case false:
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                showActionSheet = true
+                            } label: {
+                                Image(systemName: "ellipsis")
+                                    .foregroundStyle(.gray100)
+                                    .padding(.top, 8)
+                                    .padding(.bottom, 16)
+                            }
                         }
                     }
                 }
@@ -130,8 +145,8 @@ struct ProfileScreen: View {
     }
 }
 
-extension ProfileScreen {
-    private var profileEditButton: some View {
+private extension ProfileScreen {
+    var profileEditButton: some View {
         Button {
             tapFeedback.toggle()
             showProfileEdit = true
@@ -146,6 +161,25 @@ extension ProfileScreen {
                 }
         }
         .padding(.top, 16)
+    }
+    
+    var scrollCheckView: some View {
+        GeometryReader { proxy in
+            let offsetY = proxy.frame(in: .global).origin.y
+            Color.clear
+                .preference(key: ScrollOffsetKey.self, value: offsetY)
+                .onAppear {
+                    originOffset = offsetY
+                }
+        }
+        .frame(height: 0)
+    }
+}
+
+private struct ScrollOffsetKey: PreferenceKey {
+    static var defaultValue: CGFloat = .zero
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value += nextValue()
     }
 }
 
