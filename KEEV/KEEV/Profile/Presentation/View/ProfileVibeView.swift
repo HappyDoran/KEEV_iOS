@@ -16,7 +16,6 @@ import SwiftUI
 /// - Author: 라움
 struct ProfileVibeView: View {
     @Injected private var service: any ActivityServiceProtocol
-    @EnvironmentObject private var vibeManager: VibeManager
     
     private let userID: Int?
     private let isMyProfile: Bool
@@ -62,24 +61,20 @@ struct ProfileVibeView: View {
             } else {
                 if userID != nil {
                     ProgressView()
-//                        .task {
-//                            do {
-//                                vibes = try await service.getUserVibeList(userID: userID)
-//                            } catch {
-//                                print("ProfileVibeView(.task) error: \(error)")
-//                            }
-//                        }
                 } else {
                     Text("회원가입을 하고 바이브를 남겨보세요!")
                 }
             }
         }
-        .onChange(of: vibeManager.vibes) {
-            vibes = vibeManager.vibes
-        }
         .onAppear {
-            if isMyProfile {
-                vibes = vibeManager.vibes
+            Task {
+                do {
+                    if let userID {
+                        vibes = try await service.getUserVibeList(userID: userID)
+                    }
+                } catch {
+                    print("ProfileVibeView(.task) error: \(error)")
+                }
             }
         }
         .padding(.top, 24)
@@ -109,7 +104,7 @@ private extension ProfileVibeView {
                 .foregroundStyle(.gray100)
                 .padding(.trailing, 8)
             
-            Text("\(vibeManager.vibesCount)")
+            Text("\(vibes?.count ?? 0)")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 .foregroundStyle(.brand500)
                 .padding(.trailing, 2)

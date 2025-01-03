@@ -162,6 +162,5 @@ enum VibeViewType {
 #Preview {
     NavigationStack {
         ProfileScreen(selectedItem: .constant("profile"), userID: nil, isMyProfile: false, isNavigation: false)
-            .environmentObject(VibeManager())
     }
 }
