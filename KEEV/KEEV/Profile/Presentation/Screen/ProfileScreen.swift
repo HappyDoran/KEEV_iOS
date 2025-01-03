@@ -96,6 +96,8 @@ struct ProfileScreen: View {
                             Image(systemName: "chevron.backward")
                                 .font(.system(size: 17, weight: .semibold))
                                 .foregroundColor(.gray100)
+                                .padding(.top, 8)
+                                .padding(.bottom, 16)
                         }
                     }
                 }
@@ -109,9 +111,10 @@ struct ProfileScreen: View {
                                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
                                 .font(.system(size: 20))
                                 .foregroundStyle(.gray100)
-                                .padding(.vertical, 8)
                                 .frame(height: 48)
                                 .imageScale(.medium)
+                                .padding(.top, 8)
+                                .padding(.bottom, 16)
                         }
                         .tint(.gray100)
                     }
@@ -122,6 +125,8 @@ struct ProfileScreen: View {
                         } label: {
                             Image(systemName: "ellipsis")
                                 .foregroundStyle(.gray100)
+                                .padding(.top, 8)
+                                .padding(.bottom, 16)
                         }
                     }
                 }

@@ -53,38 +53,48 @@ struct EventInfoScreen: View {
     private let pageSize = 4
     
     var body: some View {
-        VStack {
+        ScrollViewReader { proxy in
             ScrollView(showsIndicators: false) {
-                EventCarouselView().padding(.top, 8)
+                EventCarouselView().id(0)
                 themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
                 themeScrollSectionView(themeName: "성탄절엔 캐롤만 들어야 하나요?", events: christmasEvents, eventFilter: .christmasFilter)
                 themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter)
                 themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter)
             }
-        }
-        .padding(.bottom, 16)
-        .onAppear {
-            loadEvents()
-        }
-        .backgroundForKEEV()
-        .toolbar {
-            if selectedItem == TabbedItem.info.rawValue {
-                ToolbarItem(placement: .topBarLeading) {
-                    Image("LogoImage")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 75, height: 32)
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        TotalSearchScreen()
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                            .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
-                            .font(.system(size: 20))
-                            .foregroundColor(Color.gray100)
-                            .imageScale(.medium)
+            .padding(.bottom, 16)
+            .onAppear {
+                loadEvents()
+            }
+            .backgroundForKEEV()
+            .toolbar {
+                if selectedItem == TabbedItem.info.rawValue {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            withAnimation {
+                                proxy.scrollTo(0)
+                            }
+                        } label: {
+                            Image("LogoImage")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 75, height: 32)
+                                .padding(.top, 8)
+                                .padding(.bottom, 16)
+                        }
+                    }
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        NavigationLink {
+                            TotalSearchScreen()
+                        } label: {
+                            Image(systemName: "magnifyingglass")
+                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
+                                .font(.system(size: 20))
+                                .foregroundColor(Color.gray100)
+                                .imageScale(.medium)
+                                .padding(.top, 8)
+                                .padding(.bottom, 16)
+                        }
                     }
                 }
             }
