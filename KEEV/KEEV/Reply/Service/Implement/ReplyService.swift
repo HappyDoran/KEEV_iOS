@@ -5,16 +5,33 @@
 //  Created by Doran on 11/27/24.
 //
 
+import Combine
 import Foundation
 
 class ReplyService: ReplyServiceProtocol {
     private let networkUtility = NetworkUtility()
+    private let tokenUtility = TokenUtility.shared
     private var currentUser: DetailUserUIO?
     private let jsonDecoder: JSONDecoder = JSONDecoder()
+    
+    private var cancellables = Set<AnyCancellable>()
     
     /// 초기화 시 JSONDecoder를 주입받도록 변경
     init(currentUser: DetailUserUIO? = nil) {
         self.currentUser = currentUser
+        NotificationCenter.Publisher.userInfoPublisher
+            .sink { [weak self] user in
+                guard let self else { return }
+                self.currentUser = user
+            }
+            .store(in: &cancellables)
+    }
+    
+    deinit {
+        for cancellable in cancellables {
+            cancellable.cancel()
+        }
+        cancellables.removeAll()
     }
     
     /// 바이브에 대한 댓글을 가져오는 함수
@@ -31,7 +48,7 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Author: Doran
     func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
@@ -58,7 +75,7 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Author: Doran
     func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = ReplyHTTPRequestRouter.addReply(token: accessToken, vibeID: vibeID, text: text)
         
         let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
@@ -86,7 +103,7 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Author: Doran
     func modifyReply(_ reply: ReplyUIO, updatedText: String) async throws -> ReplyUIO {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = ReplyHTTPRequestRouter.modifyReply(
             token: accessToken,
             replyID: "\(reply.id)",
@@ -112,7 +129,7 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Author: Doran
     func deleteReply(_ replyID: Int) async throws {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = ReplyHTTPRequestRouter.deleteReply(token: accessToken, replyID: "\(replyID)")
         
         _ = try await networkUtility.requestWithStatusCode(router: router)
@@ -120,14 +137,7 @@ class ReplyService: ReplyServiceProtocol {
 }
 
 extension ReplyService {
-    private func getAccessToken() throws -> String {
-//        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
-//              let token = String(data: accessTokenData, encoding: .utf8) else {
-//            print("accessToken not found")
-//            throw TokenKeyChainError.NotFound
-//        }
-//        
-//        return token
-        ""
+    private func getAccessToken() async throws -> String {
+        try await tokenUtility.fetchToken(for: .access)
     }
 }

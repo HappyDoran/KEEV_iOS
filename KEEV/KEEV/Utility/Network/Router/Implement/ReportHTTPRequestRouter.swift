@@ -64,7 +64,7 @@ extension ReportHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .replyReport(let token, _, _, _), .vibeReport(let token, _, _, _), .userReport(let token, _, _), .eventReport(let token, _, _):
             return [
-//                "Authorization": "Bearer \(token)",
+                "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
         }
