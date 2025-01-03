@@ -14,14 +14,16 @@ import Foundation
 /// - Author: 라움
 class ReportService: ReportServiceProtocol {
     private let networkUtility = NetworkUtility()
+    private let tokenUtility = TokenUtility.shared
     private let jsonDecoder = JSONDecoder()
+    
     private struct ReportResponse: Decodable {
         let id: Int
         let message: String
     }
     
     func sendReplyReport(vibeID: Int, replyID: Int, reason: String) async throws -> String {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = ReportHTTPRequestRouter.replyReport(
             token: accessToken,
             vibeID: vibeID,
@@ -36,7 +38,7 @@ class ReportService: ReportServiceProtocol {
     }
     
     func sendVibeReport(eventID: String, vibeID: Int, reason: String) async throws -> String {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = ReportHTTPRequestRouter.vibeReport(
             token: accessToken,
             eventID: eventID,
@@ -51,7 +53,7 @@ class ReportService: ReportServiceProtocol {
     }
     
     func sendUserReport(userID: Int, reason: String) async throws -> String {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = ReportHTTPRequestRouter.userReport(
             token: accessToken,
             userID: userID,
@@ -65,7 +67,7 @@ class ReportService: ReportServiceProtocol {
     }
     
     func sendEventReport(eventID: String, reason: String) async throws -> String {
-        let accessToken = try getAccessToken()
+        let accessToken = try await getAccessToken()
         let router = ReportHTTPRequestRouter.eventReport(
             token: accessToken,
             eventID: eventID,
@@ -80,15 +82,8 @@ class ReportService: ReportServiceProtocol {
 }
 
 extension ReportService {
-    private func getAccessToken() throws -> String {
-//        guard let accessTokenData = TokenKeyChainUtility().read(tokenTag: "accessToken"),
-//              let token = String(data: accessTokenData, encoding: .utf8) else {
-//            print("accessToken not found")
-//            throw TokenKeyChainError.NotFound
-//        }
-//        
-//        return token
-        ""
+    private func getAccessToken() async throws -> String {
+        try await tokenUtility.fetchToken(for: .access)
     }
 }
 
