@@ -40,12 +40,9 @@ struct ProfileVibeListCell: View {
             
             Divider()
                 .padding(.vertical, 16)
-            NavigationLink {
-                LazyView(VibeDetailScreen(vibe: vibe))
-            } label: {
-                vibeArea
-            }
-            .padding(.bottom, 16)
+            
+            vibeArea
+                .padding(.bottom, 16)
         }
         .background {
             RoundedRectangle(cornerRadius: 20)
@@ -170,6 +167,12 @@ private extension ProfileVibeListCell {
 }
 
 #Preview {
-    ProfileVibeListCell(vibe: .dummy0)
-
+    NavigationStack {
+        NavigationLink {
+            LazyView(VibeDetailScreen(vibe: .dummy0))
+        } label: {
+            ProfileVibeListCell(vibe: .dummy0)
+        }
+    }
+    
 }

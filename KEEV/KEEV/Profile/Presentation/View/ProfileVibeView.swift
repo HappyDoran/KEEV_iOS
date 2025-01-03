@@ -43,7 +43,11 @@ struct ProfileVibeView: View {
                 case .list:
                     LazyVStack(spacing: 20) {
                         ForEach(vibes) { vibe in
-                            ProfileVibeListCell(vibe: vibe)
+                            NavigationLink {
+                                LazyView(VibeDetailScreen(vibe: vibe))
+                            } label: {
+                                ProfileVibeListCell(vibe: vibe)
+                            }
                         }
                     }
                 case .table:
@@ -139,5 +143,5 @@ private extension ProfileVibeView {
 }
 
 #Preview {
-    ProfileVibeView(userID: 1, isMyProfile: true, selectedVibeViewType: .constant(.table))
+    ProfileVibeView(userID: 1, isMyProfile: true, selectedVibeViewType: .constant(.list))
 }
