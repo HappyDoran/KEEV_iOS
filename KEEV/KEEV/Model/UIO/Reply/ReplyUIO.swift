@@ -69,7 +69,7 @@ struct ReplyUIO: Identifiable, Hashable {
     init(reply: ReplyDTO, currentUserID: Int?) {
         self.id = reply.id
         self.userID = reply.user.id
-        self.userNickname = reply.user.nickname
+        self.userNickname = reply.user.nickname ?? "닉네임 없음"
         if let userProfileURL = reply.user.profileImageURL {
             self.userProfileImageURL = URL(string: userProfileURL)
         } else {

@@ -50,7 +50,7 @@ struct VibeUIO: Identifiable, Hashable {
     init(vibeDTO vibe: VibeDTO, isMine: Bool) {
         self.id = vibe.id
         self.userID = vibe.user.id
-        self.userNickname = vibe.user.nickname
+        self.userNickname = vibe.user.nickname ?? "닉네임 없음"
         if let profileImageURL = vibe.user.profileImageURL {
             self.userProfileImageURL = URL(string: profileImageURL)
         } else {
