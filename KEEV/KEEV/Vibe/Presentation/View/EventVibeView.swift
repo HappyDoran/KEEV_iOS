@@ -42,7 +42,7 @@ struct EventVibeView: View {
         }
         .refreshable {
             do {
-                vibes = try await vibeService.getPaginatedVibes(page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents.filter { $0.event.id == event.id }
+                vibes = try await vibeService.getPaginatedVibes(from: event.id, page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents.filter { $0.event.id == event.id }
                 
                 if vibes.isEmpty {
                     eventVibesState = .empty
@@ -89,6 +89,7 @@ extension EventVibeView {
                         Task {
                             do {
                                 let newVibes = try await vibeService.getPaginatedVibes(
+                                    from: event.id,
                                     page: currentPage,
                                     size: pageSize,
                                     sort: [(SortCase.createdDate, SortPattern.ascending)]
@@ -134,12 +135,12 @@ extension EventVibeView {
             .onAppear {
                 Task {
                     do {
-                        let allVibes = try await vibeService.getPaginatedVibes(
+                        vibes = try await vibeService.getPaginatedVibes(
+                            from: event.id,
                             page: currentPage,
                             size: pageSize,
                             sort: [(SortCase.createdDate, SortPattern.descending)]
                         ).contents
-                        vibes = allVibes.filter { $0.event.id == event.id }
                         
                         if vibes.isEmpty {
                             eventVibesState = .empty
