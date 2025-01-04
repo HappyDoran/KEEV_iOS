@@ -31,7 +31,7 @@ private extension VibeContentView {
             }
             
             if let comment = vibe.comment {
-                Text(comment)
+                Text(comment.splitWords())
             }
             
             dateText
