@@ -40,7 +40,10 @@ struct ImageSelectView: View {
     @Binding var image: UIImage?
     
     var body: some View {
-        PhotosPicker("이미지 선택", selection: $selectedItem, photoLibrary: .shared())
+        PhotosPicker("이미지 선택",
+                     selection: $selectedItem,
+                     matching: .images,
+                     photoLibrary: PHPhotoLibrary.shared())
             .photosPickerStyle(.inline)
             .tint(.brand500)
             .onChange(of: selectedItem) {
@@ -51,8 +54,8 @@ struct ImageSelectView: View {
 
 extension ImageSelectView {
     private func handleSelectedPhoto() {
+        image = nil
         Task {
-            image = nil
             do {
                 if let data = try await selectedItem?.loadTransferable(type: Data.self), let uiImage = UIImage(data: data) {
                     self.image = uiImage
