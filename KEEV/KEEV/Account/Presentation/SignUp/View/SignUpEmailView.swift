@@ -68,6 +68,7 @@ struct SignUpEmailView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 42)
         }
+        .onAppear{validityTest(email)}
     }
 }
 
