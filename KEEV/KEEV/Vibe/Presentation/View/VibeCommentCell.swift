@@ -19,13 +19,11 @@ struct VibeCommentCell: View {
     @Binding private var comment: String
     @Binding private var showCancelAlert: Bool
     @State private var typedComment = ""
-    
     init(comment: Binding<String>, showCancelAlert: Binding<Bool>) {
         self._comment = comment
         self._showCancelAlert = showCancelAlert
         self.typedComment = comment.wrappedValue
     }
-    
     var body: some View {
         VStack(spacing: 0){
             // MARK: 헤더
@@ -57,7 +55,6 @@ extension VibeCommentCell {
             Spacer()
         }
     }
-    
     private var commentBody: some View {
         Text(comment.isEmpty ? "공연의 감상을 자유롭게 작성해주세요." : comment)
             .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))

@@ -27,6 +27,9 @@ struct EventVibeView: View {
     
     var body: some View {
         EventVibeHeader(event: event, onCreate: {newVibe in
+            if(vibes.count == 0) {
+                eventVibesState = .loaded
+            }
             vibes.insert(newVibe, at: 0)
         })
         
@@ -77,6 +80,9 @@ extension EventVibeView {
                     LazyView(VibeDetailScreen(vibe: vibes[index]) { vibe in
                         self.vibes[index] = vibe
                     } onDelete: { _ in
+                        if(vibes.count == 1) {
+                            eventVibesState = .empty
+                        }
                         self.vibes.remove(at: index)
                     })
                 } label: {
