@@ -50,6 +50,28 @@ class VibeService: VibeServiceProtocol {
         return paginatedResponse
     }
     
+    func getPaginatedVibes(from eventID: String, page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<VibeUIO> {
+        let sortCases: [SortCase] = sort.map { $0.0 }
+        let sortPatterns: [SortPattern] = sort.map { $0.1 }
+        
+        let router = VibeHTTPRequestRouter.getVibesFromEventID(id: eventID, page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<VibeDTO>.self, from: data)
+        
+        let contents = paginatedResponseDTO.contents.map { VibeUIO(vibeDTO: $0, isMine: true) }
+        
+        let paginatedResponse = PaginatedResponse<VibeUIO>(
+            totalPages: paginatedResponseDTO.totalPages,
+            currentPage: paginatedResponseDTO.currentPage,
+            totalElements: paginatedResponseDTO.totalElements,
+            contents: contents
+        )
+        
+        return paginatedResponse
+    }
+    
     func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
         let accessToken = try await getAccessToken()
         var builder = MultipartFormBuilder()
@@ -64,7 +86,7 @@ class VibeService: VibeServiceProtocol {
             if let jpegData = images[index].jpegData(compressionQuality: 0.7) {
                 builder.append(
                     name: "vibeImages",
-                    fileName: "\(eventID)_user1_\(index).jpeg",
+                    fileName: "\(eventID)_\(UUID().uuidString)_\(index).jpeg",
                     content: .jpeg(data: jpegData)
                 )
             } else {

@@ -42,6 +42,22 @@ protocol VibeServiceProtocol: AnyObject {
     /// - Author: 라움
     func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO>
     
+    /// 특정 이벤트에 해당하는 바이브 목록을 가져오는 함수
+    ///
+    /// - Parameters:
+    ///   - eventID: 특정 이벤트의 ID
+    ///   - page: 가져오고자하는 페이지의 번호
+    ///   - size: 한 페이지에 넣을 바이브의 갯수
+    ///   - sort: 바이브 정렬 기준
+    ///
+    /// 페이지네이션이 적용된 특정 이벤트의 바이브 목록을 가져오는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 페이지네이션이 적용된 바이브 목록
+    ///
+    /// - Author: newJunsung
+    func getPaginatedVibes(from eventID: String, page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO>
+    
     /// 특정 이벤트에 바이브를 등록하는 함수
     ///
     /// - Parameters:

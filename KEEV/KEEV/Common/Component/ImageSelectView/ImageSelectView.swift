@@ -40,7 +40,7 @@ struct ImageSelectView: View {
     @Binding var image: UIImage?
     
     var body: some View {
-        PhotosPicker("이미지 선택", selection: $selectedItem, photoLibrary: .shared())
+        PhotosPicker("이미지 선택", selection: $selectedItem, matching: .images, photoLibrary: .shared())
             .photosPickerStyle(.inline)
             .tint(.brand500)
             .onChange(of: selectedItem) {
