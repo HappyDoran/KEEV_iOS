@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 /// 프로필 수정 화면
 ///
@@ -151,6 +152,13 @@ struct ProfileEditScreen: View {
             secondButtonStyle: .active,
             secondButtonAction: sendModifiedProfile
         )
+        .analyticsScreen(
+            name: AnalyticsEventScreenView,
+            extraParameters: [
+                AnalyticsParameterScreenName: "\(type(of: self))",
+                AnalyticsParameterScreenClass: "\(type(of: self))"
+            ]
+        )
     }
 }
 
@@ -167,7 +175,12 @@ private extension ProfileEditScreen {
                 profileEditedToast = Toast(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)
                 dismiss()
             } catch {
-                print("ProfileEditScreen-sendModifiedProfile: \(error)")
+                Analytics.logEvent(
+                    "Failed_to_update_profile",
+                    parameters: [
+                        "error": error.localizedDescription as NSObject
+                    ]
+                )
             }
         }
     }

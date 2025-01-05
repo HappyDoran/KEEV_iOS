@@ -56,7 +56,7 @@ private extension ReplyListCell {
             .padding(.vertical, 8.5)
             
             Spacer()
-            Text("\(reply.createdBefore)일 전")
+            Text(reply.createdBefore)
                 .figmaFont(PretendardFont.body(
                     style: .init(bodySize: .xsmall, bodyWeight: .medium)
                 ))

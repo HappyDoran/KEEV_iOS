@@ -9,6 +9,6 @@ import Foundation
 
 struct SimpleUserDTO: Decodable, Hashable, Identifiable {
     let id: Int
-    let nickname: String
+    let nickname: String?
     let profileImageURL: String?
 }

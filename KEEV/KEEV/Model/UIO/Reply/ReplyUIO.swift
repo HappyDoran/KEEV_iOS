@@ -39,7 +39,7 @@ struct ReplyUIO: Identifiable, Hashable {
     let createdDate: Date
     
     /// 댓글이 오늘로부터 며칠전에 생성됐는지 나타내는 정수
-    var createdBefore: Int { Int(Date().timeIntervalSince(createdDate) / TimeUnit.days(of: 1).toSeconds) }
+    var createdBefore: String
     
     let isMine: Bool
     
@@ -63,12 +63,13 @@ struct ReplyUIO: Identifiable, Hashable {
         self.likeCount = likeCount
         self.createdDate = createdDate
         self.isMine = isMine
+        self.createdBefore = TimeUnit.subtractDate(.now, with: createdDate).description + " 전"
     }
     
     init(reply: ReplyDTO, currentUserID: Int?) {
         self.id = reply.id
         self.userID = reply.user.id
-        self.userNickname = reply.user.nickname
+        self.userNickname = reply.user.nickname ?? "닉네임 없음"
         if let userProfileURL = reply.user.profileImageURL {
             self.userProfileImageURL = URL(string: userProfileURL)
         } else {
@@ -80,6 +81,7 @@ struct ReplyUIO: Identifiable, Hashable {
         self.likeCount = reply.likeCount
         self.createdDate = reply.createdDate ?? .now
         self.isMine = (currentUserID != nil && reply.user.id == currentUserID)
+        self.createdBefore = TimeUnit.subtractDate(.now, with: createdDate).description + " 전"
     }
 }
 

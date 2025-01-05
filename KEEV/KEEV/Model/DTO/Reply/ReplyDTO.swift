@@ -42,6 +42,6 @@ struct ReplyDTO: Decodable, Hashable, Identifiable {
         self.text = try container.decode(String.self, forKey: .text)
         self.isLiked = try container.decode(Bool.self, forKey: .isLiked)
         self.likeCount = try container.decode(Int.self, forKey: .likeCount)
-        self.createdDate = tempCreatedDate.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
+        self.createdDate = tempCreatedDate.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS") ?? .now
     }
 }
