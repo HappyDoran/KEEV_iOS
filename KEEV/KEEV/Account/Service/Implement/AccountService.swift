@@ -57,7 +57,7 @@ final class AccountService: AccountServiceProtocol {
             return .failed
         }
         
-        let json = try buildUserDataJSON(email: email, nickname: nickname)
+        let json = try buildUserDataJSON(email: email, nickname: nickname, description: description)
         let (profileJPEG, backgroundJPEG) = convertToJPEG(profileImage: profileImage, backgroundImage: backgroundImage)
         
         guard let (boundary, data) = buildMultipartFormData(
@@ -162,11 +162,19 @@ final class AccountService: AccountServiceProtocol {
         }
     }
     
-    private func buildUserDataJSON(email: String, nickname: String) throws -> Data {
-        try JSONSerialization.data(withJSONObject: [
-            "email": email,
-            "nickname": nickname,
-        ])
+    private func buildUserDataJSON(email: String, nickname: String, description: String) throws -> Data {
+        if !description.isEmpty {
+            return try JSONSerialization.data(withJSONObject: [
+                "email": email,
+                "nickname": nickname,
+                "description": description
+            ])
+        } else {
+            return try JSONSerialization.data(withJSONObject: [
+                "email": email,
+                "nickname": nickname,
+            ])
+        }
     }
     
     private func buildMultipartFormData(id: Int, userJSON: Data, profileJPEG: Data?, backgroundJPEG: Data?) -> (String, Data)? {
