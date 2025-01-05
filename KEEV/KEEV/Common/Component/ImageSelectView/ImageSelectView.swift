@@ -51,8 +51,8 @@ struct ImageSelectView: View {
 
 extension ImageSelectView {
     private func handleSelectedPhoto() {
+        image = nil
         Task {
-            image = nil
             do {
                 if let data = try await selectedItem?.loadTransferable(type: Data.self), let uiImage = UIImage(data: data) {
                     self.image = uiImage
