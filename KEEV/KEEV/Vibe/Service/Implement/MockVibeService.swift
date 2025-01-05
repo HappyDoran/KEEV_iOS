@@ -49,6 +49,30 @@ class MockVibeService: VibeServiceProtocol {
         }
     }
     
+    func getPaginatedVibes(from eventID: String, page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO> {
+        var vibeList: [VibeUIO] = []
+        let startIndex = page*size
+        
+        for index in startIndex..<startIndex + size {
+            vibeList.append(
+                .init(
+                    id: index,
+                    user: SimpleUserUIO(id: index, nickname: "더미닉네임\(index)", profileImageURL: nil),
+                    event: SimpleEventUIO(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: nil, dDay: 7, startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)"),
+                    rating: Double(Int.random(in: 1 ... 10)) / 2,
+                    imageURLs: VibeUIO.dummy0.imageURLs,
+                    comment: "코멘트 내용\(index)",
+                    createdDate: "2024.11.25",
+                    likeCount: index,
+                    replyCount: index,
+                    isMine: index % 10 == 1
+                )
+            )
+        }
+        
+        return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: vibeList)
+    }
+    
     func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
         let newVibe = VibeUIO(
             id: vibeCount + 1,

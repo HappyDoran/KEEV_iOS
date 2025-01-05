@@ -121,6 +121,10 @@ final class AccountService: AccountServiceProtocol {
     // MARK: Private Functions
     private func determineStatus(from account: AccountDTO, with code: Int) -> SignInStatus {
         if code == 200 {
+            if account.email == nil || account.nickname == nil {
+                return .created
+            }
+            
             let user = DetailUserUIO(account: account)
             updateStatus(with: user)
             return .ok(user: user)
@@ -135,12 +139,17 @@ final class AccountService: AccountServiceProtocol {
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         debugPrint("code: \(code)")
         debugPrint("Fetched account: \(String(data: data, encoding: .utf8)!)")
-        let fetchedAccount = try decoder.decode(AccountDTO.self, from: data)
-        account = fetchedAccount
-        if code == 200 {
-            NotificationCenter.default.post(name: .init("sendDetailUserUIO"), object: DetailUserUIO(account: fetchedAccount))
+        
+        do {
+            let fetchedAccount = try decoder.decode(AccountDTO.self, from: data)
+            account = fetchedAccount
+            if code == 200 {
+                NotificationCenter.default.post(name: .updateUserInfo, object: DetailUserUIO(account: fetchedAccount))
+            }
+            return (code, fetchedAccount)
+        } catch {
+            throw NetworkDecodeError(data: data)
         }
-        return (code, fetchedAccount)
     }
     
     private func isRegistered(from account: AccountDTO) -> Bool {
@@ -168,7 +177,7 @@ final class AccountService: AccountServiceProtocol {
         if let profileJPEG {
             builder.append(
                 name: "profileImage",
-                fileName: "user\(id)-profileImage.jpeg",
+                fileName: "user\(id)-\(UUID().uuidString)-profileImage.jpeg",
                 content: .jpeg(data: profileJPEG)
             )
         }
@@ -176,7 +185,7 @@ final class AccountService: AccountServiceProtocol {
         if let backgroundJPEG {
             builder.append(
                 name: "backgroundImage",
-                fileName: "user\(id)-backgroundImage.jpeg",
+                fileName: "user\(id)-\(UUID().uuidString)-backgroundImage.jpeg",
                 content: .jpeg(data: backgroundJPEG)
             )
         }
@@ -203,5 +212,17 @@ final class AccountService: AccountServiceProtocol {
     
     private func updateStatus(with user: DetailUserUIO) {
         NotificationCenter.default.post(name: .updateUserInfo, object: user)
+    }
+}
+
+private struct NetworkDecodeError: Error, LocalizedError {
+    let dataString: String?
+    
+    init(data: Data) {
+        self.dataString = String(data: data, encoding: .utf8)
+    }
+    
+    var errorDescription: String? {
+        dataString
     }
 }
