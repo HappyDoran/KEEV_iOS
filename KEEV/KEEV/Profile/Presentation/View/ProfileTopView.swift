@@ -105,7 +105,7 @@ private extension ProfileTopView {
                 Text("한 줄 소개를 입력해주세요.")
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                     .foregroundStyle(.gray700)
-            } else if description.isEmpty && isMyProfile {
+            } else if !description.isEmpty && isMyProfile {
                 Text(description)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                     .foregroundStyle(.gray300)
