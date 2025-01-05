@@ -9,9 +9,9 @@ import SwiftUI
 
 struct VibeContentView: View {
     let vibe: VibeUIO
-    
+
     @State private var imageIndexTag: Int = 0
-    
+
     var body: some View {
         VStack(spacing: 24) {
             vibeContent
@@ -25,19 +25,19 @@ private extension VibeContentView {
     var vibeContent: some View {
         VStack(alignment: .leading, spacing: 12) {
             userInfo
-            
+
             if vibe.imageURLs.count > 0 {
                 vibeImages
             }
-            
+
             if let comment = vibe.comment {
-                Text(comment.splitWords())
+                Text(comment)
             }
-            
+
             dateText
         }
     }
-    
+
     var userInfo: some View {
         HStack(spacing: 16) {
             userProfileImage
@@ -49,27 +49,27 @@ private extension VibeContentView {
                     )
                 )
             Spacer()
-            
+
             RatingView(rating: vibe.rating, image: Image(.star))
                 .frame(width: 80, height: 16)
         }
         .padding(.horizontal, 4)
     }
-    
+
     var userProfileImage: some View {
         URLCircleImage(url: vibe.userProfileImageURL)
             .frame(width: 40, height: 40)
     }
-    
+
     var vibeImages: some View {
         let count = vibe.imageURLs.count
-        
+
         return VStack(spacing: 12) {
             imagePages(maxIndex: count)
             pageIndicator(maxIndex: count)
         }
     }
-    
+
     var dateText: some View {
         HStack {
             Text(vibe.createdDate)
@@ -79,19 +79,19 @@ private extension VibeContentView {
                         style: .init(bodySize: .xsmall2, bodyWeight: .medium)
                     )
                 )
-            
+
             Spacer()
         }
-        
+
     }
-    
+
     var heartAndCommentCount: some View {
         HStack(spacing: 20) {
             // 추후 좋아요 카운트 추가해야 함.
             countLabel(for: .reply, count: vibe.replyCount)
             Spacer()
         }
-        
+
     }
 }
 
@@ -99,7 +99,7 @@ private extension VibeContentView {
     func imageView(for url: URL?) -> some View {
         URLCachedImage(url: url) { phase in
             if let image = phase.image {
-                image  
+                image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } else if let error = phase.error {
@@ -112,7 +112,7 @@ private extension VibeContentView {
             }
         }
     }
-    
+
     func imagePages(maxIndex: Int) -> some View {
         TabView(selection: $imageIndexTag) {
             ForEach(0..<maxIndex, id: \.self) { index in
@@ -125,7 +125,7 @@ private extension VibeContentView {
         .frame(maxWidth: .infinity)
         .tabViewStyle(.page(indexDisplayMode: .never))
     }
-    
+
     func pageIndicator(maxIndex: Int) -> some View {
         HStack(spacing: 4) {
             ForEach(0..<maxIndex, id: \.self) { index in
@@ -135,7 +135,7 @@ private extension VibeContentView {
             .frame(width: 6, height: 6)
         }
     }
-    
+
     func countLabel(for type: CountType, count: Int) -> some View {
         HStack(spacing: 8) {
             type.image
@@ -154,7 +154,7 @@ private extension VibeContentView {
 private extension VibeContentView {
     enum CountType {
         case reply
-        
+
         var image: Image {
             switch self {
             case .reply: Image(.reply)

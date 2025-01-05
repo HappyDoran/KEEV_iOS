@@ -22,15 +22,15 @@ struct CommentSheetView: View {
     @Binding private var comment: String
     @Binding private var typedComment: String
     @Binding private var showCancelAlert: Bool
-    
+
     init(comment: Binding<String>, typedComment: Binding<String>, showCancleAlert: Binding<Bool>) {
         self._comment = comment
         self._typedComment = typedComment
         self._showCancelAlert = showCancleAlert
     }
-    
+
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         ZStack {
             Color.grayBG700
@@ -39,8 +39,8 @@ struct CommentSheetView: View {
                 // MARK: 헤더
                 CommentHeader(comment: $comment, typedComment: $typedComment, showCancleAlert: $showCancelAlert)
                     .padding(.top, 12)
-                
-                ScrollView(showsIndicators: false){
+
+                ScrollView {
                     // MARK: 코멘트 남기는 영역. 터치시, 텍스트 에디터에 포커싱
                     CommentSheetBody(comment: $comment, typedComment: $typedComment, isFocused: $textEditorFocus)
                 }
