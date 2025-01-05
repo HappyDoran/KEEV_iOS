@@ -19,15 +19,12 @@ struct CommentSheetBody: View {
     @Binding private var comment: String
     @Binding private var typedComment: String
     private var isFocused: FocusState<Bool>.Binding
-
     init(comment: Binding<String>, typedComment: Binding<String>, isFocused: FocusState<Bool>.Binding) {
         self._comment = comment
         self._typedComment = typedComment
         self.isFocused = isFocused
     }
-
     var body: some View {
-
         // MARK: 코멘트 남기는 영역
         TextEditor(text: $typedComment)
             .focused(isFocused)
