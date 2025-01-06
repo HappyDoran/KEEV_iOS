@@ -92,7 +92,7 @@ private extension ReplyListCell {
     
     var replyBody: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(reply.text)
+            Text(reply.text.splitWords())
                 .foregroundStyle(.gray300)
                 .multilineTextAlignment(.leading)
                 .figmaFont(
