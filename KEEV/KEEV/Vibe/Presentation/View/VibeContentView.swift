@@ -10,6 +10,7 @@ import SwiftUI
 struct VibeContentView: View {
     let vibe: VibeUIO
     @State private var imageIndexTag: Int = 0
+    
     var body: some View {
         VStack(spacing: 24) {
             vibeContent
@@ -27,11 +28,12 @@ private extension VibeContentView {
                 vibeImages
             }
             if let comment = vibe.comment {
-                Text(comment)
+                Text(comment.splitWords())
             }
             dateText
         }
     }
+    
     var userInfo: some View {
         HStack(spacing: 16) {
             userProfileImage
@@ -48,10 +50,12 @@ private extension VibeContentView {
         }
         .padding(.horizontal, 4)
     }
+    
     var userProfileImage: some View {
         URLCircleImage(url: vibe.userProfileImageURL)
             .frame(width: 40, height: 40)
     }
+    
     var vibeImages: some View {
         let count = vibe.imageURLs.count
 
@@ -60,6 +64,7 @@ private extension VibeContentView {
             pageIndicator(maxIndex: count)
         }
     }
+    
     var dateText: some View {
         HStack {
             Text(vibe.createdDate)
@@ -72,6 +77,7 @@ private extension VibeContentView {
             Spacer()
         }
     }
+    
     var heartAndCommentCount: some View {
         HStack(spacing: 20) {
             // 추후 좋아요 카운트 추가해야 함.
@@ -98,6 +104,7 @@ private extension VibeContentView {
             }
         }
     }
+    
     func imagePages(maxIndex: Int) -> some View {
         TabView(selection: $imageIndexTag) {
             ForEach(0..<maxIndex, id: \.self) { index in
@@ -110,6 +117,7 @@ private extension VibeContentView {
         .frame(maxWidth: .infinity)
         .tabViewStyle(.page(indexDisplayMode: .never))
     }
+    
     func pageIndicator(maxIndex: Int) -> some View {
         HStack(spacing: 4) {
             ForEach(0..<maxIndex, id: \.self) { index in
@@ -119,6 +127,7 @@ private extension VibeContentView {
             .frame(width: 6, height: 6)
         }
     }
+    
     func countLabel(for type: CountType, count: Int) -> some View {
         HStack(spacing: 8) {
             type.image

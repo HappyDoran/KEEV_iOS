@@ -42,7 +42,7 @@ struct ReplyListView: View {
                 
                 if index < replies.count - 1 {
                     Divider()
-                        .padding(12)
+                        .padding(.vertical, 12)
                 }
             }
         }
@@ -54,6 +54,6 @@ struct ReplyListView: View {
 
 #Preview {
     ReplyListView(userID: 2, replies: .constant([
-//        .dummy0, .dummy1, .dummy2
+        .dummy0, .dummy1, .dummy2
     ]))
 }
