@@ -40,27 +40,45 @@ struct ImageSelectView: View {
     @Binding var image: UIImage?
     
     var body: some View {
-        PhotosPicker("이미지 선택", selection: $selectedItem, matching: .images, photoLibrary: .shared())
-            .photosPickerStyle(.inline)
-            .tint(.brand500)
-            .onChange(of: selectedItem) {
-                handleSelectedPhoto()
-            }
+        ImagePicker(image: $image)
     }
 }
 
 extension ImageSelectView {
-    private func handleSelectedPhoto() {
-        image = nil
-        Task {
-            do {
-                if let data = try await selectedItem?.loadTransferable(type: Data.self), let uiImage = UIImage(data: data) {
-                    self.image = uiImage
-                }
-            } catch {
-                print(error.localizedDescription)
-                image = nil
-            }
+    private struct ImagePicker: UIViewControllerRepresentable {
+        typealias UIViewControllerType = UIImagePickerController
+        
+        @Binding var image: UIImage?
+        @Environment(\.dismiss) var dismiss
+        
+        func makeCoordinator() -> Coordinator {
+            ImageSelectView.Coordinator(self)
+        }
+        
+        func makeUIViewController(context: Context) -> UIImagePickerController {
+            let controller = UIImagePickerController()
+            controller.delegate = context.coordinator
+            return controller
+        }
+        
+        func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {
+            
+        }
+    }
+}
+
+extension ImageSelectView {
+    private class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        var parent: ImagePicker
+        
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+        
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            guard let image = info[.originalImage] as? UIImage else { return }
+            parent.image = image
+            parent.dismiss()
         }
     }
 }
