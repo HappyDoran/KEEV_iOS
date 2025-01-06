@@ -41,7 +41,6 @@ struct CommentSheetBody: View {
                             .padding(.top, 7)
                             .padding(.leading, 5)
                     }
-
                     .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
                 Spacer()
             }
@@ -74,25 +73,25 @@ extension CommentSheetBody {
             
             view.font = customFont
             view.backgroundColor = .clear
-            view.textColor = UIColor.white
+            view.textColor = .gray50
             view.delegate = context.coordinator
+            view.becomeFirstResponder()
             
             view.text = text
             
             view.isEditable = true
             view.isUserInteractionEnabled = true
-            view.isScrollEnabled = false
+            view.isScrollEnabled = true
             
             return view
         }
         
         func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<CommentTextEditor>) {
-            // 텍스트 업데이트 및 높이 조정
-            uiView.text = text // typedComment 값 동기화
-            uiView.textColor = UIColor.white // 텍스트 색상 유지 (흰색)
+            uiView.text = text
+            uiView.textColor = UIColor.white
             
             DispatchQueue.main.async {
-                height = uiView.contentSize.height // 높이 업데이트
+                height = uiView.contentSize.height
             }
         }
     }
@@ -107,7 +106,6 @@ extension CommentSheetBody {
         
         func textViewDidBeginEditing(_ textView: UITextView) {
             if textView.textColor == UIColor.white {
-                // 텍스트 색상 유지 (흰색)
                 textView.textColor = UIColor.white
             }
         }
@@ -115,8 +113,8 @@ extension CommentSheetBody {
         func textViewDidChange(_ textView: UITextView) {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.parent.height = textView.contentSize.height // 높이 업데이트
-                self.parent.text = textView.text                 // 텍스트 업데이트 (typedComment와 동기화)
+                self.parent.height = textView.contentSize.height
+                self.parent.text = textView.text
             }
         }
     }
