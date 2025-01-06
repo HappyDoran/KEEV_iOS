@@ -31,8 +31,6 @@ struct ReplyListCell: View {
                 .frame(width: 40, height: 40)
             
             content
-            
-            info
         }
         .background(.clear)
     }
@@ -43,30 +41,24 @@ private extension ReplyListCell {
         VStack(alignment: .leading) {
             replyHeader
             replyBody
+            replyFooter
         }
     }
     
-    private var info: some View {
-        VStack(alignment: .trailing) {
+    var replyHeader: some View {
+        HStack {
+            userInfo
+                .onTapGesture(perform: userTapHandler)
+            
+            Spacer()
+            
             Button(action: moreTapHandler) {
                 Image(systemName: "ellipsis")
                     .foregroundStyle(.gray50)
             }
             .frame(width: 15, height: 3)
             .padding(.vertical, 8.5)
-            
-            Spacer()
-            Text(reply.createdBefore)
-                .figmaFont(PretendardFont.body(
-                    style: .init(bodySize: .xsmall, bodyWeight: .medium)
-                ))
-                .foregroundStyle(.gray500)
         }
-    }
-    
-    var replyHeader: some View {
-        userInfo
-            .onTapGesture(perform: userTapHandler)
     }
     
     var userInfo: some View {
@@ -100,14 +92,20 @@ private extension ReplyListCell {
                         style: .init(bodySize: .base, bodyWeight: .regular)
                     )
                 )
+        }
+    }
+    
+    var replyFooter: some View {
+        HStack {
+            //댓글 좋아요 여기에 추가 해주시면 됩니다.
             
-            HStack {
-                Text("  ")
-                    .figmaFont(
-                        PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium))
-                    )
-                    .foregroundStyle(.gray700)
-            }
+            Spacer()
+            
+            Text(reply.createdBefore)
+                .figmaFont(PretendardFont.body(
+                    style: .init(bodySize: .xsmall, bodyWeight: .medium)
+                ))
+                .foregroundStyle(.gray500)
         }
     }
 }
@@ -120,5 +118,4 @@ private extension ReplyListCell {
     } likeTapHandler: {
         
     }
-    
 }
