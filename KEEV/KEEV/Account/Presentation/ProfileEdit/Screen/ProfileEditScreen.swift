@@ -106,6 +106,8 @@ struct ProfileEditScreen: View {
                     backgroundImage = nil
                 }
             }
+            
+            profileModified = false
         }
         .backgroundForKEEV()
         .actionSheetForKEEV(
