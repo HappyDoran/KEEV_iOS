@@ -21,68 +21,112 @@ struct CommentSheetBody: View {
     @State private var textHeight: CGFloat = 0
     private var isFocused: FocusState<Bool>.Binding
     private let customFont = PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular))
+
     init(comment: Binding<String>, typedComment: Binding<String>, isFocused: FocusState<Bool>.Binding) {
         self._comment = comment
         self._typedComment = typedComment
         self.isFocused = isFocused
     }
+
     var body: some View {
         GeometryReader { geometry in
             VStack(spacing: 0){
                 // MARK: 코멘트 남기는 영역
-                TextEditor(text: $typedComment)
-                    .focused(isFocused)
-                    .accentColor(.brand500)
-                    .scrollContentBackground(.hidden)
-                    .background(.clear)
-                    .foregroundColor(.gray50)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                    .frame(minHeight: minTextHeight())
+                CommentTextEditor($textHeight, $typedComment, customFont: customFont.uiFont)
                     .frame(height: textHeight)
                     .overlay(alignment: .topLeading) {
                         Text("공연의 감상을 자유롭게 작성해주세요.")
                             .foregroundStyle(typedComment.isEmpty ? .gray : .clear)
                             .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                            .padding(.top, 8)
-                            .padding(.leading,5)
+                            .padding(.top, 7)
+                            .padding(.leading, 5)
                     }
-                    .onChange(of: typedComment) { _,_ in
-                        updateTextHeight(screenWidth: geometry.size.width)
-                    }
-                    .border(.red)
+
                     .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
-                    .submitLabel(.return)
                 Spacer()
-            }
-            .onAppear{
-                updateTextHeight(screenWidth: geometry.size.width)
             }
         }
     }
 }
 
 extension CommentSheetBody {
-    private func updateTextHeight(screenWidth: CGFloat) {
-        let textView = UITextView()
-        textView.text = typedComment
-        textView.font = customFont.uiFont
-        textView.frame.size.width = screenWidth - 90
-        textView.sizeToFit()
+    private struct CommentTextEditor: UIViewRepresentable{
+        typealias UIViewType = UITextView
         
-        let lineHeight = customFont.uiFont.lineHeight
-        textHeight = textView.contentSize.height + lineHeight
-    }
-    
-    private func minTextHeight() -> CGFloat {
-        let lineHeight = customFont.uiFont.lineHeight
-        return lineHeight
+        @Binding var height: CGFloat
+        @Binding var text: String
+        private var customFont: UIFont
+        
+        init(_ height: Binding<CGFloat>,
+             _ text: Binding<String>,
+             customFont: UIFont) {
+            self._height = height
+            self._text = text
+            self.customFont = customFont
+        }
+        
+        func makeCoordinator() -> Coordinator {
+            return Coordinator(self)
+        }
+        
+        func makeUIView(context: UIViewRepresentableContext<CommentTextEditor>) -> UITextView {
+            let view = UITextView()
+            
+            view.font = customFont
+            view.backgroundColor = .clear
+            view.textColor = UIColor.white
+            view.delegate = context.coordinator
+            
+            view.text = text
+            
+            view.isEditable = true
+            view.isUserInteractionEnabled = true
+            view.isScrollEnabled = false
+            
+            return view
+        }
+        
+        func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<CommentTextEditor>) {
+            // 텍스트 업데이트 및 높이 조정
+            uiView.text = text // typedComment 값 동기화
+            uiView.textColor = UIColor.white // 텍스트 색상 유지 (흰색)
+            
+            DispatchQueue.main.async {
+                height = uiView.contentSize.height // 높이 업데이트
+            }
+        }
     }
 }
+
+extension CommentSheetBody {
+    private class Coordinator: NSObject, UITextViewDelegate {
+        
+        var parent: CommentTextEditor
+        
+        init(_ parent: CommentTextEditor) { self.parent = parent }
+        
+        func textViewDidBeginEditing(_ textView: UITextView) {
+            if textView.textColor == UIColor.white {
+                // 텍스트 색상 유지 (흰색)
+                textView.textColor = UIColor.white
+            }
+        }
+        
+        func textViewDidChange(_ textView: UITextView) {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.parent.height = textView.contentSize.height // 높이 업데이트
+                self.parent.text = textView.text                 // 텍스트 업데이트 (typedComment와 동기화)
+            }
+        }
+    }
+}
+
 
 #Preview {
     ZStack {
         Color.gray800
             .ignoresSafeArea(.all, edges: .all)
-        CommentSheetBody(comment: .constant(""), typedComment: .constant("TextEditor가 스크롤되는 이유는 기본적으로 TextEditor가 내부적으로 스크롤 가능한 뷰로 구현되어 있기 때문입니다. 사용자가 입력한 텍스트가 TextEditor의 높이를 초과하면 자동으로 스크롤이 발생합니다."), isFocused:  FocusState<Bool>().projectedValue)
+        CommentSheetBody(comment: .constant(""), typedComment: .constant(""), isFocused:  FocusState<Bool>().projectedValue)
     }
 }
