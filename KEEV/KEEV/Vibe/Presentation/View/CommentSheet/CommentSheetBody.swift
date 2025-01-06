@@ -74,10 +74,11 @@ extension CommentSheetBody {
             view.font = customFont
             view.backgroundColor = .clear
             view.textColor = .gray50
+            view.text = text
             view.delegate = context.coordinator
             view.becomeFirstResponder()
             
-            view.text = text
+            view.showsVerticalScrollIndicator = false
             
             view.isEditable = true
             view.isUserInteractionEnabled = true
@@ -89,9 +90,16 @@ extension CommentSheetBody {
         func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<CommentTextEditor>) {
             uiView.text = text
             uiView.textColor = UIColor.white
+            uiView.isScrollEnabled = true
             
             DispatchQueue.main.async {
-                height = uiView.contentSize.height
+                let calculatedHeight = uiView.contentSize.height
+    
+                if calculatedHeight > 410 {
+                    height = 410
+                } else {
+                    height = calculatedHeight
+                }
             }
         }
     }
@@ -113,7 +121,14 @@ extension CommentSheetBody {
         func textViewDidChange(_ textView: UITextView) {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.parent.height = textView.contentSize.height
+                let calculatedHeight = textView.contentSize.height
+                
+                if calculatedHeight > 410 {
+                    self.parent.height = 410
+                } else {
+                    self.parent.height = calculatedHeight
+                }
+                
                 self.parent.text = textView.text
             }
         }
@@ -125,6 +140,6 @@ extension CommentSheetBody {
     ZStack {
         Color.gray800
             .ignoresSafeArea(.all, edges: .all)
-        CommentSheetBody(comment: .constant(""), typedComment: .constant(""), isFocused:  FocusState<Bool>().projectedValue)
+        CommentSheetBody(comment: .constant(""), typedComment: .constant("ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느ㅇ므나ㅣㅇ믜ㅏ의ㅏㅁ느이ㅏㅁ느이ㅏㄴ므이ㅏㅁ느이ㅏㄴ믜ㅏㅇㅁ늬ㅏ음니ㅏ으미ㅏㄴㄴ의ㅏㅁ느이ㅏ므이나므이나므이ㅏㅁ느"), isFocused:  FocusState<Bool>().projectedValue)
     }
 }

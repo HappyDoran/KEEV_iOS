@@ -36,10 +36,11 @@ struct CommentSheetView: View {
                 // MARK: 헤더
                 CommentHeader(comment: $comment, typedComment: $typedComment, showCancleAlert: $showCancelAlert)
                     .padding(.top, 12)
-                ScrollView {
-                    // MARK: 코멘트 남기는 영역. 터치시, 텍스트 에디터에 포커싱
-                    CommentSheetBody(comment: $comment, typedComment: $typedComment, isFocused: $textEditorFocus)
-                }
+//                ScrollView {
+//                    // MARK: 코멘트 남기는 영역. 터치시, 텍스트 에디터에 포커싱
+//                    CommentSheetBody(comment: $comment, typedComment: $typedComment, isFocused: $textEditorFocus)
+//                }
+                CommentSheetBody(comment: $comment, typedComment: $typedComment, isFocused: $textEditorFocus)
                 .onTapGesture {
                     textEditorFocus.toggle()
                 }
