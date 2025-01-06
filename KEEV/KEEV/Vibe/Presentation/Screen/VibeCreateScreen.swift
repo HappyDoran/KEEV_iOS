@@ -127,6 +127,12 @@ struct VibeCreateScreen: View {
                 modified = false
             }
         }
+        .onChange(of: selectedEvent) {
+            print("selectedEvent Change")
+            rating = 0
+            selectedImages.removeAll()
+            comment = ""
+        }
         .gesture(modified ? DragGesture() : nil)
         .transaction { transaction in
             transaction.animation = nil

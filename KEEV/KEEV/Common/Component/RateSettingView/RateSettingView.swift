@@ -95,6 +95,11 @@ struct RateSettingView: View {
             }
         )
         .mask(stars)
+        .onChange(of: rating){
+            if(rating == 0.0){
+                x = 0.0
+            }
+        }
     }
     
     private func initialSetting(from size: CGSize) {
