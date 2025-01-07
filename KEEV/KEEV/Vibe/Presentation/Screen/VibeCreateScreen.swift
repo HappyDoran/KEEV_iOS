@@ -128,7 +128,6 @@ struct VibeCreateScreen: View {
             }
         }
         .onChange(of: selectedEvent) {
-            print("selectedEvent Change")
             rating = 0
             selectedImages.removeAll()
             selectedItems.removeAll()
