@@ -31,111 +31,112 @@ struct ProfileScreen: View {
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
     @State private var tapFeedback = false
-    @State private var originOffset: CGFloat = 0
-    @State private var scrollOffset: CGFloat = 0
+    @State private var scrollID: Int? = 0
     
     var body: some View {
-        ScrollView(showsIndicators: false){
-            scrollCheckView
-            
-            ProfileTopView(
-                userProfile: userProfile,
-                isMyProfile: isMyProfile,
-                showActionSheet: $showActionSheet,
-                navigateToReport: $navigateToReport
-            )
-            
-            if isMyProfile {
-                profileEditButton
-            }
-            
-            ProfileVibeView(userID: userID, isMyProfile: isMyProfile, selectedVibeViewType: $selectedVibeViewType)
-        }
-        .onPreferenceChange(ScrollOffsetKey.self) {
-            scrollOffset = $0
-        }
-        .backgroundForKEEV()
-        .ignoresSafeArea(edges: .top)
-        .task {
-            if let userID {
-                do {
-                    userProfile = try await service.getUserInfo(userID: userID)
-                } catch {
-                    print("ProfileScreen(.task) error: \(error)")
+        ScrollViewReader { proxy in
+            ScrollView(showsIndicators: false){
+                ProfileTopView(
+                    userProfile: userProfile,
+                    isMyProfile: isMyProfile,
+                    showActionSheet: $showActionSheet,
+                    navigateToReport: $navigateToReport
+                )
+                .id(0)
+                
+                if isMyProfile {
+                    profileEditButton
                 }
+                
+                ProfileVibeView(
+                    userID: userID,
+                    isMyProfile: isMyProfile,
+                    selectedVibeViewType: $selectedVibeViewType
+                )
+                .id(1)
             }
-        }
-        .onChange(of: showProfileEdit) {
-            if let userID {
-                Task {
+            .scrollTargetLayout()
+            .scrollPosition(id: $scrollID, anchor: .top)
+            .backgroundForKEEV()
+            .ignoresSafeArea(edges: .top)
+            .task {
+                if let userID {
                     do {
                         userProfile = try await service.getUserInfo(userID: userID)
                     } catch {
-                        print("ProfileScreen(.onChange) error: \(error)")
+                        print("ProfileScreen(.task) error: \(error)")
                     }
                 }
             }
-        }
-        .sensoryFeedback(.impact, trigger: tapFeedback)
-        .fullScreenCover(isPresented: $showProfileEdit) {
-            ProfileEditScreen(userProfile: $userProfile, profileEditedToast: $profileEditedToast)
-        }
-        .toast(with: $profileEditedToast, for: .seconds(of: 2))
-        .actionSheetForKEEV(
-            isPresented: $showActionSheet,
-            configurations: [
-                KEEVActionSheet.ButtonConfiguration.report(title: "신고하기", action: {
-                    if let userID {
-                        navigateToReport = .user(userID: userID)
-                    }
-                    showActionSheet = false
-                })
-            ]
-        )
-        .navigationBarBackButtonHidden()
-        .toolbar {
-            if selectedItem == TabbedItem.profile.rawValue {
-                if isNavigation {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            dismiss()
-                        } label: {
-                            Image(systemName: "chevron.backward")
-                                .font(.system(size: 17, weight: .semibold))
-                                .foregroundColor(.gray100)
-                                .padding(.top, 8)
-                                .padding(.bottom, 16)
+            .onChange(of: showProfileEdit) {
+                if let userID {
+                    Task {
+                        do {
+                            userProfile = try await service.getUserInfo(userID: userID)
+                        } catch {
+                            print("ProfileScreen(.onChange) error: \(error)")
                         }
                     }
                 }
-                
-                if originOffset - scrollOffset < 100 {
-                    switch isMyProfile {
-                    case true:
-                        ToolbarItem(placement: .topBarTrailing) {
-                            NavigationLink {
-                                SettingScreen()
-                            } label: {
-                                Image(systemName: "gearshape.fill")
-                                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
-                                    .font(.system(size: 20))
-                                    .foregroundStyle(.gray100)
-                                    .frame(height: 48)
-                                    .imageScale(.medium)
-                                    .padding(.top, 8)
-                                    .padding(.bottom, 16)
-                            }
-                            .tint(.gray100)
+            }
+            .sensoryFeedback(.impact, trigger: tapFeedback)
+            .fullScreenCover(isPresented: $showProfileEdit) {
+                ProfileEditScreen(userProfile: $userProfile, profileEditedToast: $profileEditedToast)
+            }
+            .toast(with: $profileEditedToast, for: .seconds(of: 2))
+            .actionSheetForKEEV(
+                isPresented: $showActionSheet,
+                configurations: [
+                    KEEVActionSheet.ButtonConfiguration.report(title: "신고하기", action: {
+                        if let userID {
+                            navigateToReport = .user(userID: userID)
                         }
-                    case false:
-                        ToolbarItem(placement: .topBarTrailing) {
+                        showActionSheet = false
+                    })
+                ]
+            )
+            .navigationBarBackButtonHidden()
+            .toolbar {
+                if selectedItem == TabbedItem.profile.rawValue {
+                    if isNavigation {
+                        ToolbarItem(placement: .topBarLeading) {
                             Button {
-                                showActionSheet = true
+                                dismiss()
                             } label: {
-                                Image(systemName: "ellipsis")
-                                    .foregroundStyle(.gray100)
-                                    .padding(.top, 8)
-                                    .padding(.bottom, 16)
+                                Image(systemName: "chevron.backward")
+                                    .font(.system(size: 17, weight: .semibold))
+                                    .foregroundColor(.gray100)
+                                    .padding(.bottom, 8)
+                            }
+                        }
+                    }
+                    
+                    if scrollID == 0 {
+                        switch isMyProfile {
+                        case true:
+                            ToolbarItem(placement: .topBarTrailing) {
+                                NavigationLink {
+                                    SettingScreen()
+                                } label: {
+                                    Image(systemName: "gearshape.fill")
+                                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
+                                        .font(.system(size: 20))
+                                        .foregroundStyle(.gray100)
+                                        .frame(height: 48)
+                                        .imageScale(.medium)
+                                        .padding(.bottom, 8)
+                                }
+                                .tint(.gray100)
+                            }
+                        case false:
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button {
+                                    showActionSheet = true
+                                } label: {
+                                    Image(systemName: "ellipsis")
+                                        .foregroundStyle(.gray100)
+                                        .padding(.bottom, 8)
+                                }
                             }
                         }
                     }
@@ -161,25 +162,6 @@ private extension ProfileScreen {
                 }
         }
         .padding(.top, 16)
-    }
-    
-    var scrollCheckView: some View {
-        GeometryReader { proxy in
-            let offsetY = proxy.frame(in: .global).origin.y
-            Color.clear
-                .preference(key: ScrollOffsetKey.self, value: offsetY)
-                .onAppear {
-                    originOffset = offsetY
-                }
-        }
-        .frame(height: 0)
-    }
-}
-
-private struct ScrollOffsetKey: PreferenceKey {
-    static var defaultValue: CGFloat = .zero
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-        value += nextValue()
     }
 }
 

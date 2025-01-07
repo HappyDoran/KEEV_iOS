@@ -78,8 +78,7 @@ struct EventInfoScreen: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 75, height: 32)
-                                .padding(.top, 8)
-                                .padding(.bottom, 16)
+                                .padding(.bottom, 8)
                         }
                     }
                     
@@ -92,8 +91,7 @@ struct EventInfoScreen: View {
                                 .font(.system(size: 20))
                                 .foregroundColor(Color.gray100)
                                 .imageScale(.medium)
-                                .padding(.top, 8)
-                                .padding(.bottom, 16)
+                                .padding(.bottom, 8)
                         }
                     }
                 }
