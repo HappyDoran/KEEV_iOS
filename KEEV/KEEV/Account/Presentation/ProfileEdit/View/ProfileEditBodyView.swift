@@ -1,5 +1,5 @@
 //
-//  ProfileEditCenterView.swift
+//  ProfileEditBodyView.swift
 //  KEEV
 //
 //  Created by Yune Cho on 11/5/24.
@@ -15,14 +15,16 @@ import SwiftUI
 ///
 /// - Note: 액션시트에 대한 modifier는 ProfileEditScreen에 추가되어있습니다.
 /// - Author: 라움
-struct ProfileEditCenterView: View {
+struct ProfileEditBodyView: View {
     @Injected private var service: any AccountServiceProtocol
     
     @Binding var nickname: String
     @Binding var profileImage: UIImage?
+    @Binding var backgroundImage: UIImage?
     @Binding var description: String
     
     @Binding var showProfileImageActionSheet: Bool
+    @Binding var showBackgroundActionSheet: Bool
     @Binding var profileModified: Bool
     @Binding var buttonDisabled: Bool
     var isFocused: FocusState<Bool>.Binding
@@ -31,18 +33,58 @@ struct ProfileEditCenterView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Spacer()
+            ZStack(alignment: .bottom) {
+                backgroundArea
+                    .frame(height: 266)
                 
                 ProfileImage(profileImage: profileImage, size: 128, editable: true, strokeWidth: 4, strokeColor: .gray950)
                     .onTapGesture {
                         isFocused.wrappedValue = false
                         showProfileImageActionSheet = true
                     }
-                
-                Spacer()
             }
             
+            textArea
+        }
+    }
+}
+
+private extension ProfileEditBodyView {
+    var backgroundArea: some View {
+        VStack {
+            if let backgroundImage {
+                Image(uiImage: backgroundImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 202)
+                    .clipped()
+                    .overlay(content: {
+                        Color.black
+                            .opacity(0.2)
+                    })
+                    .onTapGesture {
+                        isFocused.wrappedValue = false
+                        showBackgroundActionSheet = true
+                    }
+            } else {
+                Color.gray800
+                    .frame(height: 202)
+                    .overlay(content: {
+                        Color.black
+                            .opacity(0.2)
+                    })
+                    .onTapGesture {
+                        isFocused.wrappedValue = false
+                        showBackgroundActionSheet = true
+                    }
+            }
+            
+            Spacer()
+        }
+    }
+    
+    var textArea: some View {
+        VStack(alignment: .leading, spacing: 0) {
             Text("닉네임")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 .foregroundStyle(.gray300)
@@ -79,11 +121,12 @@ struct ProfileEditCenterView: View {
                 profileModified = true
             }
         }
+        .padding(.horizontal, 24)
     }
 }
 
-extension ProfileEditCenterView {
-    private func validityTest(_ nickname: String) {
+private extension ProfileEditBodyView {
+    func validityTest(_ nickname: String) {
         do {
             try service.isValidNickname(nickname)
             errorMessage = ""
@@ -98,11 +141,13 @@ extension ProfileEditCenterView {
 #Preview {
     @Previewable @FocusState var isFocused: Bool
     
-    ProfileEditCenterView(
+    ProfileEditBodyView(
         nickname: .constant("dummy nicknameffff"),
         profileImage: .constant(nil),
+        backgroundImage: .constant(nil),
         description: .constant("dummy descriptionfefefefefe"),
         showProfileImageActionSheet: .constant(false),
+        showBackgroundActionSheet: .constant(false),
         profileModified: .constant(false),
         buttonDisabled: .constant(false),
         isFocused: $isFocused
