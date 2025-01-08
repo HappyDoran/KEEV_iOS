@@ -39,7 +39,7 @@ struct ReportListView: View {
             ReportListCell(title: "기타", selectedCase: $selectedCase)
             
             if selectedCase.hasPrefix("기타") {
-                SingleLineTextField(placeholder: reportType.etcReportPlaceholder, text: $typedReport)
+                MultiLineTextField(placeholder: reportType.etcReportPlaceholder, text: $typedReport)
                     .submitLabel(.done)
                     .onSubmit {
                         setETCReportCase()
