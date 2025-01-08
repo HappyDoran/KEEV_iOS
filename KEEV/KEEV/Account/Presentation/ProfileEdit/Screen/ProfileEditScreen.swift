@@ -31,8 +31,8 @@ struct ProfileEditScreen: View {
     
     @State private var nickname: String
     @State private var description:String
-    @State private var backgroundImage: UIImage?
     @State private var profileImage: UIImage?
+    @State private var backgroundImage: UIImage?
     
     @State private var showProfileImageActionSheet = false
     @State private var showProfileImageSelectSheet = false
@@ -46,32 +46,32 @@ struct ProfileEditScreen: View {
     
     var body: some View {
         ZStack {
-            ProfileEditBackgroundView(
-                backgroundImage: backgroundImage,
-                showBackgroundActionSheet: $showBackgroundActionSheet,
-                isFocused: $isFocused
-            )
-            
-            VStack {
-                ProfileEditTopView(
-                    profileModified: $profileModified,
-                    showCloseAlert: $showCloseAlert,
-                    isFocused: $isFocused
-                )
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 36)
-                
-                ProfileEditCenterView(
+            ScrollView {
+                ProfileEditBodyView(
                     nickname: $nickname,
                     profileImage: $profileImage,
+                    backgroundImage: $backgroundImage,
                     description: $description,
                     showProfileImageActionSheet: $showProfileImageActionSheet,
+                    showBackgroundActionSheet: $showBackgroundActionSheet,
                     profileModified: $profileModified,
                     buttonDisabled: $buttonDisabled,
                     isFocused: $isFocused
                 )
-                .padding(.horizontal, 24)
+                
+                Spacer()
+            }
+            .ignoresSafeArea()
+            .scrollDisabled(!isFocused)
+            
+            VStack {
+                ProfileEditHeader(
+                    profileModified: $profileModified,
+                    showCloseAlert: $showCloseAlert,
+                    isFocused: $isFocused
+                )
+                .padding(.top, 8)
+                .padding(.horizontal, 16)
                 
                 Spacer()
                 
@@ -106,6 +106,8 @@ struct ProfileEditScreen: View {
                     backgroundImage = nil
                 }
             }
+            
+            profileModified = false
         }
         .backgroundForKEEV()
         .actionSheetForKEEV(
