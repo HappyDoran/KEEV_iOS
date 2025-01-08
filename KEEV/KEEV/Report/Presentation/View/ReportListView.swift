@@ -15,6 +15,7 @@ import SwiftUI
 struct ReportListView: View {
     private let reportType: ReportType
     @Binding var selectedCase: String
+    @FocusState private var isFocused: Bool
     
     init(reportType: ReportType, selectedCase: Binding<String>) {
         self.reportType = reportType
@@ -39,7 +40,7 @@ struct ReportListView: View {
             ReportListCell(title: "기타", selectedCase: $selectedCase)
             
             if selectedCase.hasPrefix("기타") {
-                SingleLineTextField(placeholder: reportType.etcReportPlaceholder, text: $typedReport)
+                MultiLineTextField(placeholder: reportType.etcReportPlaceholder, text: $typedReport, isFocused: $isFocused)
                     .submitLabel(.done)
                     .onSubmit {
                         setETCReportCase()
@@ -52,6 +53,10 @@ struct ReportListView: View {
                 .transition(.slide)
         }
         .animation(.bouncy, value: selectedCase)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            isFocused = false
+        }
     }
 }
 

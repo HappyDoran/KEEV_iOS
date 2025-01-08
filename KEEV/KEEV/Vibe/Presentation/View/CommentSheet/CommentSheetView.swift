@@ -18,7 +18,7 @@ import SwiftUI
 /// - Note: FocusState를 사용하여 텍스트 에디터 영역이 아닌 다른 시트의 영역을 터치해도 입력이 가능하게 하였습니다.
 /// - Author: Doran
 struct CommentSheetView: View {
-    @FocusState private var textEditorFocus: Bool
+    @FocusState private var isFocused: Bool
     @Binding private var comment: String
     @Binding private var typedComment: String
     @Binding private var showCancelAlert: Bool
@@ -37,14 +37,14 @@ struct CommentSheetView: View {
                 CommentHeader(comment: $comment, typedComment: $typedComment, showCancleAlert: $showCancelAlert)
                     .padding(.top, 12)
                 // MARK: 코멘트 남기는 영역. 터치시, 텍스트 에디터에 포커싱
-                CommentSheetBody(comment: $comment, typedComment: $typedComment, isFocused: $textEditorFocus)
-                .onTapGesture {
-                    textEditorFocus.toggle()
-                }
+                CommentSheetBody(comment: $comment, typedComment: $typedComment, isFocused: $isFocused)
             }
         }
+        .onTapGesture {
+            isFocused = false
+        }
         .onChange(of: showCancelAlert, {
-            textEditorFocus = false
+            isFocused = false
         })
         .customAlert(
             isPresented: $showCancelAlert,
