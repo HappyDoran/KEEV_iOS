@@ -38,7 +38,6 @@ struct CommentSheetBody: View {
                     .focused(isFocused)
                     .tint(.brand500)
                     .frame(height: isFocused.wrappedValue ? textHeight : geometry.size.height)
-                    .border(.red)
                     .overlay(alignment: .topLeading) {
                         Text("공연의 감상을 자유롭게 작성해주세요.")
                             .foregroundStyle(typedComment.isEmpty ? .gray : .clear)
