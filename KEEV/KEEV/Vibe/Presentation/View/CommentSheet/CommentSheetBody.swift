@@ -22,28 +22,30 @@ struct CommentSheetBody: View {
     private var isFocused: FocusState<Bool>.Binding
     private let customFont = PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular))
 
-    init(comment: Binding<String>, typedComment: Binding<String>, isFocused: FocusState<Bool>.Binding) {
+    init(comment: Binding<String>,
+         typedComment: Binding<String>,
+         isFocused: FocusState<Bool>.Binding) {
         self._comment = comment
         self._typedComment = typedComment
         self.isFocused = isFocused
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            VStack(spacing: 0){
-                // MARK: 코멘트 남기는 영역
-                CustomTextEditor($textHeight, $typedComment, textColor: .gray50, customFont: customFont.uiFont, scrollPossibleHeight: 410)
-                    .frame(height: textHeight)
-                    .overlay(alignment: .topLeading) {
-                        Text("공연의 감상을 자유롭게 작성해주세요.")
-                            .foregroundStyle(typedComment.isEmpty ? .gray : .clear)
-                            .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                            .padding(.top, 7)
-                            .padding(.leading, 5)
-                    }
-                    .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
-                Spacer()
-            }
+        VStack(spacing: 0){
+            // MARK: 코멘트 남기는 영역
+            CustomTextEditor($textHeight, $typedComment, textColor: .gray50, customFont: customFont.uiFont, scrollPossibleHeight: 410, isFocused: isFocused)
+                .focused(isFocused)
+                .tint(.brand500)
+                .frame(height: textHeight)
+                .overlay(alignment: .topLeading) {
+                    Text("공연의 감상을 자유롭게 작성해주세요.")
+                        .foregroundStyle(typedComment.isEmpty ? .gray : .clear)
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
+                        .padding(.top, 7)
+                        .padding(.leading, 5)
+                }
+                .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
+            Spacer()
         }
     }
 }
@@ -56,6 +58,7 @@ extension CommentSheetBody {
         @Binding var text: String
         private let customFont: UIFont
         
+        let isFocused: FocusState<Bool>.Binding
         let textColor: UIColor
         let scrollPossibleHeight:  CGFloat
         
@@ -63,12 +66,14 @@ extension CommentSheetBody {
              _ text: Binding<String>,
              textColor: UIColor,
              customFont: UIFont,
-             scrollPossibleHeight:  CGFloat) {
+             scrollPossibleHeight:  CGFloat,
+             isFocused: FocusState<Bool>.Binding) {
             self._height = height
             self._text = text
             self.textColor = textColor
             self.customFont = customFont
             self.scrollPossibleHeight = scrollPossibleHeight
+            self.isFocused = isFocused
         }
         
         func makeCoordinator() -> Coordinator {
@@ -83,7 +88,6 @@ extension CommentSheetBody {
             view.textColor = textColor
             view.text = text
             view.delegate = context.coordinator
-            view.becomeFirstResponder()
             
             view.showsVerticalScrollIndicator = false
             
@@ -102,9 +106,10 @@ extension CommentSheetBody {
             DispatchQueue.main.async {
                 let calculatedHeight = uiView.contentSize.height
                 
-                if calculatedHeight > scrollPossibleHeight {
+                if (calculatedHeight > scrollPossibleHeight && isFocused.wrappedValue == true){
                     height = scrollPossibleHeight
-                } else {
+                }
+                else{
                     height = calculatedHeight
                 }
             }
@@ -130,9 +135,10 @@ extension CommentSheetBody {
                 guard let self = self else { return }
                 let calculatedHeight = textView.contentSize.height
                 
-                if calculatedHeight > parent.scrollPossibleHeight {
+                if(calculatedHeight > parent.scrollPossibleHeight && parent.isFocused.wrappedValue == true){
                     self.parent.height = parent.scrollPossibleHeight
-                } else {
+                }
+                else{
                     self.parent.height = calculatedHeight
                 }
                 

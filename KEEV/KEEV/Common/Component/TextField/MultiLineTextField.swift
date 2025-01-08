@@ -18,7 +18,12 @@ struct MultiLineTextField: View {
     private let customFont = PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium))
     private var isFocused: FocusState<Bool>.Binding
     
-    init(placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, maxLength: Int? = nil, errorMessage: Binding<String> = .constant(""), isFocused: FocusState<Bool>.Binding) {
+    init(placeholder: String,
+         text: Binding<String>,
+         keyboardType: UIKeyboardType = .default,
+         maxLength: Int? = nil,
+         errorMessage: Binding<String> = .constant(""),
+         isFocused: FocusState<Bool>.Binding) {
         self.placeholder = placeholder
         self._text = text
         self.keyboardType = keyboardType
