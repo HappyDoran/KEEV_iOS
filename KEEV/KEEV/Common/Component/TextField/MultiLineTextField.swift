@@ -16,26 +16,26 @@ struct MultiLineTextField: View {
     
     @State private var textHeight: CGFloat = 0
     private let customFont = PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium))
+    private var isFocused: FocusState<Bool>.Binding
     
-    @FocusState private var isFocused: Bool
-    
-    init(placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, maxLength: Int? = nil, errorMessage: Binding<String> = .constant("")) {
+    init(placeholder: String, text: Binding<String>, keyboardType: UIKeyboardType = .default, maxLength: Int? = nil, errorMessage: Binding<String> = .constant(""), isFocused: FocusState<Bool>.Binding) {
         self.placeholder = placeholder
         self._text = text
         self.keyboardType = keyboardType
         self.maxLength = maxLength
         self._errorMessage = errorMessage
+        self.isFocused = isFocused
     }
     
     var body: some View {
         VStack(alignment: .leading) {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(lineWidth: 1)
-                .foregroundStyle(isFocused ? (errorMessage.isEmpty ? .gray300 : .red500) : .gray700)
+                .foregroundStyle(isFocused.wrappedValue ? (errorMessage.isEmpty ? .gray300 : .red500) : .gray700)
                 .frame(height: max(56, textHeight + 32))
                 .overlay {
-                    CustomTextEditor($textHeight, $text, textColor: .gray100, customFont: customFont.uiFont, scrollPossibleHeight: 179)
-                        .focused($isFocused)
+                    CustomTextEditor($textHeight, $text, textColor: .gray100, customFont: customFont.uiFont, scrollPossibleHeight: 118)
+                        .focused(isFocused)
                         .tint(.brand500)
                         .keyboardType(keyboardType)
                         .frame(height: max(37, textHeight))
@@ -72,6 +72,7 @@ extension MultiLineTextField {
         let textColor: UIColor
         let scrollPossibleHeight:  CGFloat
         
+        
         init(_ height: Binding<CGFloat>,
              _ text: Binding<String>,
              textColor: UIColor,
@@ -96,7 +97,6 @@ extension MultiLineTextField {
             view.textColor = textColor
             view.text = text
             view.delegate = context.coordinator
-            view.becomeFirstResponder()
             
             view.showsVerticalScrollIndicator = false
             
@@ -112,10 +112,9 @@ extension MultiLineTextField {
             uiView.textColor = textColor
             uiView.isScrollEnabled = true
             
+            
             DispatchQueue.main.async {
                 let calculatedHeight = uiView.contentSize.height
-    
-                print(calculatedHeight)
                 
                 if calculatedHeight > scrollPossibleHeight {
                     height = scrollPossibleHeight
@@ -161,5 +160,5 @@ extension MultiLineTextField {
 #Preview {
     @Previewable @State var text = ""
     
-    MultiLineTextField(placeholder: "닉네임", text: $text, maxLength: 14)
+    MultiLineTextField(placeholder: "닉네임", text: $text, maxLength: 14, isFocused:  FocusState<Bool>().projectedValue)
 }
