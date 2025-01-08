@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 두줄 이상의 Text를 입력할 수 있는 TextEditor
+///
+/// 일정 크기만큼 늘어나면 frame의 height가 고정되며, scroll이 가능합니다.
+///
+/// - Author: Doran
 struct MultiLineTextField: View {
     private let placeholder: String
     @Binding var text: String

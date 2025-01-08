@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+/// Text 작성시 줄바꿈에 따라 유동적으로 늘어나는 height를 가진 TextEditor
+///
+/// - Parameters:
+///   - height: 초기 height 값
+///   - text: 텍스트
+///   - customFont: 행간을 고려하여 height를 늘려야하기 때문에 필요한 폰트
+///   - textColor: 텍스트 색상
+///   - scrollPossibleHeight: 일정 크기만큼 늘어날 경우에 스크롤이 가능하게 끔 하는 height
+///
+/// - Author: Doran
 struct CustomTextEditor: UIViewRepresentable {
     typealias UIViewType = UITextView
     
@@ -64,7 +74,9 @@ struct CustomTextEditor: UIViewRepresentable {
             }
         }
     }
+}
 
+extension CustomTextEditor {
     class Coordinator: NSObject, UITextViewDelegate {
         
         var parent: CustomTextEditor
