@@ -76,8 +76,10 @@ private extension SignInScreen {
                                 Task {
                                     do {
                                         status = try await accountService.signInWithApple(user: user, identityToken: token, authorizationCode: code)
-                                    } catch {
-                                        print(error)
+                                    } catch let keevError as KEEVError {
+                                        print(keevError.messageForAnalytics)
+                                    } catch let error {
+                                        print("\(error)")
                                     }
                                 }
                                 

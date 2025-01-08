@@ -46,7 +46,7 @@ class NavigationRouter: ObservableObject {
         case .signUpScreen:
             SignUpScreen(status: .constant(.created))
         case .dummyView:
-            DummyView()
+            Text("Dummy View")
         }
     }
 
