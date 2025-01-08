@@ -71,6 +71,10 @@ struct ReportScreen: View {
             }
         }
         .toolbarRole(.editor)
+        .toolbarBackground(
+            .grayBG950,
+            for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .ignoresSafeArea(edges: .bottom)
         .backgroundForKEEV()
         .customAlert(
