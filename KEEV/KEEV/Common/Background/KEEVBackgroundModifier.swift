@@ -25,7 +25,7 @@ struct KEEVBackgroundModifier: ViewModifier {
 
 #Preview {
     NavigationStack {
-        DummyScreen()
+        Text("HI")
             .navigationTitle("안녕, 세상")
             .modifier(KEEVBackgroundModifier())
     }
