@@ -32,13 +32,13 @@ struct MultiLineTextField: View {
             RoundedRectangle(cornerRadius: 16)
                 .stroke(lineWidth: 1)
                 .foregroundStyle(isFocused ? (errorMessage.isEmpty ? .gray300 : .red500) : .gray700)
-                .frame(height: textHeight + 32)
+                .frame(height: max(56, textHeight + 32))
                 .overlay {
-                    CustomTextEditor($textHeight, $text, textColor: .gray100, customFont: customFont.uiFont, scrollPossibleHeight: 199)
+                    CustomTextEditor($textHeight, $text, textColor: .gray100, customFont: customFont.uiFont, scrollPossibleHeight: 179)
                         .focused($isFocused)
                         .tint(.brand500)
                         .keyboardType(keyboardType)
-                        .frame(height: textHeight)
+                        .frame(height: max(37, textHeight))
                         .overlay(alignment: .topLeading) {
                             Text(placeholder)
                                 .foregroundStyle(text.isEmpty ? .gray700 : .clear)

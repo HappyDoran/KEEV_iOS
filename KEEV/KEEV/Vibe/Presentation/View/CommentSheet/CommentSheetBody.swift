@@ -32,7 +32,7 @@ struct CommentSheetBody: View {
         GeometryReader { geometry in
             VStack(spacing: 0){
                 // MARK: 코멘트 남기는 영역
-                CommentTextEditor($textHeight, $typedComment, customFont: customFont.uiFont)
+                CustomTextEditor($textHeight, $typedComment, textColor: .gray50, customFont: customFont.uiFont, scrollPossibleHeight: 410)
                     .frame(height: textHeight)
                     .overlay(alignment: .topLeading) {
                         Text("공연의 감상을 자유롭게 작성해주세요.")
@@ -49,31 +49,38 @@ struct CommentSheetBody: View {
 }
 
 extension CommentSheetBody {
-    private struct CommentTextEditor: UIViewRepresentable{
+    private struct CustomTextEditor: UIViewRepresentable{
         typealias UIViewType = UITextView
         
         @Binding var height: CGFloat
         @Binding var text: String
-        private var customFont: UIFont
+        private let customFont: UIFont
+        
+        let textColor: UIColor
+        let scrollPossibleHeight:  CGFloat
         
         init(_ height: Binding<CGFloat>,
              _ text: Binding<String>,
-             customFont: UIFont) {
+             textColor: UIColor,
+             customFont: UIFont,
+             scrollPossibleHeight:  CGFloat) {
             self._height = height
             self._text = text
+            self.textColor = textColor
             self.customFont = customFont
+            self.scrollPossibleHeight = scrollPossibleHeight
         }
         
         func makeCoordinator() -> Coordinator {
             return Coordinator(self)
         }
         
-        func makeUIView(context: UIViewRepresentableContext<CommentTextEditor>) -> UITextView {
+        func makeUIView(context: UIViewRepresentableContext<CustomTextEditor>) -> UITextView {
             let view = UITextView()
             
             view.font = customFont
             view.backgroundColor = .clear
-            view.textColor = .gray50
+            view.textColor = textColor
             view.text = text
             view.delegate = context.coordinator
             view.becomeFirstResponder()
@@ -87,16 +94,16 @@ extension CommentSheetBody {
             return view
         }
         
-        func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<CommentTextEditor>) {
+        func updateUIView(_ uiView: UITextView, context: UIViewRepresentableContext<CustomTextEditor>) {
             uiView.text = text
-            uiView.textColor = UIColor.white
+            uiView.textColor = textColor
             uiView.isScrollEnabled = true
             
             DispatchQueue.main.async {
                 let calculatedHeight = uiView.contentSize.height
-    
-                if calculatedHeight > 410 {
-                    height = 410
+                
+                if calculatedHeight > scrollPossibleHeight {
+                    height = scrollPossibleHeight
                 } else {
                     height = calculatedHeight
                 }
@@ -108,13 +115,13 @@ extension CommentSheetBody {
 extension CommentSheetBody {
     private class Coordinator: NSObject, UITextViewDelegate {
         
-        var parent: CommentTextEditor
+        var parent: CustomTextEditor
         
-        init(_ parent: CommentTextEditor) { self.parent = parent }
+        init(_ parent: CustomTextEditor) { self.parent = parent }
         
         func textViewDidBeginEditing(_ textView: UITextView) {
-            if textView.textColor == UIColor.white {
-                textView.textColor = UIColor.white
+            if textView.textColor == parent.textColor {
+                textView.textColor = parent.textColor
             }
         }
         
@@ -123,8 +130,8 @@ extension CommentSheetBody {
                 guard let self = self else { return }
                 let calculatedHeight = textView.contentSize.height
                 
-                if calculatedHeight > 410 {
-                    self.parent.height = 410
+                if calculatedHeight > parent.scrollPossibleHeight {
+                    self.parent.height = parent.scrollPossibleHeight
                 } else {
                     self.parent.height = calculatedHeight
                 }
