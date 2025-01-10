@@ -119,7 +119,13 @@ struct EventDetailScreen: View {
             }
         }
         .refreshable {
-            // 이벤트 ID로 새로 이벤트 정보를 불러오면 됨.
+            Task {
+                do {
+                    selectedEvent = try await eventService.loadDetailEvent(id: selectedEvent.id)
+                } catch(let failToFetchEvent) {
+                    error = failToFetchEvent
+                }
+            }
         }
         .navigationDestination(isPresented: $navigateToWriteVibe) {
             VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: selectedEvent), isNavigation: true)
