@@ -100,8 +100,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
             let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
             throw throwKEEVError(
                 caller: "loadDetailEvent(id: String)",
-                occurPoint: .remote(code: code, message: errorMessage.message),
-                previousError: nil
+                occurPoint: .remote(code: code, message: errorMessage.message)
             )
         }
         
@@ -146,8 +145,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
                 let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
                 throw throwKEEVError(
                     caller: "loadPaginatedFilteredEvents",
-                    occurPoint: .remote(code: code, message: errorMessage.message),
-                    previousError: nil
+                    occurPoint: .remote(code: code, message: errorMessage.message)
                 )
             }
             
@@ -195,8 +193,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
                 let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
                 throw throwKEEVError(
                     caller: "loadPaginatedFilteringEvents",
-                    occurPoint: .remote(code: code, message: errorMessage.message),
-                    previousError: nil
+                    occurPoint: .remote(code: code, message: errorMessage.message)
                 )
             }
             
