@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 /// 항상 에러를 반환하는 목 서비스입니다.
-final class ErrorAccountService: AccountServiceProtocol, LayerRepresentable, KEEVErrorHandler {
+final class ErrorAccountService: AccountServiceProtocol, KEEVErrorHandler {
     typealias Layer = ErrorAccountService
     
     static var layer: LayerType = .service(of: "TempAccountService")
