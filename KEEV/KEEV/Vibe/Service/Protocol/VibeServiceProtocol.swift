@@ -13,7 +13,7 @@ import SwiftUI
 /// VibeService를 구현하기 위한 프로토콜입니다.
 ///
 /// - Author: 라움
-protocol VibeServiceProtocol: AnyObject {
+protocol VibeServiceProtocol: LayerRepresentable, AnyObject {
     /// 바이브 갯수를 조회하는 함수
     ///
     /// - Parameters:
