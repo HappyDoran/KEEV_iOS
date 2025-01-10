@@ -41,6 +41,7 @@ struct ProfileEditScreen: View {
     @State private var profileModified = false
     @State private var showCloseAlert = false
     @State private var buttonDisabled = false
+    @State private var error: Error? = nil
     
     @FocusState private var isFocused: Bool
     
@@ -161,6 +162,7 @@ struct ProfileEditScreen: View {
                 AnalyticsParameterScreenClass: "\(type(of: self))"
             ]
         )
+        .alertForError($error)
     }
 }
 
@@ -176,13 +178,8 @@ private extension ProfileEditScreen {
                 )
                 profileEditedToast = Toast(title: "프로필이 변경되었습니다.", mainColor: .green500, subColor: .white)
                 dismiss()
-            } catch {
-                Analytics.logEvent(
-                    "Failed_to_update_profile",
-                    parameters: [
-                        "error": error.localizedDescription as NSObject
-                    ]
-                )
+            } catch let failToUpdateProfile {
+                error = failToUpdateProfile
             }
         }
     }
