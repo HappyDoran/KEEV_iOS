@@ -5,6 +5,8 @@
 //  Created by Doran on 12/2/24.
 //
 
+import Foundation
+
 /// 필터링된 이벤트를 보여주기 위한 필터 조건중 하나인 이벤트 타입 열거형
 ///
 /// - Author: Doran
@@ -77,31 +79,22 @@ struct EventFilter: Equatable {
         self.desc = eventFilter.desc
     }
     
-    static var christmasFilter: EventFilter {
-        return EventFilter(startDate: "2024-12-23", endDate: "2024-12-27")
+    static var upCommingFilter: EventFilter {
+        let today = Date()
+        let endDate = Calendar.current.date(byAdding: .day, value: 30, to: today)!
+        
+        return EventFilter(startDate: today.toString(format: "yyyy-MM-dd"), endDate: endDate.toString(format: "yyyy-MM-dd"), desc: false)
     }
     
     static var rockFilter: EventFilter {
-        return EventFilter(genre: .rock, startDate: "2024-12-01", endDate: "2024-12-31")
+        return EventFilter(genre: .rock, startDate: "2025-01-01", endDate: "2025-02-28")
     }
     
-    static var indieFilter: EventFilter {
-        return EventFilter(genre: .indie, startDate: "2024-12-01", endDate: "2024-12-31")
+    static var smallPerformFilter: EventFilter {
+        return EventFilter(eventType: .small, startDate: "2025-01-01", endDate: "2025-02-28")
     }
     
-    static var electronicFilter: EventFilter {
-        return EventFilter(genre: .electronic, startDate: "2024-12-01", endDate: "2024-12-31")
-    }
-    
-    static var jazzFilter: EventFilter {
-        return EventFilter(genre: .jazz, startDate: "2024-12-01", endDate: "2024-12-31")
-    }
-    
-    static var recentFilter: EventFilter {
-        return EventFilter()
-    }
-    
-    static var monthFilter: EventFilter {
-        return EventFilter(startDate: "2025-01-01", endDate: "2025-02-28")
+    static var hiphopFilter: EventFilter {
+        return EventFilter(genre: .hiphop, startDate: "2025-01-01", endDate: "2025-02-28")
     }
 }
