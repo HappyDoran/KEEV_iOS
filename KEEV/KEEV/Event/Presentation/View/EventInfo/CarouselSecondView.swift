@@ -9,11 +9,6 @@ import SwiftUI
 
 struct CarouselSecondView: View {
     @Injected private var eventService: any EventServiceProtocol
-//    @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
-    
-    @State private var currentPage = 0
-    @State private var totalPages = 1
-    private let pageSize = 7
     @State private var events: [SimpleEventUIO] = []
     
     var body: some View {
@@ -27,40 +22,48 @@ struct CarouselSecondView: View {
                 } label: {
                     EventListCell(event: events[index])
                 }
-                .onAppear {
-                    if index == events.count - 1 && currentPage < totalPages {
-                        Task {
-                            await loadEvents(page: currentPage)
-                        }
-                    }
-                }
             }
             .padding(.horizontal, 16)
         }
         .onAppear{
-            if(currentPage == 0){
-                Task {
-                    await loadEvents(page: currentPage)
-                }
+            Task {
+                events = await loadEventByID()
             }
         }
     }
 }
 
 extension CarouselSecondView {
-    private func loadEvents(page: Int) async {
+    private func loadEventByID() async -> [SimpleEventUIO] {
         do {
-            let response = try await eventService.loadPaginatedFilteringEvents(
-                filter: EventFilter(eventFilter: .monthFilter, page: currentPage, size: pageSize))
+            // IDs 배열
+            let idsToFetch = [
+                "1671e69f-d329-45c1-8ef4-e859be43b13b",
+                "32966634-483a-4d34-8061-68f8714582f3",
+                "614c9326-167f-4fdf-ac68-33c0e26a4467",
+                "9de1d239-c6a8-4603-b29e-f935e3be5ebd",
+                "bcb216c9-3ff2-4b3b-a433-54bff2dac169",
+                "bedfb527-8741-4e48-9fe0-5cde952fdfb2",
+                "e80ce1df-0e78-4191-8c43-0e5322897961",
+                "f718095a-5f0d-4815-8cf7-a3f3a8df5b52",
+                "1ef684cb-a45d-48a4-b5a9-aa386775c6c9",
+                "9ddff2d2-1766-45d5-99c6-183b664813e9",
+                "ac11870d-7a52-4e51-be64-0fe91b352224"
+            ]
+            var loadedEvents: [SimpleEventUIO] = []
             
-            events.append(contentsOf: response.contents)
+            // 비동기적으로 각 ID에 대해 이벤트를 가져옴
+            for id in idsToFetch {
+                let event = try await eventService.loadDetailEvent(id: id)
+                loadedEvents.append(SimpleEventUIO(detailEventUIO: event))
+            }
             
-            totalPages = response.totalPages
-            currentPage += 1
-            
+            return loadedEvents
         } catch {
-            print(error)
+            print(error.localizedDescription)
         }
+        
+        return []
     }
 }
 

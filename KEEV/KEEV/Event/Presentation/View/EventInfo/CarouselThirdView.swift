@@ -7,14 +7,31 @@
 
 import SwiftUI
 
+private struct EventModel {
+    let name: String
+    let artist: String
+    let description: String
+    let eventID: String
+}
+
+private let eventElement: [EventModel] = [
+    EventModel(name: "1. Vultures Listening Experience", artist: "Kanye West, Ty Dolla $ign", description: "2010년 이후 14년 만에 한국을 방문한 칸예의 내한 공연은 큰 기대를 모았습니다. 당초 라이브 공연이 아닌 리스닝 파티로 예정되었던 이번 공연에서 칸예는 커리어 사상 처음으로 1집부터 10집까지 거의 모든 앨범의 수록곡을 메들리 형식으로 선보이며 관객들을 매료시켰습니다. 파트너 타이 달라 사인과 함께 꾸민 무대도 좋은 반응을 이끌어냈습니다.", eventID:  "2e5c0cc0-0424-4351-93d2-fb364b887a23"),
+    EventModel(name: "2. SLOW LIFE SLOW LIVE 2024", artist: "페기 구, joji 등", description: "다양한 국내외 아티스트들이 참여한 이 행사에서는 페기 구, 예지, 오드리 누나, 조지, 럭키 데이, 실리카겔, 하드 라이프, 바밍타이거 등 여러 장르를 넘나드는 인상적인 공연이 펼쳐졌습니다. 페기 구는 대표곡 '나나나'를 선보이며 관객들과 함께 흥을 즐겼고, 조지는 2019년 이후 두 번째 내한 공연을 성공적으로 펼쳤습니다.", eventID: "3ccfa8af-514e-46a7-8ba8-3406a1537509"),
+    EventModel(name: "3. 2024 펜타포트 락 페스티벌", artist: "TURNSTILE, SEPULTURA, 잔나비 등", description: "이번 페스티벌에는 총 58개 팀이 참여하여 다양한 장르의 음악을 선보였습니다. 유명 록 밴드 턴스타일(TURNSTILE)을 비롯해 새소년, 마지막 날에는 브라질의 헤비메탈 밴드 세풀투라(SEPULTURA)가 은퇴 투어의 일환으로 방한하여 의미 있는 공연을 펼쳤습니다. 역대 최다 관객인 3일간 15만 명을 기록하며 대한민국의 밴드붐을 실감하게 했습니다.", eventID: "22a16ba9-3847-4101-ad43-d75d8f5ab73d"),
+    EventModel(name: "4. 2024 부산 락 페스티벌", artist: "Kasabian, Anne-Marie, 실리카겔 등", description: "2024년 부산국제록페스티벌(BIRF)은 카사비안, 앤 마리, 엘르가든, 국카스텐, 실리카겔, 잔나비, 악뮤 등 국내외 유명 아티스트 78개 팀이 참여하여 관객들에게 다양한 음악적 경험을 선사했습니다.", eventID: "7f6bdb3f-e5ee-467d-aae8-35bcae19c03d"),
+    EventModel(name: "5. WONDERLIVET 2024", artist: "ATARASHII GAKKO!, eill, Creepy Nuts 등", description: "원더리벳 2024(WONDERLIVET 2024)'는 J-POP과 아이코닉 아티스트들을 한자리에 모은 국내 최대 규모의 음악 페스티벌로, 약 2만 5천여 명의 관객이 참여하여 성황리에 마무리되었습니다.  특히 일본의 싱어송라이터 eill(에일), 힙합 그룹 Creepy Nuts(크리피 넛츠), 모던 록 밴드 sumika(스미카), 힙합 그룹 ATARASHII GAKKO!(아타라시이 각코!) 등 여러 팀이 내한해 국내의 J-POP 붐을 실감할 수 있었습니다.", eventID: "4e1cbe11-8ee7-4d8d-92d0-51cc9063d84b"),
+    EventModel(name: "6. Best of Fujii Kaze 2020-2024 in Seoul", artist: "Fujii Kaze", description: "두 번째 내한이자 일본 가수 최초 고척돔 공연을 한 가수 후지이 카제(a.k.a 교주님), 서울에서 아시아 투어의 피날레를 장식했습니다. 공연 초반부터 “사랑해요”, “뽀뽀해주세요”를 외치며 여심은 물론이고 남심을 녹였는데요, 최상의 컨디션으로 약 2시간의 공연을 소화해내며 관객 모두에게 감동을 선사했습니다. 특히 ‘죽는 게 나아’를 부르고, 다음 곡으로 나온 ‘마츠리’에서 도입부에 ‘도라지 타령’을 삽입하여 한국 팬들을 위한 특별한 무대도 볼 수 있었습니다.", eventID: "1835d673-dea0-458a-92dd-b5c7e72c958b")
+]
+
 struct CarouselThirdView: View {
     @Injected private var eventService: any EventServiceProtocol
-    @State private var events: [SimpleEventUIO] = [.dummy0, .dummy1, .dummy2]
+    @State private var events: [SimpleEventUIO] = []
     var body: some View {
-        VStack(spacing: 0){
-            firstArtist()
-            secondArtist()
-            thirdArtist()
+        LazyVStack(spacing: 0){
+            ForEach(events.indices, id: \.self) { index in
+                eventCell(index: index, event: eventElement[index])
+            }
+            
         }
         .padding(.horizontal, 16)
         .onAppear{
@@ -26,78 +43,26 @@ struct CarouselThirdView: View {
 }
 
 extension CarouselThirdView {
-    private func firstArtist() -> some View {
+    private func eventCell(index: Int, event: EventModel) -> some View {
         VStack(alignment: .leading, spacing: 0){
-            Text("1. Kanye West & Ty Dolla $ign")
+            Text(event.name)
                 .figmaFont(PretendardFont.title(style: .sm))
-                .foregroundColor(.yellow500)
+                .foregroundColor(.blue300)
                 
-            Text("칸예 웨스트 & 타이 달라 사인")
+            Text(event.artist)
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                 .foregroundColor(.gray500)
                 .padding(.top, 4)
             
-            Text("칸예가 14년 만에 한국을 방문해 리스닝 파티로 예정되었던 공연을 깜짝 라이브로 전환하며 큰 화제를 모았습니다. 그는 사상 처음으로 데뷔 앨범부터 최근 앨범까지의 곡들을 메들리로 선보이며 관객들을 사로잡았고, 파트너 타이 달라 사인와 그의 자녀들과 함께한 무대도 좋은 반응을 이끌어냈습니다.".splitWords())
+            Text(event.description.splitWords())
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 8)
             
             NavigationLink {
-                LazyView(EventDetailScreen(simpleEvent: events[0]))
+                LazyView(EventDetailScreen(simpleEvent: events[index]))
             } label: {
-                EventListCell(event: events[0])
-                    .padding(.top, 24)
-                    .padding(.bottom, 32)
-            }
-        }
-    }
-    
-    private func secondArtist() -> some View {
-        VStack(alignment: .leading, spacing: 0){
-            Text("2. Olivia Rodrigo")
-                .figmaFont(PretendardFont.title(style: .sm))
-                .foregroundColor(.yellow500)
-            
-            Text("올리비아 로드리고")
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                .foregroundColor(.gray500)
-                .padding(.top, 4)
-            
-            Text("그래미 수상 경력을 가진 2003년생 팝스타 올리비아 로드리고가 한국에서 내한 공연을 펼쳤습니다. 약 1시간 30분 동안 그녀는 다양한 히트곡을 선보이며, 다양한 무대의상과 퍼포먼스로 관객의 뜨거운 반응을 이끌어냈습니다. 특히 달 모양의 조형물을 활용한 퍼포먼스는 공연의 하이라이트로 꼽혔습니다.".splitWords())
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 8)
-            
-            NavigationLink {
-                LazyView(EventDetailScreen(simpleEvent: events[1]))
-            } label: {
-                EventListCell(event: events[1])
-                    .padding(.top, 24)
-                    .padding(.bottom, 32)
-            }
-        }
-    }
-    
-    private func thirdArtist() -> some View {
-        VStack(alignment: .leading, spacing: 0){
-            Text("3. Suede")
-                .figmaFont(PretendardFont.title(style: .sm))
-                .foregroundColor(.yellow500)
-            
-            Text("스웨이드")
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                .foregroundColor(.gray500)
-                .padding(.top, 4)
-            
-            Text("오아시스, 블러, 펄프와 함께 4대 브릿팝 밴드로 불리는 스웨이드가 8월 23일 내한 공연을 펼쳤었습니다. 매우 더운 날씨와 환경에도 불구하고 열정적인 공연을 펼치고 공연이 끝난 후에도 팬들에게 싸인을 해주는 등 팬서비스를 아끼지 않으며 그들을 기다린 많은 팬들에게 잊을 수 없는 추억을 선사했습니다.".splitWords())
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 8)
-            
-            NavigationLink {
-                LazyView(EventDetailScreen(simpleEvent: events[2]))
-            } label: {
-                EventListCell(event: events[2])
+                EventListCell(event: events[index])
                     .padding(.top, 24)
                     .padding(.bottom, 32)
             }
@@ -108,15 +73,16 @@ extension CarouselThirdView {
 extension CarouselThirdView {
     private func loadEventByID() async -> [SimpleEventUIO]{
         do {
-            // IDs 배열
             let idsToFetch = [
                 "2e5c0cc0-0424-4351-93d2-fb364b887a23",
-                "fe8fea1d-45c4-4098-bd68-56d5775f02bd",
-                "efa42141-4d92-4b18-9999-0d927c7068ed"
+                "3ccfa8af-514e-46a7-8ba8-3406a1537509",
+                "22a16ba9-3847-4101-ad43-d75d8f5ab73d",
+                "7f6bdb3f-e5ee-467d-aae8-35bcae19c03d",
+                "4e1cbe11-8ee7-4d8d-92d0-51cc9063d84b",
+                "1835d673-dea0-458a-92dd-b5c7e72c958b",
             ]
             var loadedEvents: [SimpleEventUIO] = []
             
-            // 비동기적으로 각 ID에 대해 이벤트를 가져옴
             for id in idsToFetch {
                 let event = try await eventService.loadDetailEvent(id: id)
                 loadedEvents.append(SimpleEventUIO(detailEventUIO: event))
@@ -127,11 +93,13 @@ extension CarouselThirdView {
             print(error.localizedDescription)
         }
         
-        return [.dummy0, .dummy1, .dummy2]
+        return []
     }
 }
 
 
 #Preview {
-    CarouselThirdView()
+    ScrollView {
+        CarouselThirdView()
+    }
 }
