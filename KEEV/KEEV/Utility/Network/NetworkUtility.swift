@@ -9,7 +9,11 @@ import Foundation
 /// 서버와의 통신을 실질적으로 수행하는 메소드를 가진 구조체
 ///
 /// - Author:   Doran
-struct NetworkUtility {
+struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
+    static var layer: LayerType = .utility(of: "NetworkUtility")
+    
+    typealias Layer = NetworkUtility
+    
     private let session: URLSession
     
     /// URLSession을 Shared Session으로 초기화 하여 기본적인 요청을 하게 하였습니다.
@@ -24,14 +28,14 @@ struct NetworkUtility {
     ///
     ///  요청을 보내서 서버로부터 가져온 데이터를 리턴하는 메소드입니다.
     ///
-    /// - Throws: URL이 잘못 된 경우 badURL
+    /// - Throws: URL이 잘못 된 경우 KEEVError
     /// - Returns: 서버로부터 가져온 데이터
     ///
     /// - Author: Doran, 라움
-    func request(router: HTTPRequestable) async throws -> Data {
-        let request = try router.asURLRequest()
+    func request(router: any HTTPRequestable) async throws -> Data {
+        let request = try doWithException(caller: "request(router: any HTTPRequestable)", router.asURLRequest)
         
-        let (data, _) = try await session.data(for: request)
+        let (data, response) = try await fetchData(from: request)
         
         return data
     }
@@ -44,15 +48,15 @@ struct NetworkUtility {
     ///
     ///  MultipartForm으로 요청을 보내서 서버로부터 가져온 데이터를 리턴하는 메소드입니다.
     ///
-    /// - Throws: URL이 잘못 된 경우 badURL
+    /// - Throws: URL이 잘못 된 경우 KEEVError
     /// - Returns: 서버로부터 가져온 데이터
     ///
     /// - Author: 라움
     func requestWithMultipartForm(router: HTTPRequestable, boundary: String) async throws -> Data {
-        var request = try router.asURLRequest()
+        var request = try doWithException(caller: "requestWithMultipartForm(router: HTTPRequestable, boundary: String)", router.asURLRequest)
         request.setValue("multipart/form-data; boundary=\"\(boundary)\"", forHTTPHeaderField: "Content-Type")
         
-        let (data, _) = try await session.data(for: request)
+        let (data, response) = try await fetchData(from: request)
         
         return data
     }
@@ -64,17 +68,22 @@ struct NetworkUtility {
     ///
     ///  요청을 보내서 서버로부터 가져온 데이터를 status code와 함께 튜플로 리턴하는 메소드입니다.
     ///
-    /// - Throws: URL이 잘못 된 경우 badURL
+    /// - Throws: URL이 잘못 된 경우 KEEVError
     /// - Returns: 서버로 가져온 status code와 데이터의 튜플
     ///
     /// - Author: 라움
     func requestWithStatusCode(router: HTTPRequestable) async throws -> (Int, Data) {
-        let request = try router.asURLRequest()
+        let request = try doWithException(caller: "requestWithStatusCode(router: HTTPRequestable)", router.asURLRequest)
         
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await fetchData(from: request)
         
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-            throw NSError(domain: "ServerError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Server Error"])
+            throw KEEVError(
+                layer: Self.layer,
+                caller: "requestWithStatusCode(router: HTTPRequestable)",
+                occurPoint: .local(description: "FAILED TO GET STATUS CODE"),
+                previousError: nil
+            )
         }
         
         return (statusCode, data)
@@ -90,14 +99,20 @@ struct NetworkUtility {
     ///
     /// - Author: Doran
     func xmlRequest(router: HTTPRequestable) async throws -> Data {
-        let request = try router.asURLRequest()
+        let request = try doWithException(caller: "xmlRequest(router: HTTPRequestable)", router.asURLRequest)
         
-        let (data, response) = try await session.data(for: request)
+        let (data, response) = try await fetchData(from: request)
         
         guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
             throw NSError(domain: "ServerError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Server Error"])
         }
         
         return data
+    }
+    
+    private func fetchData(from request: URLRequest) async throws -> (Data, URLResponse) {
+        try await doAsyncWithException(caller: "fetchData(from request: URLRequest)") {
+            try await session.data(for: request)
+        }
     }
 }

@@ -41,7 +41,12 @@ extension URLEndpointComposable {
         components.queryItems = queryItems
         
         guard let url = components.url else {
-            throw NetworkError.badURL
+            throw KEEVError(
+                layer: .utility(of: "URLEndpointComposable"),
+                caller: "configureURL()",
+                occurPoint: .local(description: "FAILED TO CONFIGURE URL"),
+                previousError: nil
+            )
         }
         
         return url

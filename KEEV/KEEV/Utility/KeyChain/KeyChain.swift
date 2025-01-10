@@ -22,6 +22,7 @@ import Security
 /// - Author: Doran
 struct KeyChain {
     private static let applicationLabel = Bundle.main.bundleIdentifier ?? "com.HMHZ.KEEV"
+    private static let layer = LayerType.utility(of: "KeyChain")
     
     /// KeyChain에 데이터를 저장하는 함수
     ///
@@ -37,7 +38,12 @@ struct KeyChain {
     /// - Author: Doran
     static func create(_ string: String, tag: String) throws {
         guard let data = string.data(using: .utf8) else {
-            throw KeyChainError.invalidToken
+            throw KEEVError(
+                layer: Self.layer,
+                caller: "create(_ string: String, tag: String)",
+                occurPoint: .local(description: "FAIL TO CONVERT TO STRING"),
+                previousError: nil
+            )
         }
         
         let query: [CFString: Any] = [
@@ -50,7 +56,12 @@ struct KeyChain {
         SecItemDelete(query as CFDictionary)
         
         if SecItemAdd(query as CFDictionary, nil) != errSecSuccess {
-            throw KeyChainError.addFailed
+            throw KEEVError(
+                layer: Self.layer,
+                caller: "create(_ string: String, tag: String)",
+                occurPoint: .local(description: "FAIL TO CREATE KEYCHAIN."),
+                previousError: nil
+            )
         }
     }
     
@@ -96,7 +107,12 @@ struct KeyChain {
         ]
         
         if SecItemDelete(query as CFDictionary) != errSecSuccess {
-            throw KeyChainError.deleteFailed
+            throw KEEVError(
+                layer: Self.layer,
+                caller: "delete(tag: String)",
+                occurPoint: .local(description: "FAIL TO DELETE KEYCHAIN"),
+                previousError: nil
+            )
         }
     }
 }

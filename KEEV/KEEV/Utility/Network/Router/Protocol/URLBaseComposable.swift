@@ -34,7 +34,12 @@ extension URLBaseComposable {
         components.port = port
         
         guard let url = components.url else {
-            throw NetworkError.badURL
+            throw KEEVError(
+                layer: .utility(of: "URLBaseComposable"),
+                caller: "configureURL()",
+                occurPoint: .local(description: "FAILED TO CREATE URL, URL IS NULL"),
+                previousError: nil
+            )
         }
         
         return url
