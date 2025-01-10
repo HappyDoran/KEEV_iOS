@@ -266,9 +266,6 @@ private extension VibeCreateScreen {
                 dismiss()
             } catch {
                 errorForAlert = error
-                print("\(error)")
-                print(error.localizedDescription)
-                print("바이브를 업로드하는데 실패했습니다.")
             }
             loadingForUpload = false
         }
