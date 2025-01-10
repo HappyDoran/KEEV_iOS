@@ -12,7 +12,7 @@ import Foundation
 /// 댓글 읽기, 쓰기, 수정, 삭제에 대한 함수가 명시되어있다.
 ///
 /// - Author: Doran
-protocol ReplyServiceProtocol: ObservableObject {
+protocol ReplyServiceProtocol: LayerRepresentable, AnyObject {
     /// 바이브에 대한 댓글을 가져오는 함수
     ///
     /// - Parameters:

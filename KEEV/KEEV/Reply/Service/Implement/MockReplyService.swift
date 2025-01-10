@@ -15,6 +15,8 @@ enum ReplyServiceError: Error {
 }
 
 class MockReplyService: ReplyServiceProtocol {
+    static var layer: LayerType = .service(of: "MockReplyService")
+    
     
     private var replies: [ReplyUIO] = [
         .dummy0,

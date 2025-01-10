@@ -8,7 +8,11 @@
 import Combine
 import Foundation
 
-class ReplyService: ReplyServiceProtocol {
+class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
+    typealias Layer = ReplyService
+    
+    static var layer: LayerType = .service(of: "ReplyService")
+    
     private let networkUtility = NetworkUtility()
     private let tokenUtility = TokenUtility.shared
     private var currentUser: DetailUserUIO?
@@ -48,16 +52,23 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Author: Doran
     func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
-        let accessToken = try await getAccessToken()
-        let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
-        
-        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
-        
-        let replyDTOs = try jsonDecoder.decode([ReplyDTO].self, from: data)
-        let currentUserID = currentUser?.id
-        let replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
-        
-        return replies
+        try await doAsyncWithException(caller: "fetchReplies") {
+            let accessToken = try await getAccessToken()
+            let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
+            
+            let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
+            
+            guard (200..<300).contains(code) else {
+                let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self .self, from: data)
+                throw throwKEEVError(caller: "fetchReplies", occurPoint: .remote(code: code, message: errorMessage.message))
+            }
+            
+            let replyDTOs = try jsonDecoder.decode([ReplyDTO].self, from: data)
+            let currentUserID = currentUser?.id
+            let replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
+            
+            return replies
+        }
     }
     
     /// 바이브에 댓글을 추가하는 함수
@@ -75,16 +86,23 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Author: Doran
     func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO {
-        let accessToken = try await getAccessToken()
-        let router = ReplyHTTPRequestRouter.addReply(token: accessToken, vibeID: vibeID, text: text)
-        
-        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
-        
-        let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
-        let currentUserID = currentUser?.id
-        let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
-        
-        return reply
+        try await doAsyncWithException(caller: "addReply") {
+            let accessToken = try await getAccessToken()
+            let router = ReplyHTTPRequestRouter.addReply(token: accessToken, vibeID: vibeID, text: text)
+            
+            let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
+            
+            guard (200..<300).contains(code) else {
+                let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self .self, from: data)
+                throw throwKEEVError(caller: "addReply", occurPoint: .remote(code: code, message: errorMessage.message))
+            }
+            
+            let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
+            let currentUserID = currentUser?.id
+            let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
+            
+            return reply
+        }
     }
     
     /// 바이브에 대한 댓글을 수정하는 함수
@@ -103,21 +121,27 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Author: Doran
     func modifyReply(_ reply: ReplyUIO, updatedText: String) async throws -> ReplyUIO {
-        let accessToken = try await getAccessToken()
-        let router = ReplyHTTPRequestRouter.modifyReply(
-            token: accessToken,
-            replyID: "\(reply.id)",
-            vibeID: "\(reply.vibeID)",
-            updatedText: updatedText
-        )
-        
-        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
-        
-        let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
-        let currentUserID = currentUser?.id
-        let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
-        
-        return reply
+        try await doAsyncWithException(caller: "modifyReply") {
+            let accessToken = try await getAccessToken()
+            let router = ReplyHTTPRequestRouter.modifyReply(
+                token: accessToken,
+                replyID: "\(reply.id)",
+                vibeID: "\(reply.vibeID)",
+                updatedText: updatedText
+            )
+            
+            let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
+            guard (200..<300).contains(code) else {
+                let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self .self, from: data)
+                throw throwKEEVError(caller: "modifyReply", occurPoint: .remote(code: code, message: errorMessage.message))
+            }
+            
+            let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
+            let currentUserID = currentUser?.id
+            let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
+            
+            return reply
+        }
     }
     
     /// 바이브에 대한 댓글을 삭제하는 함수
@@ -129,10 +153,12 @@ class ReplyService: ReplyServiceProtocol {
     ///
     /// - Author: Doran
     func deleteReply(_ replyID: Int) async throws {
-        let accessToken = try await getAccessToken()
-        let router = ReplyHTTPRequestRouter.deleteReply(token: accessToken, replyID: "\(replyID)")
-        
-        _ = try await networkUtility.requestWithStatusCode(router: router)
+        try await doAsyncWithException(caller: "deleteReply") {
+            let accessToken = try await getAccessToken()
+            let router = ReplyHTTPRequestRouter.deleteReply(token: accessToken, replyID: "\(replyID)")
+            
+            _ = try await networkUtility.requestWithStatusCode(router: router)
+        }
     }
 }
 
