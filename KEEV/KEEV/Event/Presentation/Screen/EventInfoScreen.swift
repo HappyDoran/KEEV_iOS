@@ -61,7 +61,6 @@ struct EventInfoScreen: View {
                 themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter)
                 themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter)
             }
-            .padding(.bottom, 16)
             .onAppear {
                 loadEvents()
             }
