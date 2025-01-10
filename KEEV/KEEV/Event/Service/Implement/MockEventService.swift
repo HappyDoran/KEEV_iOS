@@ -14,6 +14,8 @@ import Foundation
 /// - Todo: 향후에 EventService와 EventServiceProtocol을 교체하면서 MockService의 프로토콜도 수정해주어야합니다.
 /// - Author: 라움
 class MockEventService: EventServiceProtocol {
+    static var layer: LayerType = .service(of: "MockEventService")
+    
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
