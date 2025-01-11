@@ -71,29 +71,36 @@ extension CarouselThirdView {
 }
 
 extension CarouselThirdView {
-    private func loadEventByID() async -> [SimpleEventUIO]{
-        do {
-            let idsToFetch = [
-                "2e5c0cc0-0424-4351-93d2-fb364b887a23",
-                "3ccfa8af-514e-46a7-8ba8-3406a1537509",
-                "22a16ba9-3847-4101-ad43-d75d8f5ab73d",
-                "7f6bdb3f-e5ee-467d-aae8-35bcae19c03d",
-                "4e1cbe11-8ee7-4d8d-92d0-51cc9063d84b",
-                "1835d673-dea0-458a-92dd-b5c7e72c958b",
-            ]
-            var loadedEvents: [SimpleEventUIO] = []
-            
-            for id in idsToFetch {
-                let event = try await eventService.loadDetailEvent(id: id)
-                loadedEvents.append(SimpleEventUIO(detailEventUIO: event))
+    private func loadEventByID() async -> [SimpleEventUIO] {
+        let idsToFetch = [
+            "2e5c0cc0-0424-4351-93d2-fb364b887a23",
+            "3ccfa8af-514e-46a7-8ba8-3406a1537509",
+            "22a16ba9-3847-4101-ad43-d75d8f5ab73d",
+            "7f6bdb3f-e5ee-467d-aae8-35bcae19c03d",
+            "4e1cbe11-8ee7-4d8d-92d0-51cc9063d84b",
+            "1835d673-dea0-458a-92dd-b5c7e72c958b",
+        ]
+        var loadedEvents: [SimpleEventUIO?] = Array(repeating: nil, count: idsToFetch.count)
+        
+        await withTaskGroup(of: (Int, SimpleEventUIO?).self) { group in
+            for (index, id) in idsToFetch.enumerated() {
+                group.addTask {
+                    do {
+                        let event = try await eventService.loadDetailEvent(id: id)
+                        return (index, SimpleEventUIO(detailEventUIO: event))
+                    } catch {
+                        debugPrint(error.localizedDescription)
+                        return (index, nil)
+                    }
+                }
             }
             
-            return loadedEvents
-        } catch {
-            print(error.localizedDescription)
+            for await (index, event) in group {
+                loadedEvents[index] = event
+            }
         }
         
-        return []
+        return loadedEvents.compactMap { $0 }
     }
 }
 
