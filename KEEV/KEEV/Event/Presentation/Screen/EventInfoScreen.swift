@@ -42,12 +42,10 @@ struct EventInfoScreen: View {
     @State private var selectedEvent: SimpleEventUIO? = nil
     @State private var navigateToEventDetail: Bool = false
     
-    @State private var christmasEvents: [SimpleEventUIO] = []
-    @State private var rockEvents: [SimpleEventUIO] = []
-    @State private var indieEvents: [SimpleEventUIO] = []
-    @State private var electronicEvents: [SimpleEventUIO] = []
-    @State private var jazzEvents: [SimpleEventUIO] = []
-    @State private var recentEvents: [SimpleEventUIO] = []
+    @State private var firstEvents: [SimpleEventUIO] = []
+    @State private var secondEvents: [SimpleEventUIO] = []
+    @State private var thirdEvents: [SimpleEventUIO] = []
+    @State private var fourthEvents: [SimpleEventUIO] = []
     
     @State private var currentPage = 0
     private let pageSize = 4
@@ -56,10 +54,10 @@ struct EventInfoScreen: View {
         ScrollViewReader { proxy in
             ScrollView(showsIndicators: false) {
                 EventCarouselView().id(0)
-                themeScrollSectionView(themeName: "최근에 추가된 공연", events: recentEvents)
-                themeScrollSectionView(themeName: "성탄절엔 캐롤만 들어야 하나요?", events: christmasEvents, eventFilter: .christmasFilter)
-                themeScrollSectionView(themeName: "이달의 락 공연", events: rockEvents, eventFilter: .rockFilter)
-                themeScrollSectionView(themeName: "이달의 인디 공연", events: indieEvents, eventFilter: .indieFilter)
+                themeScrollSectionView(themeName: "다가오는 공연", events: firstEvents, eventFilter: .upCommingFilter)
+                themeScrollSectionView(themeName: "이달의 락 공연", events: secondEvents, eventFilter: .rockFilter)
+                themeScrollSectionView(themeName: "이달의 소공연", events: thirdEvents, eventFilter: .smallPerformFilter)
+                themeScrollSectionView(themeName: "이달의 힙합 공연", events: fourthEvents, eventFilter: .hiphopFilter)
             }
             .onAppear {
                 loadEvents()
@@ -196,20 +194,20 @@ extension EventInfoScreen {
     
     private func loadEvents() {
         Task {
-            if let events = await loadFilteredEventData(filter: EventFilter.christmasFilter){
-                christmasEvents = events
+            if let events = await loadFilteredEventData(filter: EventFilter.upCommingFilter){
+                firstEvents = events
             }
             
             if let events = await loadFilteredEventData(filter: EventFilter.rockFilter) {
-                rockEvents = events
+                secondEvents = events
             }
             
-            if let events = await loadFilteredEventData(filter: EventFilter.indieFilter) {
-                indieEvents = events
+            if let events = await loadFilteredEventData(filter: EventFilter.smallPerformFilter) {
+                thirdEvents = events
             }
             
-            if let events = await loadEventData(){
-                recentEvents = events
+            if let events = await loadFilteredEventData(filter: EventFilter.hiphopFilter) {
+                fourthEvents = events
             }
         }
     }

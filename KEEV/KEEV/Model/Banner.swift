@@ -26,9 +26,9 @@ struct Banner: BannerProtocol {
         switch title {
         case "키브를 소개합니다":
             return AnyView(CarouselFirstView())
-        case "올해의 마무리,\n공연과 함께":
+        case "올해의 첫 내한,\n어디 갈까?":
             return AnyView(CarouselSecondView())
-        case "2024\n한국을 찾은 아티스트":
+        case "2024 공연결산.zip\n주요 공연 소개":
             return AnyView(CarouselThirdView())
         default:
             return AnyView(Text("기본 설명 뷰"))
