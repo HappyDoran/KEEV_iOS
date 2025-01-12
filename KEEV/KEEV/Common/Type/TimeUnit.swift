@@ -69,15 +69,15 @@ enum TimeUnit {
         let underDayDifference = timeDifference % Int(TimeUnit.days(of: 1).toSeconds)
         
         if underDayDifference >= 60 * 60 {
-            return .hours(of: timeDifference / 60 * 60)
+            return .hours(of: underDayDifference / 60 * 60)
         }
         
         if underDayDifference >= 60 {
-            return .minutes(of: timeDifference / 60)
+            return .minutes(of: underDayDifference / 60)
         }
         
-        if underDayDifference > 1 {
-            return .seconds(of: TimeInterval(timeDifference))
+        if underDayDifference >= 10 {
+            return .seconds(of: TimeInterval(underDayDifference))
         }
         
         return .justNow
