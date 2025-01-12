@@ -79,7 +79,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         var path = ["vibe"]
         
         switch self {
-        case .getVibeCount(let eventID, _):
+        case .getVibeCount(_, let eventID):
             path.append(contentsOf: ["count", "\(eventID)"])
         case .getVibes:
             path.append(contentsOf: ["get", "sortBy"])
