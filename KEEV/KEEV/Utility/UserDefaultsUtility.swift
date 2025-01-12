@@ -40,7 +40,7 @@ final class UserDefaultsUtility: LayerRepresentable, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func set<InputType: Codable>(_ value: InputType, forKey key: String) throws {
-        let encodedData = try doWithException(caller: "set(_ value: InputType, forKey key: String)") {
+        let encodedData = try doWithException(caller: "set") {
             try jsonEncoder.encode(value)
         }
         userDefaults.set(encodedData, forKey: key)
@@ -61,7 +61,7 @@ final class UserDefaultsUtility: LayerRepresentable, KEEVErrorHandler {
     func get<OutputType: Codable>(_ type: OutputType.Type, forKey key: String) throws -> OutputType? {
         guard let data = userDefaults.data(forKey: key) else { return nil }
         
-        let decodedData = try doWithException(caller: "get(_ type: OutputType.Type, forKey key: String)") {
+        let decodedData = try doWithException(caller: "get") {
             try jsonDecoder.decode(OutputType.self, from: data)
         }
         return decodedData

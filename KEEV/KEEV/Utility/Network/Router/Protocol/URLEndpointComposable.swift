@@ -43,7 +43,7 @@ extension URLEndpointComposable {
         guard let url = components.url else {
             throw KEEVError(
                 layer: .utility(of: "URLEndpointComposable"),
-                caller: "configureURL()",
+                caller: "configureURL",
                 occurPoint: .local(description: "FAILED TO CONFIGURE URL"),
                 previousError: nil
             )

@@ -35,7 +35,7 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     /// - Author: Doran, 라움
     func request(router: any HTTPRequestable) async throws -> Data {
         try await doAsyncWithException(caller: "request-\(router)") {
-            let request = try doWithException(caller: "request(router: any HTTPRequestable)", router.asURLRequest)
+            let request = try router.asURLRequest()
             
             let (data, _) = try await fetchData(from: request)
             
@@ -78,11 +78,13 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func requestWithStatusCode(router: HTTPRequestable) async throws -> (Int, Data) {
-        let request = try doWithException(caller: "requestWithStatusCode(router: HTTPRequestable)", router.asURLRequest)
-        
-        let (data, statusCode) = try await fetchData(from: request)
-        
-        return (statusCode, data)
+        try await doAsyncWithException(caller: "requestWithStatusCode-\(router)") {
+            let request = try router.asURLRequest()
+            
+            let (data, statusCode) = try await fetchData(from: request)
+            
+            return (statusCode, data)
+        }
     }
     
     /// API 통신시 XML 데이터를 가져오기 위한 메소드

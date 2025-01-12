@@ -51,7 +51,7 @@ final class ErrorAccountService: AccountServiceProtocol, KEEVErrorHandler {
     func requestWithStatusCode(router: HTTPRequestable) async throws -> (Int, Data) {
         throw KEEVError(
             layer: .utility(of: "NetworkUtility"),
-            caller: "request(router:)",
+            caller: "request",
             occurPoint: .remote(code: 400, message: "token is invalid"),
             previousError: nil
         )

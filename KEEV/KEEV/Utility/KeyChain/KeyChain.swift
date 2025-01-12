@@ -40,7 +40,7 @@ struct KeyChain {
         guard let data = string.data(using: .utf8) else {
             throw KEEVError(
                 layer: Self.layer,
-                caller: "create(_ string: String, tag: String)",
+                caller: "create",
                 occurPoint: .local(description: "FAIL TO CONVERT TO STRING"),
                 previousError: nil
             )
@@ -58,7 +58,7 @@ struct KeyChain {
         if SecItemAdd(query as CFDictionary, nil) != errSecSuccess {
             throw KEEVError(
                 layer: Self.layer,
-                caller: "create(_ string: String, tag: String)",
+                caller: "create",
                 occurPoint: .local(description: "FAIL TO CREATE KEYCHAIN."),
                 previousError: nil
             )
@@ -109,7 +109,7 @@ struct KeyChain {
         if SecItemDelete(query as CFDictionary) != errSecSuccess {
             throw KEEVError(
                 layer: Self.layer,
-                caller: "delete(tag: String)",
+                caller: "delete",
                 occurPoint: .local(description: "FAIL TO DELETE KEYCHAIN"),
                 previousError: nil
             )

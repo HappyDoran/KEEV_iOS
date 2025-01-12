@@ -36,7 +36,7 @@ extension URLBaseComposable {
         guard let url = components.url else {
             throw KEEVError(
                 layer: .utility(of: "URLBaseComposable"),
-                caller: "configureURL()",
+                caller: "configureURL",
                 occurPoint: .local(description: "FAILED TO CREATE URL, URL IS NULL"),
                 previousError: nil
             )

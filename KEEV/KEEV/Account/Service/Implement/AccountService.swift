@@ -122,7 +122,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     }
     
     func signOut() async throws {
-        try await doAsyncWithException(caller: "signOut()") {
+        try await doAsyncWithException(caller: "signOut") {
             let token = try await tokenUtility.fetchToken(for: .access)
             let router = AccountHTTPRequestRouter.signOut(accessToken: token)
             let _ = try await networkUtility.request(router: router)
@@ -132,7 +132,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     }
     
     func deleteAccount() async throws {
-        try await doAsyncWithException(caller: "deleteAccount()") {
+        try await doAsyncWithException(caller: "deleteAccount") {
             let token = try await tokenUtility.fetchToken(for: .access)
             let router = AccountHTTPRequestRouter.deleteAccount(accessToken: token)
             let _ = try await networkUtility.request(router: router)
@@ -165,7 +165,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
             let error = try decoder.decode(ErrorMessageDTO.self, from: data)
             throw KEEVError(
                 layer: Self.layer,
-                caller: "fetchAccountDTO(from router: AccountHTTPRequestRouter)",
+                caller: "fetchAccountDTO",
                 occurPoint: .remote(code: code, message: error.message),
                 previousError: nil
             )
