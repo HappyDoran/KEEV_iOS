@@ -24,6 +24,7 @@ struct VibeDetailScreen: View {
     @State private var loadingForDelete: Bool = false
     @State private var imageIndexTag: Int = 0
     @State private var replyText: String = ""
+    @State private var toggleAdd: Bool = false
     
     @State private var showVibeActionSheet: Bool = false
     @State private var showReplyActionSheet: ReplyWithIndex? = nil
@@ -31,6 +32,8 @@ struct VibeDetailScreen: View {
     @State private var navigateToModifyVibe: Bool = false
     @State private var navigateToReport: ReportType? = nil
     @State private var navigateToUserProfile: Int? = nil
+    
+    @FocusState private var isFocused: Bool
     
     init(
         vibe: VibeUIO,
@@ -43,101 +46,109 @@ struct VibeDetailScreen: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            ScrollView {
-                VStack(spacing: 0) {
-                    VibeContentView(vibe: vibe)
-                        .padding(.top, 20)
-                        .padding(.horizontal, 16)
-                    Rectangle().frame(height: 1).foregroundColor(.gray800)
-                    ReplyListView(
-                        userID: 2,
-                        replies: $replies,
-                        userTapHandler: tapReplyUser,
-                        moreTapHandler: tapReplyMore,
-                        likeTapHandler: tapReplyLike
-                    )
-                    .background(.grayBG700)
+        ScrollViewReader { proxy in
+            VStack(spacing: 0) {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        VibeContentView(vibe: vibe)
+                            .padding(.top, 20)
+                            .padding(.horizontal, 16)
+                        Rectangle().frame(height: 1).foregroundColor(.gray800)
+                        ReplyListView(
+                            userID: 2,
+                            replies: $replies,
+                            userTapHandler: tapReplyUser,
+                            moreTapHandler: tapReplyMore,
+                            likeTapHandler: tapReplyLike
+                        )
+                        .id("replyList")
+                        .background(.grayBG700)
+                    }
+                }
+                .scrollDismissesKeyboard(.immediately)
+                .scrollIndicators(.hidden)
+                .refreshable {
+                    fetchVibe()
+                    fetchReplies()
+                }
+                
+                ReplyInputView(replyText: $replyText, isFocused: $isFocused, sendHandler: addReply)
+                    .frame(height: 46)
+                    .padding(.top, 16)
+                    .padding(.bottom, 16)
+                    .padding(.horizontal, 20)
+                    .background(.grayBG800)
+            }
+            .navigationTitle("바이브")
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        dismiss()
+                    } label: {
+                        Image(systemName: "chevron.backward")
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(.gray100)
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showVibeActionSheet = true
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundColor(.gray100)
+                    }
                 }
             }
-            .scrollDismissesKeyboard(.immediately)
-            .scrollIndicators(.hidden)
-            .refreshable {
+            .actionSheetForKEEV(
+                isPresented: $showVibeActionSheet,
+                defaults: vibeActionSheetContent()
+            )
+            .actionSheetForKEEV(
+                isPresented: .init {
+                    showReplyActionSheet != nil
+                } set: { bool in
+                    if !bool {
+                        showReplyActionSheet = nil
+                    }
+                },
+                defaults: replyActionSheetContent(selectedReply: showReplyActionSheet)
+            )
+            .sheet(item: $modifyReplySheet, onDismiss: {
+                modifyReplySheet = nil
+            }, content: { replyToModify in
+                let index = replyToModify.index
+                ModifyReplyView(reply: replies[index], isFocused: $isFocused) { updatedText in
+                    modifyReply(index: index, reply: replies[index], text: updatedText)
+                }
+                .presentationDetents([.height(120)])
+                .presentationDragIndicator(.visible)
+            })
+            .backgroundForKEEV()
+            .navigationDestination(item: $navigateToReport) { type in
+                ReportScreen(reportType: type)
+            }
+            .navigationDestination(isPresented: $navigateToModifyVibe) {
+                VibeModifyScreen(vibe: $vibe, onUpdate: onUpdate)
+            }
+            .navigationDestination(item: $navigateToUserProfile) { userID in
+                ProfileScreen(selectedItem: .constant("profile"), userID: userID, isMyProfile: vibe.isMine, isNavigation: true)
+            }
+            .onAppear{
                 fetchVibe()
                 fetchReplies()
             }
-            
-            ReplyInputView(replyText: $replyText, sendHandler: addReply)
-            .frame(height: 46)
-            .padding(.top, 16)
-            .padding(.bottom, 16)
-            .padding(.horizontal, 20)
-            .background(.grayBG800)
-        }
-        .navigationTitle("바이브")
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.gray100)
+            .onChange(of: toggleAdd) {
+                withAnimation {
+                    proxy.scrollTo("replyList", anchor: .bottom)
                 }
             }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showVibeActionSheet = true
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.gray100)
-                }
-            }
+            .loading(for: loadingForDelete)
+            .alertForError($errorForAlert)
         }
-        .actionSheetForKEEV(
-            isPresented: $showVibeActionSheet,
-            defaults: vibeActionSheetContent()
-        )
-        .actionSheetForKEEV(
-            isPresented: .init {
-                showReplyActionSheet != nil
-            } set: { bool in
-                if !bool {
-                    showReplyActionSheet = nil
-                }
-            },
-            defaults: replyActionSheetContent(selectedReply: showReplyActionSheet)
-        )
-        .sheet(item: $modifyReplySheet, onDismiss: {
-            modifyReplySheet = nil
-        }, content: { replyToModify in
-            let index = replyToModify.index
-            ModifyReplyView(reply: replies[index]) { updatedText in
-                modifyReply(index: index, reply: replies[index], text: updatedText)
-            }
-            .presentationDetents([.height(120)])
-            .presentationDragIndicator(.visible)
-        })
-        .backgroundForKEEV()
-        .navigationDestination(item: $navigateToReport) { type in
-            ReportScreen(reportType: type)
-        }
-        .navigationDestination(isPresented: $navigateToModifyVibe) {
-            VibeModifyScreen(vibe: $vibe, onUpdate: onUpdate)
-        }
-        .navigationDestination(item: $navigateToUserProfile) { userID in
-            ProfileScreen(selectedItem: .constant("profile"), userID: userID, isMyProfile: vibe.isMine, isNavigation: true)
-        }
-        .onAppear{
-            fetchVibe()
-            fetchReplies()
-        }
-        .loading(for: loadingForDelete)
-        .alertForError($errorForAlert)
     }
 }
 
@@ -233,13 +244,15 @@ private extension VibeDetailScreen {
     }
     
     func addReply(_ text: String) {
+        isFocused = false
         replyText = ""
         Task {
             do {
                 let reply = try await replyService.addReply(to: vibe.id, text: text)
-                replies.insert(reply, at: 0)
+                replies.append(reply)
                 vibe.replyCount += 1
                 onUpdate?(vibe)
+                toggleAdd.toggle()
             } catch {
                 errorForAlert = error
                 print("댓글을 등록하는데 실패했습니다.")
@@ -248,6 +261,7 @@ private extension VibeDetailScreen {
     }
     
     func modifyReply(index: Int, reply: ReplyUIO, text: String) {
+        isFocused = false
         modifyReplySheet = nil
         Task {
             do {
