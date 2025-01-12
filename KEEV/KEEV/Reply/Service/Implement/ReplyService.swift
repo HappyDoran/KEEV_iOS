@@ -55,7 +55,9 @@ class ReplyService: ReplyServiceProtocol {
         
         let replyDTOs = try jsonDecoder.decode([ReplyDTO].self, from: data)
         let currentUserID = currentUser?.id
-        let replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
+        var replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
+        
+        replies = replies.reversed()
         
         return replies
     }
