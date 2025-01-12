@@ -12,7 +12,7 @@ import Foundation
 /// ActivityService를 구현하기 위한 프로토콜입니다.
 ///
 /// - Author: 라움
-protocol ActivityServiceProtocol: AnyObject {
+protocol ActivityServiceProtocol: LayerRepresentable, AnyObject {
     /// 사용자 ID를 통한 회원 정보 조회 함수
     ///
     /// - Parameters:

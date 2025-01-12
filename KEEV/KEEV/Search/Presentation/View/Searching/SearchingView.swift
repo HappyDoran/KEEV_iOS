@@ -18,12 +18,14 @@ struct SearchingView: View {
     @Binding private var selectedEvent: SimpleEventUIO?
     @Binding private var searchText: String
     var searchContent: SearchContent
+    @Binding private var error: Error?
     private let onClick: () -> Void
     
-    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), searchText: Binding<String>, searchContent: SearchContent, onClick: @escaping ()-> Void) {
+    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), searchText: Binding<String>, searchContent: SearchContent, error: Binding<Error?>, onClick: @escaping ()-> Void) {
         self._selectedEvent = selectedEvent
         self._searchText = searchText
         self.searchContent = searchContent
+        self._error = error
         self.onClick = onClick
     }
     
@@ -77,8 +79,8 @@ extension SearchingView {
                     let allEvents = try await searchService.searchEventByNameWhenAddVibe(name: searchText, size: pageSize, page: currentPage).contents
                     events = allEvents
                 }
-            } catch {
-                print(error)
+            } catch let failToLoadSearchResult {
+                error = failToLoadSearchResult
             }
         }
     }
@@ -88,6 +90,7 @@ extension SearchingView {
     SearchingView(
         searchText: .constant("칸예"),
         searchContent: .event,
+        error: .constant(nil),
         onClick: {}
     )
     .backgroundForKEEV()

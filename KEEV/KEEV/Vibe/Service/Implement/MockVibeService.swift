@@ -14,6 +14,8 @@ import SwiftUI
 ///
 /// - Author: 라움
 class MockVibeService: VibeServiceProtocol {
+    static let layer: LayerType = .service(of: "MockVibeService")
+    
     private var vibes: [VibeUIO] = []
     private var vibeCount = 0
     

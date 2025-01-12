@@ -20,6 +20,7 @@ struct SignInScreen: View {
     @Injected private var settingService: any SettingServiceProtocol
     
     @Binding var status: SignInStatus?
+    @State private var error: Error? = nil
     @State private var showTermsOfUse = false
     @State private var showPrivacyPolicy = false
     
@@ -52,6 +53,7 @@ struct SignInScreen: View {
                 .padding(.top, 16)
                 .backgroundForKEEV()
         })
+        .alertForError($error)
     }
 }
 
@@ -76,10 +78,8 @@ private extension SignInScreen {
                                 Task {
                                     do {
                                         status = try await accountService.signInWithApple(user: user, identityToken: token, authorizationCode: code)
-                                    } catch let keevError as KEEVError {
-                                        print(keevError.messageForAnalytics)
-                                    } catch let error {
-                                        print("\(error)")
+                                    } catch let failToSignIn {
+                                        error = failToSignIn
                                     }
                                 }
                                 

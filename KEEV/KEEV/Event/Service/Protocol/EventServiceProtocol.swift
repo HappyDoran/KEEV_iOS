@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - ToDo: 향후에 EventServiceProtocol을 이 TempEventServiceProtocol로 교체해야합니다.
 /// - Author: 라움
-protocol EventServiceProtocol: AnyObject {
+protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// 이벤트 목록을 가져오는 함수
     ///
     /// - Parameters:

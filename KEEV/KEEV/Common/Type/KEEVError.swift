@@ -147,3 +147,16 @@ extension KEEVError {
         }
     }
 }
+
+extension KEEVError: LocalizedError {
+    var errorDescription: String? {
+        switch self.occurPoint {
+            case .local(let description):
+            description
+        case .remote(_, let message):
+            "\(message)"
+        case .custom(let message):
+            message
+        }
+    }
+}

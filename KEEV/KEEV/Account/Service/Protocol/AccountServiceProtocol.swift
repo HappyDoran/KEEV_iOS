@@ -14,7 +14,7 @@ import UIKit
 ///
 /// - Note: AnyObject를 상속 받아, 참조 타입으로만 만들어야 합니다.
 /// - Author: 뉴준성
-protocol AccountServiceProtocol: AnyObject {
+protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
     /// 자동 로그인을 하는 함수.
     ///
     /// 토큰를 서버에 보내, 자동로그인을 시도합니다.

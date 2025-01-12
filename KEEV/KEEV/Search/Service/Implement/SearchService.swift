@@ -12,7 +12,11 @@ import Foundation
 /// 검색과 관련된 기능들을 수행하는 SearchService입니다.
 ///
 /// - Author: 라움
-class SearchService: SearchServiceProtocol {
+class SearchService: SearchServiceProtocol, KEEVErrorHandler {
+    typealias Layer = SearchService
+    
+    static let layer: LayerType = .service(of: "SearchService")
+    
     private let userDefaultsUtility: UserDefaultsUtility = UserDefaultsUtility()
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
@@ -69,40 +73,44 @@ class SearchService: SearchServiceProtocol {
     }
     
     func searchEventByNameWhenAddVibe(name: String, size: Int, page: Int) async throws -> PaginatedResponse<SimpleEventUIO> {
-        let router = SearchHTTPRequestRouter.searchEventByNameWhenAddVibe(name: name, size: size, page: page)
-        
-        let data = try await networkUtility.request(router: router)
-        
-        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
-        
-        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
-        
-        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
-            totalPages: paginatedResponseDTO.totalPages,
-            currentPage: paginatedResponseDTO.currentPage,
-            totalElements: paginatedResponseDTO.totalElements,
-            contents: contents
-        )
-        
-        return paginatedResponse
+        try await doAsyncWithException(caller: "searchEventByNameWhenAddVibe") {
+            let router = SearchHTTPRequestRouter.searchEventByNameWhenAddVibe(name: name, size: size, page: page)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+            
+            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+            
+            let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+                totalPages: paginatedResponseDTO.totalPages,
+                currentPage: paginatedResponseDTO.currentPage,
+                totalElements: paginatedResponseDTO.totalElements,
+                contents: contents
+            )
+            
+            return paginatedResponse
+        }
     }
     
     func searchEventByName(name: String, size: Int, page: Int) async throws -> PaginatedResponse<SimpleEventUIO> {
-        let router = SearchHTTPRequestRouter.searchEventByName(name: name, size: size, page: page)
-        
-        let data = try await networkUtility.request(router: router)
-        
-        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
-        
-        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
-        
-        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
-            totalPages: paginatedResponseDTO.totalPages,
-            currentPage: paginatedResponseDTO.currentPage,
-            totalElements: paginatedResponseDTO.totalElements,
-            contents: contents
-        )
-        
-        return paginatedResponse
+        try await doAsyncWithException(caller: "searchEventByName") {
+            let router = SearchHTTPRequestRouter.searchEventByName(name: name, size: size, page: page)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+            
+            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+            
+            let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+                totalPages: paginatedResponseDTO.totalPages,
+                currentPage: paginatedResponseDTO.currentPage,
+                totalElements: paginatedResponseDTO.totalElements,
+                contents: contents
+            )
+            
+            return paginatedResponse
+        }
     }
 }

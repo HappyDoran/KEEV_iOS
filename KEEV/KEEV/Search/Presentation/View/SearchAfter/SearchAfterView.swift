@@ -24,13 +24,15 @@ struct SearchAfterView: View {
     @Binding private var selectedEvent: SimpleEventUIO?
     @Binding private var searchText: String
     private var searchContent: SearchContent
+    @Binding private var error: Error?
     private let onClick: () -> Void
     
-    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), searchText: Binding<String>, searchContent: SearchContent, onClick: @escaping ()-> Void) {
+    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), searchText: Binding<String>, searchContent: SearchContent, error: Binding<Error?>, onClick: @escaping ()-> Void) {
         self._selectedEvent = selectedEvent
         self._searchText = searchText
         self.searchContent = searchContent
         self.onClick = onClick
+        self._error = error
     }
     
     var body: some View {
@@ -125,8 +127,8 @@ extension SearchAfterView {
                     events = allEvents
                 }
                 currentPage += 1
-            } catch {
-                print(error)
+            } catch let failToLoadSearchResult {
+                error = failToLoadSearchResult
             }
         }
     }
@@ -143,8 +145,8 @@ extension SearchAfterView {
                     events.append(contentsOf: newEvents)
                 }
                 currentPage += 1
-            } catch {
-                print(error)
+            } catch let failToAddSearchResult {
+                error = failToAddSearchResult
             }
         }
     }
@@ -154,6 +156,7 @@ extension SearchAfterView {
     SearchAfterView(
         searchText: .constant("칸예"),
         searchContent: .event,
+        error: .constant(nil),
         onClick: {}
     )
     .backgroundForKEEV()
