@@ -56,12 +56,7 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
             let accessToken = try await getAccessToken()
             let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
             
-            let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
-            
-            guard (200..<300).contains(code) else {
-                let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self .self, from: data)
-                throw throwKEEVError(caller: "fetchReplies", occurPoint: .remote(code: code, message: errorMessage.message))
-            }
+            let data = try await networkUtility.request(router: router)
             
             let replyDTOs = try jsonDecoder.decode([ReplyDTO].self, from: data)
             let currentUserID = currentUser?.id
@@ -90,12 +85,7 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
             let accessToken = try await getAccessToken()
             let router = ReplyHTTPRequestRouter.addReply(token: accessToken, vibeID: vibeID, text: text)
             
-            let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
-            
-            guard (200..<300).contains(code) else {
-                let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self .self, from: data)
-                throw throwKEEVError(caller: "addReply", occurPoint: .remote(code: code, message: errorMessage.message))
-            }
+            let data = try await networkUtility.request(router: router)
             
             let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
             let currentUserID = currentUser?.id
@@ -130,11 +120,7 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
                 updatedText: updatedText
             )
             
-            let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
-            guard (200..<300).contains(code) else {
-                let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self .self, from: data)
-                throw throwKEEVError(caller: "modifyReply", occurPoint: .remote(code: code, message: errorMessage.message))
-            }
+            let data = try await networkUtility.request(router: router)
             
             let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
             let currentUserID = currentUser?.id
