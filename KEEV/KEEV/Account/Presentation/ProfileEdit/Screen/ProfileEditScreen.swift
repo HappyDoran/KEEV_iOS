@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Firebase
 
 /// 프로필 수정 화면
 ///
@@ -154,13 +153,6 @@ struct ProfileEditScreen: View {
             secondButtonText: "예",
             secondButtonStyle: .active,
             secondButtonAction: sendModifiedProfile
-        )
-        .analyticsScreen(
-            name: AnalyticsEventScreenView,
-            extraParameters: [
-                AnalyticsParameterScreenName: "\(type(of: self))",
-                AnalyticsParameterScreenClass: "\(type(of: self))"
-            ]
         )
         .alertForError($error)
     }

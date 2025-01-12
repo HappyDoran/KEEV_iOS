@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import Firebase
-
 /// 회원가입 프로필 정보 입력 뷰
 ///
 /// 회원가입 단계 중 유저의 프로필 정보(닉네임, 프로필 이미지)를 입력받는 뷰입니다.
@@ -112,12 +110,6 @@ extension SignUpProfileView {
         } catch {
             errorMessage = error.localizedDescription
             disableButton = true
-            Analytics.logEvent(
-                "Failed_to_update_profile",
-                parameters: [
-                    "error": error.localizedDescription as NSObject
-                ]
-            )
         }
     }
 }

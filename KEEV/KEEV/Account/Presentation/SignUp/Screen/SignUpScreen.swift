@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Firebase
 
 enum SignUpPage: Int {
     case email = 1
@@ -58,14 +57,6 @@ struct SignUpScreen: View {
         .fullScreenCover(isPresented: $showImageSelectSheet) {
             ImageSelectView(image: $profileImage)
         }
-        .analyticsScreen(
-            name: AnalyticsEventScreenView,
-            extraParameters: [
-                AnalyticsParameterScreenName: "\(type(of: self))",
-                AnalyticsParameterScreenClass: "\(type(of: self))"
-            ]
-        )
-
     }
 }
 
