@@ -241,7 +241,6 @@ private extension VibeDetailScreen {
                 onUpdate?(vibe)
             } catch {
                 errorForAlert = error
-                print("댓글을 등록하는데 실패했습니다.")
             }
         }
     }
@@ -254,7 +253,6 @@ private extension VibeDetailScreen {
                 replies[index] = reply
             } catch {
                 errorForAlert = error
-                print("댓글을 수정하는데 실패했습니다.")
             }
         }
     }
@@ -268,7 +266,6 @@ private extension VibeDetailScreen {
                 onUpdate?(vibe)
             } catch {
                 errorForAlert = error
-                print("댓글을 삭제하는데 실패했습니다.")
             }
         }
     }
