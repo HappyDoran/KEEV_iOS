@@ -11,7 +11,11 @@ import Foundation
 ///
 /// - Note: 액세스 토큰은 액터의 프로퍼티로 관리되고, 리프레시 토큰은 키체인에 저장되어 보안이 강화됩니다.
 /// - Author: newJunsung
-actor TokenUtility {
+actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
+    static let layer: LayerType = .utility(of: "TokenUtility")
+    
+    typealias Layer = TokenUtility
+    
     /// TokenUtility의 싱글톤 인스턴스
     ///
     /// 이 싱글톤을 통해 `TokenUtility`에 대한 단일 진입점을 제공합니다.
@@ -20,6 +24,7 @@ actor TokenUtility {
     private static let refreshTokenTag = "keevRefreshToken"
     private let network = NetworkUtility()
     private var accessToken: String?
+    private var expirationDateForAccess: Date?
     
     /// 특정 유형의 토큰을 가져옵니다.
     ///
@@ -31,12 +36,12 @@ actor TokenUtility {
     ///   - `TokenError.tokenNotFound`: 토큰이 저장소에 존재하지 않는 경우
     ///   - `TokenError.decodeFail`: 토큰 디코딩 실패
     /// - Author: newJunsung
-    nonisolated func fetchToken(for type: TokenType) async throws -> String {
+    func fetchToken(for type: TokenType) async throws -> String {
         switch type {
         case .access:
-            return try await fetchAccessToken()
+            return try await doAsyncWithException(caller: "fetchToken", fetchAccessToken)
         case .refresh:
-            return try decodeRefreshToken()
+            return try await doAsyncWithException(caller: "fetchToken", decodeRefreshToken)
         }
     }
     
@@ -46,17 +51,20 @@ actor TokenUtility {
     /// - Throws: `TokenError.tokenNotFound`: 리프레시 토큰이 존재하지 않는 경우, `TokenError.tokenIsNil`: 서버로부터 액세스 토큰을 받을 수 없는 경우, `Other`: 네트워크 요청 또는 디코딩 실패 시 발생하는 오류
     /// - Author: newJunsung
     func refreshAccessToken() async throws -> String {
-        let refreshToken = try decodeRefreshToken()
+        let refreshToken = try doWithException(caller: "refreshAccessToken", decodeRefreshToken)
         let router = AccountHTTPRequestRouter.refreshAccessToken(refreshToken: refreshToken)
         
         // 네트워크 통신
-        let data = try await network.request(router: router)
+        let data = try await doAsyncWithException(caller: "refreshAccessToken") {
+            try await network.request(router: router)
+        }
+        expirationDateForAccess = Date.now.addingTimeInterval(TimeUnit.hours(of: 1).toSeconds)
         
         // 서버 응답 디코딩
-        let account = try JSONDecoder().decode(AccountDTO.self, from: data)
+        let account = try doWithException(caller: "refreshAccessToken") { try JSONDecoder().decode(AccountDTO.self, from: data) }
         
         guard let fetchedAccessToken = account.accessToken else {
-            throw TokenError.tokenIsNil
+            throw KEEVError(layer: Self.layer, caller: "refreshAccessToken", occurPoint: .local(description: "ACCESS TOKEN NOT FOUND"), previousError: nil)
         }
         
         accessToken = fetchedAccessToken
@@ -76,8 +84,11 @@ actor TokenUtility {
         switch type {
         case .access:
             accessToken = token
+            expirationDateForAccess = Date.now.addingTimeInterval(TimeUnit.hours(of: 1).toSeconds)
         case .refresh:
-            try storeRefreshToken(token)
+            try doWithException(caller: "storeToken") {
+                try storeRefreshToken(token)
+            }
         }
     }
     
@@ -85,17 +96,21 @@ actor TokenUtility {
         switch type {
         case .access:
             accessToken = nil
+            expirationDateForAccess = nil
         case .refresh:
-            try KeyChain.delete(tag: Self.refreshTokenTag)
+            try doWithException(caller: "deleteToken") {
+                try KeyChain.delete(tag: Self.refreshTokenTag)
+            }
         }
     }
     
     private func fetchAccessToken() async throws -> String {
-        if let accessToken = accessToken {
+        if let accessToken = accessToken,
+           let expirationDateForAccess, expirationDateForAccess > Date.now {
             return accessToken
         }
         
-        return try await refreshAccessToken()
+        return try await doAsyncWithException(caller: "fetchAccessToken", refreshAccessToken)
     }
     
     /// 리프레시 토큰을 키체인에서 디코딩합니다.
@@ -105,11 +120,21 @@ actor TokenUtility {
     /// - Author: newJunsung
     private nonisolated func decodeRefreshToken() throws -> String {
         guard let data = KeyChain.read(tag: Self.refreshTokenTag) else {
-            throw TokenError.tokenNotFound
+            throw KEEVError(
+                layer: Self.layer,
+                caller: "decodeRefreshToken",
+                occurPoint: .local(description: "TOKEN IS NOT FOUND"),
+                previousError: nil
+            )
         }
         
         guard let token = String(data: data, encoding: .utf8) else {
-            throw TokenError.decodeFail
+            throw KEEVError(
+                layer: Self.layer,
+                caller: "decodeRefreshToken",
+                occurPoint: .local(description: "Failed to decode refresh token"),
+                previousError: nil
+            )
         }
         
         return token
@@ -121,7 +146,9 @@ actor TokenUtility {
     /// - Throws: `TokenError.keyChainWriteFail`: 키체인 저장 실패
     /// - Author: newJunsung
     private func storeRefreshToken(_ token: String) throws {
-        try KeyChain.create(token, tag: Self.refreshTokenTag)
+        try doWithException(caller: "storeRefreshToken") {
+            try KeyChain.create(token, tag: Self.refreshTokenTag)
+        }
     }
 }
 

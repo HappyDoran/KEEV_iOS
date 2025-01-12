@@ -26,7 +26,11 @@ enum SortCase: String {
 /// EventService는 이벤트와 관련된 비즈니스 로직을 구현한 클래스
 ///
 /// - Author: Doran
-class EventService: EventServiceProtocol {
+class EventService: EventServiceProtocol, KEEVErrorHandler {
+    typealias Layer = EventService
+    
+    static let layer: LayerType = .service(of: "EventService")
+    
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
@@ -49,20 +53,30 @@ class EventService: EventServiceProtocol {
         
         let router = EventHTTPRequestRouter.fetchEvents(page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
         
-        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
+        let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         
-        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+        guard (200..<300).contains(code) else {
+            let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
+            throw throwKEEVError(
+                caller: "loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])",
+                occurPoint: .remote(code: code, message: errorMessage.message)
+            )
+        }
+        
+        return try doWithException(caller: "loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])") {
+            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
 
-        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
 
-        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
-            totalPages: paginatedResponseDTO.totalPages,
-            currentPage: paginatedResponseDTO.currentPage,
-            totalElements: paginatedResponseDTO.totalElements,
-            contents: contents
-        )
+            let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+                totalPages: paginatedResponseDTO.totalPages,
+                currentPage: paginatedResponseDTO.currentPage,
+                totalElements: paginatedResponseDTO.totalElements,
+                contents: contents
+            )
 
-        return paginatedResponse
+            return paginatedResponse
+        }
     }
 
     
@@ -80,16 +94,27 @@ class EventService: EventServiceProtocol {
     func loadDetailEvent(id: String) async throws -> DetailEventUIO {
         let router = EventHTTPRequestRouter.fetchDetailEvent(eventID: id)
         
-        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
+        let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         
-        let eventResponseDTO = try jsonDecoder.decode(EventResponseDTO.self, from: data)
-        guard let detailEventDTO = eventResponseDTO.events.first else {
-            throw NSError(domain: "EventError", code: 404, userInfo: [NSLocalizedDescriptionKey: "Event not found"])
+        guard (200..<300).contains(code) else {
+            let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
+            throw throwKEEVError(
+                caller: "loadDetailEvent",
+                occurPoint: .remote(code: code, message: errorMessage.message)
+            )
         }
         
-        let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
-        
-        return detailEventUIO
+        return try doWithException(caller: "loadDetailEvent") {
+            let eventResponseDTO = try jsonDecoder.decode(EventResponseDTO.self, from: data)
+            guard let detailEventDTO = eventResponseDTO.events.first else {
+                throw throwKEEVError(caller: "loadDetailEvent", occurPoint: .local(description: "Event not found"))
+            }
+            
+            let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
+            
+            return detailEventUIO
+
+        }
     }
     
     /// 필터링된 이벤트를 가져오는 함수
@@ -113,20 +138,30 @@ class EventService: EventServiceProtocol {
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
         let router = EventHTTPRequestRouter.fetchFilteredEvents(size: size, page: page, eventTypeID: eventTypeID, genreID: genreID, startDate: startDate, endDate: endDate, mode: mode, desc: desc)
         
-        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
+        return try await doAsyncWithException(caller: "loadPaginatedFilteredEvents") {
+            let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
 
-        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
-        
-        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
-        
-        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
-            totalPages: paginatedResponseDTO.totalPages,
-            currentPage: paginatedResponseDTO.currentPage,
-            totalElements: paginatedResponseDTO.totalElements,
-            contents: contents
-        )
+            guard (200..<300).contains(code) else {
+                let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
+                throw throwKEEVError(
+                    caller: "loadPaginatedFilteredEvents",
+                    occurPoint: .remote(code: code, message: errorMessage.message)
+                )
+            }
+            
+            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+            
+            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+            
+            let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+                totalPages: paginatedResponseDTO.totalPages,
+                currentPage: paginatedResponseDTO.currentPage,
+                totalElements: paginatedResponseDTO.totalElements,
+                contents: contents
+            )
 
-        return paginatedResponse
+            return paginatedResponse
+        }
     }
     
     /// 필터링된 이벤트를 가져오는 함수
@@ -151,19 +186,29 @@ class EventService: EventServiceProtocol {
         
         let router = EventHTTPRequestRouter.fetchFilteredEvents(size: filter.size, page: filter.page, eventTypeID: filter.eventType?.rawValue, genreID: filter.genre?.rawValue, startDate: filter.startDate, endDate: filter.endDate, mode: filter.mode.rawValue, desc: filter.desc)
         
-        let (_, data) = try await networkUtility.requestWithStatusCode(router: router)
+        return try await doAsyncWithException(caller: "loadPaginatedFilteringEvents") {
+            let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
 
-        let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
-        
-        let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
-        
-        let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
-            totalPages: paginatedResponseDTO.totalPages,
-            currentPage: paginatedResponseDTO.currentPage,
-            totalElements: paginatedResponseDTO.totalElements,
-            contents: contents
-        )
+            guard (200..<300).contains(code) else {
+                let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
+                throw throwKEEVError(
+                    caller: "loadPaginatedFilteringEvents",
+                    occurPoint: .remote(code: code, message: errorMessage.message)
+                )
+            }
+            
+            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+            
+            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+            
+            let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+                totalPages: paginatedResponseDTO.totalPages,
+                currentPage: paginatedResponseDTO.currentPage,
+                totalElements: paginatedResponseDTO.totalElements,
+                contents: contents
+            )
 
-        return paginatedResponse
+            return paginatedResponse
+        }
     }
 }

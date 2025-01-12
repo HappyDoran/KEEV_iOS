@@ -30,6 +30,7 @@ struct SignUpProfileView: View {
     
     @State private var errorMessage = ""
     @State private var disableButton = true
+    @State private var error: Error? = nil
     
     @FocusState private var isFocused: Bool
     
@@ -85,22 +86,15 @@ struct SignUpProfileView: View {
                             result = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: "")
                             transitionDirection = .trailing
                             currentPage = .complete
-                        } catch {
-                            if let error = error as? AccountServiceError {
-                                if case let .unknownError(description) = error {
-                                    print(description)
-                                    print(error)
-                                }
-                                print(error.localizedDescription)
-                            } else {
-                                print(error)
-                            }
+                        } catch let failToSignUp {
+                            error = failToSignUp
                         }
                     }
                 },
                 style: .maxWidth,
                 disabled: disableButton
             )
+            .alertForError($error)
             .sensoryFeedback(.impact, trigger: currentPage)
             .padding(.top, 12)
             .padding(.horizontal, 16)

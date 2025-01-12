@@ -12,7 +12,11 @@ import Foundation
 /// 신고하기 기능을 위한 ReportService입니다.
 ///
 /// - Author: 라움
-class ReportService: ReportServiceProtocol {
+class ReportService: ReportServiceProtocol, KEEVErrorHandler {
+    typealias Layer = ReportService
+    
+    static let layer: LayerType = .service(of: "ReportService")
+    
     private let networkUtility = NetworkUtility()
     private let tokenUtility = TokenUtility.shared
     private let jsonDecoder = JSONDecoder()
@@ -23,61 +27,69 @@ class ReportService: ReportServiceProtocol {
     }
     
     func sendReplyReport(vibeID: Int, replyID: Int, reason: String) async throws -> String {
-        let accessToken = try await getAccessToken()
-        let router = ReportHTTPRequestRouter.replyReport(
-            token: accessToken,
-            vibeID: vibeID,
-            replyID: replyID,
-            reason: reason
-        )
-        
-        let data = try await networkUtility.request(router: router)
-        
-        let response = try jsonDecoder.decode(ReportResponse.self, from: data)
-        return response.message
+        try await doAsyncWithException(caller: "sendReplyReport") {
+            let accessToken = try await getAccessToken()
+            let router = ReportHTTPRequestRouter.replyReport(
+                token: accessToken,
+                vibeID: vibeID,
+                replyID: replyID,
+                reason: reason
+            )
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let response = try jsonDecoder.decode(ReportResponse.self, from: data)
+            return response.message
+        }
     }
     
     func sendVibeReport(eventID: String, vibeID: Int, reason: String) async throws -> String {
-        let accessToken = try await getAccessToken()
-        let router = ReportHTTPRequestRouter.vibeReport(
-            token: accessToken,
-            eventID: eventID,
-            vibeID: vibeID,
-            reason: reason
-        )
-        
-        let data = try await networkUtility.request(router: router)
-        
-        let response = try jsonDecoder.decode(ReportResponse.self, from: data)
-        return response.message
+        try await doAsyncWithException(caller: "sendVibeReport") {
+            let accessToken = try await getAccessToken()
+            let router = ReportHTTPRequestRouter.vibeReport(
+                token: accessToken,
+                eventID: eventID,
+                vibeID: vibeID,
+                reason: reason
+            )
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let response = try jsonDecoder.decode(ReportResponse.self, from: data)
+            return response.message
+        }
     }
     
     func sendUserReport(userID: Int, reason: String) async throws -> String {
-        let accessToken = try await getAccessToken()
-        let router = ReportHTTPRequestRouter.userReport(
-            token: accessToken,
-            userID: userID,
-            reason: reason
-        )
-        
-        let data = try await networkUtility.request(router: router)
-        
-        let response = try jsonDecoder.decode(ReportResponse.self, from: data)
-        return response.message
+        try await doAsyncWithException(caller: "sendUserReport") {
+            let accessToken = try await getAccessToken()
+            let router = ReportHTTPRequestRouter.userReport(
+                token: accessToken,
+                userID: userID,
+                reason: reason
+            )
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let response = try jsonDecoder.decode(ReportResponse.self, from: data)
+            return response.message
+        }
     }
     
     func sendEventReport(eventID: String, reason: String) async throws -> String {
-        let accessToken = try await getAccessToken()
-        let router = ReportHTTPRequestRouter.eventReport(
-            token: accessToken,
-            eventID: eventID,
-            reason: reason
-        )
-        
-        let data = try await networkUtility.request(router: router)
-        
-        let response = try jsonDecoder.decode(ReportResponse.self, from: data)
-        return response.message
+        try await doAsyncWithException(caller: "sendEventReport") {
+            let accessToken = try await getAccessToken()
+            let router = ReportHTTPRequestRouter.eventReport(
+                token: accessToken,
+                eventID: eventID,
+                reason: reason
+            )
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let response = try jsonDecoder.decode(ReportResponse.self, from: data)
+            return response.message
+        }
     }
 }
 

@@ -13,6 +13,8 @@ import Foundation
 ///
 /// - Author: 라움
 class MockSearchService: SearchServiceProtocol {
+    static let layer: LayerType = .service(of: "MockSearchService")
+    
     private let userDefaultsUtility = UserDefaultsUtility()
     private var recentSearch: [RecentSearch] = []
     

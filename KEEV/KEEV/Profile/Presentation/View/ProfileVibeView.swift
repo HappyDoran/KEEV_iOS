@@ -20,11 +20,13 @@ struct ProfileVibeView: View {
     private let userID: Int?
     private let isMyProfile: Bool
     @Binding private var selectedVibeViewType: VibeViewType
+    @Binding private var error: Error?
     
-    init(userID: Int?, isMyProfile: Bool, selectedVibeViewType: Binding<VibeViewType>) {
+    init(userID: Int?, isMyProfile: Bool, selectedVibeViewType: Binding<VibeViewType>, error: Binding<Error?>) {
         self.userID = userID
         self.isMyProfile = isMyProfile
         self._selectedVibeViewType = selectedVibeViewType
+        self._error = error
     }
     
     @State private var vibes: [VibeUIO]? = nil
@@ -76,8 +78,8 @@ struct ProfileVibeView: View {
                     if let userID {
                         vibes = try await service.getUserVibeList(userID: userID)
                     }
-                } catch {
-                    print("ProfileVibeView(.task) error: \(error)")
+                } catch let failToFetchVibes {
+                    error = failToFetchVibes
                 }
             }
         }
@@ -143,5 +145,5 @@ private extension ProfileVibeView {
 }
 
 #Preview {
-    ProfileVibeView(userID: 1, isMyProfile: true, selectedVibeViewType: .constant(.list))
+    ProfileVibeView(userID: 1, isMyProfile: true, selectedVibeViewType: .constant(.list), error: .constant(nil))
 }

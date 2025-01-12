@@ -31,6 +31,7 @@ struct SearchScreen: View {
     @State private var searchText: String = ""
     @State private var recentKeywords: [RecentSearch] = []
     @State private var eventSearchStatus: EventSearchStatus = .beforeSearch
+    @State private var error: Error? = nil
     @FocusState private var searchFieldFocus: Bool
     
     @Binding private var selectedEvent: SimpleEventUIO?
@@ -65,13 +66,13 @@ struct SearchScreen: View {
                 
                 // MARK: 텍스트 필드에 검색을 하는 중인 뷰
             case .searching:
-                SearchingView(selectedEvent: $selectedEvent, searchText: $searchText, searchContent: searchContent){
+                SearchingView(selectedEvent: $selectedEvent, searchText: $searchText, searchContent: searchContent, error: $error) {
                     handleSearching()
                 }
                 
                 // MARK: 검색 결과가 나온 후의 뷰
             case .afterSearch:
-                SearchAfterView(selectedEvent: $selectedEvent, searchText: $searchText, searchContent: searchContent){
+                SearchAfterView(selectedEvent: $selectedEvent, searchText: $searchText, searchContent: searchContent, error: $error) {
                     handleAfterSearch()
                 }
                 .padding(.horizontal, 16)
@@ -81,6 +82,7 @@ struct SearchScreen: View {
             }
             Spacer()
         }
+        .alertForError($error)
         .onChange(of: [searchFieldFocus, searchText.isEmpty]) {
             eventSearchStatus = searchCase()
         }

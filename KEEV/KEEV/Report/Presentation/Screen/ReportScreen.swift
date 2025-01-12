@@ -113,11 +113,9 @@ extension ReportScreen {
                 case .user(userID: let userID):
                     _ = try await service.sendUserReport(userID: userID, reason: selectedCase)
                 }
-                print("ReportScreen(.sendReport): 성공")
                 showReportDoneAlert = true
             } catch {
                 errorForAlert = error
-                print("ReportScreen(.sendReport): 신고하는데 실패했습니다.")
             }
         }
     }

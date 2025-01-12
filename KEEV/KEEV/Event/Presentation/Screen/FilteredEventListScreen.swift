@@ -74,6 +74,7 @@ struct FilteredEventListScreen: View {
     private let title: String
     private let eventFilter: EventFilter?
     @State private var events: [SimpleEventUIO] = []
+    @State private var error: Error? = nil
     
     init(title: String, eventFilter: EventFilter? = nil){
         self.title = title
@@ -123,6 +124,7 @@ struct FilteredEventListScreen: View {
                 }
             }
         }
+        .alertForError($error)
     }
 }
 
@@ -141,8 +143,8 @@ extension FilteredEventListScreen {
             totalPages = response.totalPages
             currentPage += 1
             
-        } catch {
-            print(error)
+        } catch let failToLoadEvent {
+            error = failToLoadEvent
         }
     }
 }

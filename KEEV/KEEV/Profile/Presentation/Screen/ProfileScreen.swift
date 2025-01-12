@@ -30,6 +30,7 @@ struct ProfileScreen: View {
     @State private var selectedVibeViewType: VibeViewType = .list
     @State private var tapFeedback = false
     @State private var scrollID: Int? = 0
+    @State private var error: Error? = nil
     
     var body: some View {
         ScrollViewReader { proxy in
@@ -63,16 +64,18 @@ struct ProfileScreen: View {
                         isNavigation: isNavigation,
                         isMyProfile: isMyProfile,
                         showActionSheet: $showActionSheet
+                        error: $error
                     )
                 }
+
             }
             .backgroundForKEEV()
             .task {
                 if let userID {
                     do {
                         userProfile = try await service.getUserInfo(userID: userID)
-                    } catch {
-                        print("ProfileScreen(.task) error: \(error)")
+                    } catch let failToFetchUserProfile {
+                        error = failToFetchUserProfile
                     }
                 }
             }
@@ -81,8 +84,8 @@ struct ProfileScreen: View {
                     Task {
                         do {
                             userProfile = try await service.getUserInfo(userID: userID)
-                        } catch {
-                            print("ProfileScreen(.onChange) error: \(error)")
+                        } catch let failToFetchUserProfile {
+                            error = failToFetchUserProfile
                         }
                     }
                 }
@@ -103,6 +106,7 @@ struct ProfileScreen: View {
                     })
                 ]
             )
+            .alertForError($error)
             .navigationBarBackButtonHidden()
         }
     }

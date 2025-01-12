@@ -192,7 +192,6 @@ private extension VibeModifyScreen {
                 dismiss()
             } catch {
                 errorForAlert = error
-                print("바이브를 수정하는데 실패했어요.")
             }
             loadingForUpload = false
         }
