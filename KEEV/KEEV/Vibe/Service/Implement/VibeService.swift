@@ -30,7 +30,6 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
         NotificationCenter.Publisher.userInfoPublisher
             .sink { [weak self] user in
                 self?.userProfile = user
-                print(user?.id)
             }
             .store(in: &subscriptions)
     }
