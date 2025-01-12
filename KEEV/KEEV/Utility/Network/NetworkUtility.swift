@@ -10,7 +10,7 @@ import Foundation
 ///
 /// - Author:   Doran
 struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
-    static var layer: LayerType = .utility(of: "NetworkUtility")
+    static let layer: LayerType = .utility(of: "NetworkUtility")
     
     typealias Layer = NetworkUtility
     

@@ -17,7 +17,7 @@ import SwiftUI
 class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     typealias Layer = VibeService
     
-    static var layer: LayerType = .service(of: "VibeService")
+    static let layer: LayerType = .service(of: "VibeService")
     
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let tokenUitility = TokenUtility.shared

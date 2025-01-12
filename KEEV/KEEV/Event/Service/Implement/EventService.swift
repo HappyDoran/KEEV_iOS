@@ -29,7 +29,7 @@ enum SortCase: String {
 class EventService: EventServiceProtocol, KEEVErrorHandler {
     typealias Layer = EventService
     
-    static var layer: LayerType = .service(of: "EventService")
+    static let layer: LayerType = .service(of: "EventService")
     
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()

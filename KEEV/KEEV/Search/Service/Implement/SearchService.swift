@@ -15,7 +15,7 @@ import Foundation
 class SearchService: SearchServiceProtocol, KEEVErrorHandler {
     typealias Layer = SearchService
     
-    static var layer: LayerType = .service(of: "SearchService")
+    static let layer: LayerType = .service(of: "SearchService")
     
     private let userDefaultsUtility: UserDefaultsUtility = UserDefaultsUtility()
     private let networkUtility: NetworkUtility = NetworkUtility()

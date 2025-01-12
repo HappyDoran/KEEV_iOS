@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Author: 라움
 class MockActivityService: ActivityServiceProtocol {
-    static var layer: LayerType = .service(of: "MockActivityService")
+    static let layer: LayerType = .service(of: "MockActivityService")
     
     func getUserInfo(userID: Int) async throws -> DetailUserUIO {
         for dummy in DetailUserUIO.dummies {

@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Author: 라움
 class MockReportService: ReportServiceProtocol {
-    static var layer: LayerType = .service(of: "MockReportService")
+    static let layer: LayerType = .service(of: "MockReportService")
     
     /// 댓글 신고하기 함수
     ///

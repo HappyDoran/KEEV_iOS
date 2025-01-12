@@ -4,7 +4,7 @@ import UIKit
 final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     typealias Layer = AccountService
     
-    static var layer: LayerType = .service(of: "AccountService")
+    static let layer: LayerType = .service(of: "AccountService")
     
     private static let refreshTokenTag = "keevRefreshToken"
     

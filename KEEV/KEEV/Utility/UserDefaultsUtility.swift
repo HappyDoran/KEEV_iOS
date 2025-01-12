@@ -13,7 +13,7 @@ import Foundation
 ///
 /// - Author: 라움
 final class UserDefaultsUtility: LayerRepresentable, KEEVErrorHandler {
-    static var layer: LayerType = .utility(of: "UserDefaultsUtility")
+    static let layer: LayerType = .utility(of: "UserDefaultsUtility")
     
     typealias Layer = UserDefaultsUtility
     

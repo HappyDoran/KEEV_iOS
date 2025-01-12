@@ -12,7 +12,7 @@ import Foundation
 /// - Note: 액세스 토큰은 액터의 프로퍼티로 관리되고, 리프레시 토큰은 키체인에 저장되어 보안이 강화됩니다.
 /// - Author: newJunsung
 actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
-    static var layer: LayerType = .utility(of: "TokenUtility")
+    static let layer: LayerType = .utility(of: "TokenUtility")
     
     typealias Layer = TokenUtility
     

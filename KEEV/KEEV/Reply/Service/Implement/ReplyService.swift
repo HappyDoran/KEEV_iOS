@@ -11,7 +11,7 @@ import Foundation
 class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     typealias Layer = ReplyService
     
-    static var layer: LayerType = .service(of: "ReplyService")
+    static let layer: LayerType = .service(of: "ReplyService")
     
     private let networkUtility = NetworkUtility()
     private let tokenUtility = TokenUtility.shared

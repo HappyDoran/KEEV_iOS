@@ -16,7 +16,7 @@ import Foundation
 final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     typealias Layer = ActivityService
     
-    static var layer: LayerType = .service(of: "ActivityService")
+    static let layer: LayerType = .service(of: "ActivityService")
     
     private let networkUtility = NetworkUtility()
     private let tokenUtility = TokenUtility.shared

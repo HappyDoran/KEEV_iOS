@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 final class MockAccountService: AccountServiceProtocol {
-    static var layer: LayerType = .service(of: "MockAccountService")
+    static let layer: LayerType = .service(of: "MockAccountService")
     
     private var userInfo: DetailUserUIO? = nil
     private var email: String? = nil

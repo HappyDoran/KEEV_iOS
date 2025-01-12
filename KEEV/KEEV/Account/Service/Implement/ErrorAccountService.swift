@@ -12,7 +12,7 @@ import UIKit
 final class ErrorAccountService: AccountServiceProtocol, KEEVErrorHandler {
     typealias Layer = ErrorAccountService
     
-    static var layer: LayerType = .service(of: "TempAccountService")
+    static let layer: LayerType = .service(of: "TempAccountService")
     
     
     func autoSignIn() async -> SignInStatus {
