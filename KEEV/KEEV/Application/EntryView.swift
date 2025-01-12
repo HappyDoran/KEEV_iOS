@@ -99,8 +99,6 @@ struct EntryView: View {
         .fullScreenCover(isPresented: $isPresented) {
             VibeCreateScreen(selectedEvent: nil, isNavigation: false)
         }
-        .toolbarBackground(selectedItem == TabbedItem.info.rawValue ? .visible : .hidden, for: .navigationBar)
-        .toolbarBackground(.grayBG950, for: .navigationBar)
     }
 }
 

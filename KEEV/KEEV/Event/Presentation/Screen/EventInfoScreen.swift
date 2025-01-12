@@ -52,6 +52,8 @@ struct EventInfoScreen: View {
     
     var body: some View {
         ScrollViewReader { proxy in
+            MainHeader(selectedEvent: $selectedEvent, proxy: proxy)
+            
             ScrollView(showsIndicators: false) {
                 EventCarouselView().id(0)
                 themeScrollSectionView(themeName: "다가오는 공연", events: firstEvents, eventFilter: .upCommingFilter)
@@ -62,44 +64,14 @@ struct EventInfoScreen: View {
             .onAppear {
                 loadEvents()
             }
-            .backgroundForKEEV()
-            .toolbar {
-                if selectedItem == TabbedItem.info.rawValue {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
-                            withAnimation {
-                                proxy.scrollTo(0)
-                            }
-                        } label: {
-                            Image("LogoImage")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 75, height: 32)
-                                .padding(.bottom, 8)
-                        }
-                    }
-                    
-                    ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink {
-                            TotalSearchScreen()
-                        } label: {
-                            Image(systemName: "magnifyingglass")
-                                .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
-                                .font(.system(size: 20))
-                                .foregroundColor(Color.gray100)
-                                .imageScale(.medium)
-                                .padding(.bottom, 8)
-                        }
-                    }
-                }
-            }
         }
+        .backgroundForKEEV()
     }
 }
 
-extension EventInfoScreen {
+private extension EventInfoScreen {
     // MARK: 이벤트 썸네일 뷰
-    private var thumbnailSection: some View {
+    var thumbnailSection: some View {
         HStack(spacing: 8) {
             ForEach(0..<min(events.count, 3), id: \.self) { index in
                 NavigationLink {
@@ -112,7 +84,7 @@ extension EventInfoScreen {
     }
     
     // MARK: 이벤트 리스트 뷰
-    private var eventListSection: some View {
+    var eventListSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             ForEach(Array(events.enumerated().prefix(3)), id: \.element.id) { index, event in
                 HStack(spacing: 8) {
@@ -127,7 +99,7 @@ extension EventInfoScreen {
     }
     
     // MARK: 이벤트 횡스크롤 썸네일 뷰
-    private var horizontalScrollSection: some View {
+    var horizontalScrollSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 ForEach(events) { event in
@@ -138,8 +110,8 @@ extension EventInfoScreen {
     }
 }
 
-extension EventInfoScreen {
-    private func themeScrollSectionView(themeName: String, events: [SimpleEventUIO], eventFilter: EventFilter? = nil) -> some View {
+private extension EventInfoScreen {
+    func themeScrollSectionView(themeName: String, events: [SimpleEventUIO], eventFilter: EventFilter? = nil) -> some View {
         VStack(alignment: .leading, spacing: 12){
             NavigationLink {
                 FilteredEventListScreen(title: themeName, eventFilter: eventFilter)
@@ -170,7 +142,7 @@ extension EventInfoScreen {
         .padding(.top, 20)
     }
     
-    private func loadFilteredEventData(filter: EventFilter) async -> [SimpleEventUIO]? {
+    func loadFilteredEventData(filter: EventFilter) async -> [SimpleEventUIO]? {
         do {
             let paginatedResponse = try await eventService.loadPaginatedFilteringEvents(filter: filter)
             
@@ -181,7 +153,7 @@ extension EventInfoScreen {
         }
     }
     
-    private func loadEventData() async -> [SimpleEventUIO]? {
+    func loadEventData() async -> [SimpleEventUIO]? {
         do {
             let response = try await eventService.loadPaginatedEvents(page: 0, size: 10, sort: [(SortCase.createdDate, .descending)])
             return response.contents
@@ -192,7 +164,7 @@ extension EventInfoScreen {
         }
     }
     
-    private func loadEvents() {
+    func loadEvents() {
         Task {
             if let events = await loadFilteredEventData(filter: EventFilter.upCommingFilter){
                 firstEvents = events
@@ -212,7 +184,7 @@ extension EventInfoScreen {
         }
     }
 
-    private func loadEventDataByKeyword(keyword: String) {
+    func loadEventDataByKeyword(keyword: String) {
         isLoading = true
     }
 }
