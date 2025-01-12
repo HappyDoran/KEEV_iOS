@@ -9,10 +9,12 @@ import SwiftUI
 
 struct ReplyInputView: View {
     @Binding var replyText: String
+    var isFocused: FocusState<Bool>.Binding
     private let sendHandler: (String) -> Void
     
-    init(replyText: Binding<String>, sendHandler: @escaping (String) -> Void) {
+    init(replyText: Binding<String>, isFocused: FocusState<Bool>.Binding, sendHandler: @escaping (String) -> Void) {
         self._replyText = replyText
+        self.isFocused = isFocused
         self.sendHandler = sendHandler
     }
     
@@ -29,6 +31,7 @@ struct ReplyInputView: View {
                     style: .init(bodySize: .medium, bodyWeight: .regular)
                 )
             )
+            .focused(isFocused)
             .padding(.vertical, 12)
             .padding(.leading, 16)
             .foregroundStyle(.gray100)
@@ -67,7 +70,7 @@ private extension ReplyInputView {
 }
 
 #Preview {
-    ReplyInputView(replyText: .constant("")) { _ in
+    ReplyInputView(replyText: .constant(""), isFocused: FocusState<Bool>().projectedValue) { _ in
         
     }
 }

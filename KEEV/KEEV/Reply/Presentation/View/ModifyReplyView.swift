@@ -21,7 +21,7 @@ struct ModifyReplyView: View {
     }
     
     var body: some View {
-        ReplyInputView(replyText: $text) { _ in
+        ReplyInputView(replyText: $text, isFocused: $isFocused) { _ in
             sendHandler(text)
         }
         .padding(.horizontal, 16)

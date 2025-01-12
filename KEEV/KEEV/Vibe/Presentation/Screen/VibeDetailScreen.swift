@@ -32,6 +32,8 @@ struct VibeDetailScreen: View {
     @State private var navigateToReport: ReportType? = nil
     @State private var navigateToUserProfile: Int? = nil
     
+    @FocusState private var isFocused: Bool
+    
     init(
         vibe: VibeUIO,
         onUpdate: ((VibeUIO) -> Void)? = nil,
@@ -67,7 +69,7 @@ struct VibeDetailScreen: View {
                 fetchReplies()
             }
             
-            ReplyInputView(replyText: $replyText, sendHandler: addReply)
+            ReplyInputView(replyText: $replyText, isFocused: $isFocused, sendHandler: addReply)
             .frame(height: 46)
             .padding(.top, 16)
             .padding(.bottom, 16)
@@ -237,7 +239,7 @@ private extension VibeDetailScreen {
         Task {
             do {
                 let reply = try await replyService.addReply(to: vibe.id, text: text)
-                replies.insert(reply, at: 0)
+                replies.append(reply)
                 vibe.replyCount += 1
                 onUpdate?(vibe)
             } catch {
@@ -245,6 +247,7 @@ private extension VibeDetailScreen {
                 print("댓글을 등록하는데 실패했습니다.")
             }
         }
+        isFocused = false
     }
     
     func modifyReply(index: Int, reply: ReplyUIO, text: String) {
