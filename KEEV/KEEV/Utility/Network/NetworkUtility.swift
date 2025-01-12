@@ -29,7 +29,7 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     ///
     ///  요청을 보내서 서버로부터 가져온 데이터를 리턴하는 메소드입니다.
     ///
-    /// - Throws: URL이 잘못 된 경우 KEEVError
+    /// - Throws: URL이 잘못되거나 StatusCode가 200대가 아닐 경우 경우 KEEVError
     /// - Returns: 서버로부터 가져온 데이터
     ///
     /// - Author: Doran, 라움
@@ -51,7 +51,7 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     ///
     ///  MultipartForm으로 요청을 보내서 서버로부터 가져온 데이터를 리턴하는 메소드입니다.
     ///
-    /// - Throws: URL이 잘못 된 경우 KEEVError
+    /// - Throws: URL이 잘못되거나 StatusCode가 200대가 아닐 경우 경우 KEEVError
     /// - Returns: 서버로부터 가져온 데이터
     ///
     /// - Author: 라움
@@ -73,7 +73,7 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     ///
     ///  요청을 보내서 서버로부터 가져온 데이터를 status code와 함께 튜플로 리턴하는 메소드입니다.
     ///
-    /// - Throws: URL이 잘못 된 경우 KEEVError
+    /// - Throws: URL이 잘못되거나 StatusCode가 200대가 아닐 경우 경우 KEEVError
     /// - Returns: 서버로 가져온 status code와 데이터의 튜플
     ///
     /// - Author: 라움
