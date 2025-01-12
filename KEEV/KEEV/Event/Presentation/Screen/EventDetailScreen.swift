@@ -34,6 +34,8 @@ struct EventDetailScreen: View {
     @Environment(\.dismiss) private var dismiss
     
     @Injected private var eventService: any EventServiceProtocol
+    @Injected private var vibeService: any VibeServiceProtocol
+    
     @State private var selectedEvent: DetailEventUIO
     @State private var vibeWriteState: VibeWriteState
     @State private var activeSection = EventDetailSection.detail
@@ -114,8 +116,7 @@ struct EventDetailScreen: View {
             }
             
             if let dDay = selectedEvent.dDay, dDay >= 0 {
-                // vibeCount를 불러오는 함수를 실행하면 됨.
-                // 유저의 글쓰기 여부를 분별하는 함수도 실행하면 됨.
+                vibeCount = try? await vibeService.getVibeCount(eventID: selectedEvent.id)
             }
         }
         .refreshable {
