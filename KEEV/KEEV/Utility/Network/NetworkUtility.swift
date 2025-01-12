@@ -34,11 +34,13 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     ///
     /// - Author: Doran, 라움
     func request(router: any HTTPRequestable) async throws -> Data {
-        let request = try doWithException(caller: "request(router: any HTTPRequestable)", router.asURLRequest)
-        
-        let (data, _) = try await fetchData(from: request)
-        
-        return data
+        try await doAsyncWithException(caller: "request-\(router)") {
+            let request = try doWithException(caller: "request(router: any HTTPRequestable)", router.asURLRequest)
+            
+            let (data, _) = try await fetchData(from: request)
+            
+            return data
+        }
     }
     
     /// MultipartForm으로 데이터를 요청하고 서버에서 데이터를 가져오는 메소드
@@ -54,12 +56,14 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func requestWithMultipartForm(router: HTTPRequestable, boundary: String) async throws -> Data {
-        var request = try doWithException(caller: "requestWithMultipartForm(router: HTTPRequestable, boundary: String)", router.asURLRequest)
-        request.setValue("multipart/form-data; boundary=\"\(boundary)\"", forHTTPHeaderField: "Content-Type")
-        
-        let (data, _) = try await fetchData(from: request)
-        
-        return data
+        try await doAsyncWithException(caller: "requestWithMultipartForm-\(router)") {
+            var request = try doWithException(caller: "requestWithMultipartForm(router: HTTPRequestable, boundary: String)", router.asURLRequest)
+            request.setValue("multipart/form-data; boundary=\"\(boundary)\"", forHTTPHeaderField: "Content-Type")
+            
+            let (data, _) = try await fetchData(from: request)
+            
+            return data
+        }
     }
     
     /// 서버에서 데이터를 가져오는 메소드
