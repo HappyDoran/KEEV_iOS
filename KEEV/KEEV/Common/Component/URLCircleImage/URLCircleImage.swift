@@ -17,7 +17,7 @@ struct URLCircleImage: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } else if let error = phase.error {
-                let _ = print(error)
+                let _ = debugPrint(error)
                 Image("ProfileImage")
                     .resizable()
                     .scaledToFit()

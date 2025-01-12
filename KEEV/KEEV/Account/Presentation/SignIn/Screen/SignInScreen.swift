@@ -86,7 +86,7 @@ private extension SignInScreen {
                             default: print("gggg");break
                             }
                         case .failure(let error):
-                            print(error)
+                            debugPrint(error)
                         }
                     }
                     .blendMode(.overlay)

@@ -82,7 +82,6 @@ extension SearchBeforeView {
             RecentSearchCell(search: recentSearchItem, onClick: {
                 text = recentSearchItem.term
                 isFocused.wrappedValue = false
-                print("SearchResult로 이동")
             }) {
                 if let index = recentKeywords.firstIndex(where: { $0.id == recentSearchItem.id }) {
                     recentKeywords.remove(at: index)

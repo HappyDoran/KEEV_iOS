@@ -109,18 +109,18 @@ extension TotalSearchScreen {
     private func handleSearching() {
         switch searchContent {
         case .event:
-            print("searchResult 이동")
+            debugPrint("searchResult 이동")
         case .vibe:
-            print("글쓰기 이동")
+            debugPrint("글쓰기 이동")
         }
     }
     
     private func handleAfterSearch() {
         switch searchContent {
         case .event:
-            print("Event Detail 이동")
+            debugPrint("Event Detail 이동")
         case .vibe:
-            print("글쓰기 이동")
+            debugPrint("글쓰기 이동")
         }
     }
 }

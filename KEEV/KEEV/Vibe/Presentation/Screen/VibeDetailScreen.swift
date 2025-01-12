@@ -212,7 +212,7 @@ private extension VibeDetailScreen {
                 vibe = try await vibeService.getVibeWithVibeID(vibeID: vibe.id)
             } catch {
                 errorForAlert = error
-                print("바이브를 불러오는데 실패했습니다.")
+                debugPrint("바이브를 불러오는데 실패했습니다.")
             }
         }
     }
@@ -237,7 +237,7 @@ private extension VibeDetailScreen {
             do {
                 replies = try await replyService.fetchReplies(for: vibe.id)
             } catch {
-                print("댓글을 불러오는데 실패했습니다.")
+                debugPrint("댓글을 불러오는데 실패했습니다.")
             }
         }
     }

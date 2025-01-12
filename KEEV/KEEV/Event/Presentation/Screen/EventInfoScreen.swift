@@ -148,7 +148,7 @@ private extension EventInfoScreen {
             
             return paginatedResponse.contents
         } catch {
-            print("Error loading events: \(error)")
+            debugPrint("Error loading events: \(error)")
             return nil
         }
     }
@@ -159,7 +159,7 @@ private extension EventInfoScreen {
             return response.contents
             
         } catch {
-            print("Error loading events: \(error)")
+            debugPrint("Error loading events: \(error)")
             return nil
         }
     }

@@ -168,7 +168,7 @@ private extension VibeModifyScreen {
                         tempPhotos.append(newImage)
                     }
                 } catch {
-                    print(error.localizedDescription)
+                    debugPrint(error.localizedDescription)
                 }
             }
             selectedImages = tempPhotos

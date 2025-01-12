@@ -119,7 +119,7 @@ private extension PhotoPickerView {
                         tempPhotos.append(newImage)
                     }
                 } catch {
-                    print(error.localizedDescription)
+                    debugPrint(error.localizedDescription)
                 }
             }
             selectedImages = tempPhotos

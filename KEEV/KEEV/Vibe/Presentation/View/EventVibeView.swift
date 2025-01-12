@@ -55,7 +55,7 @@ struct EventVibeView: View {
                 
                 currentPage = 1
             } catch {
-                print(error)
+                debugPrint(error)
             }
         }
     }
@@ -103,7 +103,7 @@ extension EventVibeView {
                                 vibes.append(contentsOf: newVibes)
                                 currentPage += 1
                             } catch {
-                                print(error)
+                                debugPrint(error)
                             }
                         }
                     }
@@ -156,7 +156,7 @@ extension EventVibeView {
                         
                         currentPage += 1
                     } catch {
-                        print(error)
+                        debugPrint(error)
                     }
                 }
             }

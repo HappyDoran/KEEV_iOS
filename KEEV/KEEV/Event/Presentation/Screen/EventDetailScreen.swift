@@ -231,7 +231,7 @@ extension EventDetailScreen {
                     } else if phase.error == nil {
                         ProgressView()
                     } else {
-                        let _ = print(phase.error!)
+                        let _ = debugPrint(phase.error ?? "unknown error")
                         Image("PosterError")
                             .resizable()
                             .scaledToFit()

@@ -95,7 +95,7 @@ private extension VibeContentView {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } else if let error = phase.error {
-                let _ = print(error)
+                let _ = debugPrint(error)
                 Image("PosterError")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
