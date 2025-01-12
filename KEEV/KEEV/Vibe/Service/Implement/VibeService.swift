@@ -5,6 +5,7 @@
 //  Created by Yune Cho on 10/19/24.
 //
 
+import Combine
 import Foundation
 import SwiftUI
 
@@ -21,6 +22,18 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let tokenUitility = TokenUtility.shared
     private let jsonDecoder: JSONDecoder = JSONDecoder()
+    
+    private var userProfile: DetailUserUIO? = nil
+    private var subscriptions: Set<AnyCancellable> = []
+    
+    init() {
+        NotificationCenter.Publisher.userInfoPublisher
+            .sink { [weak self] user in
+                self?.userProfile = user
+                print(user?.id)
+            }
+            .store(in: &subscriptions)
+    }
     
     func getVibeCount(eventID: String) async throws -> Int {
         try await doAsyncWithException(caller: "getVibeCount") {
@@ -39,8 +52,8 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
                     )
                 }
                 
-                let vibesCount = try jsonDecoder.decode(VibeCountDTO.self, from: data)
-                return vibesCount.count
+                let vibesCount = try jsonDecoder.decode(Int.self, from: data)
+                return vibesCount
             } catch {
                 throw throwKEEVError(
                     caller: "decode",
@@ -63,7 +76,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
             do {
                 let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<VibeDTO>.self, from: data)
                 
-                let contents = paginatedResponseDTO.contents.map { VibeUIO(vibeDTO: $0, isMine: true) }
+                let contents = paginatedResponseDTO.contents.map { VibeUIO(vibeDTO: $0, isMine: userProfile == nil ? false : userProfile?.id == $0.user.id) }
                 
                 let paginatedResponse = PaginatedResponse<VibeUIO>(
                     totalPages: paginatedResponseDTO.totalPages,
@@ -94,7 +107,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
             do {
                 let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<VibeDTO>.self, from: data)
                 
-                let contents = paginatedResponseDTO.contents.map { VibeUIO(vibeDTO: $0, isMine: true) }
+                let contents = paginatedResponseDTO.contents.map { VibeUIO(vibeDTO: $0, isMine: userProfile == nil ? false : userProfile?.id == $0.user.id) }
                 
                 let paginatedResponse = PaginatedResponse<VibeUIO>(
                     totalPages: paginatedResponseDTO.totalPages,
@@ -217,7 +230,8 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
             let data = try await networkUtility.request(router: router)
             
             let vibeDTO = try jsonDecoder.decode(VibeDTO.self, from: data)
-            let vibeUIO = VibeUIO(vibeDTO: vibeDTO, isMine: true)
+            let vibeUIO = VibeUIO(vibeDTO: vibeDTO, isMine: userProfile == nil ? false : userProfile?.id == vibeDTO.user.id)
+            
             
             return vibeUIO
         }
