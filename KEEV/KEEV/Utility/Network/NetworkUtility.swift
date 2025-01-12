@@ -15,6 +15,7 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     typealias Layer = NetworkUtility
     
     private let session: URLSession
+    private let decoder: JSONDecoder = JSONDecoder()
     
     /// URLSession을 Shared Session으로 초기화 하여 기본적인 요청을 하게 하였습니다.
     init(session: URLSession = .shared) {
@@ -35,7 +36,7 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     func request(router: any HTTPRequestable) async throws -> Data {
         let request = try doWithException(caller: "request(router: any HTTPRequestable)", router.asURLRequest)
         
-        let (data, response) = try await fetchData(from: request)
+        let (data, _) = try await fetchData(from: request)
         
         return data
     }
@@ -56,7 +57,7 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
         var request = try doWithException(caller: "requestWithMultipartForm(router: HTTPRequestable, boundary: String)", router.asURLRequest)
         request.setValue("multipart/form-data; boundary=\"\(boundary)\"", forHTTPHeaderField: "Content-Type")
         
-        let (data, response) = try await fetchData(from: request)
+        let (data, _) = try await fetchData(from: request)
         
         return data
     }
@@ -75,16 +76,7 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     func requestWithStatusCode(router: HTTPRequestable) async throws -> (Int, Data) {
         let request = try doWithException(caller: "requestWithStatusCode(router: HTTPRequestable)", router.asURLRequest)
         
-        let (data, response) = try await fetchData(from: request)
-        
-        guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-            throw KEEVError(
-                layer: Self.layer,
-                caller: "requestWithStatusCode(router: HTTPRequestable)",
-                occurPoint: .local(description: "FAILED TO GET STATUS CODE"),
-                previousError: nil
-            )
-        }
+        let (data, statusCode) = try await fetchData(from: request)
         
         return (statusCode, data)
     }
@@ -101,18 +93,38 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     func xmlRequest(router: HTTPRequestable) async throws -> Data {
         let request = try doWithException(caller: "xmlRequest(router: HTTPRequestable)", router.asURLRequest)
         
-        let (data, response) = try await fetchData(from: request)
-        
-        guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-            throw NSError(domain: "ServerError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Server Error"])
-        }
+        let (data, _) = try await fetchData(from: request)
         
         return data
     }
     
-    private func fetchData(from request: URLRequest) async throws -> (Data, URLResponse) {
+    private func fetchData(from request: URLRequest) async throws -> (Data, Int) {
         try await doAsyncWithException(caller: "fetchData(from request: URLRequest)") {
-            try await session.data(for: request)
+            let (data, response) = try await session.data(for: request)
+            
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
+                throw KEEVError(
+                    layer: Self.layer,
+                    caller: "fetchData(from request: URLRequest)",
+                    occurPoint: .local(description: "FAILED TO GET STATUS CODE"),
+                    previousError: nil
+                )
+            }
+            
+            guard (200..<300).contains(statusCode) else {
+                let errorMessage = try decodeErrorMessage(from: data)
+                
+                throw throwKEEVError(
+                    caller: "fetchData",
+                    occurPoint: .remote(code: statusCode, message: errorMessage.message)
+                )
+            }
+            
+            return (data, statusCode)
         }
+    }
+    
+    private func decodeErrorMessage(from data: Data) throws -> ErrorMessageDTO {
+        try decoder.decode(ErrorMessageDTO.self, from: data)
     }
 }
