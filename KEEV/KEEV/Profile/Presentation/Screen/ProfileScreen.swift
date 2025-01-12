@@ -51,7 +51,8 @@ struct ProfileScreen: View {
                     ProfileVibeView(
                         userID: userID,
                         isMyProfile: isMyProfile,
-                        selectedVibeViewType: $selectedVibeViewType
+                        selectedVibeViewType: $selectedVibeViewType,
+                        error: $error
                     )
                     .id(1)
                 }
@@ -64,7 +65,6 @@ struct ProfileScreen: View {
                         isNavigation: isNavigation,
                         isMyProfile: isMyProfile,
                         showActionSheet: $showActionSheet
-                        error: $error
                     )
                 }
 

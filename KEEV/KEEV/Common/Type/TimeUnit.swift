@@ -69,7 +69,7 @@ enum TimeUnit {
         let underDayDifference = timeDifference % Int(TimeUnit.days(of: 1).toSeconds)
         
         if underDayDifference >= 60 * 60 {
-            return .hours(of: underDayDifference / 60 * 60)
+            return .hours(of: underDayDifference / (60 * 60))
         }
         
         if underDayDifference >= 60 {
