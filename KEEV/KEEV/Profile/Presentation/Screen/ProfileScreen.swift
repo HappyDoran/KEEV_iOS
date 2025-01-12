@@ -15,8 +15,6 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileScreen: View {
-    @Environment(\.dismiss) private var dismiss
-    
     @Injected private var service: any ActivityServiceProtocol
     
     @Binding var selectedItem: TabbedItem.RawValue
@@ -35,30 +33,40 @@ struct ProfileScreen: View {
     
     var body: some View {
         ScrollViewReader { proxy in
-            ScrollView(showsIndicators: false){
-                ProfileTopView(
-                    userProfile: userProfile,
-                    isMyProfile: isMyProfile,
-                    showActionSheet: $showActionSheet,
-                    navigateToReport: $navigateToReport
-                )
-                .id(0)
-                
-                if isMyProfile {
-                    profileEditButton
+            ZStack(alignment: .top) {
+                ScrollView(showsIndicators: false) {
+                    ProfileTopView(
+                        userProfile: userProfile,
+                        isMyProfile: isMyProfile,
+                        showActionSheet: $showActionSheet,
+                        navigateToReport: $navigateToReport
+                    )
+                    .id(0)
+                    
+                    if isMyProfile {
+                        profileEditButton
+                    }
+                    
+                    ProfileVibeView(
+                        userID: userID,
+                        isMyProfile: isMyProfile,
+                        selectedVibeViewType: $selectedVibeViewType
+                    )
+                    .id(1)
                 }
+                .ignoresSafeArea(edges: .top)
+                .scrollTargetLayout()
+                .scrollPosition(id: $scrollID, anchor: .top)
                 
-                ProfileVibeView(
-                    userID: userID,
-                    isMyProfile: isMyProfile,
-                    selectedVibeViewType: $selectedVibeViewType
-                )
-                .id(1)
+                if scrollID == 0 {
+                    ProfileHeader(
+                        isNavigation: isNavigation,
+                        isMyProfile: isMyProfile,
+                        showActionSheet: $showActionSheet
+                    )
+                }
             }
-            .scrollTargetLayout()
-            .scrollPosition(id: $scrollID, anchor: .top)
             .backgroundForKEEV()
-            .ignoresSafeArea(edges: .top)
             .task {
                 if let userID {
                     do {
@@ -96,52 +104,6 @@ struct ProfileScreen: View {
                 ]
             )
             .navigationBarBackButtonHidden()
-            .toolbar {
-                if selectedItem == TabbedItem.profile.rawValue {
-                    if isNavigation {
-                        ToolbarItem(placement: .topBarLeading) {
-                            Button {
-                                dismiss()
-                            } label: {
-                                Image(systemName: "chevron.backward")
-                                    .font(.system(size: 17, weight: .semibold))
-                                    .foregroundColor(.gray100)
-                                    .padding(.bottom, 8)
-                            }
-                        }
-                    }
-                    
-                    if scrollID == 0 {
-                        switch isMyProfile {
-                        case true:
-                            ToolbarItem(placement: .topBarTrailing) {
-                                NavigationLink {
-                                    SettingScreen()
-                                } label: {
-                                    Image(systemName: "gearshape.fill")
-                                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
-                                        .font(.system(size: 20))
-                                        .foregroundStyle(.gray100)
-                                        .frame(height: 48)
-                                        .imageScale(.medium)
-                                        .padding(.bottom, 8)
-                                }
-                                .tint(.gray100)
-                            }
-                        case false:
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button {
-                                    showActionSheet = true
-                                } label: {
-                                    Image(systemName: "ellipsis")
-                                        .foregroundStyle(.gray100)
-                                        .padding(.bottom, 8)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }
@@ -176,7 +138,5 @@ enum VibeViewType {
 }
 
 #Preview {
-    NavigationStack {
-        ProfileScreen(selectedItem: .constant("profile"), userID: nil, isMyProfile: false, isNavigation: false)
-    }
+    ProfileScreen(selectedItem: .constant("profile"), userID: nil, isMyProfile: false, isNavigation: false)
 }
