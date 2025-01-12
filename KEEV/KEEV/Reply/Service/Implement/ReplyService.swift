@@ -57,8 +57,6 @@ class ReplyService: ReplyServiceProtocol {
         let currentUserID = currentUser?.id
         var replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
         
-        replies = replies.reversed()
-        
         return replies
     }
     
