@@ -146,9 +146,6 @@ struct VibeDetailScreen: View {
                     proxy.scrollTo("replyList", anchor: .bottom)
                 }
             }
-            .onChange(of: isFocused) { oldValue, newValue in
-                
-            }
             .loading(for: loadingForDelete)
             .alertForError($errorForAlert)
         }
@@ -247,6 +244,7 @@ private extension VibeDetailScreen {
     }
     
     func addReply(_ text: String) {
+        isFocused = false
         replyText = ""
         Task {
             do {
@@ -260,10 +258,10 @@ private extension VibeDetailScreen {
                 print("댓글을 등록하는데 실패했습니다.")
             }
         }
-        isFocused = false
     }
     
     func modifyReply(index: Int, reply: ReplyUIO, text: String) {
+        isFocused = false
         modifyReplySheet = nil
         Task {
             do {
@@ -274,7 +272,6 @@ private extension VibeDetailScreen {
                 print("댓글을 수정하는데 실패했습니다.")
             }
         }
-        isFocused = false
     }
     
     func deleteReply(reply: ReplyWithIndex) {
