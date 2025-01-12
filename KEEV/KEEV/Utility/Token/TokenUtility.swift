@@ -24,6 +24,7 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
     private static let refreshTokenTag = "keevRefreshToken"
     private let network = NetworkUtility()
     private var accessToken: String?
+    private var expirationDateForAccess: Date?
     
     /// 특정 유형의 토큰을 가져옵니다.
     ///
@@ -35,7 +36,7 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
     ///   - `TokenError.tokenNotFound`: 토큰이 저장소에 존재하지 않는 경우
     ///   - `TokenError.decodeFail`: 토큰 디코딩 실패
     /// - Author: newJunsung
-    nonisolated func fetchToken(for type: TokenType) async throws -> String {
+    func fetchToken(for type: TokenType) async throws -> String {
         switch type {
         case .access:
             return try await doAsyncWithException(caller: "fetchToken", fetchAccessToken)
@@ -57,6 +58,7 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
         let data = try await doAsyncWithException(caller: "refreshAccessToken") {
             try await network.request(router: router)
         }
+        expirationDateForAccess = Date.now.addingTimeInterval(TimeUnit.hours(of: 1).toSeconds)
         
         // 서버 응답 디코딩
         let account = try doWithException(caller: "refreshAccessToken") { try JSONDecoder().decode(AccountDTO.self, from: data) }
@@ -82,6 +84,7 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
         switch type {
         case .access:
             accessToken = token
+            expirationDateForAccess = Date.now.addingTimeInterval(TimeUnit.hours(of: 1).toSeconds)
         case .refresh:
             try doWithException(caller: "storeToken") {
                 try storeRefreshToken(token)
@@ -93,6 +96,7 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
         switch type {
         case .access:
             accessToken = nil
+            expirationDateForAccess = nil
         case .refresh:
             try doWithException(caller: "deleteToken") {
                 try KeyChain.delete(tag: Self.refreshTokenTag)
@@ -101,7 +105,8 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
     }
     
     private func fetchAccessToken() async throws -> String {
-        if let accessToken = accessToken {
+        if let accessToken = accessToken,
+           let expirationDateForAccess, expirationDateForAccess > Date.now {
             return accessToken
         }
         
