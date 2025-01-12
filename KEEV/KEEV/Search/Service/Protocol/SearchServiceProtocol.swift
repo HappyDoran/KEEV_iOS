@@ -12,7 +12,7 @@ import Foundation
 /// SearchService를 구현하기 위한 프로토콜입니다.
 ///
 /// - Author: 라움
-protocol SearchServiceProtocol: AnyObject {
+protocol SearchServiceProtocol: LayerRepresentable, AnyObject {
     /// 최근 검색한 검색어를 저장하는 함수
     ///
     /// - Parameters:
