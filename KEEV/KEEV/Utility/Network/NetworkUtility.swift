@@ -57,7 +57,7 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     /// - Author: 라움
     func requestWithMultipartForm(router: HTTPRequestable, boundary: String) async throws -> Data {
         try await doAsyncWithException(caller: "requestWithMultipartForm-\(router)") {
-            var request = try doWithException(caller: "requestWithMultipartForm(router: HTTPRequestable, boundary: String)", router.asURLRequest)
+            var request = try router.asURLRequest()
             request.setValue("multipart/form-data; boundary=\"\(boundary)\"", forHTTPHeaderField: "Content-Type")
             
             let (data, _) = try await fetchData(from: request)
@@ -103,13 +103,13 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
     }
     
     private func fetchData(from request: URLRequest) async throws -> (Data, Int) {
-        try await doAsyncWithException(caller: "fetchData(from request: URLRequest)") {
+        try await doAsyncWithException(caller: "fetchData") {
             let (data, response) = try await session.data(for: request)
             
             guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
                 throw KEEVError(
                     layer: Self.layer,
-                    caller: "fetchData(from request: URLRequest)",
+                    caller: "fetchData",
                     occurPoint: .local(description: "FAILED TO GET STATUS CODE"),
                     previousError: nil
                 )
