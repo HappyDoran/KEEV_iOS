@@ -99,15 +99,15 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
         guard (200..<300).contains(code) else {
             let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
             throw throwKEEVError(
-                caller: "loadDetailEvent(id: String)",
+                caller: "loadDetailEvent",
                 occurPoint: .remote(code: code, message: errorMessage.message)
             )
         }
         
-        return try doWithException(caller: "loadDetailEvent(id: String)") {
+        return try doWithException(caller: "loadDetailEvent") {
             let eventResponseDTO = try jsonDecoder.decode(EventResponseDTO.self, from: data)
             guard let detailEventDTO = eventResponseDTO.events.first else {
-                throw throwKEEVError(caller: "loadDetailEvent(id: String)", occurPoint: .local(description: "Event not found"))
+                throw throwKEEVError(caller: "loadDetailEvent", occurPoint: .local(description: "Event not found"))
             }
             
             let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)

@@ -31,7 +31,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         
         do {
             let (code, fetchedAccount) = try await fetchAccountDTO(from: .refreshAccessToken(refreshToken: tokenString))
-            try await doAsyncWithException(caller: "autoSignIn()") {
+            try await doAsyncWithException(caller: "autoSignIn") {
                 try await storeToken(fetchedAccount.accessToken, for: .access)
             }
             return determineStatus(from: fetchedAccount, with: code)
@@ -41,7 +41,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     }
     
     func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
-        try await doAsyncWithException(caller: "signInWithApple(user: String, identityToken: Data, authorizationCode: Data)") {
+        try await doAsyncWithException(caller: "signInWithApple") {
             let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(code: authorizationCode))
         
             try await storeToken(fetchedAccount.accessToken, for: .access)
@@ -58,7 +58,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         }
         
         return try await doAsyncWithException(
-            caller: "signUp(email: String, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String)"
+            caller: "signUp"
         ) {
             let json = try buildUserDataJSON(email: email, nickname: nickname, description: description)
             let (profileJPEG, backgroundJPEG) = convertToJPEG(profileImage: profileImage, backgroundImage: backgroundImage)
@@ -91,14 +91,14 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
             NotificationCenter.default.post(name: .updateSignInStatus, object: SignInStatus.failed)
             throw KEEVError(
                 layer: Self.layer,
-                caller: "updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String)",
+                caller: "updateProfile",
                 occurPoint: .local(description: "NO ACCOUNT"),
                 previousError: nil
             )
         }
         
         let result = try await doAsyncWithException(
-            caller: "updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String)"
+            caller: "updateProfile"
         ) {
             try await signUp(
                 email: email,
@@ -114,7 +114,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         } else {
             throw KEEVError(
                 layer: Self.layer,
-                caller: "updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String)",
+                caller: "updateProfile",
                 occurPoint: .local(description: "FAILED TO UPDATE PROFILE"),
                 previousError: nil
             )

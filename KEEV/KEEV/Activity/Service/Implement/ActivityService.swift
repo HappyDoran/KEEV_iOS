@@ -45,7 +45,7 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     }
     
     func getUserInfo(userID: Int) async throws -> DetailUserUIO {
-        try await doAsyncWithException(caller: "getUserInfo(userID: Int)") {
+        try await doAsyncWithException(caller: "getUserInfo") {
             if let currentUser, currentUser.id == userID {
                 return currentUser
             }
@@ -63,7 +63,7 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     }
     
     func getUserVibeList(userID: Int) async throws -> [VibeUIO] {
-        try await doAsyncWithException(caller: "getUserVibeList(userID: Int)") {
+        try await doAsyncWithException(caller: "getUserVibeList") {
             let router = ActivityHTTPRequestRouter.userVibeList(userID: userID)
             
             let data = try await networkUtility.request(router: router)
