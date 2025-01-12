@@ -12,7 +12,7 @@ import Foundation
 /// ReportService 구현을 위한 프로토콜입니다.
 ///
 /// - Author: 라움
-protocol ReportServiceProtocol {
+protocol ReportServiceProtocol: LayerRepresentable, AnyObject {
     /// 댓글 신고하기 함수
     ///
     /// - Parameters:
