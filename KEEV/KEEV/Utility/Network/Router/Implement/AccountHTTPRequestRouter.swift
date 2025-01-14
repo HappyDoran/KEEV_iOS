@@ -64,7 +64,7 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
         case .signInWithApple: ["auth", "signup", "apple"]
         case .refreshAccessToken: ["auth", "reissue"]
         case .modifyAccount: ["user", "register", "userinfo"]
-        case .signOut: ["auth", "signOut"]
+        case .signOut: ["auth", "logout"]
         case .deleteAccount: ["user", "delete"]
         }
     }
