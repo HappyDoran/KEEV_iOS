@@ -105,8 +105,8 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         self.name = try container.decode(String.self, forKey: .name)
         self.types = try container.decode([EventTypeDTO].self, forKey: .types)
         self.genres = try container.decode([GenreDTO].self, forKey: .genres)
-        self.createdDate = tempCreatedDate.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
-        self.reservationStartDate = tempReservationStartDate?.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
+        self.createdDate = tempCreatedDate.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS") ?? .now
+        self.reservationStartDate = tempReservationStartDate?.toDate(format: "yyyy-MM-dd'T'HH:mm:ss")
         self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.startTime = tempStartTime.toDate(format: "HH:mm:ss") ?? .now

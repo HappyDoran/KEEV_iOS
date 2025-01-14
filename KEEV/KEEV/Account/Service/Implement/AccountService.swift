@@ -124,8 +124,8 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     func signOut() async throws {
         try await doAsyncWithException(caller: "signOut") {
             let token = try await tokenUtility.fetchToken(for: .access)
-            let router = AccountHTTPRequestRouter.signOut(accessToken: token)
-            let _ = try await networkUtility.request(router: router)
+            let router = AccountHTTPRequestRouter.logout(accessToken: token)
+            _ = try? await networkUtility.request(router: router)
             try await deleteAllTokens()
             resetStatus()
         }
