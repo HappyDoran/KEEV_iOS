@@ -86,7 +86,7 @@ struct DetailEventUIO: Identifiable {
         self.name = name
         self.posterURL = URL(string: posterURLString)
         self.dDay = startDate.difference(from: .now)
-        self.reservationStartDate = reservationStartDate.toString(format: "yyyy. MM. dd")
+        self.reservationStartDate = reservationStartDate.toString(format: "yyyy. MM. dd hh:mm")
         self.startDate = startDate.toString(format: "yyyy. MM. dd")
         self.endDate = endDate.toString(format: "yyyy. MM. dd")
         self.places = places
@@ -101,7 +101,7 @@ struct DetailEventUIO: Identifiable {
         self.name = event.name
         self.posterURL = URL(string: event.posterURLString)
         self.dDay = event.startDate.difference(from: .now)
-        self.reservationStartDate = event.reservationStartDate?.toString(format: "yyyy. MM. dd")
+        self.reservationStartDate = event.reservationStartDate?.toString(format: "yyyy. MM. dd hh:mm")
         self.startDate = event.startDate.toString(format: "yyyy. MM. dd")
         self.endDate = event.endDate.toString(format: "yyyy. MM. dd")
         self.places = event.places
