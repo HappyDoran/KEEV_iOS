@@ -14,7 +14,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 enum VibeHTTPRequestRouter {
-    case getVibeCount(token: String, eventID: String)
+    case getVibeCount(eventID: String)
     case getVibes(page: Int, size: Int, sort: [SortParameter])
     case getVibesFromEventID(id: String, page: Int, size: Int, sort: [SortParameter])
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 업로드는 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
@@ -45,9 +45,9 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String : String]? {
         switch self {
-        case .getVibes, .getVibeWithVibeID, .getVibesFromEventID:
+        case .getVibes, .getVibeWithVibeID, .getVibesFromEventID, .getVibeCount:
             return nil
-        case .getVibeCount(let token, _), .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _):
+        case .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -79,7 +79,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         var path = ["vibe"]
         
         switch self {
-        case .getVibeCount(_, let eventID):
+        case .getVibeCount(let eventID):
             path.append(contentsOf: ["count", "\(eventID)"])
         case .getVibes:
             path.append(contentsOf: ["get", "sortBy"])
