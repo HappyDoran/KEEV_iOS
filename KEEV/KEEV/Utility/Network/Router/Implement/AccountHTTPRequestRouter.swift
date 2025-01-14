@@ -15,7 +15,7 @@ enum AccountHTTPRequestRouter {
     /// 사용자가 회원정보를 기입할 때 사용하는 라우터
     case modifyAccount(accessToken: String, boundary: String, multipartData: Data)
     /// 로그아웃 라우터
-    case signOut(accessToken: String)
+    case logout(accessToken: String)
     /// 회원탈퇴 라우터
     case deleteAccount(accessToken: String)
 }
@@ -26,7 +26,7 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
         case .signInWithApple: .post
         case .refreshAccessToken: .post
         case .modifyAccount: .post
-        case .signOut: .post
+        case .logout: .post
         case .deleteAccount: .delete
         }
     }
@@ -39,7 +39,7 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
             "Authorization": "Bearer \(token)",
             "Content-Type": "multipart/form-data; boundary=\(boundary)"
         ]
-        case .signOut(let token): ["Authorization": "Bearer \(token)"]
+        case .logout(let token): ["Authorization": "Bearer \(token)"]
         case .deleteAccount(let token): ["Authorization": "Bearer \(token)"]
         }
     }
@@ -50,7 +50,7 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
             try? JSONSerialization.data(withJSONObject: ["code": String(data: code, encoding: .utf8)!])
         case .refreshAccessToken: nil
         case .modifyAccount(_, _, let multipartData): multipartData
-        case .signOut: nil
+        case .logout: nil
         case .deleteAccount: nil
         }
     }
@@ -64,7 +64,7 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
         case .signInWithApple: ["auth", "signup", "apple"]
         case .refreshAccessToken: ["auth", "reissue"]
         case .modifyAccount: ["user", "register", "userinfo"]
-        case .signOut: ["auth", "logout"]
+        case .logout: ["auth", "logout"]
         case .deleteAccount: ["user", "delete"]
         }
     }
