@@ -9,7 +9,7 @@ import Foundation
 
 enum AccountHTTPRequestRouter {
     /// 애플로 로그인할 때 사용하는 라우터. code는 `SignInWithApple`을 통해 받을 수 있는 `authorizationCode`입니다.
-    case signInWithApple(code: Data)
+    case signInWithApple(email: String?, code: Data)
     /// AccessToken을 갱신할 때 사용하는 라우터
     case refreshAccessToken(refreshToken: String)
     /// 사용자가 회원정보를 기입할 때 사용하는 라우터
@@ -46,8 +46,11 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .signInWithApple(let code):
-            try? JSONSerialization.data(withJSONObject: ["code": String(data: code, encoding: .utf8)!])
+        case .signInWithApple(let email, let code):
+            try? JSONSerialization.data(withJSONObject: [
+                "email": email!,
+                "code": String(data: code, encoding: .utf8)!
+            ])
         case .refreshAccessToken: nil
         case .modifyAccount(_, _, let multipartData): multipartData
         case .logout: nil

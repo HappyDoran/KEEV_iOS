@@ -43,7 +43,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     func signInWithApple(email: String?, user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
         try await doAsyncWithException(caller: "signInWithApple") {
 
-            let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(code: authorizationCode))
+            let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(email: email, code: authorizationCode))
         
             try await storeToken(fetchedAccount.accessToken, for: .access)
             try await storeToken(fetchedAccount.keevRefreshToken, for: .refresh)
