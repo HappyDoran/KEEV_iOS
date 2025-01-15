@@ -26,7 +26,7 @@ final class ErrorAccountService: AccountServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    func signUp(email: String, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
+    func signUp(email: String?, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
         try await doAsyncWithException(caller: "signUp") {
             let (_, _) = try await requestWithStatusCode(router: AccountHTTPRequestRouter.signInWithApple(email: nil, code: "eee".data(using: .utf8)!))
             return SignInStatus.ok(user: .dummy0)

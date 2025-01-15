@@ -55,7 +55,7 @@ protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
     /// - Returns: 회원정보가 서버에 등록이 된다면 그 값을 `DetailUserUIO`로 다시 리턴받습니다.
     /// - Author: newJunsung
     func signUp(
-        email: String,
+        email: String?,
         nickname: String,
         profileImage: UIImage?,
         backgroundImage: UIImage?,

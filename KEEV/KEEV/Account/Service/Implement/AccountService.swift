@@ -53,7 +53,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         
     }
     
-    func signUp(email: String, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
+    func signUp(email: String?, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
         guard let account else {
             return .failed
         }
@@ -193,16 +193,16 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    private func buildUserDataJSON(email: String, nickname: String, description: String) throws -> Data {
+    private func buildUserDataJSON(email: String?, nickname: String, description: String) throws -> Data {
         if !description.isEmpty {
             return try JSONSerialization.data(withJSONObject: [
-                "email": email,
+                "email": email!,
                 "nickname": nickname,
                 "description": description
             ])
         } else {
             return try JSONSerialization.data(withJSONObject: [
-                "email": email,
+                "email": email!,
                 "nickname": nickname,
             ])
         }
