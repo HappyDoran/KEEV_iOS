@@ -64,14 +64,15 @@ private extension SignInScreen {
                 .foregroundStyle(.white)
                 .frame(height: 54)
                 .overlay {
-                    SignInWithAppleButton { _ in
-                        
-                    } onCompletion: { result in
+                    SignInWithAppleButton(.signIn,
+                                          onRequest: { request in
+                        request.requestedScopes = [.email, .fullName]
+                    }, onCompletion: { result in
                         switch result {
                         case .success(let authorization):
                             switch authorization.credential {
                             case let appleIDCredential as ASAuthorizationAppleIDCredential:
-                                let email = appleIDCredential.email ?? nil
+                                let email = appleIDCredential.email
                                 let user = appleIDCredential.user
                                 let token = appleIDCredential.identityToken!
                                 let code = appleIDCredential.authorizationCode!
@@ -84,18 +85,18 @@ private extension SignInScreen {
                                     }
                                 }
                                 
-                            default: print("gggg");break
+                            default: print("gggg"); break
                             }
                         case .failure(let error):
                             debugPrint(error)
                         }
-                    }
+                    })
                     .blendMode(.overlay)
                     .cornerRadius(14)
                     .signInWithAppleButtonStyle(.white)
                     .frame(height: 54)
                 }
-            
+        
             Label("Apple로 로그인", systemImage: "apple.logo")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
                 .foregroundStyle(.black)
