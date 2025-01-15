@@ -113,6 +113,8 @@ private extension SignInScreen {
             } label: {
                 Text("이용약관")
                     .underline()
+                    .baselineOffset(4)
+                    .offset(y: 2)
             }
             
             Text(" 및 ")
@@ -122,6 +124,8 @@ private extension SignInScreen {
             } label: {
                 Text("개인정보 처리방침")
                     .underline()
+                    .baselineOffset(4)
+                    .offset(y: 2)
             }
             
             Text("에 동의하게 됩니다.")
@@ -132,5 +136,7 @@ private extension SignInScreen {
 }
 
 #Preview {
-    SignInScreen(status: .constant(.failed))
+    KEEVPreview {
+        SignInScreen(status: .constant(.failed))
+    }
 }
