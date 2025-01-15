@@ -24,10 +24,10 @@ struct SignUpProfileView: View {
     @Binding var showActionSheet: Bool
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
+    @Binding var error: Error?
     
     @State private var errorMessage = ""
     @State private var disableButton = true
-    @State private var error: Error? = nil
     
     @FocusState private var isFocused: Bool
     
@@ -97,7 +97,6 @@ struct SignUpProfileView: View {
                 style: .maxWidth,
                 disabled: disableButton
             )
-            .alertForError($error)
             .sensoryFeedback(.impact, trigger: currentPage)
             .padding(.top, 12)
             .padding(.horizontal, 16)
@@ -126,6 +125,6 @@ extension SignUpProfileView {
         profileImage: .constant(nil),
         showActionSheet: .constant(false),
         currentPage: .constant(.profile),
-        transitionDirection: .constant(.leading)
+        transitionDirection: .constant(.leading), error: .constant(nil)
     )
 }

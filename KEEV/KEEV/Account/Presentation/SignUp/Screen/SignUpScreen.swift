@@ -29,6 +29,7 @@ struct SignUpScreen: View {
     @State private var transitionDirection: Edge = .trailing
     @State private var showActionSheet = false
     @State private var showImageSelectSheet = false
+    @State private var error: Error? = nil
     
     var body: some View {
         VStack {
@@ -55,6 +56,7 @@ struct SignUpScreen: View {
         .fullScreenCover(isPresented: $showImageSelectSheet) {
             ImageSelectView(image: $profileImage)
         }
+        .alertForError($error)
     }
 }
 
@@ -75,7 +77,8 @@ extension SignUpScreen {
                 nickname: $nickname, profileImage: $profileImage,
                 showActionSheet: $showActionSheet,
                 currentPage: $currentPage,
-                transitionDirection: $transitionDirection
+                transitionDirection: $transitionDirection,
+                error: $error
             )
         case .complete:
             SignUpCompleteView(

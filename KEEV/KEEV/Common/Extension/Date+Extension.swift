@@ -74,9 +74,10 @@ extension Date {
     ///
     /// - Author: 라움
     func difference(from date: Date) -> Int? {
-        guard let difference = Date.calendar.dateComponents([.day], from: self, to: Date()).day else { return nil }
-        
-        return difference
+        let lhs = Int(self.timeIntervalSince1970 / TimeUnit.days(of: 1).toSeconds)
+        let rhs = Int(date.timeIntervalSince1970 / TimeUnit.days(of: 1).toSeconds)
+
+        return rhs - lhs
     }
 }
 
