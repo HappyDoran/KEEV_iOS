@@ -66,7 +66,7 @@ private extension SignInScreen {
                 .overlay {
                     SignInWithAppleButton(.signIn,
                                           onRequest: { request in
-                        request.requestedScopes = [.email, .fullName]
+                        request.requestedScopes = [.email]
                     }, onCompletion: { result in
                         switch result {
                         case .success(let authorization):
@@ -85,7 +85,7 @@ private extension SignInScreen {
                                     }
                                 }
                                 
-                            default: print("gggg"); break
+                            default: break
                             }
                         case .failure(let error):
                             debugPrint(error)

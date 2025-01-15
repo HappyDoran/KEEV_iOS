@@ -35,7 +35,7 @@ final class MockAccountService: AccountServiceProtocol {
     }
     
     func signUp(email: String?, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
-        self.email = email!
+        self.email = email
         let dummy = DetailUserUIO.dummy4
         let id = dummy.id
         let profileImageURL = profileImage == nil ? nil : dummy.profileImageURL

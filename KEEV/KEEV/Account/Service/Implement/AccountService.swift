@@ -194,18 +194,19 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     }
     
     private func buildUserDataJSON(email: String?, nickname: String, description: String) throws -> Data {
-        if !description.isEmpty {
-            return try JSONSerialization.data(withJSONObject: [
-                "email": email!,
-                "nickname": nickname,
-                "description": description
-            ])
-        } else {
-            return try JSONSerialization.data(withJSONObject: [
-                "email": email!,
-                "nickname": nickname,
-            ])
+        var json: [String: Any] = [
+            "nickname": nickname
+        ]
+        
+        if let email = email {
+            json["email"] = email
         }
+        
+        if !description.isEmpty {
+            json["description"] = description
+        }
+        
+        return try JSONSerialization.data(withJSONObject: json)
     }
     
     private func buildMultipartFormData(id: Int, userJSON: Data, profileJPEG: Data?, backgroundJPEG: Data?) -> (String, Data)? {

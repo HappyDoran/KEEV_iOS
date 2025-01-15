@@ -47,14 +47,18 @@ extension AccountHTTPRequestRouter: HTTPRequestable {
     var body: Data? {
         switch self {
         case .signInWithApple(let email, let code):
-            try? JSONSerialization.data(withJSONObject: [
-                "email": email!,
-                "code": String(data: code, encoding: .utf8)!
-            ])
-        case .refreshAccessToken: nil
-        case .modifyAccount(_, _, let multipartData): multipartData
-        case .logout: nil
-        case .deleteAccount: nil
+            let json: [String: Any] = email != nil ? [
+                        "email": email!,
+                        "code": String(data: code, encoding: .utf8)!
+                    ] : [
+                        "code": String(data: code, encoding: .utf8)!
+                    ]
+            
+            return try? JSONSerialization.data(withJSONObject: json)
+        case .refreshAccessToken: return nil
+        case .modifyAccount(_, _, let multipartData): return multipartData
+        case .logout: return nil
+        case .deleteAccount: return nil
         }
     }
     
