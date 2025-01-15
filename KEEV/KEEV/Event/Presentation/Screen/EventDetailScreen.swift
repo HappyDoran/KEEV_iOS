@@ -145,7 +145,6 @@ extension EventDetailScreen {
         VStack(spacing: 0) {
             ScrollView(showsIndicators: false) {
                 EventDetailThumbnail(selectedEvent: selectedEvent)
-                    .padding(.top,4)
                 EventDetailInfoView(selectedEvent: selectedEvent)
                     .padding(.horizontal, 20)
                 
