@@ -27,6 +27,7 @@ protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
     /// 애플 로그인을 위한 함수.
     ///
     /// - Parameters:
+    ///   - email: 사용자의 이메일입니다.
     ///   - user: 사용자의 고유 ID입니다.
     ///   - identityToken: 토큰입니다.
     ///   - authorizationCode: 코드입니다.
@@ -37,7 +38,7 @@ protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
     /// - Throws: 서버와 통신을 실패했을 때, 에러를 리턴합니다.
     /// - Returns: 회원가입이 된 상태라면 `.ok`와 함께 `DetailUserUIO`를, 회원가입이 되지 않은 상태라면 `.created`를 반환합니다.
     /// - Author: newJunsung
-    func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus
+    func signInWithApple(email: String?, user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus
     
     /// 회원가입 정보를 넣는 함수.
     ///
@@ -54,7 +55,7 @@ protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
     /// - Returns: 회원정보가 서버에 등록이 된다면 그 값을 `DetailUserUIO`로 다시 리턴받습니다.
     /// - Author: newJunsung
     func signUp(
-        email: String,
+        email: String?,
         nickname: String,
         profileImage: UIImage?,
         backgroundImage: UIImage?,

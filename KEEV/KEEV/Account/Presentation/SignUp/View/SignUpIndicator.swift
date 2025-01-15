@@ -13,10 +13,11 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpIndicator: View {
+    @Binding var signInStatus: SignInStatus?
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
     
-    @State private var progress: Double = 1.0 / 3
+    @State private var progress: Double = 1.0 / 2
     
     var body: some View {
         VStack {
@@ -24,14 +25,7 @@ struct SignUpIndicator: View {
                 if currentPage != .complete {
                     Button {
                         transitionDirection = .leading
-                        
-                        if currentPage == .email {
-                            // navigationRouter로 로그인 화면으로 돌아가면 됩니다.
-                            // 바로 아래 페이지 전환 코드는 임시로 작성해놓은겁니다.
-                            currentPage = .email
-                        } else if currentPage == .profile {
-                            currentPage = .email
-                        }
+                        signInStatus = .failed
                     } label: {
                         Image(systemName: "chevron.backward")
                             .font(.system(size: 15, weight: .semibold))
@@ -50,7 +44,7 @@ struct SignUpIndicator: View {
                             Text("\(currentPage.rawValue)")
                                 .foregroundStyle(.brand400)
                             
-                            Text(" / 3")
+                            Text(" / 2")
                                 .foregroundStyle(.brand500)
                                 .opacity(0.5)
                         }
@@ -60,16 +54,15 @@ struct SignUpIndicator: View {
             .padding(.vertical, 8)
             .padding(.horizontal, 16)
             
-        
             ProgressBar(value: progress, total: 1)
                 .animation(.easeInOut, value: progress)
         }
         .onChange(of: currentPage) {
-            progress = Double(currentPage.rawValue) / 3
+            progress = Double(currentPage.rawValue) / 2
         }
     }
 }
 
 #Preview {
-    SignUpIndicator(currentPage: .constant(.email), transitionDirection: .constant(.leading))
+    SignUpIndicator(signInStatus: .constant(nil), currentPage: .constant(.profile), transitionDirection: .constant(.leading))
 }

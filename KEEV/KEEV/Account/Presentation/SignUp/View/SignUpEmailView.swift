@@ -15,8 +15,8 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct SignUpEmailView: View {
-//    @ObservedObject var accountService: AccountService
     @Injected private var accountService: any AccountServiceProtocol
+    
     @Binding var email: String
     @Binding var currentPage: SignUpPage
     @Binding var transitionDirection: Edge
@@ -85,11 +85,10 @@ extension SignUpEmailView {
     }
 }
 
-#Preview {
-    SignUpEmailView(
-//        accountService: AccountService(),
-        email: .constant("fefefefe@fefefefe.fefefefe"),
-        currentPage: .constant(.email),
-        transitionDirection: .constant(.leading)
-    )
-}
+//#Preview {
+//    SignUpEmailView(
+//        email: .constant("fefefefe@fefefefe.fefefefe"),
+//        currentPage: .constant(.email),
+//        transitionDirection: .constant(.leading)
+//    )
+//}

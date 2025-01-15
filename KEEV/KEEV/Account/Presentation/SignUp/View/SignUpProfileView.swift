@@ -19,7 +19,6 @@ struct SignUpProfileView: View {
     
     @Binding var result: SignInStatus
     
-    let email: String
     @Binding var nickname: String
     @Binding var profileImage: UIImage?
     @Binding var showActionSheet: Bool
@@ -81,7 +80,13 @@ struct SignUpProfileView: View {
                 action: {
                     Task {
                         do {
-                            result = try await accountService.signUp(email: email, nickname: nickname, profileImage: profileImage, backgroundImage: nil, description: "")
+                            result = try await accountService.signUp(
+                                email: nil,
+                                nickname: nickname,
+                                profileImage: profileImage,
+                                backgroundImage: nil,
+                                description: ""
+                            )
                             transitionDirection = .trailing
                             currentPage = .complete
                         } catch let failToSignUp {
@@ -96,7 +101,7 @@ struct SignUpProfileView: View {
             .sensoryFeedback(.impact, trigger: currentPage)
             .padding(.top, 12)
             .padding(.horizontal, 16)
-            .padding(.bottom, 42)
+            .padding(.bottom, 16)
         }
     }
 }
@@ -116,7 +121,9 @@ extension SignUpProfileView {
 
 #Preview {
     SignUpProfileView(
-        result: .constant(.created), email: "hihi@fjefj.com", nickname: .constant("fefe"), profileImage: .constant(nil),
+        result: .constant(.created),
+        nickname: .constant("fefe"),
+        profileImage: .constant(nil),
         showActionSheet: .constant(false),
         currentPage: .constant(.profile),
         transitionDirection: .constant(.leading)

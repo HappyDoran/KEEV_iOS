@@ -16,7 +16,6 @@ import Lottie
 struct SignUpCompleteView: View {
     let nickname: String
     let profileImage: UIImage?
-    let email: String
     @Binding var currentPage: SignUpPage
     let finishSignUp: () -> Void
     
@@ -48,10 +47,6 @@ struct SignUpCompleteView: View {
                             .figmaFont(PretendardFont.title(style: .sm))
                             .foregroundStyle(.gray50)
                             .padding(.bottom, 4)
-                        
-                        Text(email)
-                            .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .medium)))
-                            .foregroundStyle(.gray300)
                     }
                 }
             }
@@ -64,7 +59,6 @@ struct SignUpCompleteView: View {
         CommonButton(
             title: "시작하기",
             action: {
-                // navigationRouter로 메인화면으로 가면 됩니다.
                 finishSignUp()
             },
             style: .maxWidth
@@ -72,10 +66,10 @@ struct SignUpCompleteView: View {
         .sensoryFeedback(.success, trigger: currentPage)
         .padding(.top, 12)
         .padding(.horizontal, 16)
-        .padding(.bottom, 42)
+        .padding(.bottom, 16)
     }
 }
 
 #Preview {
-    SignUpCompleteView(nickname: "hi", profileImage: nil, email: "fee@fee.com", currentPage: .constant(.complete)) { }
+    SignUpCompleteView(nickname: "hi", profileImage: nil, currentPage: .constant(.complete)) { }
 }

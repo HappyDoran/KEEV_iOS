@@ -19,23 +19,23 @@ final class ErrorAccountService: AccountServiceProtocol, KEEVErrorHandler {
         .failed
     }
     
-    func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
+    func signInWithApple(email: String?, user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
         try await doAsyncWithException(caller: "signInWithApple") {
-            let (_, _) = try await requestWithStatusCode(router: AccountHTTPRequestRouter.signInWithApple(code: authorizationCode))
+            let (_, _) = try await requestWithStatusCode(router: AccountHTTPRequestRouter.signInWithApple(email: email, code: authorizationCode))
             return SignInStatus.ok(user: .dummy0)
         }
     }
     
-    func signUp(email: String, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
+    func signUp(email: String?, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
         try await doAsyncWithException(caller: "signUp") {
-            let (_, _) = try await requestWithStatusCode(router: AccountHTTPRequestRouter.signInWithApple(code: "eee".data(using: .utf8)!))
+            let (_, _) = try await requestWithStatusCode(router: AccountHTTPRequestRouter.signInWithApple(email: nil, code: "eee".data(using: .utf8)!))
             return SignInStatus.ok(user: .dummy0)
         }
     }
     
     func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
         try await doAsyncWithException(caller: "updateProfile") {
-            let (_, _) = try await requestWithStatusCode(router: AccountHTTPRequestRouter.signInWithApple(code: "eee".data(using: .utf8)!))
+            let (_, _) = try await requestWithStatusCode(router: AccountHTTPRequestRouter.signInWithApple(email: nil, code: "eee".data(using: .utf8)!))
             return DetailUserUIO.dummy0
         }
     }
