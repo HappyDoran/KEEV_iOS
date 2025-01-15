@@ -40,7 +40,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
+    func signInWithApple(email: String?, user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
         try await doAsyncWithException(caller: "signInWithApple") {
             let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(code: authorizationCode))
         

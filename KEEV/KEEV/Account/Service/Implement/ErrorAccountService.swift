@@ -19,7 +19,7 @@ final class ErrorAccountService: AccountServiceProtocol, KEEVErrorHandler {
         .failed
     }
     
-    func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
+    func signInWithApple(email: String?, user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
         try await doAsyncWithException(caller: "signInWithApple") {
             let (_, _) = try await requestWithStatusCode(router: AccountHTTPRequestRouter.signInWithApple(code: authorizationCode))
             return SignInStatus.ok(user: .dummy0)

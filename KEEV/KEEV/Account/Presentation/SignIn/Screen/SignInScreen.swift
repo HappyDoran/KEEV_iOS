@@ -71,13 +71,14 @@ private extension SignInScreen {
                         case .success(let authorization):
                             switch authorization.credential {
                             case let appleIDCredential as ASAuthorizationAppleIDCredential:
+                                let email = appleIDCredential.email ?? nil
                                 let user = appleIDCredential.user
                                 let token = appleIDCredential.identityToken!
                                 let code = appleIDCredential.authorizationCode!
                                 
                                 Task {
                                     do {
-                                        status = try await accountService.signInWithApple(user: user, identityToken: token, authorizationCode: code)
+                                        status = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
                                     } catch let failToSignIn {
                                         error = failToSignIn
                                     }

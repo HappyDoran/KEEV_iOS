@@ -20,8 +20,9 @@ final class MockAccountService: AccountServiceProtocol {
         .ok(user: .dummy0)
     }
     
-    func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
+    func signInWithApple(email: String?, user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
         let userInfo = """
+        user: \(email)\n--------\n
         user: \(user)\n--------\n
         token: \(String(data: identityToken, encoding: .utf8)!)\n--------\n
         code: \(String(data: authorizationCode, encoding: .utf8)!)\n--------\n
