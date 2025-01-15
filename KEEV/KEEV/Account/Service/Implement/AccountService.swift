@@ -40,9 +40,10 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    func signInWithApple(user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
+    func signInWithApple(email: String?, user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
         try await doAsyncWithException(caller: "signInWithApple") {
-            let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(code: authorizationCode))
+
+            let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(email: email, code: authorizationCode))
         
             try await storeToken(fetchedAccount.accessToken, for: .access)
             try await storeToken(fetchedAccount.keevRefreshToken, for: .refresh)
@@ -52,7 +53,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         
     }
     
-    func signUp(email: String, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
+    func signUp(email: String?, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
         guard let account else {
             return .failed
         }
@@ -192,19 +193,20 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    private func buildUserDataJSON(email: String, nickname: String, description: String) throws -> Data {
-        if !description.isEmpty {
-            return try JSONSerialization.data(withJSONObject: [
-                "email": email,
-                "nickname": nickname,
-                "description": description
-            ])
-        } else {
-            return try JSONSerialization.data(withJSONObject: [
-                "email": email,
-                "nickname": nickname,
-            ])
+    private func buildUserDataJSON(email: String?, nickname: String, description: String) throws -> Data {
+        var json: [String: Any] = [
+            "nickname": nickname
+        ]
+        
+        if let email = email {
+            json["email"] = email
         }
+        
+        if !description.isEmpty {
+            json["description"] = description
+        }
+        
+        return try JSONSerialization.data(withJSONObject: json)
     }
     
     private func buildMultipartFormData(id: Int, userJSON: Data, profileJPEG: Data?, backgroundJPEG: Data?) -> (String, Data)? {

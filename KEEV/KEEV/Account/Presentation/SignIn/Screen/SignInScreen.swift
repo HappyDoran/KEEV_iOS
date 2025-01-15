@@ -64,37 +64,39 @@ private extension SignInScreen {
                 .foregroundStyle(.white)
                 .frame(height: 54)
                 .overlay {
-                    SignInWithAppleButton { _ in
-                        
-                    } onCompletion: { result in
+                    SignInWithAppleButton(.signIn,
+                                          onRequest: { request in
+                        request.requestedScopes = [.email]
+                    }, onCompletion: { result in
                         switch result {
                         case .success(let authorization):
                             switch authorization.credential {
                             case let appleIDCredential as ASAuthorizationAppleIDCredential:
+                                let email = appleIDCredential.email
                                 let user = appleIDCredential.user
                                 let token = appleIDCredential.identityToken!
                                 let code = appleIDCredential.authorizationCode!
                                 
                                 Task {
                                     do {
-                                        status = try await accountService.signInWithApple(user: user, identityToken: token, authorizationCode: code)
+                                        status = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
                                     } catch let failToSignIn {
                                         error = failToSignIn
                                     }
                                 }
                                 
-                            default: print("gggg");break
+                            default: break
                             }
                         case .failure(let error):
                             debugPrint(error)
                         }
-                    }
+                    })
                     .blendMode(.overlay)
                     .cornerRadius(14)
                     .signInWithAppleButtonStyle(.white)
                     .frame(height: 54)
                 }
-            
+        
             Label("Apple로 로그인", systemImage: "apple.logo")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
                 .foregroundStyle(.black)
