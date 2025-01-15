@@ -96,7 +96,7 @@ private extension SignInScreen {
                     .signInWithAppleButtonStyle(.white)
                     .frame(height: 54)
                 }
-            
+        
             Label("Apple로 로그인", systemImage: "apple.logo")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
                 .foregroundStyle(.black)
