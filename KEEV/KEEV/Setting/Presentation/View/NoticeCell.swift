@@ -27,7 +27,7 @@ struct NoticeCell: View {
         VStack(spacing: 0) {
             DisclosureGroup(isExpanded: $isExpanded) {
                 HStack {
-                    Text(notice.content)
+                    Text(notice.content.splitWords())
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
                         .foregroundStyle(.gray300)
                         .multilineTextAlignment(.leading)
