@@ -70,14 +70,6 @@ private extension ReplyListCell {
                 )
                 .foregroundColor(.gray50)
             
-            if reply.isMine {
-                Text("작성자")
-                    .figmaFont(
-                        PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold))
-                    )
-                    .foregroundStyle(.gray500)
-            }
-            
             Spacer()
         }
     }
