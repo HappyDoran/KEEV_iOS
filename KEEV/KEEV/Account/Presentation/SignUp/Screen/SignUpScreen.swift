@@ -8,9 +8,8 @@
 import SwiftUI
 
 enum SignUpPage: Int {
-    case email = 1
-    case profile = 2
-    case complete = 3
+    case profile = 1
+    case complete = 2
 }
 
 /// 회원가입 화면
@@ -24,17 +23,16 @@ struct SignUpScreen: View {
     @Binding var status: SignInStatus?
     
     @State private var result = SignInStatus.created
-    @State private var email: String = ""
     @State private var nickname: String = ""
     @State private var profileImage: UIImage?
-    @State private var currentPage: SignUpPage = .email
+    @State private var currentPage: SignUpPage = .profile
     @State private var transitionDirection: Edge = .trailing
     @State private var showActionSheet = false
     @State private var showImageSelectSheet = false
     
     var body: some View {
         VStack {
-            SignUpIndicator(currentPage: $currentPage, transitionDirection: $transitionDirection)
+            SignUpIndicator(signInStatus: $status, currentPage: $currentPage, transitionDirection: $transitionDirection)
             
             signUpProcess()
                 .transition(.asymmetric(
@@ -71,16 +69,9 @@ extension SignUpScreen {
     @ViewBuilder
     private func signUpProcess() -> some View {
         switch currentPage {
-        case .email:
-            SignUpEmailView(
-                email: $email,
-                currentPage: $currentPage,
-                transitionDirection: $transitionDirection
-            )
         case .profile:
             SignUpProfileView(
                 result: $result,
-                email: email,
                 nickname: $nickname, profileImage: $profileImage,
                 showActionSheet: $showActionSheet,
                 currentPage: $currentPage,
@@ -90,7 +81,6 @@ extension SignUpScreen {
             SignUpCompleteView(
                 nickname: nickname,
                 profileImage: profileImage,
-                email: email,
                 currentPage: $currentPage
             ) {
                 status = result
