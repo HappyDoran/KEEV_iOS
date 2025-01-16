@@ -1,0 +1,82 @@
+//
+//  AccountHTTPRequestRouter.swift
+//  KEEV
+//
+//  Created by 김준성 on 12/26/24.
+//
+
+import Foundation
+
+enum AccountHTTPRequestRouter {
+    /// 애플로 로그인할 때 사용하는 라우터. code는 `SignInWithApple`을 통해 받을 수 있는 `authorizationCode`입니다.
+    case signInWithApple(email: String?, code: Data)
+    /// AccessToken을 갱신할 때 사용하는 라우터
+    case refreshAccessToken(refreshToken: String)
+    /// 사용자가 회원정보를 기입할 때 사용하는 라우터
+    case modifyAccount(accessToken: String, boundary: String, multipartData: Data)
+    /// 로그아웃 라우터
+    case logout(accessToken: String)
+    /// 회원탈퇴 라우터
+    case deleteAccount(accessToken: String)
+}
+
+extension AccountHTTPRequestRouter: HTTPRequestable {
+    var method: HTTPMethod {
+        switch self {
+        case .signInWithApple: .post
+        case .refreshAccessToken: .post
+        case .modifyAccount: .post
+        case .logout: .post
+        case .deleteAccount: .delete
+        }
+    }
+    
+    var headers: [String : String]? {
+        switch self {
+        case .signInWithApple: ["Content-Type": "application/json"]
+        case .refreshAccessToken(let token): ["Authorization": "Bearer \(token)"]
+        case .modifyAccount(let token, let boundary, _): [
+            "Authorization": "Bearer \(token)",
+            "Content-Type": "multipart/form-data; boundary=\(boundary)"
+        ]
+        case .logout(let token): ["Authorization": "Bearer \(token)"]
+        case .deleteAccount(let token): ["Authorization": "Bearer \(token)"]
+        }
+    }
+    
+    var body: Data? {
+        switch self {
+        case .signInWithApple(let email, let code):
+            let json: [String: Any] = email != nil ? [
+                        "email": email!,
+                        "code": String(data: code, encoding: .utf8)!
+                    ] : [
+                        "code": String(data: code, encoding: .utf8)!
+                    ]
+            
+            return try? JSONSerialization.data(withJSONObject: json)
+        case .refreshAccessToken: return nil
+        case .modifyAccount(_, _, let multipartData): return multipartData
+        case .logout: return nil
+        case .deleteAccount: return nil
+        }
+    }
+    
+    var baseURL: any URLBaseComposable {
+        AppEnvironment.keevBaseURL
+    }
+    
+    var path: [String]? {
+        switch self {
+        case .signInWithApple: ["auth", "signup", "apple"]
+        case .refreshAccessToken: ["auth", "reissue"]
+        case .modifyAccount: ["user", "register", "userinfo"]
+        case .logout: ["auth", "logout"]
+        case .deleteAccount: ["user", "delete"]
+        }
+    }
+    
+    var queryItems: [URLQueryItem]? {
+        nil
+    }
+}

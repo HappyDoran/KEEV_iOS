@@ -41,6 +41,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Resource/Config/Secret.xcconfig,
+				Resource/Info.plist,
 			);
 			target = 0DF5F1AE2CBE82560031DEF0 /* KEEV */;
 		};

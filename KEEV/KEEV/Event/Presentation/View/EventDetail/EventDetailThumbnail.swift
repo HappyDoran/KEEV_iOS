@@ -1,0 +1,47 @@
+//
+//  EventDetailThumbnail.swift
+//  KEEV
+//
+//  Created by Doran on 11/17/24.
+//
+
+import SwiftUI
+
+/// 이벤트 이미지를 표시하는 썸네일 뷰
+///
+/// - Parameter selectedEvent: 썸네일로 표시할 이벤트 객체
+///
+/// - Author: Doran
+struct EventDetailThumbnail: View {
+    private let posterURL: URL?
+    
+    init(posterURL: URL?) {
+        self.posterURL = posterURL
+    }
+    
+    init(selectedEvent: DetailEventUIO) {
+        self.posterURL = selectedEvent.posterURL
+    }
+    
+    var body: some View {
+        URLCachedImage(
+            url: posterURL
+        ) { phase in
+            if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
+                image
+                    .resizable()
+                    .scaledToFill()
+            } else if phase.error == nil { // 이미지를 불러오는 중일 때
+                ProgressView()
+            } else { // 에러가 발생했을 때
+                Image("PosterError")
+                    .resizable()
+                    .scaledToFit()
+            }
+        }
+    }
+}
+
+#Preview {
+    EventDetailThumbnail(selectedEvent: .dummy0)
+}
