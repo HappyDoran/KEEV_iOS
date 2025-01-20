@@ -11,6 +11,7 @@
 		0DD259292D2FFEAE0052A11E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD259282D2FFEAE0052A11E /* FirebaseAnalytics */; };
 		0DD2592B2D2FFEAE0052A11E /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD2592A2D2FFEAE0052A11E /* FirebaseCore */; };
 		0DD2592D2D2FFEAE0052A11E /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD2592C2D2FFEAE0052A11E /* FirebaseCrashlytics */; };
+		4F318DB02D3E7A76002D9410 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F318DAF2D3E7A76002D9410 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,7 @@
 		0DF5F1AF2CBE82560031DEF0 /* KEEV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KEEV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF5F1BF2CBE82570031DEF0 /* KEEVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KEEVTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF5F1C92CBE82570031DEF0 /* KEEVUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KEEVUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F318DAF2D3E7A76002D9410 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -99,6 +101,7 @@
 		0DF5F1A62CBE82560031DEF0 = {
 			isa = PBXGroup;
 			children = (
+				4F318DAF2D3E7A76002D9410 /* GoogleService-Info.plist */,
 				0DF5F1B12CBE82560031DEF0 /* KEEV */,
 				0DF5F1C22CBE82570031DEF0 /* KEEVTests */,
 				0DF5F1CC2CBE82570031DEF0 /* KEEVUITests */,
@@ -245,6 +248,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F318DB02D3E7A76002D9410 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
