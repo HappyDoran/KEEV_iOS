@@ -89,15 +89,14 @@ extension CustomTextEditor {
             }
         }
         
-        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-            
-            let currentText = textView.text as NSString
-            let updatedText = currentText.replacingCharacters(in: range, with: text)
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
+        func textView(_ textView: UITextView) -> Bool {
+            Task { [weak self] in
                 guard let self = self else { return }
+                
+                try await Task.sleep(nanoseconds: 100_000_000)
+                
                 let calculatedHeight = textView.contentSize.height
-                                
+                
                 if calculatedHeight > parent.scrollPossibleHeight {
                     self.parent.height = parent.scrollPossibleHeight
                 } else {
