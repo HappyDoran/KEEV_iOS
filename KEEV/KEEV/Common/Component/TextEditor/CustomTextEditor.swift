@@ -89,11 +89,14 @@ extension CustomTextEditor {
             }
         }
         
-        func textViewDidChange(_ textView: UITextView) {
-            DispatchQueue.main.async { [weak self] in
+        func textView(_ textView: UITextView) -> Bool {
+            Task { [weak self] in
                 guard let self = self else { return }
+                
+                try await Task.sleep(nanoseconds: 100_000_000)
+                
                 let calculatedHeight = textView.contentSize.height
-                                
+                
                 if calculatedHeight > parent.scrollPossibleHeight {
                     self.parent.height = parent.scrollPossibleHeight
                 } else {
@@ -102,6 +105,11 @@ extension CustomTextEditor {
                 
                 self.parent.text = textView.text
             }
+            return true
+        }
+        
+        func textViewDidChange(_ textView: UITextView) {
+            self.parent.text = textView.text
         }
     }
 }
