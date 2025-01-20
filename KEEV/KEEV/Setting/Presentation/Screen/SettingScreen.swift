@@ -35,6 +35,7 @@ import SwiftUI
 struct SettingScreen: View {
     @Injected private var settingService: any SettingServiceProtocol
     @Injected private var accountService: any AccountServiceProtocol
+    @Injected private var searchService: any SearchServiceProtocol
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) var openURL
@@ -145,6 +146,7 @@ extension SettingScreen {
         Task {
             do {
                 try await accountService.deleteAccount()
+                searchService.removeAllRecentSearch()
                 dismiss()
             } catch {
                 debugPrint(error)
