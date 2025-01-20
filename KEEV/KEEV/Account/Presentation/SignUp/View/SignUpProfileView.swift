@@ -33,45 +33,49 @@ struct SignUpProfileView: View {
     
     var body: some View {
         VStack {
-            VStack(alignment: .leading, spacing: 0) {
-                Text("프로필을 설정해주세요")
-                    .figmaFont(PretendardFont.title(style: .lg))
-                    .foregroundStyle(.gray50)
-                    .padding(.bottom, 12)
-                
-                Text("닉네임과 프로필 이미지는 프로필탭에서 변경이 가능합니다")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                    .foregroundStyle(.gray400)
-                
-                HStack {
-                    Spacer()
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("프로필을 설정해주세요")
+                        .figmaFont(PretendardFont.title(style: .lg))
+                        .foregroundStyle(.gray50)
+                        .padding(.bottom, 12)
                     
-                    ProfileImage(profileImage: profileImage, size: 128, editable: true)
-                        .onTapGesture {
-                            isFocused = false
-                            showActionSheet = true
-                        }
+                    Text("닉네임과 프로필 이미지는 프로필탭에서 변경이 가능합니다")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                        .foregroundStyle(.gray400)
                     
-                    Spacer()
+                    HStack {
+                        Spacer()
+                        
+                        ProfileImage(profileImage: profileImage, size: 128, editable: true)
+                            .onTapGesture {
+                                showActionSheet = true
+                            }
+                        
+                        Spacer()
+                    }
+                    .padding(.top, 32)
+                    .padding(.bottom, 24)
+                    
+                    SingleLineTextField(
+                        placeholder: "닉네임",
+                        text: $nickname,
+                        maxLength: 14,
+                        errorMessage: $errorMessage
+                    )
+                    .submitLabel(.done)
+                    .focused($isFocused)
+                    .onChange(of: nickname) {
+                        validityTest(nickname)
+                    }
+                    .padding(.bottom, 8)
                 }
-                .padding(.top, 32)
-                .padding(.bottom, 24)
-                
-                SingleLineTextField(
-                    placeholder: "닉네임",
-                    text: $nickname,
-                    maxLength: 14,
-                    errorMessage: $errorMessage
-                )
-                .submitLabel(.done)
-                .focused($isFocused)
-                .onChange(of: nickname) {
-                    validityTest(nickname)
-                }
-                .padding(.bottom, 8)
+                .padding(.top, 40)
+                .padding(.horizontal, 24)
             }
-            .padding(.top, 40)
-            .padding(.horizontal, 24)
+            .onTapGesture {
+                isFocused = false
+            }
             
             Spacer()
             
@@ -102,6 +106,7 @@ struct SignUpProfileView: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 16)
         }
+        .ignoresSafeArea(.keyboard)
     }
 }
 
