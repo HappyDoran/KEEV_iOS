@@ -84,7 +84,7 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
         switch type {
         case .access:
             accessToken = token
-            expirationDateForAccess = Date.now.addingTimeInterval(TimeUnit.hours(of: 1).toSeconds)
+            expirationDateForAccess = Date.now.addingTimeInterval(TimeUnit.minutes(of: 55).toSeconds)
         case .refresh:
             try doWithException(caller: "storeToken") {
                 try storeRefreshToken(token)
