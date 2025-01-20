@@ -89,8 +89,12 @@ extension CustomTextEditor {
             }
         }
         
-        func textViewDidChange(_ textView: UITextView) {
-            DispatchQueue.main.async { [weak self] in
+        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+            
+            let currentText = textView.text as NSString
+            let updatedText = currentText.replacingCharacters(in: range, with: text)
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                 guard let self = self else { return }
                 let calculatedHeight = textView.contentSize.height
                                 
@@ -102,6 +106,11 @@ extension CustomTextEditor {
                 
                 self.parent.text = textView.text
             }
+            return true
+        }
+        
+        func textViewDidChange(_ textView: UITextView) {
+            self.parent.text = textView.text
         }
     }
 }

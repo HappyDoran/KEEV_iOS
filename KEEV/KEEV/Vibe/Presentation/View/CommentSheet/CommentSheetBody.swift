@@ -45,6 +45,7 @@ struct CommentSheetBody: View {
                             .padding(.top, 7)
                             .padding(.leading, 5)
                     }
+                    .border(.red)
                     .padding(EdgeInsets(top: 16, leading: 20, bottom: 16, trailing: 20))
                     .animation(.default, value: isFocused.wrappedValue)
                 Spacer()
