@@ -217,6 +217,20 @@ extension VibeUIO {
         isMine: true
     )
     
+    static let dummy7 = VibeUIO(
+        id: 7,
+        user: .dummy0,
+        event: .dummy6,
+        rating: 3.5,
+        imageURLs: [nil, nil],
+        comment: "fffffff",
+        createdDate: "10월 18일",
+        likeCount: 4,
+        replyCount: 17,
+        isMine: false
+    )
+    
+    
     /// 더미데이터 0~5까지 모은 배열
     static let dummies = [dummy0, dummy1, dummy2, dummy3, dummy4, dummy5, dummy6]
 }

@@ -54,26 +54,21 @@ struct ProfileVibeListCell: View {
 private extension ProfileVibeListCell {
     var eventInfoArea: some View {
         HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 4)
-                .frame(width: 48, height: 64)
-                .overlay {
-                    URLCachedImage(
-                        url: vibe.event.posterURL
-                    ) { phase in
-                        if let image = phase.image {
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } else if phase.error == nil {
-                            ProgressView()
-                        } else {
-                            Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
-                        }
-                    }
-                    .frame(width: 48, height: 64, alignment: .center)
-                    .cornerRadius(4)
-                    .clipped()
+            URLCachedImage(
+                url: vibe.event.posterURL
+            ) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                } else if phase.error == nil {
+                    ProgressView()
+                } else {
+                    Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
                 }
+            }
+            .frame(width: 48, height: 64, alignment: .center)
+            .mask(RoundedRectangle(cornerRadius: 4))
             
             VStack(alignment: .leading, spacing: 0) {
                 Text(vibe.event.name)
@@ -94,13 +89,12 @@ private extension ProfileVibeListCell {
                     .lineLimit(1)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     var vibeArea: some View {
         VStack(alignment: .leading, spacing: 16) {
-            if let imageURL = vibe.imageURLs.first {
-                vibeImageArea(imageURL: imageURL, imageCount: vibe.imageURLs.count)
-            }
+            vibeImageArea(vibe.imageURLs)
             
             if let comment = vibe.comment {
                 Text(comment)
@@ -112,10 +106,10 @@ private extension ProfileVibeListCell {
             }
             
             HStack(spacing: 4) {
-//                Image(systemName: "heart.fill")
-//                
-//                Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
-//                    .padding(.trailing, 8)
+                //                Image(systemName: "heart.fill")
+                //
+                //                Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
+                //                    .padding(.trailing, 8)
                 
                 Image(systemName: "bubble.middle.bottom.fill")
                 
@@ -128,41 +122,46 @@ private extension ProfileVibeListCell {
     }
     
     @ViewBuilder
-    func vibeImageArea(imageURL: URL?, imageCount: Int) -> some View {
-        ZStack(alignment: .bottomTrailing) {
-            RoundedRectangle(cornerRadius: 12)
-                .frame(height: 160)
-                .overlay {
-                    URLCachedImage(
-                        url: imageURL
-                    ) { phase in
-                        if let image = phase.image {
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fill)
-                        } else if phase.error == nil {
-                            ProgressView()
-                        } else {
-                            Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
-                        }
+    func vibeImageArea(_ vibeImages: [URL?]) -> some View {
+        if let thumbnailURL = vibeImages.first {
+            URLCachedImage(
+                url: thumbnailURL
+            ) { phase in
+                if let image = phase.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 160, alignment: .center)
+                        .clipped()
+                        .contentShape(Rectangle())
+                } else if phase.error == nil {
+                    ProgressView()
+                } else {
+                    Image(.posterError)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(height: 160, alignment: .center)
+                        .clipped()
+                        .contentShape(Rectangle())
+                }
+            }
+            .mask(RoundedRectangle(cornerRadius: 12))
+            .overlay(alignment: .bottomTrailing) {
+                Circle()
+                    .frame(width: 24, height: 24)
+                    .foregroundStyle(.gray200)
+                    .opacity(0.2)
+                    .overlay {
+                        Text("\(vibeImages.count)")
+                            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .regular)))
+                            .foregroundStyle(.gray200)
                     }
-                    .frame(height: 160, alignment: .center)
-                    .cornerRadius(12)
-                    .clipped()
-                }
-            
-            Circle()
-                .frame(width: 24, height: 24)
-                .foregroundStyle(.gray200)
-                .opacity(0.2)
-                .overlay {
-                    Text("\(imageCount)")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .regular)))
-                        .foregroundStyle(.gray200)
-                }
-                .padding(12)
+                    .padding(12)
+            }
+            .padding(.horizontal, 16)
+        } else {
+            EmptyView()
         }
-        .padding(.horizontal, 16)
     }
 }
 
@@ -171,7 +170,7 @@ private extension ProfileVibeListCell {
         NavigationLink {
             LazyView(VibeDetailScreen(vibe: .dummy0))
         } label: {
-            ProfileVibeListCell(vibe: .dummy0)
+            ProfileVibeListCell(vibe: .dummy7)
         }
     }
     
