@@ -17,6 +17,7 @@ enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
     case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
     case fetchDetailEvent(eventID: String)
+    case fetchEventLikeCount(eventID: String)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
@@ -25,21 +26,21 @@ enum EventHTTPRequestRouter {
 extension EventHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return .get
         }
     }
     
     var headers: [String: String]? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return nil
         }
     }
     
     var body: Data? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return nil
         }
     }
@@ -58,6 +59,8 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["get", "filtered"])
         case .fetchDetailEvent(let eventID):
             path.append(contentsOf: ["get", "\(eventID)"])
+        case .fetchEventLikeCount(let eventID):
+            path.append(contentsOf: ["get", "\(eventID)", "likecount"])
         }
         
         return path
@@ -105,7 +108,11 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             return queryItems
         case .fetchDetailEvent:
             return nil
+            
+        case .fetchEventLikeCount:
+            return nil
         }
+    
     }
 }
 
