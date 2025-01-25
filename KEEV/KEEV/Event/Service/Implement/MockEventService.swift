@@ -13,7 +13,9 @@ import Foundation
 ///
 /// - Todo: 향후에 EventService와 EventServiceProtocol을 교체하면서 MockService의 프로토콜도 수정해주어야합니다.
 /// - Author: 라움
-class MockEventService: EventServiceProtocol {
+class MockEventService: EventServiceProtocol, KEEVErrorHandler {
+    typealias Layer = MockEventService
+    
     static let layer: LayerType = .service(of: "MockEventService")
     
     private let networkUtility: NetworkUtility = NetworkUtility()
@@ -37,7 +39,24 @@ class MockEventService: EventServiceProtocol {
     }
     
     func getEventLikeCount(id: String) async throws -> Int {
-        return -1
+        let router = EventHTTPRequestRouter.fetchEventLikeCount(eventID: id)
+        
+        let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
+        
+        guard (200..<300).contains(code) else {
+            let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
+            throw throwKEEVError(
+                caller: "getEventLikeCount",
+                occurPoint: .remote(code: code, message: errorMessage.message)
+            )
+        }
+        
+        return try doWithException(caller: "getEventLikeCount(id: String)") {
+            
+            let likeCount = try jsonDecoder.decode(EventLikeCount.self, from: data)
+            
+            return likeCount.count
+        }
     }
     
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
