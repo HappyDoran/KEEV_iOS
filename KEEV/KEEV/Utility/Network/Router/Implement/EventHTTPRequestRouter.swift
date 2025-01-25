@@ -19,6 +19,7 @@ enum EventHTTPRequestRouter {
     case fetchDetailEvent(eventID: String)
     case fetchEventLikeCount(eventID: String)
     case addEventLike(token: String, eventID: String)
+    case deleteEventLike(token: String, eventID: String)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
@@ -29,7 +30,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return .get
-        case .addEventLike:
+        case .addEventLike, .deleteEventLike:
             return .post
         }
     }
@@ -38,7 +39,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return nil
-        case .addEventLike(let token, _):
+        case .addEventLike(let token, _), .deleteEventLike(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -48,7 +49,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount, .addEventLike:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount, .addEventLike, .deleteEventLike:
             return nil
         }
     }
@@ -71,6 +72,8 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["get", "\(eventID)", "likecount"])
         case .addEventLike(_, let eventID):
             path.append(contentsOf: ["\(eventID)", "like"])
+        case .deleteEventLike(_, let eventID):
+            path.append(contentsOf: ["\(eventID)", "unlike"])
         }
         
         return path
@@ -116,13 +119,8 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             }
             
             return queryItems
-        case .fetchDetailEvent:
-            return nil
             
-        case .fetchEventLikeCount:
-            return nil
-            
-        case .addEventLike:
+        case .fetchDetailEvent,.fetchEventLikeCount,.addEventLike,.deleteEventLike:
             return nil
         }
     
