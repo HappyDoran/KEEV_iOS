@@ -15,11 +15,13 @@ import SwiftUI
 struct EventDetailInfoView: View {
     private let selectedEvent: DetailEventUIO
     
-    @State private var isFavorite: Bool = false
-    @State private var likeCount: Int = 0
+    @Binding private var isFavorite: Bool
+    @Binding private var likeCount: Int
     
-    init(selectedEvent: DetailEventUIO) {
+    init(selectedEvent: DetailEventUIO, isFavorite: Binding<Bool>, likeCount: Binding<Int>) {
         self.selectedEvent = selectedEvent
+        self._isFavorite = isFavorite
+        self._likeCount = likeCount
     }
     var body: some View {
         ScrollView {
@@ -58,6 +60,7 @@ extension EventDetailInfoView {
                         .foregroundStyle(.brand500)
                         .onTapGesture {
                             isFavorite.toggle()
+                            likeCount += isFavorite ? 1 : -1
                         }
                 }
                 .frame(width: 32, height: 32)
@@ -89,5 +92,5 @@ extension EventDetailInfoView {
 }
 
 #Preview {
-    EventDetailInfoView(selectedEvent: .dummy0)
+    EventDetailInfoView(selectedEvent: .dummy0, isFavorite: .constant(false), likeCount: .constant(0))
 }
