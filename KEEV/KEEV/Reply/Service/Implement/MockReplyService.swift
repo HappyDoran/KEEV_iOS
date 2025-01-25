@@ -17,7 +17,6 @@ enum ReplyServiceError: Error {
 class MockReplyService: ReplyServiceProtocol {
     static let layer: LayerType = .service(of: "MockReplyService")
     
-    
     private var replies: [ReplyUIO] = [
         .dummy0,
         .dummy1,
@@ -80,4 +79,11 @@ class MockReplyService: ReplyServiceProtocol {
         replies.remove(at: index)
     }
     
+    func likeReply(replyID: Int) async throws -> Bool {
+        true
+    }
+    
+    func cancelLikeReply(replyID: Int) async throws -> Bool {
+        false
+    }
 }

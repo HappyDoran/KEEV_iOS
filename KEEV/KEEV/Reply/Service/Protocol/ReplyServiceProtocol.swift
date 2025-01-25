@@ -62,5 +62,30 @@ protocol ReplyServiceProtocol: LayerRepresentable, AnyObject {
     ///
     /// - Author: Doran
     func deleteReply(_ replyID: Int) async throws
+    
+    /// 바이브에 달린 댓글에 대한 좋아요를 수행하는 함수
+    ///
+    /// - Parameters:
+    ///   - replyID: 좋아요를 할 댓글 ID
+    ///
+    /// 바이브에 달린 댓글에 대한 좋아요를 수행하는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 사용자가 해당 댓글에 좋아요를 표시하고 있는지에 대한 여부
+    ///
+    /// - Author: 라움
+    func likeReply(replyID: Int) async throws -> Bool
+    
+    /// 바이브에 달린 댓글에 대한 좋아요를 취소하는 함수
+    ///
+    /// - Parameters:
+    ///   - replyID: 좋아요를 취소할 댓글 ID
+    ///
+    /// 바이브에 달린 댓글에 대한 좋아요를 취소하는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 사용자가 해당 댓글에 좋아요를 표시하고 있는지에 대한 여부
+    ///
+    /// - Author: 라움
+    func cancelLikeReply(replyID: Int) async throws -> Bool
 }
-
