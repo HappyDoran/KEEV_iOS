@@ -73,6 +73,10 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         }
     }
     
+    func deleteEventLike(id: String) async throws -> Void {
+        
+    }
+    
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
         var events: [SimpleEventUIO] = []
         let startIndex = page*size
