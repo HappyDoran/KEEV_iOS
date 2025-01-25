@@ -12,7 +12,7 @@ import Foundation
 /// 서버와의 통신 없이 UI가 잘 나오는지 확인하기 위한 MockEventService입니다.
 ///
 /// - Todo: 향후에 EventService와 EventServiceProtocol을 교체하면서 MockService의 프로토콜도 수정해주어야합니다.
-/// - Author: 라움
+/// - Author: 라움, Doran
 class MockEventService: EventServiceProtocol, KEEVErrorHandler {
     typealias Layer = MockEventService
     
