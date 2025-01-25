@@ -89,8 +89,7 @@ class MockVibeService: VibeServiceProtocol {
             isMine: true
         )
         
-        vibes.append(newVibe)
-        vibeCount += 1
+        vibes.insert(newVibe, at: 0)
         
         return newVibe
     }
