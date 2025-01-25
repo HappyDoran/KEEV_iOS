@@ -12,11 +12,12 @@ import Foundation
 /// 서버와의 통신 없이 UI가 잘 나오는지 확인하기 위한 MockEventService입니다.
 ///
 /// - Todo: 향후에 EventService와 EventServiceProtocol을 교체하면서 MockService의 프로토콜도 수정해주어야합니다.
-/// - Author: 라움
-class MockEventService: EventServiceProtocol {
-    static let layer: LayerType = .service(of: "MockEventService")
+/// - Author: 라움, Doran
+class MockEventService: EventServiceProtocol, KEEVErrorHandler {
+    typealias Layer = MockEventService
     
-    private let networkUtility: NetworkUtility = NetworkUtility()
+    static let layer: LayerType = .service(of: "MockEventService")
+
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     func loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<SimpleEventUIO> {
@@ -34,6 +35,18 @@ class MockEventService: EventServiceProtocol {
     
     func loadDetailEvent(id: String) async throws -> DetailEventUIO {
         .dummy0
+    }
+    
+    func getEventLikeCount(id: String) async throws -> Int {
+        return 35
+    }
+    
+    func addEventLike(id: String) async throws -> Bool {
+        return true
+    }
+    
+    func deleteEventLike(id: String) async throws -> Bool {
+        return false
     }
     
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
