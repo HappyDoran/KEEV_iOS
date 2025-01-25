@@ -103,11 +103,9 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             }
             
             return queryItems
-            
         case .fetchDetailEvent:
             return nil
         }
-    
     }
 }
 
