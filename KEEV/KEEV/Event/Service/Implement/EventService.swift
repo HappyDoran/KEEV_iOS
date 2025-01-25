@@ -121,6 +121,10 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
         return -1
     }
     
+    func addEventLike(id: String) async throws -> Void {
+        
+    }
+    
     /// 필터링된 이벤트를 가져오는 함수
     ///
     /// - Parameters:
