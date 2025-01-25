@@ -128,4 +128,30 @@ protocol VibeServiceProtocol: LayerRepresentable, AnyObject {
     ///
     /// - Author: 라움
     func getVibeWithVibeID(vibeID: Int) async throws -> VibeUIO
+    
+    /// 바이브 좋아요를 수행하는 함수
+    ///
+    /// - Parameters:
+    ///   - vibeID: 바이브 ID
+    ///
+    /// 바이브 좋아요를 수행하는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 사용자가 해당 바이브에 좋아요를 표시하고 있는지에 대한 여부
+    ///
+    /// - Author: 라움
+    func likeVibe(vibeID: Int) async throws -> Bool
+    
+    /// 바이브 좋아요를 취소하는 함수
+    ///
+    /// - Parameters:
+    ///   - vibeID: 바이브 ID
+    ///
+    /// 바이브 좋아요를 수행하는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 사용자가 해당 바이브에 좋아요를 표시하고 있는지에 대한 여부
+    ///
+    /// - Author: 라움
+    func cancelLikeVibe(vibeID: Int) async throws -> Bool
 }

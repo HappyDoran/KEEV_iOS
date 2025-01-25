@@ -129,6 +129,14 @@ class MockVibeService: VibeServiceProtocol {
             throw VibeError.notFound
         }
     }
+    
+    func likeVibe(vibeID: Int) async throws -> Bool {
+        true
+    }
+    
+    func cancelLikeVibe(vibeID: Int) async throws -> Bool {
+        false
+    }
 }
 
 private extension MockVibeService {
