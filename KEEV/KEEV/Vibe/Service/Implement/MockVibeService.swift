@@ -89,8 +89,7 @@ class MockVibeService: VibeServiceProtocol {
             isMine: true
         )
         
-        vibes.append(newVibe)
-        vibeCount += 1
+        vibes.insert(newVibe, at: 0)
         
         return newVibe
     }
@@ -128,6 +127,14 @@ class MockVibeService: VibeServiceProtocol {
         } else {
             throw VibeError.notFound
         }
+    }
+    
+    func likeVibe(vibeID: Int) async throws -> Bool {
+        true
+    }
+    
+    func cancelLikeVibe(vibeID: Int) async throws -> Bool {
+        false
     }
 }
 
