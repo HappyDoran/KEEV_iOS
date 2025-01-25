@@ -17,9 +17,7 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
     typealias Layer = MockEventService
     
     static let layer: LayerType = .service(of: "MockEventService")
-    
-    private let networkUtility: NetworkUtility = NetworkUtility()
-    private let tokenUtility = TokenUtility.shared
+
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     func loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<SimpleEventUIO> {
@@ -40,50 +38,15 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
     }
     
     func getEventLikeCount(id: String) async throws -> Int {
-        let router = EventHTTPRequestRouter.fetchEventLikeCount(eventID: "85ef3d7a-21e3-449b-b49c-e5b5d3861912")
-        
-        let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
-        
-        guard (200..<300).contains(code) else {
-            let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
-            throw throwKEEVError(
-                caller: "getEventLikeCount",
-                occurPoint: .remote(code: code, message: errorMessage.message)
-            )
-        }
-        
-        return try doWithException(caller: "getEventLikeCount(id: String)") {
-            
-            let likeCount = try jsonDecoder.decode(EventLikeCount.self, from: data)
-            
-            return likeCount.count
-        }
+        return 35
     }
     
     func addEventLike(id: String) async throws -> Bool {
-        try await doAsyncWithException(caller: "addEventLike"){
-            let accessToken = try await getAccessToken()
-            let router = EventHTTPRequestRouter.addEventLike(token: accessToken, eventID: id)
-            
-            let data = try await networkUtility.request(router: router)
-            
-            let eventLikeResponse = try jsonDecoder.decode(EventLikeResponse.self, from: data)
-            
-            return eventLikeResponse.isInterested
-        }
+        return true
     }
     
     func deleteEventLike(id: String) async throws -> Bool {
-        try await doAsyncWithException(caller: "deleteEventLike"){
-            let accessToken = try await getAccessToken()
-            let router = EventHTTPRequestRouter.deleteEventLike(token: accessToken, eventID: id)
-            
-            let data = try await networkUtility.request(router: router)
-            
-            let eventLikeResponse = try jsonDecoder.decode(EventLikeResponse.self, from: data)
-            
-            return eventLikeResponse.isInterested
-        }
+        return false
     }
     
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
@@ -111,11 +74,5 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         }
         
         return PaginatedResponse(totalPages: 5, currentPage: filter.page, totalElements: 50, contents: events)
-    }
-}
-
-extension MockEventService {
-    private func getAccessToken() async throws -> String {
-        try await tokenUtility.fetchToken(for: .access)
     }
 }
