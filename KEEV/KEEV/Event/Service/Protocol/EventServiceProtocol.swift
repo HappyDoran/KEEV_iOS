@@ -42,6 +42,8 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Author: 라움
     func loadDetailEvent(id: String) async throws -> DetailEventUIO
     
+    func getEventLikeCount(id: String) async throws -> Int
+    
     /// 필터링된 이벤트를 가져오는 함수
     ///
     /// - Parameters:
@@ -81,4 +83,5 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     ///
     /// - Author: Doran
     func loadPaginatedFilteringEvents(filter: EventFilter) async throws -> PaginatedResponse<SimpleEventUIO>
+    
 }

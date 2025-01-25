@@ -36,6 +36,10 @@ class MockEventService: EventServiceProtocol {
         .dummy0
     }
     
+    func getEventLikeCount(id: String) async throws -> Int {
+        return -1
+    }
+    
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
         var events: [SimpleEventUIO] = []
         let startIndex = page*size

@@ -117,6 +117,10 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
         }
     }
     
+    func getEventLikeCount(id: String) async throws -> Int {
+        return -1
+    }
+    
     /// 필터링된 이벤트를 가져오는 함수
     ///
     /// - Parameters:
