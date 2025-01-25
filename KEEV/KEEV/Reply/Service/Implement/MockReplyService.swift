@@ -83,7 +83,7 @@ class MockReplyService: ReplyServiceProtocol {
         true
     }
     
-    func unlikeReply(replyID: Int) async throws -> Bool {
+    func cancelLikeReply(replyID: Int) async throws -> Bool {
         false
     }
 }
