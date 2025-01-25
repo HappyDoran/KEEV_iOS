@@ -10,3 +10,8 @@ import Foundation
 struct EventLikeCount: Decodable {
     let count: Int
 }
+
+struct EventLikeResponse: Decodable {
+    let message: String
+    let isInterested: Bool
+}

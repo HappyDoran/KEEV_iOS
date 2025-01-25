@@ -19,6 +19,7 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
     static let layer: LayerType = .service(of: "MockEventService")
     
     private let networkUtility: NetworkUtility = NetworkUtility()
+    private let tokenUtility = TokenUtility.shared
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     func loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<SimpleEventUIO> {
@@ -88,5 +89,11 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         }
         
         return PaginatedResponse(totalPages: 5, currentPage: filter.page, totalElements: 50, contents: events)
+    }
+}
+
+extension MockEventService {
+    private func getAccessToken() async throws -> String {
+        try await tokenUtility.fetchToken(for: .access)
     }
 }

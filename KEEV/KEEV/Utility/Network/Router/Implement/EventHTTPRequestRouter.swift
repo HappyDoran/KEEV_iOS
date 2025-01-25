@@ -18,6 +18,7 @@ enum EventHTTPRequestRouter {
     case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
     case fetchDetailEvent(eventID: String)
     case fetchEventLikeCount(eventID: String)
+    case addEventLike(token: String, eventID: String)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
@@ -28,6 +29,8 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return .get
+        case .addEventLike:
+            return .post
         }
     }
     
@@ -35,12 +38,17 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return nil
+        case .addEventLike(let token, _):
+            return [
+                "Authorization": "Bearer \(token)",
+                "content-type": "application/json"
+            ]
         }
     }
     
     var body: Data? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount, .addEventLike:
             return nil
         }
     }
@@ -61,6 +69,8 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["get", "\(eventID)"])
         case .fetchEventLikeCount(let eventID):
             path.append(contentsOf: ["get", "\(eventID)", "likecount"])
+        case .addEventLike(_, let eventID):
+            path.append(contentsOf: ["\(eventID)", "like"])
         }
         
         return path
@@ -110,6 +120,9 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             return nil
             
         case .fetchEventLikeCount:
+            return nil
+            
+        case .addEventLike:
             return nil
         }
     
