@@ -60,7 +60,7 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    func addEventLike(id: String) async throws -> Void {
+    func addEventLike(id: String) async throws -> Bool {
         try await doAsyncWithException(caller: "addEventLike"){
             let accessToken = try await getAccessToken()
             let router = EventHTTPRequestRouter.addEventLike(token: accessToken, eventID: id)
@@ -69,12 +69,21 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
             
             let eventLikeResponse = try jsonDecoder.decode(EventLikeResponse.self, from: data)
             
-            print(eventLikeResponse)
+            return eventLikeResponse.isInterested
         }
     }
     
-    func deleteEventLike(id: String) async throws -> Void {
-        
+    func deleteEventLike(id: String) async throws -> Bool {
+        try await doAsyncWithException(caller: "deleteEventLike"){
+            let accessToken = try await getAccessToken()
+            let router = EventHTTPRequestRouter.deleteEventLike(token: accessToken, eventID: id)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let eventLikeResponse = try jsonDecoder.decode(EventLikeResponse.self, from: data)
+            
+            return eventLikeResponse.isInterested
+        }
     }
     
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {

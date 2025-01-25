@@ -120,7 +120,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             
             return queryItems
             
-        case .fetchDetailEvent,.fetchEventLikeCount,.addEventLike,.deleteEventLike:
+        case .fetchDetailEvent, .fetchEventLikeCount, .addEventLike, .deleteEventLike:
             return nil
         }
     
