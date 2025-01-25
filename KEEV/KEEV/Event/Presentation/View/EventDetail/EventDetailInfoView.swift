@@ -15,11 +15,12 @@ import SwiftUI
 struct EventDetailInfoView: View {
     private let selectedEvent: DetailEventUIO
     
+    @State private var isFavorite: Bool = false
+    @State private var likeCount: Int = 0
+    
     init(selectedEvent: DetailEventUIO) {
         self.selectedEvent = selectedEvent
     }
-    
-    @State var isFavorite: Bool = false
     var body: some View {
         ScrollView {
             VStack(spacing: 0){
@@ -49,16 +50,23 @@ extension EventDetailInfoView {
                 .figmaFont(PretendardFont.title(style: .sm))
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            //            VStack{
-            //                Image(systemName: isFavorite ? "heart.fill" : "heart")
-            //                    .resizable()
-            //                    .frame(width: 21, height: 19)
-            //                    .foregroundStyle(.brand500)
-            //                    .onTapGesture {
-            //                        isFavorite.toggle()
-            //                    }
-            //            }
-            //            .frame(width: 32, height: 32)
+            VStack(spacing: 0){
+                VStack(spacing: 0){
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
+                        .resizable()
+                        .frame(width: 21, height: 19)
+                        .foregroundStyle(.brand500)
+                        .onTapGesture {
+                            isFavorite.toggle()
+                        }
+                }
+                .frame(width: 32, height: 32)
+                
+                Text("\(likeCount)")
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                    .foregroundColor(.gray500)
+            }
+            .frame(width: 32, height: 49)
         }
     }
 }
