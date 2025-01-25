@@ -40,7 +40,7 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
     }
     
     func getEventLikeCount(id: String) async throws -> Int {
-        let router = EventHTTPRequestRouter.fetchEventLikeCount(eventID: id)
+        let router = EventHTTPRequestRouter.fetchEventLikeCount(eventID: "85ef3d7a-21e3-449b-b49c-e5b5d3861912")
         
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         
@@ -61,7 +61,16 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
     }
     
     func addEventLike(id: String) async throws -> Void {
-        
+        try await doAsyncWithException(caller: "addEventLike"){
+            let accessToken = try await getAccessToken()
+            let router = EventHTTPRequestRouter.addEventLike(token: accessToken, eventID: id)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let eventLikeResponse = try jsonDecoder.decode(EventLikeResponse.self, from: data)
+            
+            print(eventLikeResponse)
+        }
     }
     
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
