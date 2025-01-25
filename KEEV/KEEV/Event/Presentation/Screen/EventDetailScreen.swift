@@ -39,7 +39,6 @@ struct EventDetailScreen: View {
     @State private var selectedEvent: DetailEventUIO
     @State private var vibeWriteState: VibeWriteState
     @State private var activeSection = EventDetailSection.detail
-    @State private var likeCount: Int = 0
     @State private var vibeCount: Int? = nil
     @State private var showEventDetailSheet = false
     @State private var navigateToReportEvent = false
@@ -118,14 +117,6 @@ struct EventDetailScreen: View {
             
             if let dDay = selectedEvent.dDay, dDay >= 0 {
                 vibeCount = try? await vibeService.getVibeCount(eventID: selectedEvent.id)
-            }
-        }
-        .task {
-            do {
-                likeCount = try await eventService.getEventLikeCount(id: selectedEvent.id)
-                
-            } catch(let failToFetchEventLikeCount) {
-                error = failToFetchEventLikeCount
             }
         }
         .refreshable {
