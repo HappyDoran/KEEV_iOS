@@ -32,6 +32,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     static let layer: LayerType = .service(of: "EventService")
     
     private let networkUtility: NetworkUtility = NetworkUtility()
+    private let tokenUtility = TokenUtility.shared
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     /// 이벤트 목록을 가져오는 함수
@@ -65,20 +66,20 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
         
         return try doWithException(caller: "loadPaginatedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])") {
             let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
-
+            
             let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
-
+            
             let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
                 totalPages: paginatedResponseDTO.totalPages,
                 currentPage: paginatedResponseDTO.currentPage,
                 totalElements: paginatedResponseDTO.totalElements,
                 contents: contents
             )
-
+            
             return paginatedResponse
         }
     }
-
+    
     
     /// 이벤트 ID에 해당하는 이벤트 상세정보를 가져오는 함수
     ///
@@ -113,7 +114,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
             let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
             
             return detailEventUIO
-
+            
         }
     }
     
@@ -129,7 +130,22 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func getEventLikeCount(id: String) async throws -> Int {
-        return 35
+        let router = EventHTTPRequestRouter.fetchEventLikeCount(eventID: id)
+        
+        let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
+        
+        guard (200..<300).contains(code) else {
+            let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
+            throw throwKEEVError(
+                caller: "getEventLikeCount",
+                occurPoint: .remote(code: code, message: errorMessage.message)
+            )
+        }
+        
+        return try doWithException(caller: "getEventLikeCount(id: String)") {
+            let likeCount = try jsonDecoder.decode(EventLikeCount.self, from: data)
+            return likeCount.count
+        }
     }
     
     /// 이벤트 ID에 해당하는 이벤트를 사용자가 이전에 좋아요를 했었는지 아닌지를 가져오는 함수
@@ -270,5 +286,11 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
 
             return paginatedResponse
         }
+    }
+}
+
+extension EventService {
+    private func getAccessToken() async throws -> String {
+        try await tokenUtility.fetchToken(for: .access)
     }
 }
