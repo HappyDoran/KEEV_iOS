@@ -122,6 +122,7 @@ struct EventDetailScreen: View {
         }
         .refreshable {
             await loadDetailEvent()
+            await getEventCount()
         }
         .navigationDestination(isPresented: $navigateToWriteVibe) {
             VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: selectedEvent), isNavigation: true)
