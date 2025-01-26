@@ -50,7 +50,7 @@ struct VibeDetailScreen: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 0) {
-                        VibeContentView(vibe: vibe)
+                        VibeContentView(vibe: $vibe)
                             .padding(.top, 20)
                             .padding(.horizontal, 16)
                         Rectangle().frame(height: 1).foregroundColor(.gray800)
