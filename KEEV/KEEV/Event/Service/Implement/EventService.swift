@@ -160,7 +160,16 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func getIsLikedEvent(id: String) async throws -> Bool {
-        return true
+        try await doAsyncWithException(caller: "getIsLikedEvent"){
+            let accessToken = try await getAccessToken()
+            let router = EventHTTPRequestRouter.fetchEventisLiked(token: accessToken, eventID: id)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let isLikedResponse = try jsonDecoder.decode(EventIsLiked.self, from: data)
+            
+            return isLikedResponse.isInterested
+        }
     }
     
     /// 이벤트 ID에 해당하는 이벤트에 사용자가 좋아요를 눌러서 관심표시로 바꾸는 함수
