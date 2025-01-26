@@ -145,21 +145,21 @@ extension EventDetailScreen {
                 
                 detailSection
             }
-            .onDisappear{
-                Task {
-                    if !isFavorite {
-                        await deleteEventLike()
-                    }
-                    else {
-                        await addEventLike()
-                    }
-                }
-            }
             
             CommonButton(title: "\(vibeWriteState)", action: {
                 navigateToWriteVibe = true
             }, style: .maxWidth, disabled: isDisabled)
-                .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
+            .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
+        }
+        .onDisappear{
+            Task {
+                if !isFavorite {
+                    await deleteEventLike()
+                }
+                else {
+                    await addEventLike()
+                }
+            }
         }
     }
     
