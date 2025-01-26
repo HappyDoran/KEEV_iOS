@@ -129,7 +129,11 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func getEventLikeCount(id: String) async throws -> Int {
-        return -1
+        return 35
+    }
+    
+    func getIsLikedEvent(id: String) async throws -> Bool {
+        return true
     }
     
     /// 이벤트 ID에 해당하는 이벤트에 사용자가 좋아요를 눌러서 관심표시로 바꾸는 함수

@@ -41,6 +41,10 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         return 35
     }
     
+    func getIsLikedEvent(id: String) async throws -> Bool {
+        return true
+    }
+    
     func addEventLike(id: String) async throws -> Bool {
         return true
     }
