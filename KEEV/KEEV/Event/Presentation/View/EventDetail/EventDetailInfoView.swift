@@ -80,9 +80,16 @@ extension EventDetailInfoView {
     /// - Author: Doran
     private func infoCell(title: String, content: String) -> some View {
         HStack(spacing: 12) {
-            Text(title)
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold)))
-                .foregroundColor(.gray600)
+            VStack(spacing: 0){
+                VStack(spacing: 0){
+                    Spacer()
+                    Text(title)
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold)))
+                        .foregroundColor(.gray600)
+                }
+                .frame(width: 21, height: 15)
+                Spacer()
+            }
             Text(content)
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
                 .foregroundColor(.gray300)
