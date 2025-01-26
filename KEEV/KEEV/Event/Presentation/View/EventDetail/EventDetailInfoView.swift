@@ -15,11 +15,14 @@ import SwiftUI
 struct EventDetailInfoView: View {
     private let selectedEvent: DetailEventUIO
     
-    init(selectedEvent: DetailEventUIO) {
-        self.selectedEvent = selectedEvent
-    }
+    @Binding private var isFavorite: Bool
+    @Binding private var likeCount: Int
     
-    @State var isFavorite: Bool = false
+    init(selectedEvent: DetailEventUIO, isFavorite: Binding<Bool>, likeCount: Binding<Int>) {
+        self.selectedEvent = selectedEvent
+        self._isFavorite = isFavorite
+        self._likeCount = likeCount
+    }
     var body: some View {
         ScrollView {
             VStack(spacing: 0){
@@ -49,16 +52,24 @@ extension EventDetailInfoView {
                 .figmaFont(PretendardFont.title(style: .sm))
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            //            VStack{
-            //                Image(systemName: isFavorite ? "heart.fill" : "heart")
-            //                    .resizable()
-            //                    .frame(width: 21, height: 19)
-            //                    .foregroundStyle(.brand500)
-            //                    .onTapGesture {
-            //                        isFavorite.toggle()
-            //                    }
-            //            }
-            //            .frame(width: 32, height: 32)
+            VStack(spacing: 0){
+                VStack(spacing: 0){
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
+                        .resizable()
+                        .frame(width: 21, height: 19)
+                        .foregroundStyle(.brand500)
+                        .onTapGesture {
+                            isFavorite.toggle()
+                            likeCount += isFavorite ? 1 : -1
+                        }
+                }
+                .frame(width: 32, height: 32)
+                
+                Text("\(likeCount)")
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                    .foregroundColor(.gray500)
+            }
+            .frame(width: 32, height: 49)
         }
     }
 }
@@ -81,5 +92,5 @@ extension EventDetailInfoView {
 }
 
 #Preview {
-    EventDetailInfoView(selectedEvent: .dummy0)
+    EventDetailInfoView(selectedEvent: .dummy0, isFavorite: .constant(false), likeCount: .constant(0))
 }
