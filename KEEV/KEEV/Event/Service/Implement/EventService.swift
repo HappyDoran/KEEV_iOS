@@ -132,6 +132,17 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
         return 35
     }
     
+    /// 이벤트 ID에 해당하는 이벤트를 사용자가 이전에 좋아요를 했었는지 아닌지를 가져오는 함수
+    ///
+    /// - Parameters:
+    ///   - id: 이벤트 ID
+    ///
+    /// 인자로 받은 ID에 해당하는 이벤트의 사용자의 이전 좋아요 여부를 가져오는 함수힙니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 좋아요 여부
+    ///
+    /// - Author: Doran
     func getIsLikedEvent(id: String) async throws -> Bool {
         return true
     }
