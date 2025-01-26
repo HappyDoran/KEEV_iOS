@@ -13,7 +13,10 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeListCell: View {
+    @Injected private var vibeService: any VibeServiceProtocol
+    
     let vibe: VibeUIO
+    @State private var isLiked = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -105,17 +108,32 @@ private extension ProfileVibeListCell {
                     .padding(.horizontal, 16)
             }
             
-            HStack(spacing: 4) {
-                //                Image(systemName: "heart.fill")
-                //
-                //                Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
-                //                    .padding(.trailing, 8)
+            HStack(spacing: 12) {
+                HStack(spacing: 4) {
+                    Image(isLiked ? "Heart.fill.color" : "Heart.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+                    
+                    Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                }
+                .onAppear {
+                    checkIfUserLikedVibe()
+                }
                 
-                Image(systemName: "bubble.middle.bottom.fill")
+                HStack(spacing: 4) {
+                    Image("Reply.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+                    
+                    Text(vibe.replyCount > 99 ? "99+" : "\(vibe.replyCount)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                }
                 
-                Text(vibe.replyCount > 99 ? "99+" : "\(vibe.replyCount)")
+                Spacer()
             }
-            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
             .foregroundStyle(.gray500)
             .padding(.horizontal, 16)
         }
@@ -165,6 +183,18 @@ private extension ProfileVibeListCell {
     }
 }
 
+private extension ProfileVibeListCell {
+    func checkIfUserLikedVibe() {
+        Task {
+            do {
+                isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+}
+
 #Preview {
     NavigationStack {
         NavigationLink {
@@ -173,5 +203,4 @@ private extension ProfileVibeListCell {
             ProfileVibeListCell(vibe: .dummy7)
         }
     }
-    
 }
