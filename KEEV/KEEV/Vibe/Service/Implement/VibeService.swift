@@ -241,6 +241,10 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     func cancelLikeVibe(vibeID: Int) async throws -> Bool {
         false
     }
+    
+    func checkIfUserLikedVibe(vibeID: Int) async throws -> Bool {
+        false
+    }
 }
 
 extension VibeService {
