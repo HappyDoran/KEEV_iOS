@@ -199,7 +199,16 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func deleteEventLike(id: String) async throws -> Bool {
-        return false
+        try await doAsyncWithException(caller: "deleteEventLike"){
+            let accessToken = try await getAccessToken()
+            let router = EventHTTPRequestRouter.deleteEventLike(token: accessToken, eventID: id)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let eventLikeResponse = try jsonDecoder.decode(EventLikeResponse.self, from: data)
+            
+            return eventLikeResponse.isInterested
+        }
     }
     
     /// 필터링된 이벤트를 가져오는 함수
