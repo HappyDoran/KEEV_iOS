@@ -32,7 +32,7 @@ struct ReplyListView: View {
     var body: some View {
         LazyVStack{
             ForEach(0..<replies.count, id: \.self) { index in
-                ReplyListCell(reply: replies[index]) {
+                ReplyListCell(reply: $replies[index]) {
                     userTapHandler?(replies[index].userID)
                 } moreTapHandler: {
                     moreTapHandler?(index, replies[index])
