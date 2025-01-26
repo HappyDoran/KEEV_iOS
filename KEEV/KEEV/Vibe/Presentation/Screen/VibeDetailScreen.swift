@@ -15,6 +15,7 @@ struct VibeDetailScreen: View {
     @Injected private var vibeService: any VibeServiceProtocol
     
     @State private var vibe: VibeUIO
+    @State private var isLiked: Bool = false
     @State private var replies: [ReplyUIO] = []
     
     private let onDelete: ((VibeUIO) -> Void)?
@@ -50,7 +51,7 @@ struct VibeDetailScreen: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 0) {
-                        VibeContentView(vibe: $vibe)
+                        VibeContentView(vibe: $vibe, isLiked: $isLiked, likeTapHandler: tapVibeLike)
                             .padding(.top, 20)
                             .padding(.horizontal, 16)
                         Rectangle().frame(height: 1).foregroundColor(.gray800)
@@ -137,6 +138,7 @@ struct VibeDetailScreen: View {
             .onAppear{
                 fetchVibe()
                 fetchReplies()
+                checkIfUserLikedVibe()
             }
             .onChange(of: toggleAdd) {
                 withAnimation {
@@ -187,6 +189,33 @@ private extension VibeDetailScreen {
                     showReplyActionSheet = nil
                     navigateToReport = .reply(vibeID: vibe.id, replyID: reply.id)
                 }
+            }
+        }
+    }
+    
+    func checkIfUserLikedVibe() {
+        Task {
+            do {
+                isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
+            } catch {
+                errorForAlert = error
+            }
+        }
+    }
+    
+    func tapVibeLike(vibeID: Int) {
+        Task {
+            do {
+                switch isLiked {
+                case true:
+                    isLiked = try await vibeService.cancelLikeVibe(vibeID: vibeID)
+                    vibe.likeCount -= 1
+                case false:
+                    isLiked = try await vibeService.likeVibe(vibeID: vibeID)
+                    vibe.likeCount += 1
+                }
+            } catch {
+                errorForAlert = error
             }
         }
     }

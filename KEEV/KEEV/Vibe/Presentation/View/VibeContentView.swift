@@ -8,10 +8,16 @@
 import SwiftUI
 
 struct VibeContentView: View {
-    @Injected private var vibeService: any VibeServiceProtocol
+    @Binding private var vibe: VibeUIO
+    @Binding private var isLiked: Bool
+    private let likeTapHandler: (Int) -> Void
     
-    @Binding var vibe: VibeUIO
-    @State private var isLiked: Bool = false
+    init(vibe: Binding<VibeUIO>, isLiked: Binding<Bool>, likeTapHandler: @escaping (Int) -> Void) {
+        self._vibe = vibe
+        self._isLiked = isLiked
+        self.likeTapHandler = likeTapHandler
+    }
+    
     @State private var imageIndexTag: Int = 0
     
     var body: some View {
@@ -85,11 +91,7 @@ private extension VibeContentView {
         HStack(spacing: 20) {
             HStack(spacing: 8) {
                 Button {
-                    if isLiked {
-                        cancelLikeVibe()
-                    } else {
-                        likeVibe()
-                    }
+                    likeTapHandler(vibe.id)
                 } label: {
                     Image(isLiked ? "Heart.fill.color" : "Heart")
                         .resizable()
@@ -98,9 +100,6 @@ private extension VibeContentView {
                 }
                 
                 Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
-            }
-            .onAppear {
-                checkIfUserLikedVibe()
             }
             
             HStack(spacing: 8) {
@@ -163,42 +162,10 @@ private extension VibeContentView {
     }
 }
 
-private extension VibeContentView {
-    func likeVibe() {
-        Task {
-            do {
-                isLiked = try await vibeService.likeVibe(vibeID: vibe.id)
-                vibe.likeCount += 1
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
-    func cancelLikeVibe() {
-        Task {
-            do {
-                isLiked = try await vibeService.cancelLikeVibe(vibeID: vibe.id)
-                vibe.likeCount -= 1
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-    
-    func checkIfUserLikedVibe() {
-        Task {
-            do {
-                isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-}
-
 #Preview {
-    VibeContentView(vibe: .constant(.dummy0))
-        .padding(.top, 20)
-        .padding(.horizontal, 16)
+    VibeContentView(vibe: .constant(.dummy0), isLiked: .constant(true), likeTapHandler: { int in
+        
+    })
+    .padding(.top, 20)
+    .padding(.horizontal, 16)
 }

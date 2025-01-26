@@ -13,9 +13,14 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeListCell: View {
-    @Injected private var vibeService: any VibeServiceProtocol
+    private let vibe: VibeUIO
+    private let likeCheckHandler: (Int, Binding<Bool>) -> Void
     
-    let vibe: VibeUIO
+    init(vibe: VibeUIO, likeCheckHandler: @escaping (Int, Binding<Bool>) -> Void) {
+        self.vibe = vibe
+        self.likeCheckHandler = likeCheckHandler
+    }
+    
     @State private var isLiked = false
     
     var body: some View {
@@ -119,7 +124,7 @@ private extension ProfileVibeListCell {
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                 }
                 .onAppear {
-                    checkIfUserLikedVibe()
+                    likeCheckHandler(vibe.id, $isLiked)
                 }
                 
                 HStack(spacing: 4) {
@@ -183,24 +188,14 @@ private extension ProfileVibeListCell {
     }
 }
 
-private extension ProfileVibeListCell {
-    func checkIfUserLikedVibe() {
-        Task {
-            do {
-                isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-}
-
 #Preview {
     NavigationStack {
         NavigationLink {
             LazyView(VibeDetailScreen(vibe: .dummy0))
         } label: {
-            ProfileVibeListCell(vibe: .dummy7)
+            ProfileVibeListCell(vibe: .dummy7) { id, bool in
+                
+            }
         }
     }
 }

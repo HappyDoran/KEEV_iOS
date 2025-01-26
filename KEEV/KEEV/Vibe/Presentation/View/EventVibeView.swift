@@ -67,13 +67,13 @@ private enum EventVibeViewState {
     case empty
 }
 
-extension EventVibeView {
+private extension EventVibeView {
     /// 이벤트에 대한 바이브 목록이 표시되는 뷰
     ///
     /// - Returns: 이벤트에 대한 바이브 목록
     ///
     /// - Author: Doran, 라움
-    private var vibeList: some View {
+    var vibeList: some View {
         LazyVStack(spacing: 0) {
             ForEach(vibes.indices, id: \.self) { index in
                 NavigationLink {
@@ -86,7 +86,7 @@ extension EventVibeView {
                         self.vibes.remove(at: index)
                     })
                 } label: {
-                    EventVibeCell(vibeData: vibes[index])
+                    EventVibeCell(vibeData: vibes[index], likeCheckHandler: checkIfUserLikedVibe)
                 }
                 .onAppear {
                     guard let index = vibes.firstIndex(where: { $0.id == vibes[index].id }) else { return }
@@ -117,7 +117,7 @@ extension EventVibeView {
     /// - Returns: 바이브가 작성되지 않았음을 알리는 뷰
     ///
     /// - Author: 라움
-    private var vibeNotExist: some View {
+    var vibeNotExist: some View {
         VStack(spacing: 4){
             Text("작성 된 바이브가 없습니다")
                 .figmaFont(PretendardFont.title(style: .sm))
@@ -136,7 +136,7 @@ extension EventVibeView {
     /// - Returns: 바이브를 불러올때 표시되는 ProgressView
     ///
     /// - Author: Doran, 라움
-    private var vibeLoading: some View {
+    var vibeLoading: some View {
         ProgressView()
             .onAppear {
                 Task {
@@ -161,6 +161,18 @@ extension EventVibeView {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+private extension EventVibeView {
+    func checkIfUserLikedVibe(vibeID: Int, isLiked: Binding<Bool>) {
+        Task {
+            do {
+                isLiked.wrappedValue = try await vibeService.checkIfUserLikedVibe(vibeID: vibeID)
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }
 
