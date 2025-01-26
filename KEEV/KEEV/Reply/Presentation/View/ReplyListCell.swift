@@ -8,18 +8,18 @@
 import SwiftUI
 
 struct ReplyListCell: View {
-    private let reply: ReplyUIO
+    @Binding private var reply: ReplyUIO
     private let userTapHandler: () -> Void
     private let moreTapHandler: () -> Void
     private let likeTapHandler: () -> Void
     
     init(
-        reply: ReplyUIO,
+        reply: Binding<ReplyUIO>,
         userTapHandler: @escaping () -> Void,
         moreTapHandler: @escaping () -> Void,
         likeTapHandler: @escaping () -> Void
     ) {
-        self.reply = reply
+        self._reply = reply
         self.userTapHandler = userTapHandler
         self.moreTapHandler = moreTapHandler
         self.likeTapHandler = likeTapHandler
@@ -89,7 +89,7 @@ private extension ReplyListCell {
     
     var replyFooter: some View {
         HStack {
-            //댓글 좋아요 여기에 추가 해주시면 됩니다.
+            replyLikeArea
             
             Spacer()
             
@@ -100,10 +100,41 @@ private extension ReplyListCell {
                 .foregroundStyle(.gray500)
         }
     }
+    
+    var replyLikeArea: some View {
+        HStack(spacing: 6) {
+            Button {
+                switch reply.isLiked {
+                case true:
+                    reply.isLiked = false
+                    reply.likeCount -= 1
+                case false:
+                    reply.isLiked = true
+                    reply.likeCount += 1
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Image(reply.isLiked ? "Heart.fill.color" : "Heart")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+                    
+                    Text("좋아요")
+                        .foregroundStyle(reply.isLiked ? .brand500 : .gray500)
+                }
+            }
+            
+            Text("\(reply.likeCount)")
+                .foregroundStyle(.gray500)
+        }
+        .figmaFont(PretendardFont.body(
+            style: .init(bodySize: .xsmall, bodyWeight: .medium)
+        ))
+    }
 }
 
 #Preview {
-    ReplyListCell(reply: .dummy0) {
+    ReplyListCell(reply: .constant(.dummy0)) {
         
     } moreTapHandler: {
         

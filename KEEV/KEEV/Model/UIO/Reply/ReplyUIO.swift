@@ -30,10 +30,10 @@ struct ReplyUIO: Identifiable, Hashable {
     let text: String
     
     /// 앱의 사용자 좋아요를 눌렀는지 여부
-    let isLiked: Bool
+    var isLiked: Bool
     
     /// 좋아요 수
-    let likeCount: Int
+    var likeCount: Int
     
     /// 댓글 생성 날짜
     let createdDate: Date
