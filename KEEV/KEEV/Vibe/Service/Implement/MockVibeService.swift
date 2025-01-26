@@ -138,7 +138,7 @@ class MockVibeService: VibeServiceProtocol {
     }
     
     func checkIfUserLikedVibe(vibeID: Int) async throws -> Bool {
-        false
+        true
     }
 }
 
