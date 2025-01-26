@@ -11,7 +11,7 @@ struct ReplyListCell: View {
     @Binding private var reply: ReplyUIO
     private let userTapHandler: () -> Void
     private let moreTapHandler: () -> Void
-    private let likeTapHandler: () -> Void
+    private var likeTapHandler: () -> Void
     
     init(
         reply: Binding<ReplyUIO>,
@@ -103,26 +103,16 @@ private extension ReplyListCell {
     
     var replyLikeArea: some View {
         HStack(spacing: 6) {
-            Button {
-                switch reply.isLiked {
-                case true:
-                    reply.isLiked = false
-                    reply.likeCount -= 1
-                case false:
-                    reply.isLiked = true
-                    reply.likeCount += 1
-                }
-            } label: {
-                HStack(spacing: 4) {
-                    Image(reply.isLiked ? "Heart.fill.color" : "Heart")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 12)
-                    
-                    Text("좋아요")
-                        .foregroundStyle(reply.isLiked ? .brand500 : .gray500)
-                }
+            HStack(spacing: 4) {
+                Image(reply.isLiked ? "Heart.fill.color" : "Heart")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 12)
+                
+                Text("좋아요")
+                    .foregroundStyle(reply.isLiked ? .brand500 : .gray500)
             }
+            .onTapGesture(perform: likeTapHandler)
             
             Text("\(reply.likeCount)")
                 .foregroundStyle(.gray500)
