@@ -175,7 +175,16 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func addEventLike(id: String) async throws -> Bool {
-        return true
+        try await doAsyncWithException(caller: "addEventLike"){
+            let accessToken = try await getAccessToken()
+            let router = EventHTTPRequestRouter.addEventLike(token: accessToken, eventID: id)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let eventLikeResponse = try jsonDecoder.decode(EventLikeResponse.self, from: data)
+            
+            return eventLikeResponse.isInterested
+        }
     }
     
     /// 이벤트 ID에 해당하는 이벤트에 사용자가 좋아요를 눌러서 관심 해제하는 함수
