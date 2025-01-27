@@ -159,7 +159,16 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func likeReply(replyID: Int) async throws -> Bool {
-        true
+        try await doAsyncWithException(caller: "likeReply") {
+            let accessToken = try await getAccessToken()
+            let router = ReplyHTTPRequestRouter.likeReply(token: accessToken, replyID: "\(replyID)")
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let replyLikeResponse = try jsonDecoder.decode(ReplyLikeResponse.self, from: data)
+            
+            return replyLikeResponse.isLiked
+        }
     }
     
     /// 바이브에 달린 댓글에 대한 좋아요를 취소하는 함수
@@ -174,7 +183,16 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func cancelLikeReply(replyID: Int) async throws -> Bool {
-        false
+        try await doAsyncWithException(caller: "cancelLikeReply") {
+            let accessToken = try await getAccessToken()
+            let router = ReplyHTTPRequestRouter.cancelLikeReply(token: accessToken, replyID: "\(replyID)")
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let replyLikeResponse = try jsonDecoder.decode(ReplyLikeResponse.self, from: data)
+            
+            return replyLikeResponse.isLiked
+        }
     }
 }
 
