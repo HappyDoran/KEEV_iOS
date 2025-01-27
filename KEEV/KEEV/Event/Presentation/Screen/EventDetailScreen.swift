@@ -118,7 +118,7 @@ struct EventDetailScreen: View {
             }
             
             await getEventCount()
-            await addEventLike()
+            await getIsLiked()
         }
         .refreshable {
             await loadDetailEvent()
@@ -270,6 +270,14 @@ extension EventDetailScreen {
             selectedEvent = try await eventService.loadDetailEvent(id: selectedEvent.id)
         } catch(let failToFetchEvent) {
             error = failToFetchEvent
+        }
+    }
+    
+    private func getIsLiked() async {
+        do {
+            isFavorite = try await eventService.getIsLikedEvent(id: selectedEvent.id)
+        }catch(let failToFetchIsLiked) {
+            error = failToFetchIsLiked
         }
     }
     
