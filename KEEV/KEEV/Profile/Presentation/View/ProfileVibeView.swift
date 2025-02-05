@@ -15,6 +15,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeView: View {
+    @Injected private var vibeService: any VibeServiceProtocol
     @Injected private var service: any ActivityServiceProtocol
     
     private let userID: Int?
@@ -48,7 +49,7 @@ struct ProfileVibeView: View {
                             NavigationLink {
                                 LazyView(VibeDetailScreen(vibe: vibe))
                             } label: {
-                                ProfileVibeListCell(vibe: vibe)
+                                ProfileVibeListCell(vibe: vibe, likeCheckHandler: checkIfUserLikedVibe)
                             }
                         }
                     }
@@ -140,6 +141,18 @@ private extension ProfileVibeView {
                 .figmaFont(PretendardFont.title(style: .xs))
                 .frame(width: 32, height: 32)
                 .foregroundStyle(selectedVibeViewType == .table ? .gray100 : .gray700)
+        }
+    }
+}
+
+private extension ProfileVibeView {
+    func checkIfUserLikedVibe(vibeID: Int, isLiked: Binding<Bool>) {
+        Task {
+            do {
+                isLiked.wrappedValue = try await vibeService.checkIfUserLikedVibe(vibeID: vibeID)
+            } catch {
+                print(error.localizedDescription)
+            }
         }
     }
 }

@@ -14,10 +14,14 @@ import SwiftUI
 /// - Author: Doran
 struct EventVibeCell: View {
     private let vibeData: VibeUIO
+    private let likeCheckHandler: (Int, Binding<Bool>) -> Void
     
-    init(vibeData: VibeUIO) {
+    init(vibeData: VibeUIO, likeCheckHandler: @escaping (Int, Binding<Bool>) -> Void) {
         self.vibeData = vibeData
+        self.likeCheckHandler = likeCheckHandler
     }
+    
+    @State private var isLiked: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing : 0){
@@ -32,7 +36,6 @@ struct EventVibeCell: View {
                 
                 Spacer()
                 
-                //라움이 만든 프로필의 바이브 별점 가져다 쓰기
                 RatingView(rating: vibeData.rating, image: Image(.star))
                     .frame(width: 80, height: 16)
             }
@@ -63,15 +66,24 @@ struct EventVibeCell: View {
                 
                 Spacer()
                 
-                //                HStack(spacing: 4) {
-                //                    Image(.heartFill)
-                //
-                //                    Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
-                //                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                //                }
+                HStack(spacing: 4) {
+                    Image(isLiked ? "Heart.fill.color" : "Heart.fill") 
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+                    
+                    Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                }
+                .onAppear {
+                    likeCheckHandler(vibeData.id, $isLiked)
+                }
                 
                 HStack(spacing: 4) {
-                    Image(.replyFill)
+                    Image("Reply.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
                     
                     Text(vibeData.replyCount > 99 ? "99+" : "\(vibeData.replyCount)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
@@ -79,8 +91,6 @@ struct EventVibeCell: View {
             }
             .foregroundColor(.gray500)
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
-            
-            
         }
         .padding(.vertical, 16)
         .background {
@@ -91,8 +101,8 @@ struct EventVibeCell: View {
     }
 }
 
-extension EventVibeCell {
-    private func profileImage(url: URL?) -> some View {
+private extension EventVibeCell {
+    func profileImage(url: URL?) -> some View {
         URLCachedImage(
             url: url
         ) { phase in
@@ -115,7 +125,7 @@ extension EventVibeCell {
     }
     
     @ViewBuilder
-    private func vibeImage(url: URL?) -> some View {
+    func vibeImage(url: URL?) -> some View {
         if let url {
             URLCachedImage(
                 url: url
@@ -152,11 +162,12 @@ extension EventVibeCell {
             Image(.posterError)
                 .resizable()
                 .frame(height: 160)
-                
         }
     }
 }
 
 #Preview {
-    EventVibeCell(vibeData: .dummy0)
+    EventVibeCell(vibeData: .dummy0) { id, bool in
+        
+    }
 }

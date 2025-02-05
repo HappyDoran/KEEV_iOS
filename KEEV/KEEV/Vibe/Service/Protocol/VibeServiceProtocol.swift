@@ -154,4 +154,17 @@ protocol VibeServiceProtocol: LayerRepresentable, AnyObject {
     ///
     /// - Author: 라움
     func cancelLikeVibe(vibeID: Int) async throws -> Bool
+    
+    /// 사용자가 해당 바이브에 좋아요를 눌렀는지 판단하는 함수
+    ///
+    /// - Parameters:
+    ///   - vibeID: 바이브 ID
+    ///
+    /// 사용자가 해당 바이브에 좋아요를 눌렀는지 판단하는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 사용자가 해당 바이브에 좋아요를 눌렀는지에 대한 여부
+    ///
+    /// - Author: 라움
+    func checkIfUserLikedVibe(vibeID: Int) async throws -> Bool
 }

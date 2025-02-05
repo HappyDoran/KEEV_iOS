@@ -8,7 +8,16 @@
 import SwiftUI
 
 struct VibeContentView: View {
-    let vibe: VibeUIO
+    @Binding private var vibe: VibeUIO
+    @Binding private var isLiked: Bool
+    private let likeTapHandler: (Int) -> Void
+    
+    init(vibe: Binding<VibeUIO>, isLiked: Binding<Bool>, likeTapHandler: @escaping (Int) -> Void) {
+        self._vibe = vibe
+        self._isLiked = isLiked
+        self.likeTapHandler = likeTapHandler
+    }
+    
     @State private var imageIndexTag: Int = 0
     
     var body: some View {
@@ -80,10 +89,34 @@ private extension VibeContentView {
     
     var heartAndCommentCount: some View {
         HStack(spacing: 20) {
-            // 추후 좋아요 카운트 추가해야 함.
-            countLabel(for: .reply, count: vibe.replyCount)
+            HStack(spacing: 8) {
+                Button {
+                    likeTapHandler(vibe.id)
+                } label: {
+                    Image(isLiked ? "Heart.fill.color" : "Heart")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 18)
+                }
+                
+                Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
+            }
+            
+            HStack(spacing: 8) {
+                Image("Reply")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 18)
+                
+                Text(vibe.replyCount > 99 ? "99+" : "\(vibe.replyCount)")
+            }
+            
             Spacer()
         }
+        .figmaFont(
+            PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium))
+        )
+        .foregroundStyle(.gray500)
     }
 }
 
@@ -127,35 +160,12 @@ private extension VibeContentView {
             .frame(width: 6, height: 6)
         }
     }
-    
-    func countLabel(for type: CountType, count: Int) -> some View {
-        HStack(spacing: 8) {
-            type.image
-                .resizable()
-                .frame(width: 21, height: 19)
-            Text(count > 99 ? "99+" : "\(count)")
-                .figmaFont(
-                    PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium))
-                )
-                .foregroundStyle(.gray500)
-        }
-        .frame(height: 32)
-    }
-}
-
-private extension VibeContentView {
-    enum CountType {
-        case reply
-        var image: Image {
-            switch self {
-            case .reply: Image(.reply)
-            }
-        }
-    }
 }
 
 #Preview {
-    VibeContentView(vibe: .dummy0)
-        .padding(.top, 20)
-        .padding(.horizontal, 16)
+    VibeContentView(vibe: .constant(.dummy0), isLiked: .constant(true), likeTapHandler: { int in
+        
+    })
+    .padding(.top, 20)
+    .padding(.horizontal, 16)
 }

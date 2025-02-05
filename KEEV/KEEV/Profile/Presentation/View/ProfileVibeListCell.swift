@@ -13,7 +13,15 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeListCell: View {
-    let vibe: VibeUIO
+    private let vibe: VibeUIO
+    private let likeCheckHandler: (Int, Binding<Bool>) -> Void
+    
+    init(vibe: VibeUIO, likeCheckHandler: @escaping (Int, Binding<Bool>) -> Void) {
+        self.vibe = vibe
+        self.likeCheckHandler = likeCheckHandler
+    }
+    
+    @State private var isLiked = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -105,17 +113,32 @@ private extension ProfileVibeListCell {
                     .padding(.horizontal, 16)
             }
             
-            HStack(spacing: 4) {
-                //                Image(systemName: "heart.fill")
-                //
-                //                Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
-                //                    .padding(.trailing, 8)
+            HStack(spacing: 12) {
+                HStack(spacing: 4) {
+                    Image(isLiked ? "Heart.fill.color" : "Heart.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+                    
+                    Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                }
+                .onAppear {
+                    likeCheckHandler(vibe.id, $isLiked)
+                }
                 
-                Image(systemName: "bubble.middle.bottom.fill")
+                HStack(spacing: 4) {
+                    Image("Reply.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+                    
+                    Text(vibe.replyCount > 99 ? "99+" : "\(vibe.replyCount)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                }
                 
-                Text(vibe.replyCount > 99 ? "99+" : "\(vibe.replyCount)")
+                Spacer()
             }
-            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
             .foregroundStyle(.gray500)
             .padding(.horizontal, 16)
         }
@@ -170,8 +193,9 @@ private extension ProfileVibeListCell {
         NavigationLink {
             LazyView(VibeDetailScreen(vibe: .dummy0))
         } label: {
-            ProfileVibeListCell(vibe: .dummy7)
+            ProfileVibeListCell(vibe: .dummy7) { id, bool in
+                
+            }
         }
     }
-    
 }
