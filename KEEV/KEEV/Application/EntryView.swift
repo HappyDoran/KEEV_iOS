@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Firebase
 
 /// TabBar가 포함된 뷰(.tabItem이 포함된 경우)
 ///
@@ -47,6 +48,14 @@ struct EntryView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .onAppear {
+            Analytics.logEvent(
+                AnalyticsEventScreenView,
+                parameters: [
+                    AnalyticsParameterScreenName: "EntryView",
+                    AnalyticsParameterScreenClass: "EntryView"]
+            )
+        }
         .onChange(of: signInStatus) {
             if case let .ok(user) = signInStatus {
                 userID = user.id
@@ -61,6 +70,7 @@ struct EntryView: View {
             selectedItem = TabbedItem.info.rawValue
             signInStatus = status
         }
+        
     }
     
     private var signInSuccessView: some View {
