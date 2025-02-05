@@ -35,7 +35,7 @@ extension KEEVErrorHandler {
         } catch let keevError as KEEVError {
             throw throwKEEVError(caller: caller, previousKEEVError: keevError)
         } catch let otherError {
-            throw throwKEEVError(caller: caller, occurPoint: .local(description: "\(otherError)"))
+            throw throwKEEVError(caller: caller, occurPoint: .local(description: otherError.localizedDescription))
         }
     }
     
@@ -57,7 +57,7 @@ extension KEEVErrorHandler {
         } catch let keevError as KEEVError {
             throw throwKEEVError(caller: caller, previousKEEVError: keevError)
         } catch let otherError {
-            throw throwKEEVError(caller: caller, occurPoint: .local(description: "\(otherError)"))
+            throw throwKEEVError(caller: caller, occurPoint: .local(description: otherError.localizedDescription))
         }
     }
     
@@ -78,7 +78,7 @@ extension KEEVErrorHandler {
         } catch let keevError as KEEVError {
             throw throwKEEVError(caller: caller, previousKEEVError: keevError)
         } catch let otherError {
-            throw throwKEEVError(caller: caller, occurPoint: .local(description: "\(otherError)"))
+            throw throwKEEVError(caller: caller, occurPoint: .local(description: otherError.localizedDescription))
         }
     }
     
@@ -100,7 +100,7 @@ extension KEEVErrorHandler {
         } catch let keevError as KEEVError {
             throw throwKEEVError(caller: caller, previousKEEVError: keevError)
         } catch let otherError {
-            throw throwKEEVError(caller: caller, occurPoint: .local(description: "\(otherError)"))
+            throw throwKEEVError(caller: caller, occurPoint: .local(description: otherError.localizedDescription))
         }
     }
     
