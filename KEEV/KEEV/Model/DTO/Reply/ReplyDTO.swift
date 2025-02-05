@@ -27,7 +27,7 @@ struct ReplyDTO: Decodable, Hashable, Identifiable {
         case user
         case vibeID = "vibeId"
         case text = "content"
-        case isLiked = "liked"
+        case isLiked
         case likeCount
         case createdDate
     }
