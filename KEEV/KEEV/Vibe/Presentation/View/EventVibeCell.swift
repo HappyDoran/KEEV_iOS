@@ -14,14 +14,10 @@ import SwiftUI
 /// - Author: Doran
 struct EventVibeCell: View {
     private let vibeData: VibeUIO
-    private let likeCheckHandler: (Int, Binding<Bool>) -> Void
     
-    init(vibeData: VibeUIO, likeCheckHandler: @escaping (Int, Binding<Bool>) -> Void) {
+    init(vibeData: VibeUIO) {
         self.vibeData = vibeData
-        self.likeCheckHandler = likeCheckHandler
     }
-    
-    @State private var isLiked: Bool = false
     
     var body: some View {
         VStack(alignment: .leading, spacing : 0){
@@ -67,16 +63,13 @@ struct EventVibeCell: View {
                 Spacer()
                 
                 HStack(spacing: 4) {
-                    Image(isLiked ? "Heart.fill.color" : "Heart.fill") 
+                    Image(vibeData.isLiked ? "Heart.fill.color" : "Heart.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 12)
                     
                     Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                }
-                .onAppear {
-                    likeCheckHandler(vibeData.id, $isLiked)
                 }
                 
                 HStack(spacing: 4) {
@@ -167,7 +160,5 @@ private extension EventVibeCell {
 }
 
 #Preview {
-    EventVibeCell(vibeData: .dummy0) { id, bool in
-        
-    }
+    EventVibeCell(vibeData: .dummy0)
 }

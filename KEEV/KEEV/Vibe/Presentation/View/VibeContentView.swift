@@ -9,12 +9,10 @@ import SwiftUI
 
 struct VibeContentView: View {
     @Binding private var vibe: VibeUIO
-    @Binding private var isLiked: Bool
-    private let likeTapHandler: (Int) -> Void
+    private let likeTapHandler: () -> Void
     
-    init(vibe: Binding<VibeUIO>, isLiked: Binding<Bool>, likeTapHandler: @escaping (Int) -> Void) {
+    init(vibe: Binding<VibeUIO>, likeTapHandler: @escaping () -> Void) {
         self._vibe = vibe
-        self._isLiked = isLiked
         self.likeTapHandler = likeTapHandler
     }
     
@@ -90,14 +88,11 @@ private extension VibeContentView {
     var heartAndCommentCount: some View {
         HStack(spacing: 20) {
             HStack(spacing: 8) {
-                Button {
-                    likeTapHandler(vibe.id)
-                } label: {
-                    Image(isLiked ? "Heart.fill.color" : "Heart")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 18)
-                }
+                Image(vibe.isLiked ? "Heart.fill.color" : "Heart")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 18)
+                    .onTapGesture(perform: likeTapHandler)
                 
                 Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
             }
@@ -163,7 +158,7 @@ private extension VibeContentView {
 }
 
 #Preview {
-    VibeContentView(vibe: .constant(.dummy0), isLiked: .constant(true), likeTapHandler: { int in
+    VibeContentView(vibe: .constant(.dummy0), likeTapHandler: {
         
     })
     .padding(.top, 20)

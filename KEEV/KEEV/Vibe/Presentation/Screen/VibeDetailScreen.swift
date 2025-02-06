@@ -15,7 +15,6 @@ struct VibeDetailScreen: View {
     @Injected private var vibeService: any VibeServiceProtocol
     
     @State private var vibe: VibeUIO
-    @State private var isLiked: Bool = false
     @State private var replies: [ReplyUIO] = []
     
     private let onDelete: ((VibeUIO) -> Void)?
@@ -51,7 +50,7 @@ struct VibeDetailScreen: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 0) {
-                        VibeContentView(vibe: $vibe, isLiked: $isLiked, likeTapHandler: tapVibeLike)
+                        VibeContentView(vibe: $vibe, likeTapHandler: tapVibeLike)
                             .padding(.top, 20)
                             .padding(.horizontal, 16)
                         Rectangle().frame(height: 1).foregroundColor(.gray800)
@@ -138,7 +137,6 @@ struct VibeDetailScreen: View {
             .onAppear{
                 fetchVibe()
                 fetchReplies()
-                checkIfUserLikedVibe()
             }
             .onChange(of: toggleAdd) {
                 withAnimation {
@@ -193,25 +191,15 @@ private extension VibeDetailScreen {
         }
     }
     
-    func checkIfUserLikedVibe() {
+    func tapVibeLike() {
         Task {
             do {
-                isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
-            } catch {
-                errorForAlert = error
-            }
-        }
-    }
-    
-    func tapVibeLike(vibeID: Int) {
-        Task {
-            do {
-                switch isLiked {
+                switch vibe.isLiked {
                 case true:
-                    isLiked = try await vibeService.cancelLikeVibe(vibeID: vibeID)
+                    vibe.isLiked = try await vibeService.cancelLikeVibe(vibeID: vibe.id)
                     vibe.likeCount -= 1
                 case false:
-                    isLiked = try await vibeService.likeVibe(vibeID: vibeID)
+                    vibe.isLiked = try await vibeService.likeVibe(vibeID: vibe.id)
                     vibe.likeCount += 1
                 }
             } catch {
@@ -249,6 +237,7 @@ private extension VibeDetailScreen {
         Task {
             do {
                 vibe = try await vibeService.getVibeWithVibeID(vibeID: vibe.id)
+                print(vibe.isLiked)
             } catch {
                 errorForAlert = error
                 debugPrint("바이브를 불러오는데 실패했습니다.")

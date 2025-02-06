@@ -49,7 +49,7 @@ struct ProfileVibeView: View {
                             NavigationLink {
                                 LazyView(VibeDetailScreen(vibe: vibe))
                             } label: {
-                                ProfileVibeListCell(vibe: vibe, likeCheckHandler: checkIfUserLikedVibe)
+                                ProfileVibeListCell(vibe: vibe)
                             }
                         }
                     }
@@ -141,18 +141,6 @@ private extension ProfileVibeView {
                 .figmaFont(PretendardFont.title(style: .xs))
                 .frame(width: 32, height: 32)
                 .foregroundStyle(selectedVibeViewType == .table ? .gray100 : .gray700)
-        }
-    }
-}
-
-private extension ProfileVibeView {
-    func checkIfUserLikedVibe(vibeID: Int, isLiked: Binding<Bool>) {
-        Task {
-            do {
-                isLiked.wrappedValue = try await vibeService.checkIfUserLikedVibe(vibeID: vibeID)
-            } catch {
-                print(error.localizedDescription)
-            }
         }
     }
 }
