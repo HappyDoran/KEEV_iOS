@@ -191,6 +191,16 @@ private extension VibeDetailScreen {
         }
     }
     
+    func checkIfUserLikedVibe() {
+        Task {
+            do {
+                vibe.isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
+            } catch {
+                errorForAlert = error
+            }
+        }
+    }
+    
     func tapVibeLike() {
         Task {
             do {
@@ -237,7 +247,6 @@ private extension VibeDetailScreen {
         Task {
             do {
                 vibe = try await vibeService.getVibeWithVibeID(vibeID: vibe.id)
-                print(vibe.isLiked)
             } catch {
                 errorForAlert = error
                 debugPrint("바이브를 불러오는데 실패했습니다.")
