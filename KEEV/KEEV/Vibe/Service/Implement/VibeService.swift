@@ -235,15 +235,42 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     }
     
     func likeVibe(vibeID: Int) async throws -> Bool {
-        true
+        try await doAsyncWithException(caller: "likeVibe") {
+            let accessToken = try await getAccessToken()
+            let router = VibeHTTPRequestRouter.likeVibe(token: accessToken, vibeID: vibeID)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let vibeLikeResponse = try jsonDecoder.decode(VibeLikeResponse.self, from: data)
+            
+            return vibeLikeResponse.isLiked
+        }
     }
     
     func cancelLikeVibe(vibeID: Int) async throws -> Bool {
-        false
+        try await doAsyncWithException(caller: "cancelLikeVibe") {
+            let accessToken = try await getAccessToken()
+            let router = VibeHTTPRequestRouter.cancelLikeVibe(token: accessToken, vibeID: vibeID)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let vibeLikeResponse = try jsonDecoder.decode(VibeLikeResponse.self, from: data)
+            
+            return vibeLikeResponse.isLiked
+        }
     }
     
     func checkIfUserLikedVibe(vibeID: Int) async throws -> Bool {
-        false
+        try await doAsyncWithException(caller: "checkIfUserLikedVibe") {
+            let accessToken = try await getAccessToken()
+            let router = VibeHTTPRequestRouter.checkIfUserLikedVibe(token: accessToken, vibeID: vibeID)
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let isLikedResponse = try jsonDecoder.decode(VibeLikeResponse.self, from: data)
+            
+            return isLikedResponse.isLiked
+        }
     }
 }
 
