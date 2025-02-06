@@ -45,6 +45,9 @@ struct VibeUIO: Identifiable, Hashable {
     /// 댓글 수
     var replyCount: Int
     
+    /// 좋아요 눌렀는지 여부
+    var isLiked: Bool
+    
     let isMine: Bool
     
     init(vibeDTO vibe: VibeDTO, isMine: Bool) {
@@ -63,6 +66,7 @@ struct VibeUIO: Identifiable, Hashable {
         self.createdDate = vibe.createdDate.toString(format: "MM월 dd일")
         self.likeCount = vibe.likeCount
         self.replyCount = vibe.replyCount
+        self.isLiked = vibe.isLiked
         self.isMine = isMine
     }
     
@@ -76,6 +80,7 @@ struct VibeUIO: Identifiable, Hashable {
         createdDate: String,
         likeCount: Int,
         replyCount: Int,
+        isLiked: Bool,
         isMine: Bool
     ) {
         self.id = id
@@ -89,6 +94,7 @@ struct VibeUIO: Identifiable, Hashable {
         self.createdDate = createdDate
         self.likeCount = likeCount
         self.replyCount = replyCount
+        self.isLiked = isLiked
         self.isMine = isMine
     }
 }
@@ -109,6 +115,7 @@ extension VibeUIO {
         createdDate: "10월 18일",
         likeCount: 1,
         replyCount: 17,
+        isLiked: false,
         isMine: true
     )
     
@@ -123,6 +130,7 @@ extension VibeUIO {
         createdDate: "10월 18일",
         likeCount: 0,
         replyCount: 0,
+        isLiked: false,
         isMine: false
     )
     
@@ -141,6 +149,7 @@ extension VibeUIO {
         createdDate: "10월 18일",
         likeCount: 4,
         replyCount: 134347,
+        isLiked: true,
         isMine: false
     )
     
@@ -159,6 +168,7 @@ extension VibeUIO {
         createdDate: "10월 18일",
         likeCount: 122,
         replyCount: 17,
+        isLiked: true,
         isMine: true
     )
     
@@ -178,6 +188,7 @@ extension VibeUIO {
         createdDate: "10월 18일",
         likeCount: 4312,
         replyCount: 17,
+        isLiked: true,
         isMine: false
     )
     
@@ -196,6 +207,7 @@ extension VibeUIO {
         createdDate: "10월 18일",
         likeCount: Int.max,
         replyCount: Int.max,
+        isLiked: true,
         isMine: false
     )
     
@@ -214,6 +226,7 @@ extension VibeUIO {
         createdDate: "10월 18일",
         likeCount: 4,
         replyCount: 17,
+        isLiked: false,
         isMine: true
     )
     
@@ -227,6 +240,7 @@ extension VibeUIO {
         createdDate: "10월 18일",
         likeCount: 4,
         replyCount: 17,
+        isLiked: false,
         isMine: false
     )
     
