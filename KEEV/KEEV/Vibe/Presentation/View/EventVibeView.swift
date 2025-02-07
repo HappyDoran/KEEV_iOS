@@ -77,7 +77,7 @@ private extension EventVibeView {
         LazyVStack(spacing: 0) {
             ForEach(vibes.indices, id: \.self) { index in
                 NavigationLink {
-                    LazyView(VibeDetailScreen(vibe: vibes[index]) { vibe in
+                    LazyView(VibeDetailScreen(vibe: $vibes[index]) { vibe in
                         self.vibes[index] = vibe
                     } onDelete: { _ in
                         if(vibes.count == 1) {

@@ -14,7 +14,7 @@ struct VibeDetailScreen: View {
     @Injected private var replyService: any ReplyServiceProtocol
     @Injected private var vibeService: any VibeServiceProtocol
     
-    @State private var vibe: VibeUIO
+    @Binding private var vibe: VibeUIO
     @State private var replies: [ReplyUIO] = []
     
     private let onDelete: ((VibeUIO) -> Void)?
@@ -36,11 +36,11 @@ struct VibeDetailScreen: View {
     @FocusState private var isFocused: Bool
     
     init(
-        vibe: VibeUIO,
+        vibe: Binding<VibeUIO>,
         onUpdate: ((VibeUIO) -> Void)? = nil,
         onDelete: ((VibeUIO) -> Void)? = nil
     ) {
-        self.vibe = vibe
+        self._vibe = vibe
         self.onUpdate = onUpdate
         self.onDelete = onDelete
     }
@@ -334,7 +334,7 @@ private extension VibeDetailScreen {
 
 #Preview {
     NavigationStack {
-        VibeDetailScreen(vibe: .dummy2) { _ in
+        VibeDetailScreen(vibe: .constant(.dummy2)) { _ in
             
         } onDelete: { _ in
             

@@ -184,7 +184,7 @@ private extension ProfileVibeListCell {
 #Preview {
     NavigationStack {
         NavigationLink {
-            LazyView(VibeDetailScreen(vibe: .dummy0))
+            LazyView(VibeDetailScreen(vibe: .constant(.dummy0)))
         } label: {
             ProfileVibeListCell(vibe: .dummy7)
         }
