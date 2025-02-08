@@ -77,7 +77,7 @@ private extension EventVibeView {
         LazyVStack(spacing: 0) {
             ForEach(vibes.indices, id: \.self) { index in
                 NavigationLink {
-                    LazyView(VibeDetailScreen(vibe: vibes[index]) { vibe in
+                    LazyView(VibeDetailScreen(vibe: $vibes[index]) { vibe in
                         self.vibes[index] = vibe
                     } onDelete: { _ in
                         if(vibes.count == 1) {
@@ -86,7 +86,7 @@ private extension EventVibeView {
                         self.vibes.remove(at: index)
                     })
                 } label: {
-                    EventVibeCell(vibeData: vibes[index], likeCheckHandler: checkIfUserLikedVibe)
+                    EventVibeCell(vibeData: vibes[index])
                 }
                 .onAppear {
                     guard let index = vibes.firstIndex(where: { $0.id == vibes[index].id }) else { return }
@@ -161,18 +161,6 @@ private extension EventVibeView {
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-    }
-}
-
-private extension EventVibeView {
-    func checkIfUserLikedVibe(vibeID: Int, isLiked: Binding<Bool>) {
-        Task {
-            do {
-                isLiked.wrappedValue = try await vibeService.checkIfUserLikedVibe(vibeID: vibeID)
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
     }
 }
 

@@ -14,14 +14,10 @@ import SwiftUI
 /// - Author: 라움
 struct ProfileVibeListCell: View {
     private let vibe: VibeUIO
-    private let likeCheckHandler: (Int, Binding<Bool>) -> Void
     
-    init(vibe: VibeUIO, likeCheckHandler: @escaping (Int, Binding<Bool>) -> Void) {
+    init(vibe: VibeUIO) {
         self.vibe = vibe
-        self.likeCheckHandler = likeCheckHandler
     }
-    
-    @State private var isLiked = false
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -115,16 +111,13 @@ private extension ProfileVibeListCell {
             
             HStack(spacing: 12) {
                 HStack(spacing: 4) {
-                    Image(isLiked ? "Heart.fill.color" : "Heart.fill")
+                    Image(vibe.isLiked ? "Heart.fill.color" : "Heart.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 12)
                     
                     Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                }
-                .onAppear {
-                    likeCheckHandler(vibe.id, $isLiked)
                 }
                 
                 HStack(spacing: 4) {
@@ -191,11 +184,9 @@ private extension ProfileVibeListCell {
 #Preview {
     NavigationStack {
         NavigationLink {
-            LazyView(VibeDetailScreen(vibe: .dummy0))
+            LazyView(VibeDetailScreen(vibe: .constant(.dummy0)))
         } label: {
-            ProfileVibeListCell(vibe: .dummy7) { id, bool in
-                
-            }
+            ProfileVibeListCell(vibe: .dummy7)
         }
     }
 }

@@ -30,7 +30,8 @@ struct ProfileVibeView: View {
         self._error = error
     }
     
-    @State private var vibes: [VibeUIO]? = nil
+    @State private var vibes: [VibeUIO] = []
+    @State private var vibesLoaded: Bool = false
     
     private var columns: [GridItem] = [
         GridItem(.flexible(), spacing: 8),
@@ -41,25 +42,25 @@ struct ProfileVibeView: View {
     var body: some View {
         VStack(spacing: 12) {
             profileVibeViewHeader
-            if let vibes = vibes {
+            if vibesLoaded {
                 switch selectedVibeViewType {
                 case .list:
                     LazyVStack(spacing: 20) {
-                        ForEach(vibes) { vibe in
+                        ForEach(vibes.indices, id: \.self) { index in
                             NavigationLink {
-                                LazyView(VibeDetailScreen(vibe: vibe))
+                                LazyView(VibeDetailScreen(vibe: $vibes[index]))
                             } label: {
-                                ProfileVibeListCell(vibe: vibe, likeCheckHandler: checkIfUserLikedVibe)
+                                ProfileVibeListCell(vibe: vibes[index])
                             }
                         }
                     }
                 case .table:
                     LazyVGrid(columns: columns, spacing: 8) {
-                        ForEach(vibes) { vibe in
+                        ForEach(vibes.indices, id: \.self) { index in
                             NavigationLink {
-                                LazyView(VibeDetailScreen(vibe: vibe))
+                                LazyView(VibeDetailScreen(vibe: $vibes[index]))
                             } label: {
-                                ProfileVibeTableCell(vibe: vibe)
+                                ProfileVibeTableCell(vibe: vibes[index])
                             }
                             .aspectRatio(114/152, contentMode: .fill)
                         }
@@ -78,6 +79,7 @@ struct ProfileVibeView: View {
                 do {
                     if let userID {
                         vibes = try await service.getUserVibeList(userID: userID)
+                        vibesLoaded = true
                     }
                 } catch let failToFetchVibes {
                     error = failToFetchVibes
@@ -111,7 +113,7 @@ private extension ProfileVibeView {
                 .foregroundStyle(.gray100)
                 .padding(.trailing, 8)
             
-            Text("\(vibes?.count ?? 0)")
+            Text("\(vibes.count)")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 .foregroundStyle(.brand500)
                 .padding(.trailing, 2)
@@ -141,18 +143,6 @@ private extension ProfileVibeView {
                 .figmaFont(PretendardFont.title(style: .xs))
                 .frame(width: 32, height: 32)
                 .foregroundStyle(selectedVibeViewType == .table ? .gray100 : .gray700)
-        }
-    }
-}
-
-private extension ProfileVibeView {
-    func checkIfUserLikedVibe(vibeID: Int, isLiked: Binding<Bool>) {
-        Task {
-            do {
-                isLiked.wrappedValue = try await vibeService.checkIfUserLikedVibe(vibeID: vibeID)
-            } catch {
-                print(error.localizedDescription)
-            }
         }
     }
 }

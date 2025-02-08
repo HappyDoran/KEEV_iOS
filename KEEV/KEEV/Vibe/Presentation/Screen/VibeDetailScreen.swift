@@ -14,8 +14,7 @@ struct VibeDetailScreen: View {
     @Injected private var replyService: any ReplyServiceProtocol
     @Injected private var vibeService: any VibeServiceProtocol
     
-    @State private var vibe: VibeUIO
-    @State private var isLiked: Bool = false
+    @Binding private var vibe: VibeUIO
     @State private var replies: [ReplyUIO] = []
     
     private let onDelete: ((VibeUIO) -> Void)?
@@ -37,11 +36,11 @@ struct VibeDetailScreen: View {
     @FocusState private var isFocused: Bool
     
     init(
-        vibe: VibeUIO,
+        vibe: Binding<VibeUIO>,
         onUpdate: ((VibeUIO) -> Void)? = nil,
         onDelete: ((VibeUIO) -> Void)? = nil
     ) {
-        self.vibe = vibe
+        self._vibe = vibe
         self.onUpdate = onUpdate
         self.onDelete = onDelete
     }
@@ -51,7 +50,7 @@ struct VibeDetailScreen: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 0) {
-                        VibeContentView(vibe: $vibe, isLiked: $isLiked, likeTapHandler: tapVibeLike)
+                        VibeContentView(vibe: $vibe, likeTapHandler: tapVibeLike)
                             .padding(.top, 20)
                             .padding(.horizontal, 16)
                         Rectangle().frame(height: 1).foregroundColor(.gray800)
@@ -138,7 +137,6 @@ struct VibeDetailScreen: View {
             .onAppear{
                 fetchVibe()
                 fetchReplies()
-                checkIfUserLikedVibe()
             }
             .onChange(of: toggleAdd) {
                 withAnimation {
@@ -196,22 +194,22 @@ private extension VibeDetailScreen {
     func checkIfUserLikedVibe() {
         Task {
             do {
-                isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
+                vibe.isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
             } catch {
                 errorForAlert = error
             }
         }
     }
     
-    func tapVibeLike(vibeID: Int) {
+    func tapVibeLike() {
         Task {
             do {
-                switch isLiked {
+                switch vibe.isLiked {
                 case true:
-                    isLiked = try await vibeService.cancelLikeVibe(vibeID: vibeID)
+                    vibe.isLiked = try await vibeService.cancelLikeVibe(vibeID: vibe.id)
                     vibe.likeCount -= 1
                 case false:
-                    isLiked = try await vibeService.likeVibe(vibeID: vibeID)
+                    vibe.isLiked = try await vibeService.likeVibe(vibeID: vibe.id)
                     vibe.likeCount += 1
                 }
             } catch {
@@ -336,7 +334,7 @@ private extension VibeDetailScreen {
 
 #Preview {
     NavigationStack {
-        VibeDetailScreen(vibe: .dummy2) { _ in
+        VibeDetailScreen(vibe: .constant(.dummy2)) { _ in
             
         } onDelete: { _ in
             
