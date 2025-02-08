@@ -71,11 +71,24 @@ struct EntryView: View {
                 }
                 .tag(TabbedItem.info.rawValue)
             
+            // 바이브 피드 탭으로 교체해주어야합니다.
+            Text("VibeFeedScreen")
+                .tabItem {
+                    TabbedItem.label(for: .feed)
+                }
+                .tag(TabbedItem.feed.rawValue)
+            
             Text("")
                 .tabItem {
                     TabbedItem.label(for: .write)
                 }
                 .tag(TabbedItem.write.rawValue)
+            
+            TotalSearchScreen()
+                .tabItem {
+                    TabbedItem.label(for: .search)
+                }
+                .tag(TabbedItem.search.rawValue)
             
             ProfileScreen(
                 selectedItem: $selectedItem,
