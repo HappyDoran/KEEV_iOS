@@ -14,40 +14,78 @@ import SwiftUI
 /// - Author: Doran
 struct EventVibeCell: View {
     private let vibeData: VibeUIO
-    
+
     init(vibeData: VibeUIO) {
         self.vibeData = vibeData
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing : 0){
-            HStack {
-                Text(vibeData.createdDate)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                    .foregroundStyle(.gray300)
+            HStack(spacing: 0){
+                profileImage(url: vibeData.userProfileImageURL)
                 
+                Text("\(vibeData.userNickname)")
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(1)
+                    .padding(.leading, 16)
+
                 Spacer()
-                
+
                 RatingView(rating: vibeData.rating, image: Image(.star))
                     .frame(width: 80, height: 16)
             }
-            .padding(.top, 16)
-            .padding(.bottom, 12)
             .padding(.horizontal, 16)
-            
-            NavigationLink {
-                LazyView(EventDetailScreen(simpleEvent: vibeData.event))
-            } label: {
-                eventInfo
-                    .padding(.horizontal, 16)
+
+            Rectangle().fill(Color.grayBG700).frame(height: 1)
+                .padding(.top, 16)
+
+            if let firstImageURL = vibeData.imageURLs.first {
+                vibeImage(url: firstImageURL)
+                    .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
             }
-            
-            Rectangle().fill(Color.grayBG700)
-                .frame(height: 1)
-                .padding(.vertical, 16)
-        
-            vibe.padding(.bottom, 16)
+
+            if let comment = vibeData.comment {
+                if !comment.isEmpty {
+                    Text(comment)
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
+                }
+            }
+
+            HStack(spacing: 12) {
+                Text(vibeData.createdDate)
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
+                
+                Spacer()
+                
+                HStack(spacing: 4) {
+                    Image(vibeData.isLiked ? "Heart.fill.color" : "Heart.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+
+                    Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                }
+
+                HStack(spacing: 4) {
+                    Image("Reply.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+
+                    Text(vibeData.replyCount > 99 ? "99+" : "\(vibeData.replyCount)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                }
+            }
+            .foregroundColor(.gray500)
+            .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
         }
+        .padding(.vertical, 16)
         .background {
             RoundedRectangle(cornerRadius: 16)
                 .foregroundStyle(.grayBG800)
@@ -55,129 +93,65 @@ struct EventVibeCell: View {
         .padding(.bottom, 20)
     }
 }
-
 private extension EventVibeCell {
-    var eventInfo: some View {
-        HStack(spacing: 12) {
-            URLCachedImage(
-                url: vibeData.event.posterURL
-            ) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } else if phase.error == nil {
-                    ProgressView()
-                } else {
-                    Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
-                }
-            }
-            .frame(width: 48, height: 64, alignment: .center)
-            .mask(RoundedRectangle(cornerRadius: 4))
-            
-            VStack(alignment: .leading, spacing: 0) {
-                Text(vibeData.event.name)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
-                    .foregroundStyle(.gray50)
-                    .lineLimit(1)
-                    .padding(.bottom, 4)
-                
-                Text("\(vibeData.event.startDate) ~ \(vibeData.event.endDate)")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                    .foregroundStyle(.gray300)
-                    .lineLimit(1)
-                    .padding(.bottom, 2)
-                
-                Text(vibeData.event.placeName)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                    .foregroundStyle(.gray300)
-                    .lineLimit(1)
+    func profileImage(url: URL?) -> some View {
+        URLCachedImage(
+            url: url
+        ) { phase in
+            if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
+                image
+                    .resizable()
+            } else if phase.error == nil { // 이미지를 불러오는 중일 때
+                ProgressView()
+            } else { // 에러가 발생했을 때
+                Image("ProfileImage")
+                    .resizable()
+                    .frame(width: 40, height: 40)
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-    
-    var vibe: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            vibeImage(vibeData.imageURLs)
-            
-            if let comment = vibeData.comment {
-                Text(comment)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
-                    .foregroundStyle(.gray300)
-                    .lineLimit(2)
-                    .multilineTextAlignment(.leading)
-                    .padding(.horizontal, 16)
-            }
-            
-            HStack(spacing: 12) {
-                HStack(spacing: 4) {
-                    Image(vibeData.isLiked ? "Heart.fill.color" : "Heart.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 12)
-                    
-                    Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                }
-                
-                HStack(spacing: 4) {
-                    Image("Reply.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 12)
-                    
-                    Text(vibeData.replyCount > 99 ? "99+" : "\(vibeData.replyCount)")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                }
-                
-                Spacer()
-            }
-            .foregroundStyle(.gray500)
-            .padding(.horizontal, 16)
+        .mask {
+            Circle()
+                .frame(width: 40, height: 40)
         }
+        .frame(width: 40, height: 40, alignment: .center)
     }
-    
+
     @ViewBuilder
-    func vibeImage(_ vibeImages: [URL?]) -> some View {
-        if let thumbnailURL = vibeImages.first {
+    func vibeImage(url: URL?) -> some View {
+        if let url {
             URLCachedImage(
-                url: thumbnailURL
+                url: url
             ) { phase in
-                if let image = phase.image {
+                if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
-                        .frame(height: 160, alignment: .center)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 160)
                         .clipped()
-                        .contentShape(Rectangle())
-                } else if phase.error == nil {
+                        .contentShape(Rectangle().inset(by: 10))
+                } else if phase.error == nil { // 이미지를 불러오는 중일 때
                     ProgressView()
-                } else {
+                        .frame(height: 160)
+                        .frame(maxWidth: .infinity)
+                        .background {
+                            RoundedRectangle(cornerRadius: 12)
+                                .foregroundStyle(Color.grayBG700)
+                        }
+                } else { // 에러가 발생했을 때
                     Image(.posterError)
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 160, alignment: .center)
-                        .clipped()
-                        .contentShape(Rectangle())
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 160)
                 }
             }
             .mask(RoundedRectangle(cornerRadius: 12))
-            .overlay(alignment: .bottomTrailing) {
-                Circle()
-                    .frame(width: 24, height: 24)
-                    .foregroundStyle(.gray200)
-                    .opacity(0.2)
-                    .overlay {
-                        Text("\(vibeImages.count)")
-                            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .regular)))
-                            .foregroundStyle(.gray200)
-                    }
-                    .padding(12)
-            }
-            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity)
+            .frame(height: 160)
         } else {
-            EmptyView()
+            Image(.posterError)
+                .resizable()
+                .frame(height: 160)
         }
     }
 }

@@ -20,25 +20,32 @@ struct VibeFeedScreen: View {
     @State private var vibes: [VibeUIO] = []
     @State private var eventVibesState: EventVibeViewState = .loading
     @State private var currentPage = 0
+    @State private var totalPages = 1
     private let pageSize = 7
+    @State private var error: Error? = nil
     
     var body: some View {
-        VStack(spacing: 0){
+        ScrollView(showsIndicators: false){
             vibeFeedHeader
-            ScrollView(showsIndicators: false){
-                switch eventVibesState {
-                case .loading:
-                    vibeFeedLoading
-                case .loaded:
-                    vibeFeedList
-                case .empty:
-                    vibeFeedNotExist
-                }
+            switch eventVibesState {
+            case .loading:
+                vibeFeedLoading
+            case .loaded:
+                vibeFeedList
+            case .empty:
+                vibeFeedNotExist
             }
         }
         .refreshable {
             do {
-                vibes = try await vibeService.getPaginatedVibes(page: 0, size: pageSize, sort: [(.createdDate, .descending)]).contents
+                let response : PaginatedResponse<VibeUIO>
+                response = try await vibeService.getPaginatedVibes(
+                    page: 0,
+                    size: pageSize,
+                    sort: [(SortCase.createdDate, SortPattern.descending)]
+                )
+                
+                vibes = response.contents
                 
                 if vibes.isEmpty {
                     eventVibesState = .empty
@@ -46,17 +53,17 @@ struct VibeFeedScreen: View {
                     eventVibesState = .loaded
                 }
                 
+                totalPages = response.totalPages
                 currentPage = 1
                 
-            } catch {
-                debugPrint(error)
+            } catch let failToRefreshVibe {
+                error = failToRefreshVibe
             }
         }
     }
 }
 
 private extension VibeFeedScreen {
-    
     var vibeFeedHeader: some View {
         VStack(spacing: 0){
             HStack(spacing: 0){
@@ -81,11 +88,16 @@ private extension VibeFeedScreen {
                         self.vibes.remove(at: index)
                     })
                 } label: {
-                    EventVibeCell(vibeData: vibes[index])
+                    VibeFeedCell(vibeData: vibes[index])
                         .padding(.horizontal, 16)
                 }
                 .onAppear {
-                    if index == vibes.count - 1 {
+                    print("index: ", index)
+                    print("vibes.count - 1 : ", vibes.count - 1)
+                    print("currentPage : ", currentPage)
+                    print("totalPages : ", totalPages)
+                    
+                    if index == vibes.count - 1 && currentPage < totalPages {
                         Task {
                             do {
                                 let response = try await vibeService.getPaginatedVibes(
@@ -94,8 +106,10 @@ private extension VibeFeedScreen {
                                     sort: [(SortCase.createdDate, SortPattern.descending)]
                                 )
                                 
-                                vibes.append(contentsOf: response.contents)
-                                currentPage += 1
+                                await MainActor.run {
+                                    vibes.append(contentsOf: response.contents)
+                                    currentPage += 1
+                                }
                                 
                             } catch {
                                 debugPrint(error)
@@ -126,21 +140,25 @@ private extension VibeFeedScreen {
             .onAppear {
                 Task {
                     do {
-                        vibes = try await vibeService.getPaginatedVibes(
+                        let response : PaginatedResponse<VibeUIO>
+                        response = try await vibeService.getPaginatedVibes(
                             page: currentPage,
                             size: pageSize,
                             sort: [(SortCase.createdDate, SortPattern.descending)]
-                        ).contents
+                        )
                         
+                        vibes.append(contentsOf: response.contents)
                         if vibes.isEmpty {
                             eventVibesState = .empty
                         } else {
                             eventVibesState = .loaded
                         }
                         
+                        totalPages = response.totalPages
                         currentPage += 1
-                    } catch {
-                        debugPrint(error)
+                        
+                    } catch let failToLoadVibe {
+                        error = failToLoadVibe
                     }
                 }
             }
