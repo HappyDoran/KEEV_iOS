@@ -42,8 +42,9 @@ struct EventVibeCell: View {
                     .padding(.horizontal, 16)
             }
             
-            Rectangle().fill(Color.grayBG700).frame(height: 1)
-                .padding(.top, 16)
+            Rectangle().fill(Color.grayBG700)
+                .frame(height: 1)
+                .padding(.vertical, 16)
         
             vibe.padding(.bottom, 16)
         }
