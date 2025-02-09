@@ -37,7 +37,7 @@ struct AppEnvironment {
         diContainer.register(EventService(), for: (any EventServiceProtocol).self)
         diContainer.register(SettingService(), for: (any SettingServiceProtocol).self)
         diContainer.register(ReplyService(), for: (any ReplyServiceProtocol).self)
-        diContainer.register(VibeService(), for: (any VibeServiceProtocol).self)
+        diContainer.register(MockVibeService(), for: (any VibeServiceProtocol).self)
         diContainer.register(SearchService(), for: (any SearchServiceProtocol).self)
         diContainer.register(ActivityService(), for: (any ActivityServiceProtocol).self)
         diContainer.register(ReportService(), for: (any ReportServiceProtocol).self)
