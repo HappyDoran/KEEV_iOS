@@ -9,7 +9,6 @@ import SwiftUI
 
 struct TotalSearchScreen: View {
     @Injected private var searchService: any SearchServiceProtocol
-    @Environment(\.dismiss) private var dismiss
     
     @State private var searchText: String = ""
     @State private var recentKeywords: [RecentSearch] = []
@@ -23,6 +22,9 @@ struct TotalSearchScreen: View {
     
     var body: some View {
         VStack(spacing: 0){
+            header
+                .padding(.bottom, 8)
+            
             // MARK: 검색창
             SearchField(text: $searchText,searchStatus: $eventSearchStatus, isFocused: $searchFieldFocus)
             
@@ -58,20 +60,6 @@ struct TotalSearchScreen: View {
             Spacer()
         }
         .alertForError($error)
-        .navigationBarBackButtonHidden()
-        .navigationTitle("검색")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "chevron.backward")
-                        .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(.gray100)
-                }
-            }
-        }
         .onChange(of: [searchFieldFocus, searchText.isEmpty]) {
             eventSearchStatus = searchCase()
         }
@@ -89,9 +77,22 @@ struct TotalSearchScreen: View {
     }
 }
 
-extension TotalSearchScreen {
+private extension TotalSearchScreen {
+    var header: some View {
+        HStack {
+            Text("검색")
+                .figmaFont(PretendardFont.title(style: .xl))
+                .foregroundStyle(Color.gray100)
+            
+            Spacer()
+        }
+        .padding(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+    }
+}
+
+private extension TotalSearchScreen {
     // MARK: 검색을 하는 과정을 표현한 함수
-    private func searchCase()-> EventSearchStatus {
+    func searchCase()-> EventSearchStatus {
         if !searchFieldFocus && searchText.isEmpty {
             return .beforeSearch
         }
@@ -106,7 +107,7 @@ extension TotalSearchScreen {
         }
     }
     
-    private func handleSearching() {
+    func handleSearching() {
         switch searchContent {
         case .event:
             debugPrint("searchResult 이동")
@@ -115,7 +116,7 @@ extension TotalSearchScreen {
         }
     }
     
-    private func handleAfterSearch() {
+    func handleAfterSearch() {
         switch searchContent {
         case .event:
             debugPrint("Event Detail 이동")
