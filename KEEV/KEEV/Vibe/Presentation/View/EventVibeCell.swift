@@ -4,9 +4,7 @@
 //
 //  Created by Doran on 11/18/24.
 //
-
 import SwiftUI
-
 /// 바이브의 내용을 보여주는 셀뷰
 ///
 /// - Parameter vibeData: 셀에 표시할 바이브 데이터 객체입니다.
@@ -14,11 +12,11 @@ import SwiftUI
 /// - Author: Doran
 struct EventVibeCell: View {
     private let vibeData: VibeUIO
-    
+
     init(vibeData: VibeUIO) {
         self.vibeData = vibeData
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing : 0){
             HStack(spacing: 0){
@@ -29,22 +27,22 @@ struct EventVibeCell: View {
                     .multilineTextAlignment(.leading)
                     .lineLimit(1)
                     .padding(.leading, 16)
-                
+
                 Spacer()
-                
+
                 RatingView(rating: vibeData.rating, image: Image(.star))
                     .frame(width: 80, height: 16)
             }
             .padding(.horizontal, 16)
-            
+
             Rectangle().fill(Color.grayBG700).frame(height: 1)
                 .padding(.top, 16)
-            
+
             if let firstImageURL = vibeData.imageURLs.first {
                 vibeImage(url: firstImageURL)
                     .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
             }
-            
+
             if let comment = vibeData.comment {
                 if !comment.isEmpty {
                     Text(comment)
@@ -55,29 +53,29 @@ struct EventVibeCell: View {
                         .padding(EdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16))
                 }
             }
-            
+
             HStack(spacing: 12) {
                 Text(vibeData.createdDate)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                
+
                 Spacer()
-                
+
                 HStack(spacing: 4) {
                     Image(vibeData.isLiked ? "Heart.fill.color" : "Heart.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 12)
-                    
+
                     Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                 }
-                
+
                 HStack(spacing: 4) {
                     Image("Reply.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 12)
-                    
+
                     Text(vibeData.replyCount > 99 ? "99+" : "\(vibeData.replyCount)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                 }
@@ -93,7 +91,6 @@ struct EventVibeCell: View {
         .padding(.bottom, 20)
     }
 }
-
 private extension EventVibeCell {
     func profileImage(url: URL?) -> some View {
         URLCachedImage(
@@ -116,7 +113,7 @@ private extension EventVibeCell {
         }
         .frame(width: 40, height: 40, alignment: .center)
     }
-    
+
     @ViewBuilder
     func vibeImage(url: URL?) -> some View {
         if let url {
@@ -128,11 +125,9 @@ private extension EventVibeCell {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(maxWidth: .infinity)
-
                         .frame(height: 160)
                         .clipped()
                         .contentShape(Rectangle().inset(by: 10))
-
                 } else if phase.error == nil { // 이미지를 불러오는 중일 때
                     ProgressView()
                         .frame(height: 160)
@@ -158,7 +153,6 @@ private extension EventVibeCell {
         }
     }
 }
-
 #Preview {
     EventVibeCell(vibeData: .dummy0)
 }
