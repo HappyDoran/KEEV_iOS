@@ -79,7 +79,7 @@ struct VibeDetailScreen: View {
                     .padding(.horizontal, 20)
                     .background(.grayBG800)
             }
-            .navigationTitle("바이브")
+            .navigationTitle(vibe.event.name)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar {
