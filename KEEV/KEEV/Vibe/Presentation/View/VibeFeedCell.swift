@@ -142,40 +142,8 @@ private extension VibeFeedCell {
     @ViewBuilder
     func vibeImage(_ vibeImages: [URL?]) -> some View {
         if let thumbnailURL = vibeImages.first {
-            URLCachedImage(
-                url: thumbnailURL
-            ) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 160, alignment: .center)
-                        .clipped()
-                        .contentShape(Rectangle())
-                } else if phase.error == nil {
-                    ProgressView()
-                } else {
-                    Image(.posterError)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(height: 160, alignment: .center)
-                        .clipped()
-                        .contentShape(Rectangle())
-                }
-            }
-            .mask(RoundedRectangle(cornerRadius: 12))
-            .overlay(alignment: .bottomTrailing) {
-                Circle()
-                    .frame(width: 24, height: 24)
-                    .foregroundStyle(.gray200)
-                    .opacity(0.2)
-                    .overlay {
-                        Text("\(vibeImages.count)")
-                            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .regular)))
-                            .foregroundStyle(.gray200)
-                    }
-                    .padding(12)
-            }
+            VibeThumbnailImage(thumbnailURL: thumbnailURL)
+                .addImageCount(vibeImages.count)
         } else {
             EmptyView()
         }

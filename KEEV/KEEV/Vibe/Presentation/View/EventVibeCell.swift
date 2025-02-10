@@ -117,35 +117,8 @@ private extension EventVibeCell {
     @ViewBuilder
     func vibeImage(url: URL?) -> some View {
         if let url {
-            URLCachedImage(
-                url: url
-            ) { phase in
-                if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 160)
-                        .clipped()
-                        .contentShape(Rectangle().inset(by: 10))
-                } else if phase.error == nil { // 이미지를 불러오는 중일 때
-                    ProgressView()
-                        .frame(height: 160)
-                        .frame(maxWidth: .infinity)
-                        .background {
-                            RoundedRectangle(cornerRadius: 12)
-                                .foregroundStyle(Color.grayBG700)
-                        }
-                } else { // 에러가 발생했을 때
-                    Image(.posterError)
-                        .resizable()
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 160)
-                }
-            }
-            .mask(RoundedRectangle(cornerRadius: 12))
-            .frame(maxWidth: .infinity)
-            .frame(height: 160)
+            VibeThumbnailImage(thumbnailURL: url)
+                .addImageCount(vibeData.imageURLs.count)
         } else {
             Image(.posterError)
                 .resizable()
