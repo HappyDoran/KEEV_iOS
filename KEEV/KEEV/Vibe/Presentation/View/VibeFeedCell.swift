@@ -15,43 +15,44 @@ struct VibeFeedCell: View {
     }
     
     var body: some View {
-        VStack(alignment: .leading, spacing : 0){
-            HStack {
-                Text(vibeData.createdDate)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
-                    .foregroundStyle(.gray300)
-                
-                Spacer()
-                
-                RatingView(rating: vibeData.rating, image: Image(.star))
-                    .frame(width: 80, height: 16)
-            }
-            .padding(.top, 16)
-            .padding(.bottom, 12)
-            .padding(.horizontal, 16)
+        VStack(alignment: .leading, spacing : 12){
+            profileHeader
             
             NavigationLink {
                 LazyView(EventDetailScreen(simpleEvent: vibeData.event))
             } label: {
                 eventInfo
-                    .padding(.horizontal, 16)
             }
-            
-            Rectangle().fill(Color.grayBG700)
-                .frame(height: 1)
-                .padding(.vertical, 16)
         
-            vibe.padding(.bottom, 16)
+            vibe
         }
+        .padding(12)
         .background {
             RoundedRectangle(cornerRadius: 16)
                 .foregroundStyle(.grayBG800)
         }
-        .padding(.bottom, 20)
     }
 }
 
 private extension VibeFeedCell {
+    var profileHeader: some View {
+        HStack(spacing: 8) {
+            URLCircleImage(url: vibeData.userProfileImageURL)
+                .frame(width: 36, height: 36)
+            
+            Text(vibeData.userNickname)
+                .figmaFont(
+                    PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold))
+                )
+                .foregroundStyle(.gray50)
+            
+            Spacer()
+            
+            RatingView(rating: vibeData.rating, image: Image(.star))
+                .frame(width: 80, height: 16)
+        }
+    }
+    
     var eventInfo: some View {
         HStack(spacing: 12) {
             URLCachedImage(
@@ -94,42 +95,47 @@ private extension VibeFeedCell {
     
     var vibe: some View {
         VStack(alignment: .leading, spacing: 16) {
-            vibeImage(vibeData.imageURLs)
-            
             if let comment = vibeData.comment {
                 Text(comment)
                     .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
                     .foregroundStyle(.gray300)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
-                    .padding(.horizontal, 16)
             }
+            
+            vibeImage(vibeData.imageURLs)
             
             HStack(spacing: 12) {
                 HStack(spacing: 4) {
-                    Image(vibeData.isLiked ? "Heart.fill.color" : "Heart.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 12)
+                    Rectangle()
+                        .fill(.gray700)
+                        .mask {
+                            Image("Heart.fill")
+                        }
+                        .frame(width: 13.5, height: 12)
                     
                     Text(vibeData.likeCount > 99 ? "99+" : "\(vibeData.likeCount)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                 }
                 
                 HStack(spacing: 4) {
-                    Image("Reply.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 12)
+                    Rectangle()
+                        .fill(.gray700)
+                        .mask {
+                            Image("Reply.fill")
+                        }
+                        .frame(width: 13.5, height: 12)
                     
                     Text(vibeData.replyCount > 99 ? "99+" : "\(vibeData.replyCount)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
                 }
                 
                 Spacer()
+                
+                Text(vibeData.createdDate)
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
             }
-            .foregroundStyle(.gray500)
-            .padding(.horizontal, 16)
+            .foregroundStyle(.gray700)
         }
     }
     
@@ -170,7 +176,6 @@ private extension VibeFeedCell {
                     }
                     .padding(12)
             }
-            .padding(.horizontal, 16)
         } else {
             EmptyView()
         }
