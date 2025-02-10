@@ -72,7 +72,7 @@ struct EntryView: View {
                 .tag(TabbedItem.info.rawValue)
             
             // 바이브 피드 탭으로 교체해주어야합니다.
-            Text("VibeFeedScreen")
+            VibeFeedScreen(selectedItem: $selectedItem)
                 .tabItem {
                     TabbedItem.label(for: .feed)
                 }

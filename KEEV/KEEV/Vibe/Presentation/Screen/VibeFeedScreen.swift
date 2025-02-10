@@ -72,7 +72,7 @@ private extension VibeFeedScreen {
                 Spacer();
             }
         }
-        .padding(EdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16))
+        .padding(EdgeInsets(top: 8, leading: 16, bottom: 16, trailing: 16))
     }
     
     var vibeFeedList: some View {
