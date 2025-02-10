@@ -92,11 +92,6 @@ private extension VibeFeedScreen {
                         .padding(.horizontal, 16)
                 }
                 .onAppear {
-                    print("index: ", index)
-                    print("vibes.count - 1 : ", vibes.count - 1)
-                    print("currentPage : ", currentPage)
-                    print("totalPages : ", totalPages)
-                    
                     if index == vibes.count - 1 && currentPage < totalPages {
                         Task {
                             do {
