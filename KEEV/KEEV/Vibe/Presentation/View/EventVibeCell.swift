@@ -93,25 +93,8 @@ struct EventVibeCell: View {
 }
 private extension EventVibeCell {
     func profileImage(url: URL?) -> some View {
-        URLCachedImage(
-            url: url
-        ) { phase in
-            if let image = phase.image { // 이미지를 성공적으로 불러왔을 때
-                image
-                    .resizable()
-            } else if phase.error == nil { // 이미지를 불러오는 중일 때
-                ProgressView()
-            } else { // 에러가 발생했을 때
-                Image("ProfileImage")
-                    .resizable()
-                    .frame(width: 40, height: 40)
-            }
-        }
-        .mask {
-            Circle()
-                .frame(width: 40, height: 40)
-        }
-        .frame(width: 40, height: 40, alignment: .center)
+        URLCircleImage(url: url)
+            .frame(width: 40, height: 40, alignment: .center)
     }
 
     @ViewBuilder
