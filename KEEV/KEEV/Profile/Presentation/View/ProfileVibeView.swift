@@ -50,7 +50,7 @@ struct ProfileVibeView: View {
                             NavigationLink {
                                 LazyView(VibeDetailScreen(vibe: $vibes[index]))
                             } label: {
-                                ProfileVibeListCell(vibe: vibes[index])
+                                VibeFeedCell(vibeData: vibes[index])
                             }
                         }
                     }

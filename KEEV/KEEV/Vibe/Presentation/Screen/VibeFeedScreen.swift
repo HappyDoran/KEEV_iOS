@@ -36,6 +36,7 @@ struct VibeFeedScreen: View {
                 vibeFeedNotExist
             }
         }
+        .backgroundForKEEV()
         .refreshable {
             do {
                 let response : PaginatedResponse<VibeUIO>
@@ -69,14 +70,14 @@ private extension VibeFeedScreen {
             HStack(spacing: 0){
                 Text("피드")
                     .figmaFont(PretendardFont.title(style: .xl))
-                Spacer();
+                Spacer()
             }
         }
         .padding(EdgeInsets(top: 8, leading: 16, bottom: 16, trailing: 16))
     }
     
     var vibeFeedList: some View {
-        LazyVStack(spacing: 0) {
+        LazyVStack(spacing: 20) {
             ForEach(vibes.indices, id: \.self) { index in
                 NavigationLink {
                     LazyView(VibeDetailScreen(vibe: $vibes[index]) { vibe in
@@ -89,8 +90,8 @@ private extension VibeFeedScreen {
                     })
                 } label: {
                     VibeFeedCell(vibeData: vibes[index])
-                        .padding(.horizontal, 16)
                 }
+                .padding(.horizontal, 16)
                 .onAppear {
                     if index == vibes.count - 1 && currentPage < totalPages {
                         Task {
