@@ -89,11 +89,11 @@ private extension SignInScreen {
                 debugPrint(error)
             }
         }
+        .figmaFont(
+            PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold))
+        )
         .frame(height: 54)
         .signInWithAppleButtonStyle(.white)
-        .figmaFont(
-            PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular))
-        )
         .clipShape(RoundedRectangle(cornerRadius: 14))
     }
     
@@ -104,7 +104,7 @@ private extension SignInScreen {
         .frame(maxWidth: .infinity)
         .frame(height: 54)
         .figmaFont(
-            PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular))
+            PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold))
         )
         .foregroundStyle(Color.grayBG300)
         .background(
