@@ -27,6 +27,7 @@ struct SignInScreen: View {
     var body: some View {
         VStack {
             Spacer()
+            Spacer()
             
             Image("LogoLargeImage")
                 .resizable()
@@ -34,9 +35,12 @@ struct SignInScreen: View {
             
             Spacer()
             
-            signInWithAppleButton
-                .padding(.horizontal, 24)
-                .padding(.bottom, 20)
+            VStack(spacing: 16) {
+                signInWithAppleButton
+                lookAroundButton
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 32)
             
             signInBottomText
         }
@@ -91,7 +95,22 @@ private extension SignInScreen {
             PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular))
         )
         .clipShape(RoundedRectangle(cornerRadius: 14))
+    }
+    
+    var lookAroundButton: some View {
+        Button("로그인 없이 둘러보기") {
+            
+        }
+        .frame(maxWidth: .infinity)
         .frame(height: 54)
+        .figmaFont(
+            PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular))
+        )
+        .foregroundStyle(Color.grayBG300)
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Color.grayBG700)
+        )
     }
     
     var signInBottomText: some View {
