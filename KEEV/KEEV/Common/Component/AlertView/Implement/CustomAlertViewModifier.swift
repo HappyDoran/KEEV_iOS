@@ -74,6 +74,25 @@ struct CustomAlertViewModifier: ViewModifier {
         self.secondButtonStyle = secondButtonStyle
         self.secondButtonAction = secondButtonAction
     }
+    
+    init(_ alert: Binding<AppState.Alert?>) {
+        let alertInfo = alert.wrappedValue ?? .init(title: "", firstButtonText: "", firstButtonStyle: .active, firstButtonAction: {})
+        self._isPresented = .init(get: {
+            alert.wrappedValue != nil
+        }, set: { bool in
+            if !bool {
+                alert.wrappedValue = nil
+            }
+        })
+        self.title = alertInfo.title
+        self.message = alertInfo.message ?? ""
+        self.firstButtonText = alertInfo.firstButtonText
+        self.firstButtonStyle = alertInfo.firstButtonStyle
+        self.firstButtonAction = alertInfo.firstButtonAction
+        self.secondButtonText = alertInfo.secondButtonText
+        self.secondButtonStyle = alertInfo.secondButtonStyle
+        self.secondButtonAction = alertInfo.secondButtonAction
+    }
 
     func body(content: Content) -> some View {
         ZStack {
