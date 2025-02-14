@@ -59,49 +59,39 @@ struct SignInScreen: View {
 
 private extension SignInScreen {
     var signInWithAppleButton: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 14)
-                .foregroundStyle(.white)
-                .frame(height: 54)
-                .overlay {
-                    SignInWithAppleButton(.signIn,
-                                          onRequest: { request in
-                        request.requestedScopes = [.email]
-                    }, onCompletion: { result in
-                        switch result {
-                        case .success(let authorization):
-                            switch authorization.credential {
-                            case let appleIDCredential as ASAuthorizationAppleIDCredential:
-                                let email = appleIDCredential.email
-                                let user = appleIDCredential.user
-                                let token = appleIDCredential.identityToken!
-                                let code = appleIDCredential.authorizationCode!
-                                
-                                Task {
-                                    do {
-                                        status = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
-                                    } catch let failToSignIn {
-                                        error = failToSignIn
-                                    }
-                                }
-                                
-                            default: break
-                            }
-                        case .failure(let error):
-                            debugPrint(error)
+        SignInWithAppleButton(.signIn) { request in
+            request.requestedScopes = [.email]
+        } onCompletion: { result in
+            switch result {
+            case .success(let authorization):
+                switch authorization.credential {
+                case let appleIDCredential as ASAuthorizationAppleIDCredential:
+                    let email = appleIDCredential.email
+                    let user = appleIDCredential.user
+                    let token = appleIDCredential.identityToken!
+                    let code = appleIDCredential.authorizationCode!
+                    
+                    Task {
+                        do {
+                            status = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
+                        } catch let failToSignIn {
+                            error = failToSignIn
                         }
-                    })
-                    .blendMode(.overlay)
-                    .cornerRadius(14)
-                    .signInWithAppleButtonStyle(.white)
-                    .frame(height: 54)
+                    }
+                    
+                default: break
                 }
-        
-            Label("Apple로 로그인", systemImage: "apple.logo")
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
-                .foregroundStyle(.black)
-                .frame(height: 54)
+            case .failure(let error):
+                debugPrint(error)
+            }
         }
+        .frame(height: 54)
+        .signInWithAppleButtonStyle(.white)
+        .figmaFont(
+            PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .regular))
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .frame(height: 54)
     }
     
     var signInBottomText: some View {
