@@ -133,6 +133,7 @@ enum SignInStatus: Hashable {
     case failed
     case ok(user: DetailUserUIO)
     case created
+    case lookAround
 }
 
 /// AccountService에서 발생할 수 있는 에러

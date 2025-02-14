@@ -60,7 +60,7 @@ private extension SignInScreen {
     
     var lookAroundButton: some View {
         Button("로그인 없이 둘러보기") {
-            
+            status = .lookAround
         }
         .frame(maxWidth: .infinity)
         .frame(height: 54)
