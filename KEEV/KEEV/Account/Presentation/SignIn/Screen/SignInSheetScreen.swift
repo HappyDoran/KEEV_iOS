@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AuthenticationServices
 
 struct SignInSheetScreen: View {
     @Environment(\.dismiss) private var dismiss
@@ -43,9 +42,17 @@ struct SignInSheetScreen: View {
             
             Spacer()
             
-            signInWithAppleButton
-                .padding(.horizontal, 16)
-                .padding(.bottom, 32)
+            AppleLoginButton { (email, user, token, code) in
+                Task {
+                    do {
+                        status = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
+                    } catch let failToSignIn {
+                        error = failToSignIn
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 32)
             
             signInBottomText
         }
@@ -67,41 +74,6 @@ struct SignInSheetScreen: View {
 }
 
 private extension SignInSheetScreen {
-    var signInWithAppleButton: some View {
-        SignInWithAppleButton(.signIn) { request in
-            request.requestedScopes = [.email]
-        } onCompletion: { result in
-            switch result {
-            case .success(let authorization):
-                switch authorization.credential {
-                case let appleIDCredential as ASAuthorizationAppleIDCredential:
-                    let email = appleIDCredential.email
-                    let user = appleIDCredential.user
-                    let token = appleIDCredential.identityToken!
-                    let code = appleIDCredential.authorizationCode!
-                    
-                    Task {
-                        do {
-                            status = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
-                        } catch let failToSignIn {
-                            error = failToSignIn
-                        }
-                    }
-                    
-                default: break
-                }
-            case .failure(let error):
-                debugPrint(error)
-            }
-        }
-        .figmaFont(
-            PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold))
-        )
-        .frame(height: 54)
-        .signInWithAppleButtonStyle(.white)
-        .clipShape(RoundedRectangle(cornerRadius: 14))
-    }
-    
     var signInBottomText: some View {
         HStack(spacing: 0) {
             Text("로그인(가입)시 ")
