@@ -11,12 +11,9 @@ struct SignInSheetScreen: View {
     @Environment(\.dismiss) private var dismiss
     
     @Injected private var accountService: any AccountServiceProtocol
-    @Injected private var settingService: any SettingServiceProtocol
     
     @State var status: SignInStatus?
     @State private var error: Error? = nil
-    @State private var showTermsOfUse = false
-    @State private var showPrivacyPolicy = false
     
     var body: some View {
         VStack {
@@ -54,54 +51,10 @@ struct SignInSheetScreen: View {
             .padding(.horizontal, 16)
             .padding(.bottom, 32)
             
-            signInBottomText
+            TermAndCondition()
         }
         .backgroundForKEEV()
-        .sheet(isPresented: $showTermsOfUse, content: {
-            DocumentView(title: "서비스 이용약관", text: settingService.termsOfUse())
-                .presentationDragIndicator(.visible)
-                .padding(.top, 16)
-                .backgroundForKEEV()
-        })
-        .sheet(isPresented: $showPrivacyPolicy, content: {
-            DocumentView(title: "개인정보 처리방침", text: settingService.privacyPolicy())
-                .presentationDragIndicator(.visible)
-                .padding(.top, 16)
-                .backgroundForKEEV()
-        })
         .alertForError($error)
-    }
-}
-
-private extension SignInSheetScreen {
-    var signInBottomText: some View {
-        HStack(spacing: 0) {
-            Text("로그인(가입)시 ")
-            
-            Button {
-                showTermsOfUse = true
-            } label: {
-                Text("이용약관")
-                    .underline()
-                    .baselineOffset(4)
-                    .offset(y: 2)
-            }
-            
-            Text(" 및 ")
-            
-            Button {
-                showPrivacyPolicy = true
-            } label: {
-                Text("개인정보 처리방침")
-                    .underline()
-                    .baselineOffset(4)
-                    .offset(y: 2)
-            }
-            
-            Text("에 동의하게 됩니다.")
-        }
-        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall3, bodyWeight: .regular)))
-        .foregroundStyle(.gray500)
     }
 }
 
