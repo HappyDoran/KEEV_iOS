@@ -17,7 +17,7 @@ enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
     case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
     case fetchDetailEvent(eventID: String)
-    case fetchEventLikeCount(eventID: String)
+    case fetchEventLikeCount(token: String, eventID: String)
     case fetchEventisLiked(token: String, eventID: String)
     case addEventLike(token: String, eventID: String)
     case deleteEventLike(token: String, eventID: String)
@@ -38,9 +38,9 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String: String]? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent:
             return nil
-        case .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _):
+        case .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _), .fetchEventLikeCount(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -69,14 +69,14 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["get", "filtered"])
         case .fetchDetailEvent(let eventID):
             path.append(contentsOf: ["get", "\(eventID)"])
-        case .fetchEventLikeCount(let eventID):
-            path.append(contentsOf: ["get", "\(eventID)", "likecount"])
+        case .fetchEventLikeCount(_, let eventID):
+            path.append(contentsOf: ["like", "\(eventID)", "count"])
         case .fetchEventisLiked(_, let eventID):
-            path.append(contentsOf: ["\(eventID)", "is-liked"])
+            path.append(contentsOf: ["liked", "\(eventID)"])
         case .addEventLike(_, let eventID):
-            path.append(contentsOf: ["\(eventID)", "like"])
+            path.append(contentsOf: ["like", "\(eventID)"])
         case .deleteEventLike(_, let eventID):
-            path.append(contentsOf: ["\(eventID)", "unlike"])
+            path.append(contentsOf: ["like", "\(eventID)"])
         }
         
         return path
@@ -129,4 +129,3 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     }
 }
-

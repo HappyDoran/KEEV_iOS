@@ -130,7 +130,8 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func getEventLikeCount(id: String) async throws -> Int {
-        let router = EventHTTPRequestRouter.fetchEventLikeCount(eventID: id)
+        let accessToken = try await getAccessToken()
+        let router = EventHTTPRequestRouter.fetchEventLikeCount(token: accessToken, eventID: id)
         
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         
@@ -166,9 +167,9 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
             
             let data = try await networkUtility.request(router: router)
             
-            let isLikedResponse = try jsonDecoder.decode(EventIsLiked.self, from: data)
+            let eventLikeResponse = try jsonDecoder.decode(EventLikeResponse.self, from: data)
             
-            return isLikedResponse.isInterested
+            return eventLikeResponse.isInterested
         }
     }
     
