@@ -23,6 +23,7 @@ struct VibeFeedScreen: View {
     @State private var totalPages = 1
     private let pageSize = 7
     @State private var error: Error? = nil
+    @State private var isPresented = false
     
     var body: some View {
         ScrollView(showsIndicators: false){
@@ -61,6 +62,9 @@ struct VibeFeedScreen: View {
                 error = failToRefreshVibe
             }
         }
+        .fullScreenCover(isPresented: $isPresented) {
+            VibeCreateScreen(selectedEvent: nil, isNavigation: false)
+        }
     }
 }
 
@@ -71,6 +75,11 @@ private extension VibeFeedScreen {
                 Text("피드")
                     .figmaFont(PretendardFont.title(style: .xl))
                 Spacer()
+                Button(action: {
+                    isPresented = true
+                }) {
+                    CreateVibeButtonView()
+                }
             }
         }
         .padding(EdgeInsets(top: 8, leading: 16, bottom: 16, trailing: 16))
