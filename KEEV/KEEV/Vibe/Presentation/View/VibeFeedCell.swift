@@ -21,7 +21,7 @@ struct VibeFeedCell: View {
             NavigationLink {
                 LazyView(EventDetailScreen(simpleEvent: vibeData.event))
             } label: {
-                eventInfo
+                VibeFeedEventInfoCell(eventData: vibeData.event)
             }
         
             vibe
@@ -51,46 +51,6 @@ private extension VibeFeedCell {
             RatingView(rating: vibeData.rating, image: Image(.star))
                 .frame(width: 80, height: 16)
         }
-    }
-    
-    var eventInfo: some View {
-        HStack(spacing: 12) {
-            URLCachedImage(
-                url: vibeData.event.posterURL
-            ) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } else if phase.error == nil {
-                    ProgressView()
-                } else {
-                    Text(phase.error?.localizedDescription ?? "알 수 없는 에러가 발생했습니다.")
-                }
-            }
-            .frame(width: 48, height: 64, alignment: .center)
-            .mask(RoundedRectangle(cornerRadius: 4))
-            
-            VStack(alignment: .leading, spacing: 0) {
-                Text(vibeData.event.name)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
-                    .foregroundStyle(.gray50)
-                    .lineLimit(1)
-                    .padding(.bottom, 4)
-                
-                Text("\(vibeData.event.startDate) ~ \(vibeData.event.endDate)")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                    .foregroundStyle(.gray300)
-                    .lineLimit(1)
-                    .padding(.bottom, 2)
-                
-                Text(vibeData.event.placeName)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                    .foregroundStyle(.gray300)
-                    .lineLimit(1)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
     
     var vibe: some View {
