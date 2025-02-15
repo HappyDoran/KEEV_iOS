@@ -80,7 +80,7 @@ private extension VibeFeedScreen {
         LazyVStack(spacing: 20) {
             ForEach(vibes.indices, id: \.self) { index in
                 NavigationLink {
-                    LazyView(VibeDetailScreen(vibe: $vibes[index]) { vibe in
+                    LazyView(VibeDetailScreen(vibe: $vibes[index], vibeDetailpath: .feed) { vibe in
                         self.vibes[index] = vibe
                     } onDelete: { _ in
                         if(vibes.count == 1) {

@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+enum VibeDetailPath {
+    case event
+    case feed
+}
+
 // -MARK: 스크린 핵심부
 struct VibeDetailScreen: View {
     @Environment(\.dismiss) private var dismiss
@@ -17,6 +22,7 @@ struct VibeDetailScreen: View {
     @Binding private var vibe: VibeUIO
     @State private var replies: [ReplyUIO] = []
     
+    private let vibeDetailPath: VibeDetailPath
     private let onDelete: ((VibeUIO) -> Void)?
     private let onUpdate: ((VibeUIO) -> Void)?
     
@@ -37,10 +43,12 @@ struct VibeDetailScreen: View {
     
     init(
         vibe: Binding<VibeUIO>,
+        vibeDetailpath: VibeDetailPath = .event,
         onUpdate: ((VibeUIO) -> Void)? = nil,
         onDelete: ((VibeUIO) -> Void)? = nil
     ) {
         self._vibe = vibe
+        self.vibeDetailPath = vibeDetailpath
         self.onUpdate = onUpdate
         self.onDelete = onDelete
     }
@@ -334,7 +342,7 @@ private extension VibeDetailScreen {
 
 #Preview {
     NavigationStack {
-        VibeDetailScreen(vibe: .constant(.dummy2)) { _ in
+        VibeDetailScreen(vibe: .constant(.dummy2), vibeDetailpath: .feed) { _ in
             
         } onDelete: { _ in
             
