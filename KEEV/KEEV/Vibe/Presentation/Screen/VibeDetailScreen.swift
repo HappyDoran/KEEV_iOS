@@ -58,6 +58,7 @@ struct VibeDetailScreen: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 0) {
+                        eventInfo(vibeDetailPath: vibeDetailPath)
                         VibeContentView(vibe: $vibe, likeTapHandler: tapVibeLike)
                             .padding(.top, 20)
                             .padding(.horizontal, 16)
@@ -337,6 +338,17 @@ private extension VibeDetailScreen {
         
         let index: Int
         let reply: ReplyUIO
+    }
+}
+
+private extension VibeDetailScreen {
+    func eventInfo(vibeDetailPath: VibeDetailPath) -> some View {
+        switch vibeDetailPath {
+        case .event:
+            return Text("이벤트를 통해서 들어온 경로")
+        case .feed:
+            return Text("피드를 통해서 들어온 경로")
+        }
     }
 }
 
