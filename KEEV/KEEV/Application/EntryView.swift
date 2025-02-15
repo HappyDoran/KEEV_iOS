@@ -37,7 +37,7 @@ struct EntryView: View {
                 switch signInStatus {
                 case .failed:
                     SignInScreen(status: $signInStatus)
-                case .ok(_):
+                case .ok(_), .lookAround:
                     signInSuccessView
                 case .created:
                     SignUpScreen(status: $signInStatus)
