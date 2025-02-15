@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 어떤 경로로 바이브 상세 스크린으로 접근했는지를 알기 위한 열거형
+///
+/// 네비게이션 라우터 구현시 제일 마지막의 스택에 따른 판별로 대체 가능할 것 같습니다.
+///
+/// - Author: Doran
 enum VibeDetailPath {
     case event
     case feed

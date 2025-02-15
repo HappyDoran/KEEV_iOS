@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+/// 피드와, 피드를 통한 바이브 상세 스크린 접근 시 사용하는 이벤트 정보 셀
+///
+/// - Author: Doran
 struct VibeFeedEventInfoCell: View {
     private let eventData: SimpleEventUIO
     

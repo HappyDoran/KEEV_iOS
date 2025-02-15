@@ -7,6 +7,11 @@
 
 import SwiftUI
 
+/// 글쓰기 버튼 UI
+///
+///  해당 뷰는 Navigation으로도 사용이 가능하고, 버튼으로도 사용이 가능하게끔 하기 위해 액션은 따로 없습니다.
+///
+/// - Author: Doran
 struct CreateVibeButtonView: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 12)
