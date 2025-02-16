@@ -29,7 +29,7 @@ struct ProfileScreen: View {
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
     @State private var tapFeedback = false
-    @State private var scrollID: Int? = 0
+    @State private var scrollID: ShowProfileHeader? = .show
     @State private var error: Error? = nil
     
     var body: some View {
@@ -43,7 +43,7 @@ struct ProfileScreen: View {
                             showActionSheet: $showActionSheet,
                             navigateToReport: $navigateToReport
                         )
-                        .id(0)
+                        .id(ShowProfileHeader.show)
                         
                         if isMyProfile {
                             profileEditButton
@@ -53,7 +53,7 @@ struct ProfileScreen: View {
                             userID: userID,
                             error: $error
                         )
-                        .id(1)
+                        .id(ShowProfileHeader.hide)
                         
                         ProfileVibeView(
                             userID: userID,
@@ -67,7 +67,7 @@ struct ProfileScreen: View {
                 .scrollTargetLayout()
                 .scrollPosition(id: $scrollID, anchor: .top)
                 
-                if scrollID == 0 {
+                if scrollID == .show {
                     ProfileHeader(
                         isNavigation: isNavigation,
                         isMyProfile: isMyProfile,
@@ -145,6 +145,16 @@ private extension ProfileScreen {
 enum VibeViewType {
     case list
     case table
+}
+
+/// 프로필 스크린의 헤더의 노출 여부를 판단하는 열거형입니다.
+///
+/// 스크롤의 ID에 사용해서 스크롤 위치에 따라 프로필 스크린의 헤더가 화면에 보이게 할지에 대한 여부를 판단합니다.
+///
+/// - Author: 라움
+enum ShowProfileHeader: String, Hashable {
+    case show
+    case hide
 }
 
 #Preview {

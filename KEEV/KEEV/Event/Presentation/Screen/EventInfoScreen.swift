@@ -77,7 +77,7 @@ private extension EventInfoScreen {
                 NavigationLink {
                     EventDetailScreen(simpleEvent: events[index])
                 } label: {
-                    EventThumbnailCell(event: events[index], isLikedEvent: false)
+                    EventThumbnailCell(event: events[index], showDday: true)
                 }
             }
         }
@@ -132,7 +132,7 @@ private extension EventInfoScreen {
                         NavigationLink {
                             EventDetailScreen(simpleEvent: events[index])
                         } label: {
-                            EventThumbnailCell(event: events[index], isLikedEvent: false)
+                            EventThumbnailCell(event: events[index], showDday: true)
                         }
                     }
                 }

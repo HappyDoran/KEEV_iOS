@@ -132,11 +132,8 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<SimpleEventUIO> {
-        let sortCases: [SortCase] = sort.map { $0.0 }
-        let sortPatterns: [SortPattern] = sort.map { $0.1 }
-        
         let accessToken = try await getAccessToken()
-        let router = EventHTTPRequestRouter.fetchLikedEvents(token: accessToken, page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
+        let router = EventHTTPRequestRouter.fetchLikedEvents(token: accessToken, page: page, size: size, sort: sort.map { $0.0.sortCase(with: $0.1) })
         
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         

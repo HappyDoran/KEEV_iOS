@@ -84,7 +84,7 @@ private extension ProfileLikedEventsView {
                     NavigationLink {
                         EventDetailScreen(simpleEvent: likedEvents[index])
                     } label: {
-                        EventThumbnailCell(event: likedEvents[index], isLikedEvent: true)
+                        EventThumbnailCell(event: likedEvents[index], showDday: false)
                     }
                 }
             }
