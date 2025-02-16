@@ -36,25 +36,32 @@ struct ProfileScreen: View {
         ScrollViewReader { proxy in
             ZStack(alignment: .top) {
                 ScrollView(showsIndicators: false) {
-                    ProfileTopView(
-                        userProfile: userProfile,
-                        isMyProfile: isMyProfile,
-                        showActionSheet: $showActionSheet,
-                        navigateToReport: $navigateToReport
-                    )
-                    .id(0)
-                    
-                    if isMyProfile {
-                        profileEditButton
+                    VStack(spacing: 0) {
+                        ProfileTopView(
+                            userProfile: userProfile,
+                            isMyProfile: isMyProfile,
+                            showActionSheet: $showActionSheet,
+                            navigateToReport: $navigateToReport
+                        )
+                        .id(0)
+                        
+                        if isMyProfile {
+                            profileEditButton
+                        }
+                        
+                        ProfileLikedEventsView(
+                            userID: userID,
+                            error: $error
+                        )
+                        .id(1)
+                        
+                        ProfileVibeView(
+                            userID: userID,
+                            isMyProfile: isMyProfile,
+                            selectedVibeViewType: $selectedVibeViewType,
+                            error: $error
+                        )
                     }
-                    
-                    ProfileVibeView(
-                        userID: userID,
-                        isMyProfile: isMyProfile,
-                        selectedVibeViewType: $selectedVibeViewType,
-                        error: $error
-                    )
-                    .id(1)
                 }
                 .ignoresSafeArea(edges: .top)
                 .scrollTargetLayout()
@@ -67,7 +74,6 @@ struct ProfileScreen: View {
                         showActionSheet: $showActionSheet
                     )
                 }
-
             }
             .backgroundForKEEV()
             .task {

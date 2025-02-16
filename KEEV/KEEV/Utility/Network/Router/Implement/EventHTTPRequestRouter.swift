@@ -18,7 +18,7 @@ enum EventHTTPRequestRouter {
     case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
     case fetchDetailEvent(eventID: String)
     case fetchLikedEvents(token: String, page: Int, size: Int, sort: [SortParameter])
-    case fetchEventLikeCount(token: String, eventID: String)
+    case fetchEventLikeCount(eventID: String)
     case fetchEventisLiked(token: String, eventID: String)
     case addEventLike(token: String, eventID: String)
     case deleteEventLike(token: String, eventID: String)
@@ -32,16 +32,18 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchLikedEvents, .fetchEventLikeCount, .fetchEventisLiked:
             return .get
-        case .addEventLike, .deleteEventLike:
+        case .addEventLike:
             return .post
+        case .deleteEventLike:
+            return .delete
         }
     }
     
     var headers: [String: String]? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return nil
-        case .fetchLikedEvents(let token, _, _, _), .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _), .fetchEventLikeCount(let token, _):
+        case .fetchLikedEvents(let token, _, _, _), .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -72,7 +74,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["get", "\(eventID)"])
         case .fetchLikedEvents:
             path.append(contentsOf: ["liked"])
-        case .fetchEventLikeCount(_, let eventID):
+        case .fetchEventLikeCount(let eventID):
             path.append(contentsOf: ["like", "\(eventID)", "count"])
         case .fetchEventisLiked(_, let eventID):
             path.append(contentsOf: ["liked", "\(eventID)"])

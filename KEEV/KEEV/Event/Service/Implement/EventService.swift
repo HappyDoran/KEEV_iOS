@@ -149,9 +149,9 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
         }
         
         return try doWithException(caller: "loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])") {
-            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<LikedEventDTO>.self, from: data)
             
-            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(likedEventDTO: $0) }
             
             let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
                 totalPages: paginatedResponseDTO.totalPages,
@@ -176,8 +176,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func getEventLikeCount(id: String) async throws -> Int {
-        let accessToken = try await getAccessToken()
-        let router = EventHTTPRequestRouter.fetchEventLikeCount(token: accessToken, eventID: id)
+        let router = EventHTTPRequestRouter.fetchEventLikeCount(eventID: id)
         
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         

@@ -15,9 +15,11 @@ import SwiftUI
 /// - Author: Doran
 struct EventThumbnailCell: View {
     private let event: SimpleEventUIO
+    private let isLikedEvent: Bool
     
-    init(event: SimpleEventUIO) {
+    init(event: SimpleEventUIO, isLikedEvent: Bool) {
         self.event = event
+        self.isLikedEvent = isLikedEvent
     }
     
     var body: some View {
@@ -45,8 +47,10 @@ struct EventThumbnailCell: View {
             .frame(width: 114, height: 160)
             
             // MARK: D-Day Box
-            //이후 모델의 날짜 타입이 Date가 되면 수정될 예정입니다.
-            DDayBox(difference: event.dDay).padding(.top, 8)
+            if !isLikedEvent {
+                //이후 모델의 날짜 타입이 Date가 되면 수정될 예정입니다.
+                DDayBox(difference: event.dDay).padding(.top, 8)
+            }
             
             // MARK: 이벤트 제목
             Text(event.name)
@@ -64,6 +68,9 @@ struct EventThumbnailCell: View {
 }
 
 #Preview {
-    EventThumbnailCell(event: .init(id: "www.google.com", name: "쏜애플 콘서트 '도시전설'", posterURL: nil, dDay: 1, startDate: "2024.12.04", endDate: "2024.12.08", placeName: "가나다"))
-        .backgroundForKEEV()
+    EventThumbnailCell(
+        event: .init(id: "www.google.com", name: "쏜애플 콘서트 '도시전설'", posterURL: nil, dDay: 1, startDate: "2024.12.04", endDate: "2024.12.08", placeName: "가나다"),
+        isLikedEvent: false
+    )
+    .backgroundForKEEV()
 }
