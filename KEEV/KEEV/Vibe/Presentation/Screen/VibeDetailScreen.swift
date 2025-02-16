@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+/// 어떤 경로로 바이브 상세 스크린으로 접근했는지를 알기 위한 열거형
+///
+/// 네비게이션 라우터 구현시 제일 마지막의 스택에 따른 판별로 대체 가능할 것 같습니다.
+///
+/// - Author: Doran
+enum VibeDetailPath {
+    case event
+    case feed
+}
+
 // -MARK: 스크린 핵심부
 struct VibeDetailScreen: View {
     @Environment(\.dismiss) private var dismiss
@@ -17,6 +27,7 @@ struct VibeDetailScreen: View {
     @Binding private var vibe: VibeUIO
     @State private var replies: [ReplyUIO] = []
     
+    private let vibeDetailPath: VibeDetailPath
     private let onDelete: ((VibeUIO) -> Void)?
     private let onUpdate: ((VibeUIO) -> Void)?
     
@@ -37,10 +48,12 @@ struct VibeDetailScreen: View {
     
     init(
         vibe: Binding<VibeUIO>,
+        vibeDetailpath: VibeDetailPath = .event,
         onUpdate: ((VibeUIO) -> Void)? = nil,
         onDelete: ((VibeUIO) -> Void)? = nil
     ) {
         self._vibe = vibe
+        self.vibeDetailPath = vibeDetailpath
         self.onUpdate = onUpdate
         self.onDelete = onDelete
     }
@@ -50,6 +63,7 @@ struct VibeDetailScreen: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 0) {
+                        eventInfo
                         VibeContentView(vibe: $vibe, likeTapHandler: tapVibeLike)
                             .padding(.top, 20)
                             .padding(.horizontal, 16)
@@ -332,9 +346,26 @@ private extension VibeDetailScreen {
     }
 }
 
+private extension VibeDetailScreen {
+    @ViewBuilder
+    var eventInfo: some View {
+        switch vibeDetailPath {
+        case .feed:
+            NavigationLink{
+                EventDetailScreen(simpleEvent: vibe.event)
+            } label: {
+                VibeFeedEventInfoCell(eventData: vibe.event)
+                .padding(EdgeInsets(top: 16, leading: 16, bottom: 4, trailing: 16))
+            }
+        case .event:
+            EmptyView()
+        }
+    }
+}
+
 #Preview {
     NavigationStack {
-        VibeDetailScreen(vibe: .constant(.dummy2)) { _ in
+        VibeDetailScreen(vibe: .constant(.dummy2), vibeDetailpath: .feed) { _ in
             
         } onDelete: { _ in
             
