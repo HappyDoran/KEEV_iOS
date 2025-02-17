@@ -12,8 +12,10 @@ import SwiftUI
 /// - Parameter selectedEvent: 상세 정보를 표시할 이벤트 객체
 ///
 /// - Author: Doran
-struct EventDetailInfoView: View {
+struct EventDetailInfoView: LoginCheckableView {
     private let selectedEvent: DetailEventUIO
+    
+    @Environment(AppState.self) var appState
     
     @Binding private var isFavorite: Bool
     @Binding private var likeCount: Int
@@ -59,8 +61,10 @@ extension EventDetailInfoView {
                         .frame(width: 21, height: 19)
                         .foregroundStyle(.brand500)
                         .onTapGesture {
-                            isFavorite.toggle()
-                            likeCount += isFavorite ? 1 : -1
+                            checkLoginBefore {
+                                isFavorite.toggle()
+                                likeCount += isFavorite ? 1 : -1
+                            }
                         }
                 }
                 .frame(width: 32, height: 32)

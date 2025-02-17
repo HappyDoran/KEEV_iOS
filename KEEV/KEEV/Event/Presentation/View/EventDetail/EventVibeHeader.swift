@@ -12,9 +12,13 @@ import SwiftUI
 /// 이 뷰는 바이브의 정렬 옵션과 글쓰기 버튼을 포함합니다.
 ///
 /// - Author: Doran
-struct EventVibeHeader: View {
+struct EventVibeHeader: LoginCheckableView {
+    
     private let event: DetailEventUIO
     private let onCreate: ((VibeUIO) -> Void)?
+    
+    @Environment(AppState.self) var appState: AppState
+    @State private var selectedEvent: DetailEventUIO? = nil
     
     init(event: DetailEventUIO, onCreate: ((VibeUIO) -> Void)? = nil) {
         self.event = event
@@ -35,13 +39,24 @@ struct EventVibeHeader: View {
 //                        .foregroundColor(.gray500)
 //                }
 //            }
+            Button {
+                checkLoginBefore {
+                    self.selectedEvent = self.event
+                }
+            } label: {
+                CreateVibeButtonView()
+            }
             Spacer()
+            
             NavigationLink {
                 VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: event), isNavigation: true, onCreate: onCreate)
             } label: {
                 CreateVibeButtonView()
             }
         }
+        .navigationDestination(item: $selectedEvent, destination: { event in
+            LazyView(VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: event), isNavigation: true, onCreate: onCreate))
+        })
         .frame(height: 61)
     }
 }
