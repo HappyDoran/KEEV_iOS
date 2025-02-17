@@ -14,6 +14,25 @@ final class AppState {
     private(set) var toast: Toast? = nil
     private(set) var alert: Alert? = nil
     private(set) var actionSheet: [any KEEVButtonConfiguration]? = nil
+    private(set) var loginStatus: SignInStatus? = nil
+    
+    fileprivate var needToLogin: Bool = false
+    
+    private var cancellables: Set<AnyCancellable> = []
+    
+    init() {
+        bind()
+    }
+    
+    private func bind() {
+        NotificationCenter.Publisher
+            .signInStatusPublisher
+            .sink { [weak self] in
+                self?.loginStatus = $0
+                print("fefewaf: \($0)")
+            }
+            .store(in: &cancellables)
+    }
     
     func presentToast(_ toast: Toast) {
         self.toast = toast
