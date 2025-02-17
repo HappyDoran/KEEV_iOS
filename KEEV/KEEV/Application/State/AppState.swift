@@ -60,12 +60,14 @@ final class AppState {
         self.actionSheet = defaults
     }
     
-    func checkLoginStatus() {
-        if case let .ok(user) = loginStatus {
+    func checkLoginStatus() -> Bool {
+        if case .ok(_) = loginStatus {
             needToLogin = false
         } else {
             needToLogin = true
         }
+        
+        return !needToLogin
     }
 }
 
