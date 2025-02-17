@@ -5,6 +5,7 @@
 //  Created by 김준성 on 2/11/25.
 //
 
+import Combine
 import Observation
 import SwiftUI
 
@@ -58,6 +59,14 @@ final class AppState {
     func presentActionSheet(defaults: [KEEVActionSheet.ButtonConfiguration]) {
         self.actionSheet = defaults
     }
+    
+    func checkLoginStatus() {
+        if case let .ok(user) = loginStatus {
+            needToLogin = false
+        } else {
+            needToLogin = true
+        }
+    }
 }
 
 extension AppState {
@@ -105,7 +114,9 @@ extension AppState {
                 .modifier(Toast.Modifier(toast: $state.toast, duration: .seconds(of: 2)))
                 .modifier(CustomAlertViewModifier($state.alert))
                 .modifier(KEEVActionSheet.Modifier(configurations: $state.actionSheet))
-            
+                .fullScreenCover(isPresented: $state.needToLogin) {
+                    SignInSheetScreen(status: $state.loginStatus)
+                }
         }
     }
 }
