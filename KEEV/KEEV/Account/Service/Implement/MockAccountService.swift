@@ -62,4 +62,8 @@ final class MockAccountService: AccountServiceProtocol {
         email = nil
         userInfo = nil
     }
+    
+    func lookAround() -> SignInStatus {
+        .lookAround
+    }
 }
