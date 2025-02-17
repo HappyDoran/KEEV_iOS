@@ -15,9 +15,8 @@ import Foundation
 /// - 관심 이벤트 목록을 보여줄 때
 /// - 프로필에 간략하게 관심 이벤트 정보를 보여줄 때
 ///
-/// - Note: `==`의 기준을 '서로의 `id`가 같은가?'로 했습니다. 또한 hash의 기준 또한 `id`입니다.
 /// - Author: 라움
-struct LikedEventDTO: Decodable, Identifiable, Hashable {
+struct LikedEventDTO: Decodable, Identifiable {
     /// 이벤트의 ID
     let id: String
     /// 이벤트의 이름
@@ -69,15 +68,5 @@ struct LikedEventDTO: Decodable, Identifiable, Hashable {
         self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.placeNames = try container.decode(String.self, forKey: .placeNames)
         self.likedAt = tempLikedAt.toDate(format: "yyyy-MM-dd") ?? .now
-    }
-}
-
-extension LikedEventDTO {
-    static func == (lhs: LikedEventDTO, rhs: LikedEventDTO) -> Bool {
-        lhs.id == rhs.id
-    }
-    
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
     }
 }
