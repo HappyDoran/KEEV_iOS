@@ -118,6 +118,49 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
         }
     }
     
+    /// 관심 이벤트 목록을 가져오는 함수
+    ///
+    /// - Parameters:
+    ///   - page: 가져오고자하는 페이지의 번호
+    ///   - size: 한 페이지에 넣을 이벤트의 갯수
+    ///   - sort: 이벤트 정렬 기준
+    ///
+    /// 페이지네이션이 적용된 관심 이벤트 목록을 가져오는 함수입니다.
+    ///
+    /// - Throws: 에러
+    /// - Returns: 페이지네이션이 적용된 관심 이벤트 목록
+    ///
+    /// - Author: 라움
+    func loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<SimpleEventUIO> {
+        let accessToken = try await getAccessToken()
+        let router = EventHTTPRequestRouter.fetchLikedEvents(token: accessToken, page: page, size: size, sort: sort.map { $0.0.sortCase(with: $0.1) })
+        
+        let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
+        
+        guard (200..<300).contains(code) else {
+            let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
+            throw throwKEEVError(
+                caller: "loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])",
+                occurPoint: .remote(code: code, message: errorMessage.message)
+            )
+        }
+        
+        return try doWithException(caller: "loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])") {
+            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<LikedEventDTO>.self, from: data)
+            
+            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(likedEventDTO: $0) }
+            
+            let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+                totalPages: paginatedResponseDTO.totalPages,
+                currentPage: paginatedResponseDTO.currentPage,
+                totalElements: paginatedResponseDTO.totalElements,
+                contents: contents
+            )
+            
+            return paginatedResponse
+        }
+    }
+    
     /// 이벤트 ID에 해당하는 이벤트의 좋아요 갯수를 가져오는 함수
     ///
     /// - Parameters:
@@ -166,9 +209,9 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
             
             let data = try await networkUtility.request(router: router)
             
-            let isLikedResponse = try jsonDecoder.decode(EventIsLiked.self, from: data)
+            let eventLikeResponse = try jsonDecoder.decode(EventLikeResponse.self, from: data)
             
-            return isLikedResponse.isInterested
+            return eventLikeResponse.isInterested
         }
     }
     

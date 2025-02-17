@@ -17,6 +17,7 @@ enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
     case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
     case fetchDetailEvent(eventID: String)
+    case fetchLikedEvents(token: String, page: Int, size: Int, sort: [SortParameter])
     case fetchEventLikeCount(eventID: String)
     case fetchEventisLiked(token: String, eventID: String)
     case addEventLike(token: String, eventID: String)
@@ -29,10 +30,12 @@ enum EventHTTPRequestRouter {
 extension EventHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount, .fetchEventisLiked:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchLikedEvents, .fetchEventLikeCount, .fetchEventisLiked:
             return .get
-        case .addEventLike, .deleteEventLike:
+        case .addEventLike:
             return .post
+        case .deleteEventLike:
+            return .delete
         }
     }
     
@@ -40,7 +43,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return nil
-        case .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _):
+        case .fetchLikedEvents(let token, _, _, _), .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -50,7 +53,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount, .fetchEventisLiked, .addEventLike, .deleteEventLike:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchLikedEvents, .fetchEventLikeCount, .fetchEventisLiked, .addEventLike, .deleteEventLike:
             return nil
         }
     }
@@ -69,14 +72,16 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["get", "filtered"])
         case .fetchDetailEvent(let eventID):
             path.append(contentsOf: ["get", "\(eventID)"])
+        case .fetchLikedEvents:
+            path.append(contentsOf: ["liked"])
         case .fetchEventLikeCount(let eventID):
-            path.append(contentsOf: ["get", "\(eventID)", "likecount"])
+            path.append(contentsOf: ["like", "\(eventID)", "count"])
         case .fetchEventisLiked(_, let eventID):
-            path.append(contentsOf: ["\(eventID)", "is-liked"])
+            path.append(contentsOf: ["liked", "\(eventID)"])
         case .addEventLike(_, let eventID):
-            path.append(contentsOf: ["\(eventID)", "like"])
+            path.append(contentsOf: ["like", "\(eventID)"])
         case .deleteEventLike(_, let eventID):
-            path.append(contentsOf: ["\(eventID)", "unlike"])
+            path.append(contentsOf: ["like", "\(eventID)"])
         }
         
         return path
@@ -84,8 +89,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var queryItems: [URLQueryItem]? {
         switch self {
-        case .fetchEvents(page: let page, size: let size, sort: let sort):
-            
+        case .fetchEvents(page: let page, size: let size, sort: let sort), .fetchLikedEvents(_, page: let page, size: let size, sort: let sort):
             var queryItems = [
                 URLQueryItem(name: "size", value: "\(size)"),
                 URLQueryItem(name: "page", value: "\(page)")
@@ -122,11 +126,8 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             }
             
             return queryItems
-            
         case .fetchDetailEvent, .fetchEventLikeCount, .fetchEventisLiked, .addEventLike, .deleteEventLike:
             return nil
         }
-    
     }
 }
-
