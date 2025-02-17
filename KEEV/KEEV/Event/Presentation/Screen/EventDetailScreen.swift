@@ -151,7 +151,9 @@ extension EventDetailScreen {
             }
             
             CommonButton(title: "\(vibeWriteState)", action: {
-                navigateToWriteVibe = true
+                checkLoginBefore {
+                    navigateToWriteVibe = true
+                }
             }, style: .maxWidth, disabled: isDisabled)
             .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
         }
@@ -291,7 +293,7 @@ extension EventDetailScreen {
     private func addEventLike() async {
         do {
             isFavorite = try await eventService.addEventLike(id: selectedEvent.id)
-        } catch(let failToAddEventLike) {
+        } catch {
 //            error = failToAddEventLike
             isFavorite = false
         }
@@ -300,7 +302,7 @@ extension EventDetailScreen {
     private func deleteEventLike() async {
         do {
             isFavorite = try await eventService.deleteEventLike(id: selectedEvent.id)
-        } catch(let failToDeleteEventLike) {
+        } catch {
 //            error = failToDeleteEventLike
             isFavorite = false
         }
