@@ -30,7 +30,6 @@ final class AppState {
             .signInStatusPublisher
             .sink { [weak self] in
                 self?.loginStatus = $0
-                print("fefewaf: \($0)")
             }
             .store(in: &cancellables)
     }
