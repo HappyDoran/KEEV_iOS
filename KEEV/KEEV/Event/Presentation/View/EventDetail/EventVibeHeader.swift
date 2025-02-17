@@ -39,17 +39,11 @@ struct EventVibeHeader: LoginCheckableView {
 //                        .foregroundColor(.gray500)
 //                }
 //            }
+            Spacer()
             Button {
                 checkLoginBefore {
                     self.selectedEvent = self.event
                 }
-            } label: {
-                CreateVibeButtonView()
-            }
-            Spacer()
-            
-            NavigationLink {
-                VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: event), isNavigation: true, onCreate: onCreate)
             } label: {
                 CreateVibeButtonView()
             }
