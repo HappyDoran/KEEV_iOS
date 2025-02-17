@@ -17,7 +17,6 @@ import SwiftUI
 struct SignInScreen: View {
     @Injected private var accountService: any AccountServiceProtocol
     
-    @Binding var status: SignInStatus?
     @State private var error: Error? = nil
     
     var body: some View {
@@ -50,7 +49,7 @@ private extension SignInScreen {
         AppleLoginButton { (email, user, token, code) in
             Task {
                 do {
-                    status = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
+                    _ = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
                 } catch let failToSignIn {
                     error = failToSignIn
                 }
@@ -60,7 +59,7 @@ private extension SignInScreen {
     
     var lookAroundButton: some View {
         Button("로그인 없이 둘러보기") {
-            status = .lookAround
+            accountService.lookAround()
         }
         .frame(maxWidth: .infinity)
         .frame(height: 54)
@@ -77,6 +76,6 @@ private extension SignInScreen {
 
 #Preview {
     KEEVPreview {
-        SignInScreen(status: .constant(.failed))
+        SignInScreen()
     }
 }
