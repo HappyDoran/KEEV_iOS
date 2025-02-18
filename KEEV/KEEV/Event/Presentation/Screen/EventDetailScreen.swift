@@ -294,7 +294,6 @@ extension EventDetailScreen {
         do {
             isFavorite = try await eventService.addEventLike(id: selectedEvent.id)
         } catch {
-//            error = failToAddEventLike
             isFavorite = false
         }
     }
@@ -303,7 +302,6 @@ extension EventDetailScreen {
         do {
             isFavorite = try await eventService.deleteEventLike(id: selectedEvent.id)
         } catch {
-//            error = failToDeleteEventLike
             isFavorite = false
         }
     }
