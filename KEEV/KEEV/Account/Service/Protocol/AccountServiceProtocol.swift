@@ -93,6 +93,8 @@ protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
     
     /// 서버로부터 계정 탈퇴를 시도합니다.
     func deleteAccount() async throws
+    
+    func lookAround() -> SignInStatus
 }
 
 extension AccountServiceProtocol {

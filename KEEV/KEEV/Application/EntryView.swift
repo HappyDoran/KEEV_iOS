@@ -15,9 +15,10 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EntryView: View {
+    @Environment(AppState.self) private var appState
+    
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
-    @State private var signInStatus: SignInStatus? = nil
     @State private var userID: Int? = nil
     
     init() {
@@ -33,34 +34,26 @@ struct EntryView: View {
     
     var body: some View {
         NavigationStack {
-            if let signInStatus {
+            if let signInStatus = appState.loginStatus {
                 switch signInStatus {
                 case .failed:
-                    SignInScreen(status: $signInStatus)
+                    SignInScreen()
                 case .ok(_), .lookAround:
                     signInSuccessView
                 case .created:
-                    SignUpScreen(status: $signInStatus)
+                    SignUpScreen(status: signInStatus)
                 }
             } else {
-                LaunchScreen(status: $signInStatus)
+                LaunchScreen()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .onChange(of: signInStatus) {
-            if case let .ok(user) = signInStatus {
+        .onChange(of: appState.loginStatus) {
+            if case let .ok(user) = appState.loginStatus {
                 userID = user.id
             }
         }
         .tint(.gray100)
-        .onReceive(
-            NotificationCenter.Publisher
-                .signInStatusPublisher
-                .receive(on: DispatchQueue.main)
-        ) { status in
-            selectedItem = TabbedItem.info.rawValue
-            signInStatus = status
-        }
     }
     
     private var signInSuccessView: some View {
@@ -118,14 +111,13 @@ struct EntryView: View {
 private extension EntryView {
     struct LaunchScreen: View {
         @Injected private var service: any AccountServiceProtocol
-        @Binding var status: SignInStatus?
         
         var body: some View {
             Image("LogoLargeImage")
                 .resizable()
                 .frame(width: 250, height: 103.5)
                 .task {
-                    status = await service.autoSignIn()
+                    _ = await service.autoSignIn()
                 }
         }
     }

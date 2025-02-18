@@ -12,10 +12,22 @@ struct SignInSheetScreen: View {
     
     @Injected private var accountService: any AccountServiceProtocol
     
-    @State var status: SignInStatus?
+    @Binding var status: SignInStatus?
     @State private var error: Error? = nil
     
     var body: some View {
+        VStack {
+            switch status {
+            case .created: SignUpScreen(status: .created)
+            case .lookAround, .failed: loginScreen
+            default: Text("로그인이 완료되었습니다.").onAppear(perform: dismiss.callAsFunction)
+            }
+        }
+        .backgroundForKEEV()
+        .alertForError($error)
+    }
+    
+    private var loginScreen: some View {
         VStack {
             HStack {
                 Button {
@@ -42,7 +54,7 @@ struct SignInSheetScreen: View {
             AppleLoginButton { (email, user, token, code) in
                 Task {
                     do {
-                        status = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
+                        _ = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
                     } catch let failToSignIn {
                         error = failToSignIn
                     }
@@ -53,11 +65,9 @@ struct SignInSheetScreen: View {
             
             TermAndCondition()
         }
-        .backgroundForKEEV()
-        .alertForError($error)
     }
 }
 
 #Preview {
-    SignInSheetScreen()
+    SignInSheetScreen(status: .constant(.created))
 }

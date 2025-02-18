@@ -30,8 +30,9 @@ enum EventDetailSection: Int, CaseIterable {
 /// - Parameter selectedEvent: 상세 정보를 표시할 이벤트 객체
 ///
 /// - Author: Doran
-struct EventDetailScreen: View {
+struct EventDetailScreen: LoginCheckableView {
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) var appState
     
     @Injected private var eventService: any EventServiceProtocol
     @Injected private var vibeService: any VibeServiceProtocol
@@ -102,7 +103,9 @@ struct EventDetailScreen: View {
         }
         .actionSheetForKEEV(isPresented: $showEventDetailSheet, configurations: [
             KEEVActionSheet.ButtonConfiguration.report(title: "신고하기") {
-                navigateToReportEvent = true
+                checkLoginBefore {
+                    navigateToReportEvent = true
+                }
             }
         ])
         .navigationDestination(isPresented: $navigateToReportEvent) {
@@ -148,7 +151,9 @@ extension EventDetailScreen {
             }
             
             CommonButton(title: "\(vibeWriteState)", action: {
-                navigateToWriteVibe = true
+                checkLoginBefore {
+                    navigateToWriteVibe = true
+                }
             }, style: .maxWidth, disabled: isDisabled)
             .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
         }
@@ -274,11 +279,7 @@ extension EventDetailScreen {
     }
     
     private func getIsLiked() async {
-        do {
-            isFavorite = try await eventService.getIsLikedEvent(id: selectedEvent.id)
-        }catch(let failToFetchIsLiked) {
-            error = failToFetchIsLiked
-        }
+        isFavorite = (try? await eventService.getIsLikedEvent(id: selectedEvent.id)) ?? false
     }
     
     private func getEventCount() async {
@@ -292,16 +293,16 @@ extension EventDetailScreen {
     private func addEventLike() async {
         do {
             isFavorite = try await eventService.addEventLike(id: selectedEvent.id)
-        } catch(let failToAddEventLike) {
-            error = failToAddEventLike
+        } catch {
+            isFavorite = false
         }
     }
     
     private func deleteEventLike() async {
         do {
             isFavorite = try await eventService.deleteEventLike(id: selectedEvent.id)
-        } catch(let failToDeleteEventLike) {
-            error = failToDeleteEventLike
+        } catch {
+            isFavorite = false
         }
     }
 }

@@ -20,7 +20,7 @@ enum SignUpPage: Int {
 struct SignUpScreen: View {
     @Injected private var accountService: any AccountServiceProtocol
     
-    @Binding var status: SignInStatus?
+    @State var status: SignInStatus?
     
     @State private var result = SignInStatus.created
     @State private var nickname: String = ""
@@ -93,5 +93,5 @@ extension SignUpScreen {
 }
 
 #Preview {
-    SignUpScreen(status: .constant(.created))
+    SignUpScreen(status: .created)
 }

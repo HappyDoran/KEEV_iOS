@@ -56,4 +56,8 @@ final class ErrorAccountService: AccountServiceProtocol, KEEVErrorHandler {
             previousError: nil
         )
     }
+    
+    func lookAround() -> SignInStatus {
+        .lookAround
+    }
 }

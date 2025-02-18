@@ -21,11 +21,13 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         }
         
         guard let tokenData = KeyChain.read(tag: Self.refreshTokenTag) else {
+            updateSignInStatus(.failed)
             return .failed
         }
         
         guard let tokenString = String(data: tokenData, encoding: .utf8) else {
             try? KeyChain.delete(tag: Self.refreshTokenTag)
+            updateSignInStatus(.failed)
             return .failed
         }
         
@@ -36,6 +38,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
             }
             return determineStatus(from: fetchedAccount, with: code)
         } catch {
+            updateSignInStatus(.failed)
             return .failed
         }
     }
@@ -141,19 +144,28 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         }
     }
     
+    func lookAround() -> SignInStatus {
+        updateSignInStatus(.lookAround)
+        return .lookAround
+    }
+    
     // MARK: Private Functions
     private func determineStatus(from account: AccountDTO, with code: Int) -> SignInStatus {
         if code == 200 {
             if account.email == nil || account.nickname == nil {
+                updateSignInStatus(.created)
                 return .created
             }
             
             let user = DetailUserUIO(account: account)
             updateStatus(with: user)
+            updateSignInStatus(.ok(user: user))
             return .ok(user: user)
         } else if code == 201 {
+            updateSignInStatus(.created)
             return .created
         } else {
+            updateSignInStatus(.failed)
             return .failed
         }
     }
@@ -251,5 +263,9 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     
     private func updateStatus(with user: DetailUserUIO) {
         NotificationCenter.default.post(name: .updateUserInfo, object: user)
+    }
+    
+    private func updateSignInStatus(_ status: SignInStatus) {
+        NotificationCenter.default.post(name: .updateSignInStatus, object: status)
     }
 }
