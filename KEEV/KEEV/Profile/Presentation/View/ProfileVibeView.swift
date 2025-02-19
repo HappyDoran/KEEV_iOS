@@ -48,7 +48,7 @@ struct ProfileVibeView: View {
                     LazyVStack(spacing: 20) {
                         ForEach(vibes.indices, id: \.self) { index in
                             NavigationLink {
-                                LazyView(VibeDetailScreen(vibe: $vibes[index]))
+                                LazyView(VibeDetailScreen(vibe: $vibes[index], vibeDetailpath: .feed))
                             } label: {
                                 VibeFeedCell(vibeData: vibes[index])
                             }
@@ -58,7 +58,7 @@ struct ProfileVibeView: View {
                     LazyVGrid(columns: columns, spacing: 8) {
                         ForEach(vibes.indices, id: \.self) { index in
                             NavigationLink {
-                                LazyView(VibeDetailScreen(vibe: $vibes[index]))
+                                LazyView(VibeDetailScreen(vibe: $vibes[index], vibeDetailpath: .feed))
                             } label: {
                                 ProfileVibeTableCell(vibe: vibes[index])
                             }
