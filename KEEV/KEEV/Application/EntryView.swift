@@ -60,7 +60,7 @@ struct EntryView: View {
                             selectedItem = tmpSelectedItem
                         }
                     }
-                    else {
+                    if tmpSelectedItem == TabbedItem.profile.rawValue {
                         selectedItem = tmpSelectedItem
                     }
                 }
