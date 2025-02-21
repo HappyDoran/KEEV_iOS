@@ -9,5 +9,4 @@ import Foundation
 
 struct ReplyLikeResponse: Decodable {
     let isLiked: Bool
-    let message: String
 }
