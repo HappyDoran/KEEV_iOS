@@ -41,7 +41,7 @@ enum TabbedItem: String, CaseIterable{
         case .info:
             return "house.fill"
         case .feed:
-            return "text.rectangle.page.fill"
+            return "doc.text.image.fill"
         case .write:
             return "plus.app"
         case .search:
