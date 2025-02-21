@@ -49,25 +49,22 @@ struct EntryView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .onChange(of: appState.loginStatus) { oldValue, newValue in
-            // 이슈 올린 후 해결 요망
-            if String(describing: oldValue) != String(describing: newValue) {
-                if case let .ok(user) = newValue {
-                    userID = user.id
-                    if tmpSelectedItem == TabbedItem.write.rawValue {
-                        Task {
-                            try await Task.sleep(nanoseconds: 300_000_000)
-                            selectedItem = tmpSelectedItem
-                        }
-                    }
-                    if tmpSelectedItem == TabbedItem.profile.rawValue {
+        .onChange(of: appState.loginStatus) {
+            if case let .ok(user) = appState.loginStatus {
+                userID = user.id
+                if tmpSelectedItem == TabbedItem.write.rawValue {
+                    Task {
+                        try await Task.sleep(nanoseconds: 300_000_000)
                         selectedItem = tmpSelectedItem
                     }
                 }
-                else {
-                    userID = nil
-                    selectedItem = TabbedItem.info.rawValue
+                if tmpSelectedItem == TabbedItem.profile.rawValue {
+                    selectedItem = tmpSelectedItem
                 }
+            }
+            else {
+                userID = nil
+                selectedItem = TabbedItem.info.rawValue
             }
         }
         .tint(.gray100)
