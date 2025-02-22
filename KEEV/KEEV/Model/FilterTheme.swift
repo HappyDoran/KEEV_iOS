@@ -5,14 +5,18 @@
 //  Created by Doran on 2/22/25.
 //
 
-enum Theme{
+import SwiftUI
+
+enum FilterTheme{
     case monthClub
     case monthIndie
     case monthJazz
     case recentEnd
     case upcoming
     case upcomingKR
-    
+}
+
+extension FilterTheme {
     var title: String{
         switch self {
         case .monthClub:
@@ -30,20 +34,24 @@ enum Theme{
         }
     }
     
-    var url: String {
+    var path: [String]? {
+        var path = ["open-api", "event"]
+        
         switch self {
         case .monthClub:
-            return "/open-api/event/this-month/club"
+            path.append(contentsOf: ["this-month", "club"])
         case .monthIndie:
-            return "/open-api/event/this-month/indie"
+            path.append(contentsOf: ["this-month", "indie"])
         case .monthJazz:
-            return "/open-api/event/this-month/jazz"
+            path.append(contentsOf: ["this-month", "jazz"])
         case .recentEnd:
-            return "/open-api/event/recently-ended"
+            path.append(contentsOf: ["recently-ended"])
         case .upcoming:
-            return "/open-api/event/upcoming"
+            path.append(contentsOf: ["upcoming"])
         case .upcomingKR:
-            return "/open-api/event/upcoming/international"
+            path.append(contentsOf: ["upcoming", "international"])
         }
+        return path
     }
 }
+
