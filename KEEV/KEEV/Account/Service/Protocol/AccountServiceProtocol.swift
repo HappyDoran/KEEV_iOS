@@ -125,6 +125,7 @@ enum SignInStatus: Hashable {
         if case .failed = lhs, case .failed = rhs { return true }
         if case .ok(let l) = lhs, case .ok(let r) = rhs { return l.id == r.id }
         if case .created = lhs, case .created = rhs { return true }
+        if case .lookAround = lhs, case .lookAround = rhs { return true }
         return false
     }
     

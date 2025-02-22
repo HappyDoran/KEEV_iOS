@@ -19,6 +19,7 @@ struct EntryView: View {
     
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
+    @State private var tmpSelectedItem = TabbedItem.info.rawValue
     @State private var userID: Int? = nil
     
     init() {
@@ -51,6 +52,19 @@ struct EntryView: View {
         .onChange(of: appState.loginStatus) {
             if case let .ok(user) = appState.loginStatus {
                 userID = user.id
+                if tmpSelectedItem == TabbedItem.write.rawValue {
+                    Task {
+                        try await Task.sleep(nanoseconds: 300_000_000)
+                        selectedItem = tmpSelectedItem
+                    }
+                }
+                if tmpSelectedItem == TabbedItem.profile.rawValue {
+                    selectedItem = tmpSelectedItem
+                }
+            }
+            else {
+                userID = nil
+                selectedItem = TabbedItem.info.rawValue
             }
         }
         .tint(.gray100)
@@ -97,9 +111,20 @@ struct EntryView: View {
         .tint(.brand500)
         .sensoryFeedback(.impact, trigger: selectedItem)
         .onChange(of: selectedItem) { oldValue, newValue in
-            if newValue == TabbedItem.write.rawValue {
-                isPresented = true
-                selectedItem = oldValue
+            if case .lookAround = appState.loginStatus {
+                let restrictedTabs = [TabbedItem.write.rawValue, TabbedItem
+                    .profile.rawValue]
+                if restrictedTabs.contains(newValue) {
+                    selectedItem = oldValue
+                    tmpSelectedItem = newValue
+                    _ = appState.checkLoginStatus()
+                }
+            }
+            else {
+                if newValue == TabbedItem.write.rawValue {
+                    isPresented = true
+                    selectedItem = oldValue
+                }
             }
         }
         .fullScreenCover(isPresented: $isPresented) {

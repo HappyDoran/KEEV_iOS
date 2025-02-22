@@ -13,8 +13,9 @@ private enum EventVibeViewState {
     case empty
 }
 
-struct VibeFeedScreen: View {
+struct VibeFeedScreen: LoginCheckableView {
     @Injected private var vibeService: any VibeServiceProtocol
+    @Environment(AppState.self) var appState
     
     @Binding var selectedItem: TabbedItem.RawValue
     @State private var vibes: [VibeUIO] = []
@@ -76,7 +77,9 @@ private extension VibeFeedScreen {
                     .figmaFont(PretendardFont.title(style: .xl))
                 Spacer()
                 Button(action: {
-                    isPresented = true
+                    checkLoginBefore {
+                        isPresented = true
+                    }
                 }) {
                     CreateVibeButtonView()
                 }
