@@ -357,6 +357,38 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
             return paginatedResponse
         }
     }
+    
+    func loadPaginatedFilterThemeEvents(theme: FilterTheme, page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<SimpleEventUIO> {
+        let sortCases: [SortCase] = sort.map { $0.0 }
+        let sortPatterns: [SortPattern] = sort.map { $0.1 }
+        
+        let router = EventHTTPRequestRouter.fetchFilterThemeEvents(theme: theme, page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
+        
+        let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
+        
+        guard (200..<300).contains(code) else {
+            let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
+            throw throwKEEVError(
+                caller: "loadPaginatedFilterThemeEvents(theme: FilterTheme, page: Int, size: Int, sort: [(SortCase, SortPattern)])",
+                occurPoint: .remote(code: code, message: errorMessage.message)
+            )
+        }
+        
+        return try doWithException(caller: "loadPaginatedFilterThemeEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])") {
+            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<SimpleEventDTO>.self, from: data)
+            
+            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(simpleEventDTO: $0) }
+            
+            let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+                totalPages: paginatedResponseDTO.totalPages,
+                currentPage: paginatedResponseDTO.currentPage,
+                totalElements: paginatedResponseDTO.totalElements,
+                contents: contents
+            )
+            
+            return paginatedResponse
+        }
+    }
 }
 
 extension EventService {

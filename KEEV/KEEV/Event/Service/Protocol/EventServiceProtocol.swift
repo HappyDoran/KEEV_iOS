@@ -149,4 +149,6 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Author: Doran
     func loadPaginatedFilteringEvents(filter: EventFilter) async throws -> PaginatedResponse<SimpleEventUIO>
     
+    
+    func loadPaginatedFilterThemeEvents(theme: FilterTheme, page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<SimpleEventUIO>
 }
