@@ -19,6 +19,8 @@ enum ReplyHTTPRequestRouter {
     case deleteReply(token: String, replyID: String)
     case likeReply(token: String, replyID: String)
     case cancelLikeReply(token: String, replyID: String)
+    case getReplyLikeCount(replyID: String)
+    case checkIfUserLikedReply(token: String, vibeID: Int)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
@@ -29,13 +31,13 @@ enum ReplyHTTPRequestRouter {
 extension ReplyHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
-        case .fetchReplies:
+        case .fetchReplies, .getReplyLikeCount, .checkIfUserLikedReply:
             return .get
-        case .addReply, .likeReply, .cancelLikeReply:
+        case .addReply, .likeReply:
             return .post
         case .modifyReply:
             return .patch
-        case .deleteReply:
+        case .deleteReply, .cancelLikeReply:
             return .delete
         }
     }
@@ -73,12 +75,19 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
+        case .getReplyLikeCount(_):
+            return nil
+        case .checkIfUserLikedReply(let token, _):
+            return [
+                "Authorization": "Bearer \(token)",
+                "content-type": "application/json"
+            ]
         }
     }
     
     var body: Data? {
         switch self {
-        case .fetchReplies:
+        case .fetchReplies, .likeReply, .cancelLikeReply, .getReplyLikeCount, .checkIfUserLikedReply:
             return nil
         case .addReply(_, let vibeID, let text):
             let json: [String: Any] = [
@@ -94,16 +103,6 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
         case .deleteReply(_, let replyID):
-            let json: [String: Any] = [
-                "id": replyID,
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .likeReply(_, let replyID):
-            let json: [String: Any] = [
-                "id": replyID,
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .cancelLikeReply(_, let replyID):
             let json: [String: Any] = [
                 "id": replyID,
             ]
@@ -128,9 +127,13 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         case .deleteReply:
             path.append("delete")
         case .likeReply(_, let replyID):
-            path.append(contentsOf: ["\(replyID)", "like"])
+            path.append(contentsOf: ["like", "\(replyID)"])
         case .cancelLikeReply(_, let replyID):
-            path.append(contentsOf: ["\(replyID)", "unlike"])
+            path.append(contentsOf: ["like", "\(replyID)"])
+        case .getReplyLikeCount(let replyID):
+            path.append(contentsOf: ["like", "\(replyID)", "count"])
+        case .checkIfUserLikedReply(_, let replyID):
+            path.append(contentsOf: ["liked", "\(replyID)"])
         }
         
         return path
