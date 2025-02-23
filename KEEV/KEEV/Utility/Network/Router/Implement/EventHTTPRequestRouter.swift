@@ -16,7 +16,7 @@ typealias SortParameter = (key: String, value: String)
 enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
     case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
-    case fetchFilterThemeEvents(theme: FilterTheme, page: Int, size: Int, sort: [SortParameter])
+    case fetchFilterThemeEvents(token: String, theme: FilterTheme, page: Int, size: Int, sort: [SortParameter])
     case fetchDetailEvent(eventID: String)
     case fetchLikedEvents(token: String, page: Int, size: Int, sort: [SortParameter])
     case fetchEventLikeCount(eventID: String)
@@ -42,9 +42,9 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String: String]? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchFilterThemeEvents, .fetchDetailEvent, .fetchEventLikeCount:
+        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return nil
-        case .fetchLikedEvents(let token, _, _, _), .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _):
+        case .fetchLikedEvents(let token, _, _, _), .fetchFilterThemeEvents(let token, _, _, _, _), .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -71,7 +71,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["get", "sortBy"])
         case .fetchFilteredEvents:
             path.append(contentsOf: ["get", "filtered"])
-        case .fetchFilterThemeEvents(let theme, _, _, _):
+        case .fetchFilterThemeEvents(_, let theme, _, _, _):
             path.removeAll()
             path = theme.path ?? []
         case .fetchDetailEvent(let eventID):
@@ -93,7 +93,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var queryItems: [URLQueryItem]? {
         switch self {
-        case .fetchEvents(page: let page, size: let size, sort: let sort), .fetchFilterThemeEvents(_, page: let page, size: let size, sort: let sort), .fetchLikedEvents(_, page: let page, size: let size, sort: let sort) :
+        case .fetchEvents(page: let page, size: let size, sort: let sort), .fetchFilterThemeEvents(_, _, page: let page, size: let size, sort: let sort), .fetchLikedEvents(_, page: let page, size: let size, sort: let sort) :
             var queryItems = [
                 URLQueryItem(name: "size", value: "\(size)"),
                 URLQueryItem(name: "page", value: "\(page)")

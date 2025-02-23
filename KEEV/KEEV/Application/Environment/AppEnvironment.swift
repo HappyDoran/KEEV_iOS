@@ -20,7 +20,11 @@ struct AppEnvironment {
     
     /// 서버와 통신하는 keevBaseURL입니다.
     static let keevBaseURL: BaseURL = {
-        guard let host = Bundle.main.infoDictionary?["KEEV_SERVER_ADDRESS"] as? String else {
+//        guard let host = Bundle.main.infoDictionary?["KEEV_SERVER_ADDRESS"] as? String else {
+//            fatalError("Server URL이 없습니다.")
+//        }
+//        return .init(scheme: "https", host: host, port: nil)
+        guard let host = Bundle.main.infoDictionary?["KEEV_DEV_ADDRESS"] as? String else {
             fatalError("Server URL이 없습니다.")
         }
         return .init(scheme: "https", host: host, port: nil)

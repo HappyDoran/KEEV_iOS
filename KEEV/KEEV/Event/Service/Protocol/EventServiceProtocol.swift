@@ -109,6 +109,7 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Author: Doran
     func deleteEventLike(id: String) async throws -> Bool
     
+    // 삭제 요망
     /// 필터링된 이벤트를 가져오는 함수
     ///
     /// - Parameters:
@@ -129,6 +130,7 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Author: Doran
     func loadPaginatedFilteredEvents(page: Int, size: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool) async throws -> PaginatedResponse<SimpleEventUIO>
     
+    // 삭제 요망
     /// 필터링된 이벤트를 가져오는 함수
     ///
     /// - Parameters:

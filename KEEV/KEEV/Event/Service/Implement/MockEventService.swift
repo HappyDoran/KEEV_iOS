@@ -66,6 +66,7 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         return false
     }
     
+    // 삭제 요망
     func loadPaginatedFilteredEvents(page: Int = 0, size: Int = 10, eventTypeID: Int? = nil, genreID: Int? = nil, startDate: String? = nil, endDate: String? = nil, mode: String = "event", desc: Bool = true) async throws -> PaginatedResponse<SimpleEventUIO> {
         var events: [SimpleEventUIO] = []
         let startIndex = page*size
@@ -79,7 +80,7 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: events)
     }
     
-    
+    // 삭제 요망
     func loadPaginatedFilteringEvents(filter: EventFilter) async throws -> PaginatedResponse<SimpleEventUIO> {
         var events: [SimpleEventUIO] = []
         let startIndex = filter.page*filter.size
