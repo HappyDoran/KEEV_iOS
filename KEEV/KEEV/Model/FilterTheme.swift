@@ -8,28 +8,28 @@
 import SwiftUI
 
 enum FilterTheme: CaseIterable{
-    case monthClub
-    case monthIndie
-    case monthJazz
-    case recentEnd
+    case monthlyClub
+    case monthlyIndie
+    case monthlyJazz
+    case recentlyFinished
     case upcoming
-    case upcomingKR
+    case upcomingInKorReservation
 }
 
 extension FilterTheme {
     var title: String{
         switch self {
-        case .monthClub:
+        case .monthlyClub:
             return "이달의 클럽 공연"
-        case .monthIndie:
+        case .monthlyIndie:
             return "이달의 인디 공연"
-        case .monthJazz:
+        case .monthlyJazz:
             return "이달의 재즈 공연"
-        case .recentEnd:
+        case .recentlyFinished:
             return "최근에 끝난 공연"
         case .upcoming:
             return "다가오는 공연"
-        case .upcomingKR:
+        case .upcomingInKorReservation:
             return "다가오는 내한공연 예약일"
         }
     }
@@ -38,17 +38,17 @@ extension FilterTheme {
         var path = ["open-api", "event"]
         
         switch self {
-        case .monthClub:
+        case .monthlyClub:
             path.append(contentsOf: ["this-month", "club"])
-        case .monthIndie:
+        case .monthlyIndie:
             path.append(contentsOf: ["this-month", "indie"])
-        case .monthJazz:
+        case .monthlyJazz:
             path.append(contentsOf: ["this-month", "jazz"])
-        case .recentEnd:
+        case .recentlyFinished:
             path.append(contentsOf: ["recently-ended"])
         case .upcoming:
             path.append(contentsOf: ["upcoming"])
-        case .upcomingKR:
+        case .upcomingInKorReservation:
             path.append(contentsOf: ["upcoming", "international"])
         }
         return path

@@ -20,7 +20,7 @@ struct EventInfoScreen: View {
     @State private var isLoading: Bool = true
     @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     @State private var filterThemeEvents: [[SimpleEventUIO]] = Array(repeating: [], count: FilterTheme.allCases.count)
-    let filterThemes: [FilterTheme] = [.monthClub, .monthIndie, .monthJazz, .recentEnd, .upcomingKR, .upcoming]
+    let filterThemes: [FilterTheme] = [.monthlyClub, .monthlyIndie, .monthlyJazz, .recentlyFinished, .upcomingInKorReservation, .upcoming]
     
     var body: some View {
         ScrollViewReader { proxy in

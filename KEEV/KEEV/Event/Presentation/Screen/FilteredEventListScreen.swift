@@ -97,6 +97,6 @@ extension FilteredEventListScreen {
 
 #Preview {
     NavigationStack {
-        FilteredEventListScreen(theme: .monthClub)
+        FilteredEventListScreen(theme: .monthlyClub)
     }
 }

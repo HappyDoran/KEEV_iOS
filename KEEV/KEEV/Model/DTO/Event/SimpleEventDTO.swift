@@ -63,7 +63,6 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
     /// - Author: Doran
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-//        let tempString = try container.decode(String.self, forKey: .createdDate)
         let tempStartDate = try container.decode(String.self, forKey: .startDate)
         let tempEndDate = try container.decode(String.self, forKey: .endDate)
         let tempReservationStartDate = try container.decodeIfPresent(String.self, forKey: .reservationStartDate)
