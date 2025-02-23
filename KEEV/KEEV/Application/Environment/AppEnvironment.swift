@@ -24,6 +24,7 @@ struct AppEnvironment {
 //            fatalError("Server URL이 없습니다.")
 //        }
 //        return .init(scheme: "https", host: host, port: nil)
+        
         guard let host = Bundle.main.infoDictionary?["KEEV_DEV_ADDRESS"] as? String else {
             fatalError("Server URL이 없습니다.")
         }
