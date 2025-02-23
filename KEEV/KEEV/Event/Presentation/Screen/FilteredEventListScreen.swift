@@ -71,14 +71,12 @@ struct FilteredEventListScreen: View {
     @State private var currentPage = 0
     @State private var totalPages = 1
     private let pageSize = 7
-    private let title: String
-    private let eventFilter: EventFilter?
+    private let theme: FilterTheme
     @State private var events: [SimpleEventUIO] = []
     @State private var error: Error? = nil
     
-    init(title: String, eventFilter: EventFilter? = nil){
-        self.title = title
-        self.eventFilter = eventFilter
+    init(theme: FilterTheme){
+        self.theme = theme
     }
     
     var body: some View {
@@ -101,7 +99,7 @@ struct FilteredEventListScreen: View {
             }
             .padding(16)
         }
-        .navigationTitle(title)
+        .navigationTitle(theme.title)
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -132,13 +130,7 @@ extension FilteredEventListScreen {
     private func loadEvents(page: Int) async {
         do {
             let response: PaginatedResponse<SimpleEventUIO>
-            if let eventFilter = eventFilter {
-                response = try await eventService.loadPaginatedFilteringEvents(
-                    filter: EventFilter(eventFilter: eventFilter, page: page, size: pageSize)
-                )
-            } else {
-                response = try await eventService.loadPaginatedEvents(page: page, size: pageSize, sort: [(SortCase.createdDate, .descending)])
-            }
+            response = try await eventService.loadPaginatedFilterThemeEvents(theme: theme, page: page, size: pageSize, sort: [(SortCase.startDate, .descending)])
             events.append(contentsOf: response.contents)
             totalPages = response.totalPages
             currentPage += 1
@@ -151,6 +143,6 @@ extension FilteredEventListScreen {
 
 #Preview {
     NavigationStack {
-        FilteredEventListScreen(title: "성탄절엔 캐롤만 들어야 하나요?")
+        FilteredEventListScreen(theme: .monthClub)
     }
 }

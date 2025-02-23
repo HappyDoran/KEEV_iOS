@@ -67,51 +67,23 @@ struct EventInfoScreen: View {
 
 
 private extension EventInfoScreen {
-    // 삭제 요망
-//    func themeScrollSectionView(themeName: String, events: [SimpleEventUIO], eventFilter: EventFilter? = nil) -> some View {
-//        VStack(alignment: .leading, spacing: 12){
-//            NavigationLink {
-//                FilteredEventListScreen(title: themeName, eventFilter: eventFilter)
-//            } label : {
-//                HStack(spacing: 4){
-//                    Text(themeName)
-//                        .figmaFont(PretendardFont.title(style: .sm))
-//                        .foregroundColor(.gray100)
-//                    Image(systemName: "chevron.right")
-//                        .font(.system(size: 15, weight: .semibold))
-//                        .foregroundColor(.gray500)
-//                }
-//                .padding(.horizontal, 16)
-//            }
-//            ScrollView(.horizontal, showsIndicators: false) {
-//                HStack(spacing: 8) {
-//                    ForEach(0..<min(events.count, 5), id: \.self) { index in
-//                        NavigationLink {
-//                            EventDetailScreen(simpleEvent: events[index])
-//                        } label: {
-//                            EventThumbnailCell(event: events[index], showDday: true)
-//                        }
-//                    }
-//                }
-//            }
-//            .safeAreaPadding(.horizontal, 16)
-//        }
-//        .padding(.top, 20)
-//    }
-    
     func themeSectionView(theme: [FilterTheme], events: [[SimpleEventUIO]]) -> some View {
         ForEach(0..<theme.count, id: \.self){ index in
             if index < events.count && !events[index].isEmpty {
                 VStack(alignment: .leading, spacing: 12){
-                    HStack(spacing: 4){
-                        Text(theme[index].title)
-                            .figmaFont(PretendardFont.title(style: .sm))
-                            .foregroundColor(.gray100)
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 15, weight: .semibold))
-                            .foregroundColor(.gray500)
+                    NavigationLink{
+                        FilteredEventListScreen(theme: theme[index])
+                    } label: {
+                        HStack(spacing: 4){
+                            Text(theme[index].title)
+                                .figmaFont(PretendardFont.title(style: .sm))
+                                .foregroundColor(.gray100)
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundColor(.gray500)
+                        }
+                        .padding(.horizontal, 16)
                     }
-                    .padding(.horizontal, 16)
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 8) {
                             ForEach(0..<min(events[index].count, 5), id: \.self) { eventIndex in
