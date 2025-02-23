@@ -7,55 +7,34 @@
 
 import SwiftUI
 
-/// 어느 스크린에서 검색창을 띄우는지 정의하는 열거형
-///
-/// - event: 이벤트 정보 스크린에서 검색창을 띄우는 경우
-/// - vibe: 바이브를 생성하는 스크린에서 검색창을 띄우는 경우
-///
-/// - Author: Doran
-enum SearchContent {
-    case event
-    case vibe
-    
-    ///  유형에 따른 헤더 타이틀을 반환
-    ///
-    /// - Returns: 헤더 타이틀에 해당하는 문자열
-    var title: String {
-        switch self {
-        case .event: return "검색"
-        case .vibe: return "공연 찾기"
-        }
-    }
-}
-
 /// 이벤트 정보에 표시될 스크린
+///
+/// 이벤트 필터 테마의 갯수에 맞게 2차원 배열을 선언해준 후, 필터에 담긴 필터기준에 맞게 이벤트를 load 해옵니다.
+/// 이벤트 갯수가 0일 경우 화면에 표시하지 않습니다.
 ///
 /// - Author: Doran
 struct EventInfoScreen: View {
     @Injected private var eventService: any EventServiceProtocol
-    
+
     @Binding var selectedItem: TabbedItem.RawValue
-    
+    @State private var isLoading: Bool = true
     @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
-    @State private var error: String? = nil
-    @State private var isLoading: Bool = false
-    @State private var selectedEvent: SimpleEventUIO? = nil
-    @State private var navigateToEventDetail: Bool = false
-    
+    @State private var filterThemeEvents: [[SimpleEventUIO]] = Array(repeating: [], count: FilterTheme.allCases.count)
     let filterThemes: [FilterTheme] = [.monthClub, .monthIndie, .monthJazz, .recentEnd, .upcomingKR, .upcoming]
-    @State private var filterThemeEvents: [[SimpleEventUIO]] = []
-    
-    @State private var currentPage = 0
-    private let pageSize = 4
     
     var body: some View {
         ScrollViewReader { proxy in
-            MainHeader(selectedEvent: $selectedEvent, proxy: proxy)
+            MainHeader(proxy: proxy)
             
             ScrollView(showsIndicators: false) {
                 EventCarouselView().id(0)
-                
-                themeSectionView(theme: filterThemes, events: filterThemeEvents)
+                if isLoading {
+                    ProgressView()
+                        .padding(.top, 16)
+                }
+                else {
+                    themeSectionView(theme: filterThemes, events: filterThemeEvents)
+                }
             }
             .onAppear {
                 loadFilterThemeEvents()
@@ -102,7 +81,9 @@ private extension EventInfoScreen {
             
         }
     }
-    
+}
+
+private extension EventInfoScreen {
     func loadFilterThemeEvents(theme: FilterTheme) async -> [SimpleEventUIO]? {
         do {
             let paginatedResponse = try await eventService.loadPaginatedFilterThemeEvents(theme: theme, page: 0, size: 10, sort: [(SortCase.startDate, .descending)])
@@ -117,18 +98,13 @@ private extension EventInfoScreen {
 
     func loadFilterThemeEvents(){
         Task {
-            filterThemeEvents = Array(repeating: [], count: filterThemes.count)
-            
             for (index, theme) in filterThemes.enumerated() {
                 if let events = await loadFilterThemeEvents(theme: theme) {
                     filterThemeEvents[index] = events
                 }
             }
+            isLoading = false
         }
-    }
-    
-    func loadEventDataByKeyword(keyword: String) {
-        isLoading = true
     }
 }
 

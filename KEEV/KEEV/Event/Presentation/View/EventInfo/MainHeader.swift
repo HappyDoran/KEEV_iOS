@@ -13,11 +13,9 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct MainHeader: View {
-    @Binding private var selectedEvent: SimpleEventUIO?
     private var proxy: ScrollViewProxy?
     
-    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), proxy: ScrollViewProxy? = nil) {
-        self._selectedEvent = selectedEvent
+    init(proxy: ScrollViewProxy? = nil) {
         self.proxy = proxy
     }
     

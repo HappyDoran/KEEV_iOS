@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum FilterTheme{
+enum FilterTheme: CaseIterable{
     case monthClub
     case monthIndie
     case monthJazz
