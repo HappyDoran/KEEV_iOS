@@ -37,7 +37,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     func getVibeCount(eventID: String) async throws -> Int {
         try await doAsyncWithException(caller: "getVibeCount") {
             let accessToken = try await getAccessToken()
-            let router = VibeHTTPRequestRouter.getVibeCount(token: accessToken, eventID: eventID)
+            let router = VibeHTTPRequestRouter.getVibeCount(eventID: eventID)
             
             let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
             
