@@ -22,10 +22,6 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
     let id: String
     /// 이벤트의 이름
     let name: String
-    /// 이벤트가 서버에 등록된 시점
-    let createdDate: Date
-    /// 이벤트의 예약이 시작되는 날짜
-    let reservationStartDate: Date?
     /// 이벤트가 시작되는 날짜
     let startDate: Date
     /// 이벤트가 끝나는 날짜
@@ -47,11 +43,9 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
         case placeNames = "placeNameList"
     }
     
-    init(id: String, name: String, createdDate: Date, reservationStartDate: Date?, startDate: Date, endDate: Date, posterURLString: String, placeNames: [String]) {
+    init(id: String, name: String, startDate: Date, endDate: Date, posterURLString: String, placeNames: [String]) {
         self.id = id
         self.name = name
-        self.createdDate = createdDate
-        self.reservationStartDate = reservationStartDate
         self.startDate = startDate
         self.endDate = endDate
         self.posterURLString = posterURLString
@@ -69,8 +63,6 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
         
         self.id = try container.decode(String.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
-        self.createdDate = (try? container.decodeIfPresent(String.self, forKey: .createdDate))?.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSZZZZZ") ?? .now
-        self.reservationStartDate = tempReservationStartDate?.toDate(format: "yyyy-MM-dd'T'HH:mm:ss")
         self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.posterURLString = try container.decode(String.self, forKey: .posterURLString)
@@ -93,8 +85,6 @@ extension SimpleEventDTO {
     static let dummy0 = SimpleEventDTO(
         id: "85ef3d7a-21e3-449b-b49c-e5b5d3861912",
         name: "¥$ VULTURES LISTENING EXPERIENCE",
-        createdDate: .startOfDay(year: 2024, month: 11, day: 12),
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2024, month: 8, day: 23),
         endDate: .startOfDay(year: 2024, month: 8, day: 23),
         posterURLString: "https://pbs.twimg.com/media/GTAcW8NWQAA2bJM.jpg",
@@ -105,8 +95,6 @@ extension SimpleEventDTO {
     static let dummy1 = SimpleEventDTO(
         id: "dummy1",
         name: "개발하기가 너무나도 귀찮은데 어떻게 해야 아무것도 안하면서 아무것도 한 척하는지를 노래로 표현하는 뉴준성의 콘서트",
-        createdDate: .now,
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2024, month: 12, day: 25),
         endDate: .startOfDay(year: 2024, month: 12, day: 25),
         posterURLString: "https://ticketimage.interpark.com/Play/image/large/24/24016374_p.gif",
@@ -117,8 +105,6 @@ extension SimpleEventDTO {
     static let dummy2 = SimpleEventDTO(
         id: "dummy2",
         name: "KENSHI YONEZU 2025 WORLD TOUR / JUNK",
-        createdDate: .init(timeIntervalSinceNow: -10000),
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2025, month: 03, day: 22),
         endDate: .startOfDay(year: 2025, month: 03, day: 23),
         posterURLString: "https://ticketimage.interpark.com/Play/image/large/24/24014669_p.gif",
@@ -129,8 +115,6 @@ extension SimpleEventDTO {
     static let dummy3 = SimpleEventDTO(
         id: "dummy3",
         name: "더미즈 이벤트 넘버 3",
-        createdDate: .init(timeIntervalSinceNow: -10000),
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2025, month: 04, day: 22),
         endDate: .startOfDay(year: 2025, month: 05, day: 22),
         posterURLString: "error",
@@ -141,8 +125,6 @@ extension SimpleEventDTO {
     static let dummy4 = SimpleEventDTO(
         id: "dummy4",
         name: "더미즈 이벤트 넘버 4",
-        createdDate: .init(timeIntervalSinceNow: -10000),
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2024, month: 11, day: 06),
         endDate: .startOfDay(year: 2024, month: 11, day: 06),
         posterURLString: "error!!!",
@@ -153,8 +135,6 @@ extension SimpleEventDTO {
     static let dummy5 = SimpleEventDTO(
         id: "dummy5",
         name: "더미즈 이벤트 넘버 5",
-        createdDate: .startOfDay(year: 2025, month: 03, day: 22),
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2025, month: 03, day: 22),
         endDate: .startOfDay(year: 2025, month: 03, day: 22),
         posterURLString: "https://static.wixstatic.com/media/8ef5ed_0e3b85bb21fa46e4b40449638dd172b1~mv2.jpg/v1/fill/w_1468,h_1566,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/8ef5ed_0e3b85bb21fa46e4b40449638dd172b1~mv2.jpg",
@@ -165,8 +145,6 @@ extension SimpleEventDTO {
     static let dummy6 = SimpleEventDTO(
         id: "dummy6",
         name: "Best of Fujii Kaze 2020-2024 ASIA TOUR in SEOUL",
-        createdDate: .startOfDay(year: 2024, month: 09, day: 25),
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2024, month: 12, day: 14),
         endDate: .startOfDay(year: 2024, month: 12, day: 14),
         posterURLString: "https://image.toast.com/aaaaab/ticketlink/TKL_2/m(19).jpg",
@@ -177,8 +155,6 @@ extension SimpleEventDTO {
     static let dummy7 = SimpleEventDTO(
         id: "dummy7",
         name: "WORLDS24 T1 우승 기념 이벤트",
-        createdDate: .startOfDay(year: 2024, month: 11, day: 06),
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2024, month: 11, day: 06),
         endDate: .startOfDay(year: 2024, month: 11, day: 20),
         posterURLString: "https://cmsassets.rgpub.io/sanity/images/dsfx7636/news/479fbae8853c412fb419677462e33e389a80a837-1920x1080.jpg?auto=format&fit=fill&q=80&w=1920",
@@ -188,8 +164,6 @@ extension SimpleEventDTO {
     static let dummy8 = SimpleEventDTO(
         id: "dummy8",
         name: "챔피언스 리그 바이에른 vs 벤피카",
-        createdDate: .startOfDay(year: 2024, month: 11, day: 7),
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2024, month: 11, day: 7),
         endDate: .startOfDay(year: 2024, month: 11, day: 7),
         posterURLString: "https://pds.joongang.co.kr/news/component/htmlphoto_mmdata/202307/19/67261eae-92a5-4a3c-bc5e-fff981e33110.jpg",
@@ -199,8 +173,6 @@ extension SimpleEventDTO {
     static let dummy9 = SimpleEventDTO(
         id: "dummy9",
         name: "대상혁",
-        createdDate: .startOfDay(year: 2024, month: 11, day: 08),
-        reservationStartDate: nil,
         startDate: .startOfDay(year: 2024, month: 11, day: 08),
         endDate: .startOfDay(year: 2024, month: 11, day: 08),
         posterURLString: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp",
