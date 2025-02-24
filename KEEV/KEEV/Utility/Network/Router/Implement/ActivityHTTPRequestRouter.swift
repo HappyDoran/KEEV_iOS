@@ -21,7 +21,7 @@ enum ActivityHTTPRequestRouter {
             userID
         case .userVibeList(let userID):
             userID
-        case .userLikedEvents(let userID, let page, let size, let sort):
+        case .userLikedEvents(let userID, _, _, _):
             userID
         }
     }
@@ -54,9 +54,9 @@ extension ActivityHTTPRequestRouter: HTTPRequestable {
         var path = ["open-api", "user", "\(id)"]
         
         switch self {
-        case .userInfo(let id): break
-        case .userVibeList(let id): path.append("vibe")
-        case .userLikedEvents(let id, _, _, _): path += ["event", "liked"]
+        case .userInfo: break
+        case .userVibeList: path.append("vibe")
+        case .userLikedEvents: path += ["event", "liked"]
         }
         
         return path
