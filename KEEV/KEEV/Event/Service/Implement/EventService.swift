@@ -97,7 +97,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     /// - Author: Doran
     func loadPaginatedFilterThemeEvents(theme: FilterTheme, page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.startDate, .descending)]) async throws -> PaginatedResponse<SimpleEventUIO> {
         let router = EventHTTPRequestRouter.fetchFilterThemeEvents(theme: theme, page: page, size: size, sort: sort.map { $0.0.sortCase(with: $0.1) })
-        
+        print(try! router.configureURL())
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         
         guard (200..<300).contains(code) else {

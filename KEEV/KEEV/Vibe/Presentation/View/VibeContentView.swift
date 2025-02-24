@@ -7,7 +7,9 @@
 
 import SwiftUI
 
-struct VibeContentView: View {
+struct VibeContentView: LoginCheckableView {
+    @Environment(AppState.self) var appState: AppState
+    
     @Binding private var vibe: VibeUIO
     @Binding private var isLiked: Bool
     private let likeTapHandler: () -> Void
@@ -94,7 +96,7 @@ private extension VibeContentView {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 18)
-                    .onTapGesture(perform: likeTapHandler)
+                    .onTapGesture(perform: tapLike)
                 
                 Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
             }
@@ -114,6 +116,14 @@ private extension VibeContentView {
             PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium))
         )
         .foregroundStyle(.gray500)
+    }
+}
+
+private extension VibeContentView {
+    private func tapLike() {
+        checkLoginBefore {
+            likeTapHandler()
+        }
     }
 }
 
