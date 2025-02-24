@@ -111,7 +111,7 @@ private extension ProfileVibeListCell {
             
             HStack(spacing: 12) {
                 HStack(spacing: 4) {
-                    Image(vibe.isLiked ? "Heart.fill.color" : "Heart.fill")
+                    Image("Heart.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 12)
