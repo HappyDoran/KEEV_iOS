@@ -50,19 +50,6 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         .dummy0
     }
     
-    func loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<SimpleEventUIO> {
-        var events: [SimpleEventUIO] = []
-        let startIndex = page*size
-        
-        for index in startIndex..<startIndex + size {
-            events.append(
-                .init(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: SimpleEventUIO.dummy0.posterURL, dDay: Int.random(in: -10...10), startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)", likedAt: "2024.11.01")
-            )
-        }
-        
-        return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: events)
-    }
-    
     func getEventLikeCount(id: String) async throws -> Int {
         return 35
     }
