@@ -110,13 +110,13 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     /// - Returns: 수정 완료한 객체
     ///
     /// - Author: Doran
-    func modifyReply(_ reply: ReplyUIO, updatedText: String) async throws -> ReplyUIO {
+    func modifyReply(_ reply: ReplyUIO, vibeID: Int, updatedText: String) async throws -> ReplyUIO {
         try await doAsyncWithException(caller: "modifyReply") {
             let accessToken = try await getAccessToken()
             let router = ReplyHTTPRequestRouter.modifyReply(
                 token: accessToken,
                 replyID: "\(reply.id)",
-                vibeID: "\(reply.vibeID)",
+                vibeID: "\(vibeID)",
                 updatedText: updatedText
             )
             
