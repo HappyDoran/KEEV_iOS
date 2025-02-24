@@ -255,18 +255,20 @@ private extension VibeDetailScreen {
     }
     
     func tapReplyLike(index: Int, reply: ReplyUIO) {
-        Task {
-            do {
-                switch reply.isLiked {
-                case true:
-                    replies[index].isLiked = try await replyService.cancelLikeReply(replyID: reply.id)
-                    replies[index].likeCount -= 1
-                case false:
-                    replies[index].isLiked = try await replyService.likeReply(replyID: reply.id)
-                    replies[index].likeCount += 1
+        checkLoginBefore {
+            Task {
+                do {
+                    switch reply.isLiked {
+                    case true:
+                        replies[index].isLiked = try await replyService.cancelLikeReply(replyID: reply.id)
+                        replies[index].likeCount -= 1
+                    case false:
+                        replies[index].isLiked = try await replyService.likeReply(replyID: reply.id)
+                        replies[index].likeCount += 1
+                    }
+                } catch {
+                    errorForAlert = error
                 }
-            } catch {
-                errorForAlert = error
             }
         }
     }
