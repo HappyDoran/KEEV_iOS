@@ -18,7 +18,8 @@ enum VibeDetailPath {
 }
 
 // -MARK: 스크린 핵심부
-struct VibeDetailScreen: View {
+struct VibeDetailScreen: LoginCheckableView {
+    @Environment(AppState.self) var appState
     @Environment(\.dismiss) private var dismiss
     
     @Injected private var replyService: any ReplyServiceProtocol
@@ -179,7 +180,10 @@ private extension VibeDetailScreen {
         } else {
             return [
                 .report(title: "신고하기") {
-                    navigateToReport = .vibe(eventID: vibe.event.id, vibeID: vibe.id)
+                    showVibeActionSheet = false
+                    checkLoginBefore {
+                        navigateToReport = .vibe(eventID: vibe.event.id, vibeID: vibe.id)
+                    }
                 }
             ]
         }
@@ -201,7 +205,9 @@ private extension VibeDetailScreen {
             return .othersComment {
                 if let reply = selectedReply?.reply {
                     showReplyActionSheet = nil
-                    navigateToReport = .reply(vibeID: vibe.id, replyID: reply.id)
+                    checkLoginBefore {
+                        navigateToReport = .reply(vibeID: vibe.id, replyID: reply.id)
+                    }
                 }
             }
         }
