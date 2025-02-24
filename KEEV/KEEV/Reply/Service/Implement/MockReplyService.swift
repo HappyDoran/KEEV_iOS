@@ -28,7 +28,7 @@ class MockReplyService: ReplyServiceProtocol {
         
         // 서버에서 vibeID를 가지고 replies를 가져옴
         
-        return replies.filter { $0.vibeID == vibeID }
+        return replies
     }
     
     func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO {
@@ -39,14 +39,14 @@ class MockReplyService: ReplyServiceProtocol {
         
         let newUser = SimpleUserUIO(id: 2, nickname: "추가된 사람은 이렇게 추가가 될것이지롱", profileImageURL: nil)
         
-        let newReply = ReplyUIO(id: newID, user: newUser, vibeID: vibeID, text: text, isLiked: false, likeCount: 0, createdDate: .now, isMine: true)
+        let newReply = ReplyUIO(id: newID, user: newUser, text: text, isLiked: false, likeCount: 0, createdDate: .now, isMine: true)
         
         replies.append(newReply)
         
         return newReply
     }
     
-    func modifyReply(_ reply: ReplyUIO, updatedText: String) async throws -> ReplyUIO {
+    func modifyReply(_ reply: ReplyUIO, vibeID: Int, updatedText: String) async throws -> ReplyUIO {
         
         // 서버에 replyID, vibeID, text를 가지고 댓글을 수정
         
@@ -57,7 +57,6 @@ class MockReplyService: ReplyServiceProtocol {
         let newReplyDTO = ReplyUIO(
             id: reply.id,
             user: SimpleUserUIO(id: reply.userID, nickname: reply.userNickname, profileImageURL: reply.userProfileImageURL),
-            vibeID: reply.vibeID,
             text: updatedText,
             isLiked: reply.isLiked,
             likeCount: reply.likeCount,

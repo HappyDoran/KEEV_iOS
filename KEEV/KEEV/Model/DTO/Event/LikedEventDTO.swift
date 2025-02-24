@@ -28,21 +28,21 @@ struct LikedEventDTO: Decodable, Identifiable {
     /// 이벤트가 끝나는 날짜
     let endDate: Date
     /// 이벤트가 열리는 장소
-    let placeNames: String
+    let placeNames: [String]
     /// 관심 표시 시간
     let likedAt: Date
     
     private enum CodingKeys: String, CodingKey {
         case id
         case name
-        case posterURLString = "posterImageURL"
+        case posterURLString = "posterURL"
         case startDate
         case endDate
-        case placeNames = "place"
+        case placeNames = "placeNameList"
         case likedAt
     }
     
-    init(id: String, name: String, posterURLString: String, startDate: Date, endDate: Date, placeNames: String, likedAt: Date) {
+    init(id: String, name: String, posterURLString: String, startDate: Date, endDate: Date, placeNames: [String], likedAt: Date) {
         self.id = id
         self.name = name
         self.posterURLString = posterURLString
@@ -66,7 +66,7 @@ struct LikedEventDTO: Decodable, Identifiable {
         self.posterURLString = try container.decode(String.self, forKey: .posterURLString)
         self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
-        self.placeNames = try container.decode(String.self, forKey: .placeNames)
+        self.placeNames = try container.decode([String].self, forKey: .placeNames)
         self.likedAt = tempLikedAt.toDate(format: "yyyy-MM-dd") ?? .now
     }
 }

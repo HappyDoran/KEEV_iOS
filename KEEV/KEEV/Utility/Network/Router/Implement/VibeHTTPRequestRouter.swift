@@ -14,16 +14,16 @@ import SwiftUI
 ///
 /// - Author: 라움
 enum VibeHTTPRequestRouter {
-    case getVibeCount(token: String, eventID: String)
-    case getVibes(token: String, page: Int, size: Int, sort: [SortParameter])
-    case getVibesFromEventID(token: String, id: String, page: Int, size: Int, sort: [SortParameter])
+    case getVibeCount(eventID: String)
+    case getVibes(page: Int, size: Int, sort: [SortParameter])
+    case getVibesFromEventID(id: String, page: Int, size: Int, sort: [SortParameter])
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 업로드는 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
     case uploadVibe(token: String, eventID: String, data: Data)
     case deleteVibe(token: String, vibeID: Int)
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 수정은 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
     case modifyVibe(token: String, vibeID: Int, data: Data)
     case checkIfUserUploadedVibe(token: String, eventID: String)
-    case getVibeWithVibeID(token: String, vibeID: Int)
+    case getVibeWithVibeID(vibeID: Int)
     case likeVibe(token: String, vibeID: Int)
     case cancelLikeVibe(token: String, vibeID: Int)
     case getVibeLikeCount(vibeID: Int)
@@ -49,12 +49,12 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String : String]? {
         switch self {
-        case .getVibes(let token, _, _, _), .getVibeWithVibeID(let token, _), .getVibesFromEventID(let token, _, _, _, _), .getVibeCount(let token, _), .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _), .likeVibe(let token, _), .cancelLikeVibe(let token, _), .checkIfUserLikedVibe(let token, _):
+        case .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _), .likeVibe(let token, _), .cancelLikeVibe(let token, _), .checkIfUserLikedVibe(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
-        case .getVibeLikeCount:
+        case .getVibeLikeCount, .getVibeCount, .getVibes, .getVibeWithVibeID, .getVibesFromEventID:
             return nil
         }
     }
@@ -83,12 +83,12 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         var path = ["vibe"]
         
         switch self {
-        case .getVibeCount(_, let eventID):
+        case .getVibeCount(let eventID):
             path.append(contentsOf: ["count", "\(eventID)"])
         case .getVibes:
-            path.append(contentsOf: ["get", "sortBy"])
-        case .getVibesFromEventID(_, let id, _, _, _):
-            path.append(contentsOf: ["get", id, "sortBy"])
+            return ["open-api", "vibe", "feed"]
+        case .getVibesFromEventID(let id, _, _, _):
+            return ["open-api", "event", "\(id)", "vibe"]
         case .uploadVibe(_, let eventID, _):
             path.append(contentsOf: ["register", "\(eventID)"])
         case .deleteVibe:
@@ -97,8 +97,8 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["update", "\(vibeID)"])
         case .checkIfUserUploadedVibe(_, let eventID):
             path.append(contentsOf: ["find", "\(eventID)"])
-        case .getVibeWithVibeID(_, let vibeID):
-            path.append(contentsOf: ["get", "\(vibeID)"])
+        case .getVibeWithVibeID(let vibeID):
+            return ["open-api", "vibe", "\(vibeID)"]
         case .likeVibe(_, let vibeID):
             path.append(contentsOf: ["like", "\(vibeID)"])
         case .cancelLikeVibe(_, let vibeID):
@@ -114,7 +114,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var queryItems: [URLQueryItem]? {
         switch self {
-        case .getVibes(_, let page, let size, let sort), .getVibesFromEventID(_, _, let page, let size, let sort):
+        case .getVibes(let page, let size, let sort), .getVibesFromEventID(_, let page, let size, let sort):
             var queryItems = [
                 URLQueryItem(name: "size", value: "\(size)"),
                 URLQueryItem(name: "page", value: "\(page)")

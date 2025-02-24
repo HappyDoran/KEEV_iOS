@@ -314,7 +314,7 @@ private extension VibeDetailScreen {
         modifyReplySheet = nil
         Task {
             do {
-                let reply = try await replyService.modifyReply(reply, updatedText: text)
+                let reply = try await replyService.modifyReply(reply, vibeID: vibe.id, updatedText: text)
                 replies[index] = reply
             } catch {
                 errorForAlert = error

@@ -32,13 +32,13 @@ struct VibeDTO: Decodable, Hashable, Identifiable {
         self.isLiked = isLiked
     }
     
-    enum CodingKeys: CodingKey {
+    enum CodingKeys: String, CodingKey {
         case id
         case user
         case event
         case rating
         case comment
-        case imageURLs
+        case imageURLs = "imageURLList"
         case createdDate
         case likeCount
         case replyCount
@@ -57,6 +57,6 @@ struct VibeDTO: Decodable, Hashable, Identifiable {
         self.createdDate = dateString.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS") ?? .now
         self.likeCount = try container.decode(Int.self, forKey: .likeCount)
         self.replyCount = try container.decode(Int.self, forKey: .replyCount)
-        self.isLiked = try container.decode(Bool.self, forKey: .isLiked)
+        self.isLiked = false
     }
 }

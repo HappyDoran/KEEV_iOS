@@ -58,21 +58,6 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Author: 라움
     func loadDetailEvent(id: String) async throws -> DetailEventUIO
     
-    /// 관심 이벤트 목록을 가져오는 함수
-    ///
-    /// - Parameters:
-    ///   - page: 가져오고자하는 페이지의 번호
-    ///   - size: 한 페이지에 넣을 이벤트의 갯수
-    ///   - sort: 이벤트 정렬 기준
-    ///
-    /// 페이지네이션이 적용된 관심 이벤트 목록을 가져오는 함수입니다.
-    ///
-    /// - Throws: 에러
-    /// - Returns: 페이지네이션이 적용된 관심 이벤트 목록
-    ///
-    /// - Author: 라움
-    func loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<SimpleEventUIO>
-    
     /// 이벤트 ID에 해당하는 이벤트의 좋아요 갯수를 가져오는 함수
     ///
     /// - Parameters:
