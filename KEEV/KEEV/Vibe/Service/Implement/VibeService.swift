@@ -63,11 +63,10 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     }
     
     func getPaginatedVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<VibeUIO> {
-        let accessToken = try await getAccessToken()
         let sortCases: [SortCase] = sort.map { $0.0 }
         let sortPatterns: [SortPattern] = sort.map { $0.1 }
         
-        let router = VibeHTTPRequestRouter.getVibes(token: accessToken, page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
+        let router = VibeHTTPRequestRouter.getVibes(page: page, size: size, sort: zip(sortCases, sortPatterns).map { $0.0.sortCase(with: $0.1) })
         
         return try await doAsyncWithException(caller: "getPaginatedVibes") {
             let data = try await networkUtility.request(router: router)
