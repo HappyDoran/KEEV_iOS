@@ -83,7 +83,7 @@ struct SimpleEventUIO: Identifiable, Hashable {
         self.dDay = event.startDate.difference(from: .now)
         self.startDate = event.startDate.toString(format: dateFormat)
         self.endDate = event.endDate.toString(format: dateFormat)
-        self.placeName = event.placeNames/*.first ?? "공연 정보가 없어요"*/
+        self.placeName = event.placeNames.first ?? "공연 정보가 없어요"
         self.likedAt = event.likedAt.toString(format: dateFormat)
     }
     
