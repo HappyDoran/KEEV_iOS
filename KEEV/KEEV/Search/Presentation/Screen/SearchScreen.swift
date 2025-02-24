@@ -7,6 +7,27 @@
 
 import SwiftUI
 
+/// 어느 스크린에서 검색창을 띄우는지 정의하는 열거형
+///
+/// - event: 이벤트 정보 스크린에서 검색창을 띄우는 경우
+/// - vibe: 바이브를 생성하는 스크린에서 검색창을 띄우는 경우
+///
+/// - Author: Doran
+enum SearchContent {
+    case event
+    case vibe
+    
+    ///  유형에 따른 헤더 타이틀을 반환
+    ///
+    /// - Returns: 헤더 타이틀에 해당하는 문자열
+    var title: String {
+        switch self {
+        case .event: return "검색"
+        case .vibe: return "공연 찾기"
+        }
+    }
+}
+
 /// 이벤트 검색 화면을 검색하기 전에 나오는 뷰와 검색한 후의 뷰를 구분하기 위해서 정의한 열거형
 ///
 /// 검색 결과가 나오기 전까지는 .beforeSearch

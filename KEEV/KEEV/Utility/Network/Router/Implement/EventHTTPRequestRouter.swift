@@ -16,6 +16,7 @@ typealias SortParameter = (key: String, value: String)
 enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
     case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
+    case fetchFilterThemeEvents(theme: FilterTheme, page: Int, size: Int, sort: [SortParameter])
     case fetchDetailEvent(eventID: String)
     case fetchLikedEvents(token: String, page: Int, size: Int, sort: [SortParameter])
     case fetchEventLikeCount(eventID: String)
@@ -30,7 +31,7 @@ enum EventHTTPRequestRouter {
 extension EventHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchLikedEvents, .fetchEventLikeCount, .fetchEventisLiked:
+        case .fetchEvents, .fetchFilteredEvents, .fetchFilterThemeEvents, .fetchDetailEvent, .fetchLikedEvents, .fetchEventLikeCount, .fetchEventisLiked:
             return .get
         case .addEventLike:
             return .post
@@ -41,7 +42,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String: String]? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchEventLikeCount:
+        case .fetchEvents, .fetchFilteredEvents, .fetchFilterThemeEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return nil
         case .fetchLikedEvents(let token, _, _, _), .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _):
             return [
@@ -53,7 +54,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchDetailEvent, .fetchLikedEvents, .fetchEventLikeCount, .fetchEventisLiked, .addEventLike, .deleteEventLike:
+        case .fetchEvents, .fetchFilteredEvents, .fetchFilterThemeEvents, .fetchDetailEvent, .fetchLikedEvents, .fetchEventLikeCount, .fetchEventisLiked, .addEventLike, .deleteEventLike:
             return nil
         }
     }
@@ -70,6 +71,9 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             path.append(contentsOf: ["get", "sortBy"])
         case .fetchFilteredEvents:
             path.append(contentsOf: ["get", "filtered"])
+        case .fetchFilterThemeEvents(let theme, _, _, _):
+            path.removeAll()
+            path = theme.path ?? []
         case .fetchDetailEvent(let eventID):
             path.append(contentsOf: ["get", "\(eventID)"])
         case .fetchLikedEvents:
@@ -89,7 +93,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var queryItems: [URLQueryItem]? {
         switch self {
-        case .fetchEvents(page: let page, size: let size, sort: let sort), .fetchLikedEvents(_, page: let page, size: let size, sort: let sort):
+        case .fetchEvents(page: let page, size: let size, sort: let sort), .fetchFilterThemeEvents(_, page: let page, size: let size, sort: let sort), .fetchLikedEvents(_, page: let page, size: let size, sort: let sort) :
             var queryItems = [
                 URLQueryItem(name: "size", value: "\(size)"),
                 URLQueryItem(name: "page", value: "\(page)")
