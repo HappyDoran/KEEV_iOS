@@ -17,9 +17,8 @@ struct VibeDTO: Decodable, Hashable, Identifiable {
     let createdDate: Date
     let likeCount: Int
     let replyCount: Int
-    let isLiked: Bool
     
-    init(id: Int, user: SimpleUserDTO, event: SimpleEventDTO, rating: Double, comment: String?, imageURLs: [String?], createdDate: Date, likeCount: Int, replyCount: Int, isLiked: Bool) {
+    init(id: Int, user: SimpleUserDTO, event: SimpleEventDTO, rating: Double, comment: String?, imageURLs: [String?], createdDate: Date, likeCount: Int, replyCount: Int) {
         self.id = id
         self.user = user
         self.event = event
@@ -29,7 +28,6 @@ struct VibeDTO: Decodable, Hashable, Identifiable {
         self.createdDate = createdDate
         self.likeCount = likeCount
         self.replyCount = replyCount
-        self.isLiked = isLiked
     }
     
     enum CodingKeys: String, CodingKey {
@@ -42,7 +40,6 @@ struct VibeDTO: Decodable, Hashable, Identifiable {
         case createdDate
         case likeCount
         case replyCount
-        case isLiked
     }
     
     init(from decoder: any Decoder) throws {
@@ -57,6 +54,5 @@ struct VibeDTO: Decodable, Hashable, Identifiable {
         self.createdDate = dateString.toDate(format: "yyyy-MM-dd'T'HH:mm:ss.SSSSSS") ?? .now
         self.likeCount = try container.decode(Int.self, forKey: .likeCount)
         self.replyCount = try container.decode(Int.self, forKey: .replyCount)
-        self.isLiked = false
     }
 }
