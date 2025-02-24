@@ -59,7 +59,6 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let tempStartDate = try container.decode(String.self, forKey: .startDate)
         let tempEndDate = try container.decode(String.self, forKey: .endDate)
-        let tempReservationStartDate = try container.decodeIfPresent(String.self, forKey: .reservationStartDate)
         
         self.id = try container.decode(String.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
