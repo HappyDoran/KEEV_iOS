@@ -40,8 +40,8 @@ extension ActivityHTTPRequestRouter: HTTPRequestable {
     
     var path: [String]? {
         switch self {
-        case .userInfo(let id): ["user", "activity", "\(id)"]
-        case .userVibeList(let id): ["vibe", "activity", "get", "\(id)"]
+        case .userInfo(let id): ["open-api", "user", "\(id)"]
+        case .userVibeList(let id): ["open-api", "user", "\(id)", "vibe"]
         }
     }
     
