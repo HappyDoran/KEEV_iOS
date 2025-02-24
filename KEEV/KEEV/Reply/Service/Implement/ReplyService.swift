@@ -53,8 +53,7 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     /// - Author: Doran
     func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
         try await doAsyncWithException(caller: "fetchReplies") {
-            let accessToken = try await getAccessToken()
-            let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
+            let router = ReplyHTTPRequestRouter.fetchReplies(vibeID: vibeID)
             
             let data = try await networkUtility.request(router: router)
             
