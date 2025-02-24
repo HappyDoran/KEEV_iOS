@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileLikedEventsView: View {
-    @Injected private var eventService: any EventServiceProtocol
+    @Injected private var activityService: any ActivityServiceProtocol
     
     private let userID: Int?
     @Binding private var error: Error?
@@ -70,7 +70,7 @@ private extension ProfileLikedEventsView {
     }
     
     var likedEventsMoreButton: some View {
-        NavigationLink(destination: LikedEventsScreen()) {
+        NavigationLink(destination: LikedEventsScreen(userID: userID)) {
             Text("더보기")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
                 .foregroundStyle(.gray500)
@@ -94,9 +94,10 @@ private extension ProfileLikedEventsView {
 
 private extension ProfileLikedEventsView {
     func loadLikedEvents() {
+        guard let userID else { return }
         Task {
             do {
-                let response = try await eventService.loadLikedEvents(page: 0, size: 10, sort: [(SortCase.createdDate, .descending)])
+                let response = try await activityService.getUserLikedEvents(userID: userID, page: 0, size: 10, sort: [(SortCase.createdDate, .descending)])
                 likedEventsCount = response.totalElements
                 likedEvents = response.contents
             } catch {

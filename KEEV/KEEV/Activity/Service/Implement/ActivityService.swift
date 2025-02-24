@@ -77,4 +77,33 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
             }
         }
     }
+    
+    func getUserLikedEvents(userID: Int, page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<SimpleEventUIO> {
+        let router = ActivityHTTPRequestRouter.userLikedEvents(userID: userID, page: page, size: size, sort: sort.map { $0.0.sortCase(with: $0.1) })
+        
+        let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
+        
+        guard (200..<300).contains(code) else {
+            let errorMessage = try jsonDecoder.decode(ErrorMessageDTO.self, from: data)
+            throw throwKEEVError(
+                caller: "loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])",
+                occurPoint: .remote(code: code, message: errorMessage.message)
+            )
+        }
+        
+        return try doWithException(caller: "loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])") {
+            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<LikedEventDTO>.self, from: data)
+            
+            let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(likedEventDTO: $0) }
+            
+            let paginatedResponse = PaginatedResponse<SimpleEventUIO>(
+                totalPages: paginatedResponseDTO.totalPages,
+                currentPage: paginatedResponseDTO.currentPage,
+                totalElements: paginatedResponseDTO.totalElements,
+                contents: contents
+            )
+            
+            return paginatedResponse
+        }
+    }
 }

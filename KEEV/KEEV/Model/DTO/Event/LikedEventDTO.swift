@@ -35,7 +35,7 @@ struct LikedEventDTO: Decodable, Identifiable {
     private enum CodingKeys: String, CodingKey {
         case id
         case name
-        case posterURLString = "posterImageURL"
+        case posterURLString = "posterURL"
         case startDate
         case endDate
         case placeNames = "placeNameList"

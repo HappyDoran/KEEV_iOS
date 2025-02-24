@@ -13,9 +13,11 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct LikedEventsScreen: View {
-    @Injected private var eventService: any EventServiceProtocol
+    @Injected private var activityService: any ActivityServiceProtocol
     
     @Environment(\.dismiss) private var dismiss
+    
+    let userID: Int?
     
     @State private var currentPage = 0
     @State private var totalPages = 1
@@ -72,8 +74,10 @@ struct LikedEventsScreen: View {
 
 private extension LikedEventsScreen {
     func loadLikedEvents(page: Int) async {
+        guard let userID = userID else { return }
+        
         do {
-            let response: PaginatedResponse<SimpleEventUIO> = try await eventService.loadLikedEvents(page: page, size: pageSize, sort: [(SortCase.createdDate, .descending)])
+            let response: PaginatedResponse<SimpleEventUIO> = try await activityService.getUserLikedEvents(userID: userID, page: currentPage, size: pageSize, sort: [(SortCase.createdDate, .descending)])
             events.append(contentsOf: response.contents)
             totalPages = response.totalPages
             currentPage += 1
@@ -84,5 +88,5 @@ private extension LikedEventsScreen {
 }
 
 #Preview {
-    LikedEventsScreen()
+    LikedEventsScreen(userID: 1)
 }
