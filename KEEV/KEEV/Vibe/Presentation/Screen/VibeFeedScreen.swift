@@ -73,7 +73,7 @@ private extension VibeFeedScreen {
     var vibeFeedHeader: some View {
         VStack(spacing: 0){
             HStack(spacing: 0){
-                Text("피드")
+                Text("바이브")
                     .figmaFont(PretendardFont.title(style: .xl))
                 Spacer()
                 Button(action: {
