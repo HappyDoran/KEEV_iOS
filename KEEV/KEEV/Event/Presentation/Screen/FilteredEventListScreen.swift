@@ -24,7 +24,7 @@ struct FilteredEventListScreen: View {
     
     @State private var currentPage = 0
     @State private var totalPages = 1
-    private let pageSize = 7
+    private let pageSize = 10
     private let theme: FilterTheme
     @State private var events: [SimpleEventUIO] = []
     @State private var error: Error? = nil
@@ -84,7 +84,7 @@ extension FilteredEventListScreen {
     private func loadEvents(page: Int) async {
         do {
             let response: PaginatedResponse<SimpleEventUIO>
-            response = try await eventService.loadPaginatedFilterThemeEvents(theme: theme, page: page, size: pageSize, sort: [(SortCase.startDate, .descending)])
+            response = try await eventService.loadPaginatedFilterThemeEvents(theme: theme, page: page, size: pageSize, sort: [(SortCase.startDate, theme.sortCase)])
             events.append(contentsOf: response.contents)
             totalPages = response.totalPages
             currentPage += 1
