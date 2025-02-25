@@ -93,6 +93,8 @@ protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
     
     /// 서버로부터 계정 탈퇴를 시도합니다.
     func deleteAccount() async throws
+    
+    func lookAround() -> SignInStatus
 }
 
 extension AccountServiceProtocol {
@@ -123,6 +125,7 @@ enum SignInStatus: Hashable {
         if case .failed = lhs, case .failed = rhs { return true }
         if case .ok(let l) = lhs, case .ok(let r) = rhs { return l.id == r.id }
         if case .created = lhs, case .created = rhs { return true }
+        if case .lookAround = lhs, case .lookAround = rhs { return true }
         return false
     }
     
@@ -133,6 +136,7 @@ enum SignInStatus: Hashable {
     case failed
     case ok(user: DetailUserUIO)
     case created
+    case lookAround
 }
 
 /// AccountService에서 발생할 수 있는 에러

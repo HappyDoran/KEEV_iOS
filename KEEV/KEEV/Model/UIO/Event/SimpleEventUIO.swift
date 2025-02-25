@@ -9,7 +9,7 @@ import Foundation
 
 /// 이벤트 관련 DTO를 이벤트 목록 뷰에 나타내기 위해 간단하게 변환한 타입
 ///
-/// 이 타입의 생성자에 `SimpleEventDTO`와 `DetailEventDTO`를 주입할 수도 있습니다.
+/// 이 타입의 생성자에 `SimpleEventDTO`, `DetailEventDTO`, `LikedEventDTO`를 주입할 수도 있습니다.
 ///
 /// - Author: newJunsung
 struct SimpleEventUIO: Identifiable, Hashable {
@@ -34,7 +34,10 @@ struct SimpleEventUIO: Identifiable, Hashable {
     /// 장소 이름
     let placeName: String
     
-    init(id: String, name: String, posterURL: URL?, dDay: Int, startDate: String, endDate: String, placeName: String) {
+    /// 관심 표시 시간
+    let likedAt: String?
+    
+    init(id: String, name: String, posterURL: URL?, dDay: Int, startDate: String, endDate: String, placeName: String, likedAt: String? = nil) {
         self.id = id
         self.name = name
         self.posterURL = posterURL
@@ -42,6 +45,7 @@ struct SimpleEventUIO: Identifiable, Hashable {
         self.startDate = startDate
         self.endDate = endDate
         self.placeName = placeName
+        self.likedAt = likedAt
     }
     
     init(simpleEventDTO event: SimpleEventDTO) {
@@ -54,6 +58,7 @@ struct SimpleEventUIO: Identifiable, Hashable {
         self.startDate = event.startDate.toString(format: dateFormat)
         self.endDate = event.endDate.toString(format: dateFormat)
         self.placeName = event.placeNames.first ?? "공연 정보가 없어요"
+        self.likedAt = nil
     }
     
     init(detailEventDTO event: DetailEventDTO) {
@@ -66,6 +71,20 @@ struct SimpleEventUIO: Identifiable, Hashable {
         self.startDate = event.startDate.toString(format: dateFormat)
         self.endDate = event.endDate.toString(format: dateFormat)
         self.placeName = event.places.map(\.name).first ?? "공연 정보가 없어요"
+        self.likedAt = nil
+    }
+    
+    init(likedEventDTO event: LikedEventDTO) {
+        let dateFormat = "yyyy. MM. dd"
+        
+        self.id = event.id
+        self.name = event.name
+        self.posterURL = URL(string: event.posterURLString)
+        self.dDay = event.startDate.difference(from: .now)
+        self.startDate = event.startDate.toString(format: dateFormat)
+        self.endDate = event.endDate.toString(format: dateFormat)
+        self.placeName = event.placeNames.first ?? "공연 정보가 없어요"
+        self.likedAt = event.likedAt.toString(format: dateFormat)
     }
     
     init(detailEventUIO event: DetailEventUIO) {
@@ -76,6 +95,7 @@ struct SimpleEventUIO: Identifiable, Hashable {
         self.startDate = event.startDate
         self.endDate = event.endDate
         self.placeName = event.placesName
+        self.likedAt = nil
     }
 }
 

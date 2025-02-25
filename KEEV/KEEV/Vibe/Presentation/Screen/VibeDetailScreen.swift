@@ -7,16 +7,29 @@
 
 import SwiftUI
 
+/// 어떤 경로로 바이브 상세 스크린으로 접근했는지를 알기 위한 열거형
+///
+/// 네비게이션 라우터 구현시 제일 마지막의 스택에 따른 판별로 대체 가능할 것 같습니다.
+///
+/// - Author: Doran
+enum VibeDetailPath {
+    case event
+    case feed
+}
+
 // -MARK: 스크린 핵심부
-struct VibeDetailScreen: View {
+struct VibeDetailScreen: LoginCheckableView {
+    @Environment(AppState.self) var appState
     @Environment(\.dismiss) private var dismiss
     
     @Injected private var replyService: any ReplyServiceProtocol
     @Injected private var vibeService: any VibeServiceProtocol
     
-    @State private var vibe: VibeUIO
+    @Binding private var vibe: VibeUIO
+    @State private var isLiked = false
     @State private var replies: [ReplyUIO] = []
     
+    private let vibeDetailPath: VibeDetailPath
     private let onDelete: ((VibeUIO) -> Void)?
     private let onUpdate: ((VibeUIO) -> Void)?
     
@@ -36,11 +49,13 @@ struct VibeDetailScreen: View {
     @FocusState private var isFocused: Bool
     
     init(
-        vibe: VibeUIO,
+        vibe: Binding<VibeUIO>,
+        vibeDetailpath: VibeDetailPath = .event,
         onUpdate: ((VibeUIO) -> Void)? = nil,
         onDelete: ((VibeUIO) -> Void)? = nil
     ) {
-        self.vibe = vibe
+        self._vibe = vibe
+        self.vibeDetailPath = vibeDetailpath
         self.onUpdate = onUpdate
         self.onDelete = onDelete
     }
@@ -50,7 +65,8 @@ struct VibeDetailScreen: View {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 0) {
-                        VibeContentView(vibe: vibe)
+                        eventInfo
+                        VibeContentView(vibe: $vibe, isLiked: $isLiked, likeTapHandler: tapVibeLike)
                             .padding(.top, 20)
                             .padding(.horizontal, 16)
                         Rectangle().frame(height: 1).foregroundColor(.gray800)
@@ -69,6 +85,7 @@ struct VibeDetailScreen: View {
                 .scrollIndicators(.hidden)
                 .refreshable {
                     fetchVibe()
+                    fetchIsLiked()
                     fetchReplies()
                 }
                 
@@ -79,7 +96,7 @@ struct VibeDetailScreen: View {
                     .padding(.horizontal, 20)
                     .background(.grayBG800)
             }
-            .navigationTitle("바이브")
+            .navigationTitle(vibe.event.name)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
             .toolbar {
@@ -135,7 +152,7 @@ struct VibeDetailScreen: View {
                 VibeModifyScreen(vibe: $vibe, onUpdate: onUpdate)
             }
             .onAppear{
-                fetchVibe()
+                fetchIsLiked()
                 fetchReplies()
             }
             .onChange(of: toggleAdd) {
@@ -163,7 +180,10 @@ private extension VibeDetailScreen {
         } else {
             return [
                 .report(title: "신고하기") {
-                    navigateToReport = .vibe(eventID: vibe.event.id, vibeID: vibe.id)
+                    showVibeActionSheet = false
+                    checkLoginBefore {
+                        navigateToReport = .vibe(eventID: vibe.event.id, vibeID: vibe.id)
+                    }
                 }
             ]
         }
@@ -185,8 +205,43 @@ private extension VibeDetailScreen {
             return .othersComment {
                 if let reply = selectedReply?.reply {
                     showReplyActionSheet = nil
-                    navigateToReport = .reply(vibeID: vibe.id, replyID: reply.id)
+                    checkLoginBefore {
+                        navigateToReport = .reply(vibeID: vibe.id, replyID: reply.id)
+                    }
                 }
+            }
+        }
+    }
+    
+    func fetchIsLiked() {
+        Task {
+            isLiked = (try? await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)) ?? false
+        }
+    }
+    
+    func checkIfUserLikedVibe() {
+        Task {
+            do {
+                isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
+            } catch {
+                errorForAlert = error
+            }
+        }
+    }
+    
+    func tapVibeLike() {
+        Task {
+            do {
+                switch isLiked {
+                case true:
+                    isLiked = try await vibeService.cancelLikeVibe(vibeID: vibe.id)
+                    vibe.likeCount -= 1
+                case false:
+                    isLiked = try await vibeService.likeVibe(vibeID: vibe.id)
+                    vibe.likeCount += 1
+                }
+            } catch {
+                errorForAlert = error
             }
         }
     }
@@ -200,7 +255,22 @@ private extension VibeDetailScreen {
     }
     
     func tapReplyLike(index: Int, reply: ReplyUIO) {
-        // 좋아요를 눌렀을 때 문제 해결
+        checkLoginBefore {
+            Task {
+                do {
+                    switch reply.isLiked {
+                    case true:
+                        replies[index].isLiked = try await replyService.cancelLikeReply(replyID: reply.id)
+                        replies[index].likeCount -= 1
+                    case false:
+                        replies[index].isLiked = try await replyService.likeReply(replyID: reply.id)
+                        replies[index].likeCount += 1
+                    }
+                } catch {
+                    errorForAlert = error
+                }
+            }
+        }
     }
     
     func fetchVibe() {
@@ -260,7 +330,7 @@ private extension VibeDetailScreen {
         modifyReplySheet = nil
         Task {
             do {
-                let reply = try await replyService.modifyReply(reply, updatedText: text)
+                let reply = try await replyService.modifyReply(reply, vibeID: vibe.id, updatedText: text)
                 replies[index] = reply
             } catch {
                 errorForAlert = error
@@ -292,9 +362,26 @@ private extension VibeDetailScreen {
     }
 }
 
+private extension VibeDetailScreen {
+    @ViewBuilder
+    var eventInfo: some View {
+        switch vibeDetailPath {
+        case .feed:
+            NavigationLink{
+                EventDetailScreen(simpleEvent: vibe.event)
+            } label: {
+                VibeFeedEventInfoCell(eventData: vibe.event)
+                .padding(EdgeInsets(top: 16, leading: 16, bottom: 4, trailing: 16))
+            }
+        case .event:
+            EmptyView()
+        }
+    }
+}
+
 #Preview {
     NavigationStack {
-        VibeDetailScreen(vibe: .dummy2) { _ in
+        VibeDetailScreen(vibe: .constant(.dummy2), vibeDetailpath: .feed) { _ in
             
         } onDelete: { _ in
             

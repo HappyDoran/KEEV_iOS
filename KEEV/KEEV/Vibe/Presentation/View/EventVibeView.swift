@@ -67,17 +67,17 @@ private enum EventVibeViewState {
     case empty
 }
 
-extension EventVibeView {
+private extension EventVibeView {
     /// 이벤트에 대한 바이브 목록이 표시되는 뷰
     ///
     /// - Returns: 이벤트에 대한 바이브 목록
     ///
     /// - Author: Doran, 라움
-    private var vibeList: some View {
+    var vibeList: some View {
         LazyVStack(spacing: 0) {
             ForEach(vibes.indices, id: \.self) { index in
                 NavigationLink {
-                    LazyView(VibeDetailScreen(vibe: vibes[index]) { vibe in
+                    LazyView(VibeDetailScreen(vibe: $vibes[index]) { vibe in
                         self.vibes[index] = vibe
                     } onDelete: { _ in
                         if(vibes.count == 1) {
@@ -117,7 +117,7 @@ extension EventVibeView {
     /// - Returns: 바이브가 작성되지 않았음을 알리는 뷰
     ///
     /// - Author: 라움
-    private var vibeNotExist: some View {
+    var vibeNotExist: some View {
         VStack(spacing: 4){
             Text("작성 된 바이브가 없습니다")
                 .figmaFont(PretendardFont.title(style: .sm))
@@ -136,7 +136,7 @@ extension EventVibeView {
     /// - Returns: 바이브를 불러올때 표시되는 ProgressView
     ///
     /// - Author: Doran, 라움
-    private var vibeLoading: some View {
+    var vibeLoading: some View {
         ProgressView()
             .onAppear {
                 Task {

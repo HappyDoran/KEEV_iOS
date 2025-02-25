@@ -30,8 +30,9 @@ enum EventDetailSection: Int, CaseIterable {
 /// - Parameter selectedEvent: 상세 정보를 표시할 이벤트 객체
 ///
 /// - Author: Doran
-struct EventDetailScreen: View {
+struct EventDetailScreen: LoginCheckableView {
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppState.self) var appState
     
     @Injected private var eventService: any EventServiceProtocol
     @Injected private var vibeService: any VibeServiceProtocol
@@ -40,6 +41,8 @@ struct EventDetailScreen: View {
     @State private var vibeWriteState: VibeWriteState
     @State private var activeSection = EventDetailSection.detail
     @State private var vibeCount: Int? = nil
+    @State private var likeCount: Int = 0
+    @State private var isFavorite: Bool = false
     @State private var showEventDetailSheet = false
     @State private var navigateToReportEvent = false
     @State private var navigateToWriteVibe = false
@@ -100,7 +103,9 @@ struct EventDetailScreen: View {
         }
         .actionSheetForKEEV(isPresented: $showEventDetailSheet, configurations: [
             KEEVActionSheet.ButtonConfiguration.report(title: "신고하기") {
-                navigateToReportEvent = true
+                checkLoginBefore {
+                    navigateToReportEvent = true
+                }
             }
         ])
         .navigationDestination(isPresented: $navigateToReportEvent) {
@@ -108,25 +113,19 @@ struct EventDetailScreen: View {
         }
         .task {
             if isLoadDetailEvent {
-                do {
-                    selectedEvent = try await eventService.loadDetailEvent(id: selectedEvent.id)
-                } catch(let failToFetchEvent) {
-                    error = failToFetchEvent
-                }
+                await loadDetailEvent()
             }
             
             if let dDay = selectedEvent.dDay, dDay >= 0 {
                 vibeCount = try? await vibeService.getVibeCount(eventID: selectedEvent.id)
             }
+            
+            await getEventCount()
+            await getIsLiked()
         }
         .refreshable {
-            Task {
-                do {
-                    selectedEvent = try await eventService.loadDetailEvent(id: selectedEvent.id)
-                } catch(let failToFetchEvent) {
-                    error = failToFetchEvent
-                }
-            }
+            await loadDetailEvent()
+            await getEventCount()
         }
         .navigationDestination(isPresented: $navigateToWriteVibe) {
             VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: selectedEvent), isNavigation: true)
@@ -145,16 +144,28 @@ extension EventDetailScreen {
         VStack(spacing: 0) {
             ScrollView(showsIndicators: false) {
                 EventDetailThumbnail(selectedEvent: selectedEvent)
-                EventDetailInfoView(selectedEvent: selectedEvent)
+                EventDetailInfoView(selectedEvent: selectedEvent,isFavorite: $isFavorite, likeCount: $likeCount)
                     .padding(.horizontal, 20)
                 
                 detailSection
             }
             
             CommonButton(title: "\(vibeWriteState)", action: {
-                navigateToWriteVibe = true
+                checkLoginBefore {
+                    navigateToWriteVibe = true
+                }
             }, style: .maxWidth, disabled: isDisabled)
-                .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
+            .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
+        }
+        .onDisappear{
+            Task {
+                if !isFavorite {
+                    await deleteEventLike()
+                }
+                else {
+                    await addEventLike()
+                }
+            }
         }
     }
     
@@ -256,6 +267,42 @@ extension EventDetailScreen {
         switch activeSection {
         case .detail: showEventDetailSheet = true
         case .vibe: showEventDetailSheet = true // 신고 시트가 올라와야 함.
+        }
+    }
+    
+    private func loadDetailEvent() async {
+        do {
+            selectedEvent = try await eventService.loadDetailEvent(id: selectedEvent.id)
+        } catch(let failToFetchEvent) {
+            error = failToFetchEvent
+        }
+    }
+    
+    private func getIsLiked() async {
+        isFavorite = (try? await eventService.getIsLikedEvent(id: selectedEvent.id)) ?? false
+    }
+    
+    private func getEventCount() async {
+        do {
+            likeCount = try await eventService.getEventLikeCount(id: selectedEvent.id)
+        } catch(let failToFetchEventLikeCount) {
+            error = failToFetchEventLikeCount
+        }
+    }
+    
+    private func addEventLike() async {
+        do {
+            isFavorite = try await eventService.addEventLike(id: selectedEvent.id)
+        } catch {
+            isFavorite = false
+        }
+    }
+    
+    private func deleteEventLike() async {
+        do {
+            isFavorite = try await eventService.deleteEventLike(id: selectedEvent.id)
+        } catch {
+            isFavorite = false
         }
     }
 }

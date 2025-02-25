@@ -16,11 +16,16 @@ import SwiftUI
 /// - Author: 라움
 class SceneDelegate: NSObject, UIWindowSceneDelegate {
     var window: UIWindow?
+    @State private var appState = AppState()
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = UIHostingController(rootView: EntryView())
+        window?.rootViewController = UIHostingController(
+            rootView: EntryView()
+                .environment(appState)
+                .modifier(AppState.Modifier(state: appState))
+        )
         window?.makeKeyAndVisible()
     }
 }

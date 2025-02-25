@@ -15,6 +15,7 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeView: View {
+    @Injected private var vibeService: any VibeServiceProtocol
     @Injected private var service: any ActivityServiceProtocol
     
     private let userID: Int?
@@ -29,7 +30,8 @@ struct ProfileVibeView: View {
         self._error = error
     }
     
-    @State private var vibes: [VibeUIO]? = nil
+    @State private var vibes: [VibeUIO] = []
+    @State private var vibesLoaded: Bool = false
     
     private var columns: [GridItem] = [
         GridItem(.flexible(), spacing: 8),
@@ -40,25 +42,25 @@ struct ProfileVibeView: View {
     var body: some View {
         VStack(spacing: 12) {
             profileVibeViewHeader
-            if let vibes = vibes {
+            if vibesLoaded {
                 switch selectedVibeViewType {
                 case .list:
                     LazyVStack(spacing: 20) {
-                        ForEach(vibes) { vibe in
+                        ForEach(vibes.indices, id: \.self) { index in
                             NavigationLink {
-                                LazyView(VibeDetailScreen(vibe: vibe))
+                                LazyView(VibeDetailScreen(vibe: $vibes[index], vibeDetailpath: .feed))
                             } label: {
-                                ProfileVibeListCell(vibe: vibe)
+                                VibeFeedCell(vibeData: vibes[index])
                             }
                         }
                     }
                 case .table:
                     LazyVGrid(columns: columns, spacing: 8) {
-                        ForEach(vibes) { vibe in
+                        ForEach(vibes.indices, id: \.self) { index in
                             NavigationLink {
-                                LazyView(VibeDetailScreen(vibe: vibe))
+                                LazyView(VibeDetailScreen(vibe: $vibes[index], vibeDetailpath: .feed))
                             } label: {
-                                ProfileVibeTableCell(vibe: vibe)
+                                ProfileVibeTableCell(vibe: vibes[index])
                             }
                             .aspectRatio(114/152, contentMode: .fill)
                         }
@@ -77,6 +79,7 @@ struct ProfileVibeView: View {
                 do {
                     if let userID {
                         vibes = try await service.getUserVibeList(userID: userID)
+                        vibesLoaded = true
                     }
                 } catch let failToFetchVibes {
                     error = failToFetchVibes
@@ -110,7 +113,7 @@ private extension ProfileVibeView {
                 .foregroundStyle(.gray100)
                 .padding(.trailing, 8)
             
-            Text("\(vibes?.count ?? 0)")
+            Text("\(vibes.count)")
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                 .foregroundStyle(.brand500)
                 .padding(.trailing, 2)

@@ -12,14 +12,19 @@ import SwiftUI
 /// - Parameter selectedEvent: 상세 정보를 표시할 이벤트 객체
 ///
 /// - Author: Doran
-struct EventDetailInfoView: View {
+struct EventDetailInfoView: LoginCheckableView {
     private let selectedEvent: DetailEventUIO
     
-    init(selectedEvent: DetailEventUIO) {
-        self.selectedEvent = selectedEvent
-    }
+    @Environment(AppState.self) var appState
     
-    @State var isFavorite: Bool = false
+    @Binding private var isFavorite: Bool
+    @Binding private var likeCount: Int
+    
+    init(selectedEvent: DetailEventUIO, isFavorite: Binding<Bool>, likeCount: Binding<Int>) {
+        self.selectedEvent = selectedEvent
+        self._isFavorite = isFavorite
+        self._likeCount = likeCount
+    }
     var body: some View {
         ScrollView {
             VStack(spacing: 0){
@@ -49,16 +54,26 @@ extension EventDetailInfoView {
                 .figmaFont(PretendardFont.title(style: .sm))
                 .frame(maxWidth: .infinity, alignment: .leading)
             
-            //            VStack{
-            //                Image(systemName: isFavorite ? "heart.fill" : "heart")
-            //                    .resizable()
-            //                    .frame(width: 21, height: 19)
-            //                    .foregroundStyle(.brand500)
-            //                    .onTapGesture {
-            //                        isFavorite.toggle()
-            //                    }
-            //            }
-            //            .frame(width: 32, height: 32)
+            VStack(spacing: 0){
+                VStack(spacing: 0){
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
+                        .resizable()
+                        .frame(width: 21, height: 19)
+                        .foregroundStyle(.brand500)
+                        .onTapGesture {
+                            checkLoginBefore {
+                                isFavorite.toggle()
+                                likeCount += isFavorite ? 1 : -1
+                            }
+                        }
+                }
+                .frame(width: 32, height: 32)
+                
+                Text("\(likeCount)")
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
+                    .foregroundColor(.gray500)
+            }
+            .frame(width: 32, height: 49)
         }
     }
 }
@@ -69,9 +84,16 @@ extension EventDetailInfoView {
     /// - Author: Doran
     private func infoCell(title: String, content: String) -> some View {
         HStack(spacing: 12) {
-            Text(title)
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold)))
-                .foregroundColor(.gray600)
+            VStack(spacing: 0){
+                VStack(spacing: 0){
+                    Spacer()
+                    Text(title)
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .semibold)))
+                        .foregroundColor(.gray600)
+                }
+                .frame(width: 21, height: 15)
+                Spacer()
+            }
             Text(content)
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .regular)))
                 .foregroundColor(.gray300)
@@ -81,5 +103,5 @@ extension EventDetailInfoView {
 }
 
 #Preview {
-    EventDetailInfoView(selectedEvent: .dummy0)
+    EventDetailInfoView(selectedEvent: .dummy0, isFavorite: .constant(false), likeCount: .constant(0))
 }

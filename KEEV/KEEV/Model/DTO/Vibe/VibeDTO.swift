@@ -30,13 +30,13 @@ struct VibeDTO: Decodable, Hashable, Identifiable {
         self.replyCount = replyCount
     }
     
-    enum CodingKeys: CodingKey {
+    enum CodingKeys: String, CodingKey {
         case id
         case user
         case event
         case rating
         case comment
-        case imageURLs
+        case imageURLs = "imageURLList"
         case createdDate
         case likeCount
         case replyCount

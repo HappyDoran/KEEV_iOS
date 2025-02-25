@@ -12,8 +12,6 @@ struct ReplyDTO: Decodable, Hashable, Identifiable {
     
     let user: SimpleUserDTO
     
-    let vibeID: Int
-    
     let text: String
     
     let isLiked: Bool
@@ -38,7 +36,6 @@ struct ReplyDTO: Decodable, Hashable, Identifiable {
         
         self.id = try container.decode(Int.self, forKey: .id)
         self.user = try container.decode(SimpleUserDTO.self, forKey: .user)
-        self.vibeID = try container.decode(Int.self, forKey: .vibeID)
         self.text = try container.decode(String.self, forKey: .text)
         self.isLiked = try container.decode(Bool.self, forKey: .isLiked)
         self.likeCount = try container.decode(Int.self, forKey: .likeCount)

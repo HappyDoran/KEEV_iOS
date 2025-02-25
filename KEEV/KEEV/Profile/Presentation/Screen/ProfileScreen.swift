@@ -29,45 +29,51 @@ struct ProfileScreen: View {
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
     @State private var tapFeedback = false
-    @State private var scrollID: Int? = 0
+    @State private var scrollID: ShowProfileHeader? = .show
     @State private var error: Error? = nil
     
     var body: some View {
         ScrollViewReader { proxy in
             ZStack(alignment: .top) {
                 ScrollView(showsIndicators: false) {
-                    ProfileTopView(
-                        userProfile: userProfile,
-                        isMyProfile: isMyProfile,
-                        showActionSheet: $showActionSheet,
-                        navigateToReport: $navigateToReport
-                    )
-                    .id(0)
-                    
-                    if isMyProfile {
-                        profileEditButton
+                    VStack(spacing: 0) {
+                        ProfileTopView(
+                            userProfile: userProfile,
+                            isMyProfile: isMyProfile,
+                            showActionSheet: $showActionSheet,
+                            navigateToReport: $navigateToReport
+                        )
+                        .id(ShowProfileHeader.show)
+                        
+                        if isMyProfile {
+                            profileEditButton
+                        }
+                        
+                        ProfileLikedEventsView(
+                            userID: userID,
+                            error: $error
+                        )
+                        .id(ShowProfileHeader.hide)
+                        
+                        ProfileVibeView(
+                            userID: userID,
+                            isMyProfile: isMyProfile,
+                            selectedVibeViewType: $selectedVibeViewType,
+                            error: $error
+                        )
                     }
-                    
-                    ProfileVibeView(
-                        userID: userID,
-                        isMyProfile: isMyProfile,
-                        selectedVibeViewType: $selectedVibeViewType,
-                        error: $error
-                    )
-                    .id(1)
                 }
                 .ignoresSafeArea(edges: .top)
                 .scrollTargetLayout()
                 .scrollPosition(id: $scrollID, anchor: .top)
                 
-                if scrollID == 0 {
+                if scrollID == .show {
                     ProfileHeader(
                         isNavigation: isNavigation,
                         isMyProfile: isMyProfile,
                         showActionSheet: $showActionSheet
                     )
                 }
-
             }
             .backgroundForKEEV()
             .task {
@@ -139,6 +145,16 @@ private extension ProfileScreen {
 enum VibeViewType {
     case list
     case table
+}
+
+/// 프로필 스크린의 헤더의 노출 여부를 판단하는 열거형입니다.
+///
+/// 스크롤의 ID에 사용해서 스크롤 위치에 따라 프로필 스크린의 헤더가 화면에 보이게 할지에 대한 여부를 판단합니다.
+///
+/// - Author: 라움
+enum ShowProfileHeader: String, Hashable {
+    case show
+    case hide
 }
 
 #Preview {

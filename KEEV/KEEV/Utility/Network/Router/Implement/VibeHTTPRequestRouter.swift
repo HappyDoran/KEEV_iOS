@@ -24,6 +24,10 @@ enum VibeHTTPRequestRouter {
     case modifyVibe(token: String, vibeID: Int, data: Data)
     case checkIfUserUploadedVibe(token: String, eventID: String)
     case getVibeWithVibeID(vibeID: Int)
+    case likeVibe(token: String, vibeID: Int)
+    case cancelLikeVibe(token: String, vibeID: Int)
+    case getVibeLikeCount(vibeID: Int)
+    case checkIfUserLikedVibe(token: String, vibeID: Int)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
@@ -32,11 +36,11 @@ enum VibeHTTPRequestRouter {
 extension VibeHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
-        case .getVibeCount, .getVibes, .checkIfUserUploadedVibe, .getVibeWithVibeID, .getVibesFromEventID:
+        case .getVibeCount, .getVibes, .checkIfUserUploadedVibe, .getVibeWithVibeID, .getVibesFromEventID, .getVibeLikeCount, .checkIfUserLikedVibe:
                 .get
-        case .uploadVibe:
+        case .uploadVibe, .likeVibe:
                 .post
-        case .deleteVibe:
+        case .deleteVibe, .cancelLikeVibe:
                 .delete
         case .modifyVibe:
                 .patch
@@ -45,19 +49,19 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String : String]? {
         switch self {
-        case .getVibes, .getVibeWithVibeID, .getVibesFromEventID, .getVibeCount:
-            return nil
-        case .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _):
+        case .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _), .likeVibe(let token, _), .cancelLikeVibe(let token, _), .checkIfUserLikedVibe(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
+        case .getVibeLikeCount, .getVibeCount, .getVibes, .getVibeWithVibeID, .getVibesFromEventID:
+            return nil
         }
     }
     
     var body: Data? {
         switch self {
-        case .getVibeCount, .getVibes, .getVibeWithVibeID, .checkIfUserUploadedVibe, .getVibesFromEventID:
+        case .getVibeCount, .getVibes, .getVibeWithVibeID, .checkIfUserUploadedVibe, .getVibesFromEventID, .likeVibe, .cancelLikeVibe, .getVibeLikeCount, .checkIfUserLikedVibe:
             return nil
         case .uploadVibe(_, _, let data):
             return data
@@ -82,9 +86,9 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         case .getVibeCount(let eventID):
             path.append(contentsOf: ["count", "\(eventID)"])
         case .getVibes:
-            path.append(contentsOf: ["get", "sortBy"])
+            return ["open-api", "vibe", "feed"]
         case .getVibesFromEventID(let id, _, _, _):
-            path.append(contentsOf: ["get", id, "sortBy"])
+            return ["open-api", "event", "\(id)", "vibe"]
         case .uploadVibe(_, let eventID, _):
             path.append(contentsOf: ["register", "\(eventID)"])
         case .deleteVibe:
@@ -94,8 +98,15 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         case .checkIfUserUploadedVibe(_, let eventID):
             path.append(contentsOf: ["find", "\(eventID)"])
         case .getVibeWithVibeID(let vibeID):
-            // 향후에 endpoint 나오면 수정해야합니다.
-            path.append(contentsOf: ["get", "\(vibeID)"])
+            return ["open-api", "vibe", "\(vibeID)"]
+        case .likeVibe(_, let vibeID):
+            path.append(contentsOf: ["like", "\(vibeID)"])
+        case .cancelLikeVibe(_, let vibeID):
+            path.append(contentsOf: ["like", "\(vibeID)"])
+        case .getVibeLikeCount(let vibeID):
+            path.append(contentsOf: ["like", "\(vibeID)", "count"])
+        case .checkIfUserLikedVibe(_, let vibeID):
+            path.append(contentsOf: ["liked", "\(vibeID)"])
         }
         
         return path
@@ -103,7 +114,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var queryItems: [URLQueryItem]? {
         switch self {
-        case .getVibes(page: let page, size: let size, sort: let sort), .getVibesFromEventID(_, page: let page, size: let size, sort: let sort):
+        case .getVibes(let page, let size, let sort), .getVibesFromEventID(_, let page, let size, let sort):
             var queryItems = [
                 URLQueryItem(name: "size", value: "\(size)"),
                 URLQueryItem(name: "page", value: "\(page)")
@@ -115,7 +126,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
             }
             
             return queryItems
-        case .getVibeCount, .uploadVibe, .deleteVibe, .modifyVibe, .checkIfUserUploadedVibe, .getVibeWithVibeID:
+        case .getVibeCount, .uploadVibe, .deleteVibe, .modifyVibe, .checkIfUserUploadedVibe, .getVibeWithVibeID, .likeVibe, .cancelLikeVibe, .getVibeLikeCount, .checkIfUserLikedVibe:
             return nil
         }
     }

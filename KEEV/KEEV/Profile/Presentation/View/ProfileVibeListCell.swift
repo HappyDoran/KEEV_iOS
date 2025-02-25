@@ -13,7 +13,11 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileVibeListCell: View {
-    let vibe: VibeUIO
+    private let vibe: VibeUIO
+    
+    init(vibe: VibeUIO) {
+        self.vibe = vibe
+    }
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -105,17 +109,29 @@ private extension ProfileVibeListCell {
                     .padding(.horizontal, 16)
             }
             
-            HStack(spacing: 4) {
-                //                Image(systemName: "heart.fill")
-                //
-                //                Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
-                //                    .padding(.trailing, 8)
+            HStack(spacing: 12) {
+                HStack(spacing: 4) {
+                    Image("Heart.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+                    
+                    Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                }
                 
-                Image(systemName: "bubble.middle.bottom.fill")
+                HStack(spacing: 4) {
+                    Image("Reply.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 12)
+                    
+                    Text(vibe.replyCount > 99 ? "99+" : "\(vibe.replyCount)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                }
                 
-                Text(vibe.replyCount > 99 ? "99+" : "\(vibe.replyCount)")
+                Spacer()
             }
-            .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
             .foregroundStyle(.gray500)
             .padding(.horizontal, 16)
         }
@@ -168,10 +184,9 @@ private extension ProfileVibeListCell {
 #Preview {
     NavigationStack {
         NavigationLink {
-            LazyView(VibeDetailScreen(vibe: .dummy0))
+            LazyView(VibeDetailScreen(vibe: .constant(.dummy0)))
         } label: {
             ProfileVibeListCell(vibe: .dummy7)
         }
     }
-    
 }

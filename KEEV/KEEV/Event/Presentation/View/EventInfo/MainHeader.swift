@@ -13,11 +13,9 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct MainHeader: View {
-    @Binding private var selectedEvent: SimpleEventUIO?
     private var proxy: ScrollViewProxy?
     
-    init(selectedEvent: Binding<SimpleEventUIO?> = Binding.constant(nil), proxy: ScrollViewProxy? = nil) {
-        self._selectedEvent = selectedEvent
+    init(proxy: ScrollViewProxy? = nil) {
         self.proxy = proxy
     }
     
@@ -36,16 +34,6 @@ struct MainHeader: View {
             }
             
             Spacer()
-            
-            // MARK: 검색 시트 위로 올리는 버튼
-            NavigationLink {
-                TotalSearchScreen()
-            } label: {
-                Image(systemName: "magnifyingglass")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
-                    .font(.system(size: 20))
-                    .foregroundColor(Color.gray100)
-            }
         }
         .frame(height: 48)
         .padding(.horizontal, 16)

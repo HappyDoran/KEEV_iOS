@@ -65,6 +65,18 @@ extension KEEVActionSheet {
             self.configurations = defaults
         }
         
+        init(configurations: Binding<[any KEEVButtonConfiguration]?>) {
+            self._isPresented = .init(get: {
+                configurations.wrappedValue != nil
+            }, set: { bool in
+                if !bool {
+                    configurations.wrappedValue = nil
+                }
+            })
+            
+            self.configurations = configurations.wrappedValue ?? []
+        }
+        
         /// Modifier가 적용된 새로운 뷰를 리턴하는 함수
         ///
         /// - Parameters:

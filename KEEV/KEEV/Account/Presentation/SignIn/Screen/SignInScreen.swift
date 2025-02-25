@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import AuthenticationServices
 
 /// 로그인 화면
 ///
@@ -17,15 +16,12 @@ import AuthenticationServices
 /// - Author: 라움
 struct SignInScreen: View {
     @Injected private var accountService: any AccountServiceProtocol
-    @Injected private var settingService: any SettingServiceProtocol
     
-    @Binding var status: SignInStatus?
     @State private var error: Error? = nil
-    @State private var showTermsOfUse = false
-    @State private var showPrivacyPolicy = false
     
     var body: some View {
         VStack {
+            Spacer()
             Spacer()
             
             Image("LogoLargeImage")
@@ -34,109 +30,52 @@ struct SignInScreen: View {
             
             Spacer()
             
-            signInWithAppleButton
-                .padding(.horizontal, 24)
-                .padding(.bottom, 20)
+            VStack(spacing: 16) {
+                signInWithAppleButton
+                lookAroundButton
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 32)
             
-            signInBottomText
+            TermAndCondition()
         }
         .backgroundForKEEV()
-        .sheet(isPresented: $showTermsOfUse, content: {
-            DocumentView(title: "서비스 이용약관", text: settingService.termsOfUse())
-                .presentationDragIndicator(.visible)
-                .padding(.top, 16)
-                .backgroundForKEEV()
-        })
-        .sheet(isPresented: $showPrivacyPolicy, content: {
-            DocumentView(title: "개인정보 처리방침", text: settingService.privacyPolicy())
-                .presentationDragIndicator(.visible)
-                .padding(.top, 16)
-                .backgroundForKEEV()
-        })
         .alertForError($error)
     }
 }
 
 private extension SignInScreen {
     var signInWithAppleButton: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 14)
-                .foregroundStyle(.white)
-                .frame(height: 54)
-                .overlay {
-                    SignInWithAppleButton(.signIn,
-                                          onRequest: { request in
-                        request.requestedScopes = [.email]
-                    }, onCompletion: { result in
-                        switch result {
-                        case .success(let authorization):
-                            switch authorization.credential {
-                            case let appleIDCredential as ASAuthorizationAppleIDCredential:
-                                let email = appleIDCredential.email
-                                let user = appleIDCredential.user
-                                let token = appleIDCredential.identityToken!
-                                let code = appleIDCredential.authorizationCode!
-                                
-                                Task {
-                                    do {
-                                        status = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
-                                    } catch let failToSignIn {
-                                        error = failToSignIn
-                                    }
-                                }
-                                
-                            default: break
-                            }
-                        case .failure(let error):
-                            debugPrint(error)
-                        }
-                    })
-                    .blendMode(.overlay)
-                    .cornerRadius(14)
-                    .signInWithAppleButtonStyle(.white)
-                    .frame(height: 54)
+        AppleLoginButton { (email, user, token, code) in
+            Task {
+                do {
+                    _ = try await accountService.signInWithApple(email: email, user: user, identityToken: token, authorizationCode: code)
+                } catch let failToSignIn {
+                    error = failToSignIn
                 }
-        
-            Label("Apple로 로그인", systemImage: "apple.logo")
-                .figmaFont(PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold)))
-                .foregroundStyle(.black)
-                .frame(height: 54)
+            }
         }
     }
     
-    var signInBottomText: some View {
-        HStack(spacing: 0) {
-            Text("로그인(가입)시 ")
-            
-            Button {
-                showTermsOfUse = true
-            } label: {
-                Text("이용약관")
-                    .underline()
-                    .baselineOffset(4)
-                    .offset(y: 2)
-            }
-            
-            Text(" 및 ")
-            
-            Button {
-                showPrivacyPolicy = true
-            } label: {
-                Text("개인정보 처리방침")
-                    .underline()
-                    .baselineOffset(4)
-                    .offset(y: 2)
-            }
-            
-            Text("에 동의하게 됩니다.")
+    var lookAroundButton: some View {
+        Button("로그인 없이 둘러보기") {
+            _ = accountService.lookAround()
         }
-        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall3, bodyWeight: .regular)))
-        .foregroundStyle(.gray500)
+        .frame(maxWidth: .infinity)
+        .frame(height: 54)
+        .figmaFont(
+            PretendardFont.body(style: .init(bodySize: .large, bodyWeight: .semibold))
+        )
+        .foregroundStyle(Color.grayBG300)
+        .background(
+            RoundedRectangle(cornerRadius: 14)
+                .fill(Color.grayBG700)
+        )
     }
 }
 
 #Preview {
     KEEVPreview {
-        SignInScreen(status: .constant(.failed))
+        SignInScreen()
     }
 }

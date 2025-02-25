@@ -7,9 +7,18 @@
 
 import SwiftUI
 
-struct ReplyInputView: View {
+struct ReplyInputView: LoginCheckableView {
+    @Environment(AppState.self) var appState
+    
     @Binding var replyText: String
     var isFocused: FocusState<Bool>.Binding
+    private var isLogin: Bool {
+        if case .ok = appState.loginStatus {
+            return true
+        } else {
+            return false
+        }
+    }
     private let sendHandler: (String) -> Void
     
     init(replyText: Binding<String>, isFocused: FocusState<Bool>.Binding, sendHandler: @escaping (String) -> Void) {
@@ -20,21 +29,17 @@ struct ReplyInputView: View {
     
     var body: some View {
         HStack {
-            TextField(
-                "",
-                text: $replyText,
-                prompt: Text("댓글을 입력해주세요")
-                    .foregroundStyle(.gray700)
-            )
-            .figmaFont(
-                PretendardFont.body(
-                    style: .init(bodySize: .medium, bodyWeight: .regular)
+            replyTextField
+                .id(appState.loginStatus)
+                .figmaFont(
+                    PretendardFont.body(
+                        style: .init(bodySize: .medium, bodyWeight: .regular)
+                    )
                 )
-            )
-            .focused(isFocused)
-            .padding(.vertical, 12)
-            .padding(.leading, 16)
-            .foregroundStyle(.gray100)
+                .focused(isFocused)
+                .padding(.vertical, 12)
+                .padding(.leading, 16)
+                .foregroundStyle(.gray100)
             
             Spacer()
             
@@ -50,6 +55,22 @@ struct ReplyInputView: View {
 }
 
 private extension ReplyInputView {
+    @ViewBuilder
+    var replyTextField: some View {
+        if isLogin {
+            TextField(
+                "",
+                text: $replyText,
+                prompt: Text("댓글을 입력해주세요")
+                    .foregroundStyle(.gray700)
+            )
+        } else {
+            Text("로그인이 필요한 서비스입니다.")
+                .foregroundStyle(.gray700)
+                .onTapGesture { _ = appState.checkLoginStatus() }
+        }
+    }
+    
     var replySendButton: some View {
         Button {
             sendHandler(replyText)
@@ -65,7 +86,7 @@ private extension ReplyInputView {
 
 private extension ReplyInputView {
     func isAvailableReply(_ reply: String) -> Bool {
-        !reply.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        isLogin && !reply.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
 
@@ -73,4 +94,5 @@ private extension ReplyInputView {
     ReplyInputView(replyText: .constant(""), isFocused: FocusState<Bool>().projectedValue) { _ in
         
     }
+    .environment(AppState())
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+
 import Firebase
 
 /// TabBar가 포함된 뷰(.tabItem이 포함된 경우)
@@ -16,9 +17,11 @@ import Firebase
 ///
 /// - Author: Doran
 struct EntryView: View {
+    @Environment(AppState.self) private var appState
+    
     @State private var isPresented = false
     @State private var selectedItem = TabbedItem.info.rawValue
-    @State private var signInStatus: SignInStatus? = nil
+    @State private var tmpSelectedItem = TabbedItem.info.rawValue
     @State private var userID: Int? = nil
     
     init() {
@@ -34,17 +37,17 @@ struct EntryView: View {
     
     var body: some View {
         NavigationStack {
-            if let signInStatus {
+            if let signInStatus = appState.loginStatus {
                 switch signInStatus {
                 case .failed:
-                    SignInScreen(status: $signInStatus)
-                case .ok(_):
+                    SignInScreen()
+                case .ok(_), .lookAround:
                     signInSuccessView
                 case .created:
-                    SignUpScreen(status: $signInStatus)
+                    SignUpScreen(status: signInStatus)
                 }
             } else {
-                LaunchScreen(status: $signInStatus)
+                LaunchScreen()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
@@ -53,24 +56,29 @@ struct EntryView: View {
                 AnalyticsEventScreenView,
                 parameters: [
                     AnalyticsParameterScreenName: "EntryView",
-                    AnalyticsParameterScreenClass: "EntryView"]
+                    AnalyticsParameterScreenClass: "EntryView"
+                ]
             )
         }
-        .onChange(of: signInStatus) {
-            if case let .ok(user) = signInStatus {
+        .onChange(of: appState.loginStatus) {
+            if case let .ok(user) = appState.loginStatus {
                 userID = user.id
+                if tmpSelectedItem == TabbedItem.write.rawValue {
+                    Task {
+                        try await Task.sleep(nanoseconds: 300_000_000)
+                        selectedItem = tmpSelectedItem
+                    }
+                }
+                if tmpSelectedItem == TabbedItem.profile.rawValue {
+                    selectedItem = tmpSelectedItem
+                }
+            }
+            else {
+                userID = nil
+                selectedItem = TabbedItem.info.rawValue
             }
         }
         .tint(.gray100)
-        .onReceive(
-            NotificationCenter.Publisher
-                .signInStatusPublisher
-                .receive(on: DispatchQueue.main)
-        ) { status in
-            selectedItem = TabbedItem.info.rawValue
-            signInStatus = status
-        }
-        
     }
     
     private var signInSuccessView: some View {
@@ -81,11 +89,24 @@ struct EntryView: View {
                 }
                 .tag(TabbedItem.info.rawValue)
             
+            // 바이브 피드 탭으로 교체해주어야합니다.
+            VibeFeedScreen(selectedItem: $selectedItem)
+                .tabItem {
+                    TabbedItem.label(for: .feed)
+                }
+                .tag(TabbedItem.feed.rawValue)
+            
             Text("")
                 .tabItem {
                     TabbedItem.label(for: .write)
                 }
                 .tag(TabbedItem.write.rawValue)
+            
+            TotalSearchScreen()
+                .tabItem {
+                    TabbedItem.label(for: .search)
+                }
+                .tag(TabbedItem.search.rawValue)
             
             ProfileScreen(
                 selectedItem: $selectedItem,
@@ -101,9 +122,20 @@ struct EntryView: View {
         .tint(.brand500)
         .sensoryFeedback(.impact, trigger: selectedItem)
         .onChange(of: selectedItem) { oldValue, newValue in
-            if newValue == TabbedItem.write.rawValue {
-                isPresented = true
-                selectedItem = oldValue
+            if case .lookAround = appState.loginStatus {
+                let restrictedTabs = [TabbedItem.write.rawValue, TabbedItem
+                    .profile.rawValue]
+                if restrictedTabs.contains(newValue) {
+                    selectedItem = oldValue
+                    tmpSelectedItem = newValue
+                    _ = appState.checkLoginStatus()
+                }
+            }
+            else {
+                if newValue == TabbedItem.write.rawValue {
+                    isPresented = true
+                    selectedItem = oldValue
+                }
             }
         }
         .fullScreenCover(isPresented: $isPresented) {
@@ -115,14 +147,13 @@ struct EntryView: View {
 private extension EntryView {
     struct LaunchScreen: View {
         @Injected private var service: any AccountServiceProtocol
-        @Binding var status: SignInStatus?
         
         var body: some View {
             Image("LogoLargeImage")
                 .resizable()
                 .frame(width: 250, height: 103.5)
                 .task {
-                    status = await service.autoSignIn()
+                    _ = await service.autoSignIn()
                 }
         }
     }

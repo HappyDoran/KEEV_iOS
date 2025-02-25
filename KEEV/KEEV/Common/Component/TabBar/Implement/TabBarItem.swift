@@ -14,15 +14,23 @@ import SwiftUI
 /// - Author: Doran
 enum TabbedItem: String, CaseIterable{
     case info = "info"
+    case feed = "feed"
     case write = "write"
+    case search = "search"
     case profile = "profile"
     
+    /// - Note: 1.1.0 기준으로 탭바에서 title이 빠졌지만 나중에 필요할 수도 있을 것 같아서 일단 남겨놓겠습니다.
+    /// - Author: 라움
     var title: String{
         switch self {
         case .info:
-            return "정보"
+            return "홈"
+        case .feed:
+            return "피드"
         case .write:
             return "글쓰기"
+        case .search:
+            return "검색"
         case .profile:
             return "프로필"
         }
@@ -31,19 +39,20 @@ enum TabbedItem: String, CaseIterable{
     var iconName: String{
         switch self {
         case .info:
-            return "newspaper.fill"
+            return "house.fill"
+        case .feed:
+            return "doc.text.image.fill"
         case .write:
             return "plus.app"
+        case .search:
+            return "magnifyingglass"
         case .profile:
             return "person.fill"
         }
     }
     
     static func label(for item: TabbedItem) -> some View {
-        VStack(spacing: 0) {
-            Image(systemName: item.iconName)
-            Text(item.title)
-        }
-        .environment(\.symbolVariants, .none)
+        Image(systemName: item.iconName)
+            .environment(\.symbolVariants, .none)
     }
 }

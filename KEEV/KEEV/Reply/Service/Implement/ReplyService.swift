@@ -53,8 +53,7 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     /// - Author: Doran
     func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
         try await doAsyncWithException(caller: "fetchReplies") {
-            let accessToken = try await getAccessToken()
-            let router = ReplyHTTPRequestRouter.fetchReplies(token: accessToken, vibeID: vibeID)
+            let router = ReplyHTTPRequestRouter.fetchReplies(vibeID: vibeID)
             
             let data = try await networkUtility.request(router: router)
             
@@ -110,13 +109,13 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     /// - Returns: 수정 완료한 객체
     ///
     /// - Author: Doran
-    func modifyReply(_ reply: ReplyUIO, updatedText: String) async throws -> ReplyUIO {
+    func modifyReply(_ reply: ReplyUIO, vibeID: Int, updatedText: String) async throws -> ReplyUIO {
         try await doAsyncWithException(caller: "modifyReply") {
             let accessToken = try await getAccessToken()
             let router = ReplyHTTPRequestRouter.modifyReply(
                 token: accessToken,
                 replyID: "\(reply.id)",
-                vibeID: "\(reply.vibeID)",
+                vibeID: "\(vibeID)",
                 updatedText: updatedText
             )
             
@@ -159,7 +158,16 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func likeReply(replyID: Int) async throws -> Bool {
-        true
+        try await doAsyncWithException(caller: "likeReply") {
+            let accessToken = try await getAccessToken()
+            let router = ReplyHTTPRequestRouter.likeReply(token: accessToken, replyID: "\(replyID)")
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let replyLikeResponse = try jsonDecoder.decode(ReplyLikeResponse.self, from: data)
+            
+            return replyLikeResponse.isLiked
+        }
     }
     
     /// 바이브에 달린 댓글에 대한 좋아요를 취소하는 함수
@@ -174,7 +182,16 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func cancelLikeReply(replyID: Int) async throws -> Bool {
-        false
+        try await doAsyncWithException(caller: "cancelLikeReply") {
+            let accessToken = try await getAccessToken()
+            let router = ReplyHTTPRequestRouter.cancelLikeReply(token: accessToken, replyID: "\(replyID)")
+            
+            let data = try await networkUtility.request(router: router)
+            
+            let replyLikeResponse = try jsonDecoder.decode(ReplyLikeResponse.self, from: data)
+            
+            return replyLikeResponse.isLiked
+        }
     }
 }
 

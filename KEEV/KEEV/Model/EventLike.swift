@@ -12,6 +12,5 @@ struct EventLikeCount: Decodable {
 }
 
 struct EventLikeResponse: Decodable {
-    let message: String
     let isInterested: Bool
 }
