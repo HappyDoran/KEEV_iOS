@@ -14,6 +14,17 @@ enum ActivityHTTPRequestRouter {
     case userInfo(userID: Int)
     case userVibeList(userID: Int)
     case userLikedEvents(userID: Int, page: Int, size: Int, sort: [SortParameter])
+    
+    private var id: Int {
+        switch self {
+        case .userInfo(let userID):
+            userID
+        case .userVibeList(let userID):
+            userID
+        case .userLikedEvents(let userID, _, _, _):
+            userID
+        }
+    }
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
@@ -40,11 +51,15 @@ extension ActivityHTTPRequestRouter: HTTPRequestable {
     var headers: [String : String]? { nil }
     
     var path: [String]? {
+        var path = ["open-api", "user", "\(id)"]
+        
         switch self {
-        case .userInfo(let id): ["open-api", "user", "\(id)"]
-        case .userVibeList(let id): ["open-api", "user", "\(id)", "vibe"]
-        case .userLikedEvents(let id, _, _, _): ["open-api", "user", "\(id)", "event", "liked"]
+        case .userInfo: break
+        case .userVibeList: path.append("vibe")
+        case .userLikedEvents: path += ["event", "liked"]
         }
+        
+        return path
     }
     
     var queryItems: [URLQueryItem]? {

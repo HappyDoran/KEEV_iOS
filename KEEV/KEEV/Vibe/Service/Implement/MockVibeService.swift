@@ -39,7 +39,6 @@ class MockVibeService: VibeServiceProtocol {
                     createdDate: "2024.11.25",
                     likeCount: index,
                     replyCount: index,
-                    isLiked: false,
                     isMine: index % 10 == 1
                 )
             )
@@ -68,7 +67,6 @@ class MockVibeService: VibeServiceProtocol {
                     createdDate: "2024.11.25",
                     likeCount: index,
                     replyCount: index,
-                    isLiked: false,
                     isMine: index % 10 == 1
                 )
             )
@@ -88,7 +86,6 @@ class MockVibeService: VibeServiceProtocol {
             createdDate: "2024.11.26",
             likeCount: 0,
             replyCount: 0,
-            isLiked: false,
             isMine: true
         )
         
@@ -112,7 +109,6 @@ class MockVibeService: VibeServiceProtocol {
             createdDate: VibeUIO.dummy0.createdDate,
             likeCount: VibeUIO.dummy0.likeCount,
             replyCount: VibeUIO.dummy0.replyCount,
-            isLiked: false,
             isMine: true
         )
         

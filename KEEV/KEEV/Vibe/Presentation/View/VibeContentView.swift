@@ -7,12 +7,16 @@
 
 import SwiftUI
 
-struct VibeContentView: View {
+struct VibeContentView: LoginCheckableView {
+    @Environment(AppState.self) var appState: AppState
+    
     @Binding private var vibe: VibeUIO
+    @Binding private var isLiked: Bool
     private let likeTapHandler: () -> Void
     
-    init(vibe: Binding<VibeUIO>, likeTapHandler: @escaping () -> Void) {
+    init(vibe: Binding<VibeUIO>, isLiked: Binding<Bool>, likeTapHandler: @escaping () -> Void) {
         self._vibe = vibe
+        self._isLiked = isLiked
         self.likeTapHandler = likeTapHandler
     }
     
@@ -88,11 +92,11 @@ private extension VibeContentView {
     var heartAndCommentCount: some View {
         HStack(spacing: 20) {
             HStack(spacing: 8) {
-                Image(vibe.isLiked ? "Heart.fill.color" : "Heart")
+                Image(isLiked ? "Heart.fill.color" : "Heart")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 18)
-                    .onTapGesture(perform: likeTapHandler)
+                    .onTapGesture(perform: tapLike)
                 
                 Text(vibe.likeCount > 99 ? "99+" : "\(vibe.likeCount)")
             }
@@ -112,6 +116,14 @@ private extension VibeContentView {
             PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .medium))
         )
         .foregroundStyle(.gray500)
+    }
+}
+
+private extension VibeContentView {
+    private func tapLike() {
+        checkLoginBefore {
+            likeTapHandler()
+        }
     }
 }
 
@@ -158,7 +170,7 @@ private extension VibeContentView {
 }
 
 #Preview {
-    VibeContentView(vibe: .constant(.dummy0), likeTapHandler: {
+    VibeContentView(vibe: .constant(.dummy0), isLiked: .constant(false), likeTapHandler: {
         
     })
     .padding(.top, 20)

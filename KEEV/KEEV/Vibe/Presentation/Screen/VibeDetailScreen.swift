@@ -18,13 +18,15 @@ enum VibeDetailPath {
 }
 
 // -MARK: 스크린 핵심부
-struct VibeDetailScreen: View {
+struct VibeDetailScreen: LoginCheckableView {
+    @Environment(AppState.self) var appState
     @Environment(\.dismiss) private var dismiss
     
     @Injected private var replyService: any ReplyServiceProtocol
     @Injected private var vibeService: any VibeServiceProtocol
     
     @Binding private var vibe: VibeUIO
+    @State private var isLiked = false
     @State private var replies: [ReplyUIO] = []
     
     private let vibeDetailPath: VibeDetailPath
@@ -64,7 +66,7 @@ struct VibeDetailScreen: View {
                 ScrollView {
                     VStack(spacing: 0) {
                         eventInfo
-                        VibeContentView(vibe: $vibe, likeTapHandler: tapVibeLike)
+                        VibeContentView(vibe: $vibe, isLiked: $isLiked, likeTapHandler: tapVibeLike)
                             .padding(.top, 20)
                             .padding(.horizontal, 16)
                         Rectangle().frame(height: 1).foregroundColor(.gray800)
@@ -83,6 +85,7 @@ struct VibeDetailScreen: View {
                 .scrollIndicators(.hidden)
                 .refreshable {
                     fetchVibe()
+                    fetchIsLiked()
                     fetchReplies()
                 }
                 
@@ -149,7 +152,7 @@ struct VibeDetailScreen: View {
                 VibeModifyScreen(vibe: $vibe, onUpdate: onUpdate)
             }
             .onAppear{
-                fetchVibe()
+                fetchIsLiked()
                 fetchReplies()
             }
             .onChange(of: toggleAdd) {
@@ -177,7 +180,10 @@ private extension VibeDetailScreen {
         } else {
             return [
                 .report(title: "신고하기") {
-                    navigateToReport = .vibe(eventID: vibe.event.id, vibeID: vibe.id)
+                    showVibeActionSheet = false
+                    checkLoginBefore {
+                        navigateToReport = .vibe(eventID: vibe.event.id, vibeID: vibe.id)
+                    }
                 }
             ]
         }
@@ -199,16 +205,24 @@ private extension VibeDetailScreen {
             return .othersComment {
                 if let reply = selectedReply?.reply {
                     showReplyActionSheet = nil
-                    navigateToReport = .reply(vibeID: vibe.id, replyID: reply.id)
+                    checkLoginBefore {
+                        navigateToReport = .reply(vibeID: vibe.id, replyID: reply.id)
+                    }
                 }
             }
+        }
+    }
+    
+    func fetchIsLiked() {
+        Task {
+            isLiked = (try? await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)) ?? false
         }
     }
     
     func checkIfUserLikedVibe() {
         Task {
             do {
-                vibe.isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
+                isLiked = try await vibeService.checkIfUserLikedVibe(vibeID: vibe.id)
             } catch {
                 errorForAlert = error
             }
@@ -218,12 +232,12 @@ private extension VibeDetailScreen {
     func tapVibeLike() {
         Task {
             do {
-                switch vibe.isLiked {
+                switch isLiked {
                 case true:
-                    vibe.isLiked = try await vibeService.cancelLikeVibe(vibeID: vibe.id)
+                    isLiked = try await vibeService.cancelLikeVibe(vibeID: vibe.id)
                     vibe.likeCount -= 1
                 case false:
-                    vibe.isLiked = try await vibeService.likeVibe(vibeID: vibe.id)
+                    isLiked = try await vibeService.likeVibe(vibeID: vibe.id)
                     vibe.likeCount += 1
                 }
             } catch {
@@ -241,18 +255,20 @@ private extension VibeDetailScreen {
     }
     
     func tapReplyLike(index: Int, reply: ReplyUIO) {
-        Task {
-            do {
-                switch reply.isLiked {
-                case true:
-                    replies[index].isLiked = try await replyService.cancelLikeReply(replyID: reply.id)
-                    replies[index].likeCount -= 1
-                case false:
-                    replies[index].isLiked = try await replyService.likeReply(replyID: reply.id)
-                    replies[index].likeCount += 1
+        checkLoginBefore {
+            Task {
+                do {
+                    switch reply.isLiked {
+                    case true:
+                        replies[index].isLiked = try await replyService.cancelLikeReply(replyID: reply.id)
+                        replies[index].likeCount -= 1
+                    case false:
+                        replies[index].isLiked = try await replyService.likeReply(replyID: reply.id)
+                        replies[index].likeCount += 1
+                    }
+                } catch {
+                    errorForAlert = error
                 }
-            } catch {
-                errorForAlert = error
             }
         }
     }

@@ -61,7 +61,7 @@ struct EventVibeCell: View {
                 Spacer()
 
                 HStack(spacing: 4) {
-                    Image(vibeData.isLiked ? "Heart.fill.color" : "Heart.fill")
+                    Image("Heart.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 12)
