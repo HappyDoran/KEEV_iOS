@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import Firebase
+
 /// TabBar가 포함된 뷰(.tabItem이 포함된 경우)
 ///
 /// 탭바의 배경색, 탭바의 구분선을 UITabBarAppearance()를 사용하여 구현
@@ -48,6 +50,15 @@ struct EntryView: View {
                 LaunchScreen()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
+        }
+        .onAppear {
+            Analytics.logEvent(
+                AnalyticsEventScreenView,
+                parameters: [
+                    AnalyticsParameterScreenName: "EntryView",
+                    AnalyticsParameterScreenClass: "EntryView"
+                ]
+            )
         }
         .onChange(of: appState.loginStatus) {
             if case let .ok(user) = appState.loginStatus {

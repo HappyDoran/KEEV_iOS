@@ -20,7 +20,14 @@ struct EventInfoScreen: View {
     @State private var isLoading: Bool = true
     @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     @State private var filterThemeEvents: [[SimpleEventUIO]] = Array(repeating: [], count: FilterTheme.allCases.count)
-    let filterThemes: [FilterTheme] = [.monthlyClub, .monthlyIndie, .monthlyJazz, .recentlyFinished, .upcomingInKorReservation, .upcoming]
+    let filterThemes: [FilterTheme] = [
+        .recentlyFinished,
+        .upcoming,
+        .upcomingInKorReservation,
+        .monthlyClub,
+        .monthlyIndie,
+        .monthlyJazz,
+    ]
     
     var body: some View {
         ScrollViewReader { proxy in
@@ -86,7 +93,7 @@ private extension EventInfoScreen {
 private extension EventInfoScreen {
     func loadFilterThemeEvents(theme: FilterTheme) async -> [SimpleEventUIO]? {
         do {
-            let paginatedResponse = try await eventService.loadPaginatedFilterThemeEvents(theme: theme, page: 0, size: 10, sort: [(SortCase.startDate, .descending)])
+            let paginatedResponse = try await eventService.loadPaginatedFilterThemeEvents(theme: theme, page: 0, size: 10, sort: [(SortCase.startDate, theme.sortCase)])
             
             return paginatedResponse.contents
             

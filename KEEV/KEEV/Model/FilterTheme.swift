@@ -14,6 +14,23 @@ enum FilterTheme: CaseIterable{
     case recentlyFinished
     case upcoming
     case upcomingInKorReservation
+    
+    var sortCase: SortPattern {
+        switch self {
+        case .monthlyClub:
+                .ascending
+        case .monthlyIndie:
+                .ascending
+        case .monthlyJazz:
+                .ascending
+        case .recentlyFinished:
+                .descending
+        case .upcoming:
+                .ascending
+        case .upcomingInKorReservation:
+                .ascending
+        }
+    }
 }
 
 extension FilterTheme {
