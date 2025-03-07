@@ -109,7 +109,6 @@ struct EntryView: View {
                 .tag(TabbedItem.search.rawValue)
             
             ProfileScreen(
-                selectedItem: $selectedItem,
                 userID: userID,
                 isMyProfile: userID == nil ? false : true,
                 isNavigation: false

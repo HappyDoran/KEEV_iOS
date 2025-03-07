@@ -17,7 +17,6 @@ import SwiftUI
 struct ProfileScreen: View {
     @Injected private var service: any ActivityServiceProtocol
     
-    @Binding var selectedItem: TabbedItem.RawValue
     let userID: Int?
     let isMyProfile: Bool
     let isNavigation: Bool
@@ -158,5 +157,5 @@ enum ShowProfileHeader: String, Hashable {
 }
 
 #Preview {
-    ProfileScreen(selectedItem: .constant("profile"), userID: nil, isMyProfile: false, isNavigation: false)
+    ProfileScreen(userID: nil, isMyProfile: false, isNavigation: false)
 }
