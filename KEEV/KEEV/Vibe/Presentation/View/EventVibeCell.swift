@@ -20,14 +20,17 @@ struct EventVibeCell: View {
     var body: some View {
         VStack(alignment: .leading, spacing : 0){
             HStack(spacing: 0){
-                profileImage(url: vibeData.userProfileImageURL)
-                
-                Text("\(vibeData.userNickname)")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(1)
-                    .padding(.leading, 16)
-
+                NavigationLink(){
+                    Text("1")
+                } label : {
+                    profileImage(url: vibeData.userProfileImageURL)
+                    
+                    Text("\(vibeData.userNickname)")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(1)
+                        .padding(.leading, 16)
+                }
                 Spacer()
 
                 RatingView(rating: vibeData.rating, image: Image(.star))

@@ -8,20 +8,17 @@
 import SwiftUI
 
 struct ReplyListView: View {
-    let userID: Int
     @Binding var replies: [ReplyUIO]
     private let userTapHandler: ((Int) -> Void)?
     private let moreTapHandler: ((Int, ReplyUIO) -> Void)?
     private let likeTapHandler: ((Int, ReplyUIO) -> Void)?
     
     init(
-        userID: Int,
         replies: Binding<[ReplyUIO]>,
         userTapHandler: ((Int) -> Void)? = nil,
         moreTapHandler: ((Int, ReplyUIO) -> Void)? = nil,
         likeTapHandler: ((Int, ReplyUIO) -> Void)? = nil
     ) {
-        self.userID = userID
         self._replies = replies
         self.userTapHandler = userTapHandler
         self.moreTapHandler = moreTapHandler
@@ -53,7 +50,7 @@ struct ReplyListView: View {
 }
 
 #Preview {
-    ReplyListView(userID: 2, replies: .constant([
+    ReplyListView(replies: .constant([
         .dummy0, .dummy1, .dummy2
     ]))
 }

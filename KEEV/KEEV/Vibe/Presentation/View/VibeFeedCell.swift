@@ -37,14 +37,18 @@ struct VibeFeedCell: View {
 private extension VibeFeedCell {
     var profileHeader: some View {
         HStack(spacing: 8) {
-            URLCircleImage(url: vibeData.userProfileImageURL)
-                .frame(width: 36, height: 36)
-            
-            Text(vibeData.userNickname)
-                .figmaFont(
-                    PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold))
-                )
-                .foregroundStyle(.gray50)
+            NavigationLink(){
+                Text("1")
+            } label : {
+                URLCircleImage(url: vibeData.userProfileImageURL)
+                    .frame(width: 36, height: 36)
+                
+                Text(vibeData.userNickname)
+                    .figmaFont(
+                        PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold))
+                    )
+                    .foregroundStyle(.gray50)
+            }
             
             Spacer()
             
