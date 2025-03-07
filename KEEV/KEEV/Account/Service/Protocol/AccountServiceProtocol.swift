@@ -82,9 +82,6 @@ protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
         description: String
     ) async throws -> DetailUserUIO
     
-    /// 이메일이 형식에 맞는지 검사하는 함수
-    func isValidEmail(_ email: String) throws
-    
     /// 닉네임이 형식에 맞는지 검사하는 함수
     func isValidNickname(_ nickname: String) throws
     
@@ -98,13 +95,6 @@ protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
 }
 
 extension AccountServiceProtocol {
-    func isValidEmail(_ email: String) throws {
-        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        if !NSPredicate(format: "SELF MATCHES %@", emailRegex).evaluate(with: email) {
-            throw AccountServiceError.invalidEmail
-        }
-    }
-
     func isValidNickname(_ nickname: String) throws {
         let nicknameRegex = "^[ㄱ-ㅎ가-힣A-Za-z0-9]{1,}$"
         if !NSPredicate(format: "SELF MATCHES %@", nicknameRegex).evaluate(with: nickname) {
