@@ -1,5 +1,5 @@
 //
-//  ProfileTopView.swift
+//  ProfileImageView.swift
 //  KEEV
 //
 //  Created by Yune Cho on 11/15/24.
@@ -7,29 +7,20 @@
 
 import SwiftUI
 
-/// 프로필 화면 상단 프로필 정보 영역
+/// 프로필 화면 상단 프로필 사진 영역
 ///
-/// 프로필 화면 상단 영역에 표시되는 프로필 정보 영역이며 다음과 같은 정보가 표시됩니다.
+/// 프로필 화면 상단 영역에 표시되는 프로필 사진 영역이며 다음과 같은 정보가 표시됩니다.
 ///
-/// - 프로필 사진, 닉네임, 한 줄 소개, 배경사진
+/// - 프로필 사진, 배경사진
 ///
 /// - Author: 라움
-struct ProfileTopView: View {
+struct ProfileImageView: View {
     private let userProfile: DetailUserUIO?
     private let isMyProfile: Bool
-    @Binding private var showActionSheet: Bool
-    @Binding private var navigateToReport: ReportType?
     
-    init(
-        userProfile: DetailUserUIO?,
-        isMyProfile: Bool,
-        showActionSheet: Binding<Bool>,
-        navigateToReport: Binding<ReportType?>
-    ) {
+    init(userProfile: DetailUserUIO?, isMyProfile: Bool) {
         self.userProfile = userProfile
         self.isMyProfile = isMyProfile
-        self._showActionSheet = showActionSheet
-        self._navigateToReport = navigateToReport
     }
     
     var body: some View {
@@ -41,22 +32,15 @@ struct ProfileTopView: View {
                 
                 URLProfileImage(url: userProfile?.profileImageURL, size: 96, editable: false, strokeWidth: 3, strokeColor: .gray950)
                     .padding(.bottom, 8)
-                
-                Text(userProfile?.nickname ?? "게스트")
-                    .figmaFont(PretendardFont.title(style: .md))
-                    .foregroundStyle(.gray100)
-                    .padding(.bottom, 8)
-                
-                descriptionImageView
             }
             .padding(.horizontal, 16)
         }
-        .frame(height: 310)
+        .frame(height: 255)
         .backgroundForKEEV()
     }
 }
 
-private extension ProfileTopView {
+private extension ProfileImageView {
     var backgroundImageView: some View {
         VStack(spacing: 0) {
             if let backgroundImageURL = userProfile?.backgroundImageURL {
@@ -97,29 +81,8 @@ private extension ProfileTopView {
                     .opacity(0.2)
             }
     }
-    
-    @ViewBuilder
-    var descriptionImageView: some View {
-        if let description = userProfile?.description {
-            if description.isEmpty && isMyProfile {
-                Text("한 줄 소개를 입력해주세요.")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                    .foregroundStyle(.gray700)
-            } else if !description.isEmpty && isMyProfile {
-                Text(description)
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                    .foregroundStyle(.gray300)
-            }
-        } else {
-            if isMyProfile {
-                Text("한 줄 소개를 입력해주세요.")
-                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .regular)))
-                    .foregroundStyle(.gray700)
-            }
-        }
-    }
 }
 
 #Preview {
-    ProfileTopView(userProfile: .dummy0, isMyProfile: true, showActionSheet: .constant(false), navigateToReport: .constant(nil))
+    ProfileImageView(userProfile: .dummy0, isMyProfile: true)
 }

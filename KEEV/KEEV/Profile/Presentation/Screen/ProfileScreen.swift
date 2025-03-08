@@ -37,13 +37,16 @@ struct ProfileScreen: View {
             ZStack(alignment: .top) {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 0) {
-                        ProfileTopView(
+                        ProfileImageView(
                             userProfile: userProfile,
-                            isMyProfile: isMyProfile,
-                            showActionSheet: $showActionSheet,
-                            navigateToReport: $navigateToReport
+                            isMyProfile: isMyProfile
                         )
                         .id(ShowProfileHeader.show)
+                        
+                        ProfileInfoView(
+                            userProfile: userProfile,
+                            isMyProfile: isMyProfile
+                        )
                         
                         if isMyProfile {
                             profileEditButton
