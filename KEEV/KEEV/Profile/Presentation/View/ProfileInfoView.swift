@@ -36,8 +36,14 @@ struct ProfileInfoView: View {
                 
                 if isMyProfile {
                     profileEditButton
+                } else {
+                    FollowButton(isFollowing: false) {
+                        //팔로우/팔로우취소 기능을 넣어야합니다.
+                    }
                 }
             }
+            
+            followInfoArea
             
             profileDescriptionArea
         }
@@ -69,6 +75,42 @@ private extension ProfileInfoView {
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
                         .foregroundStyle(.gray300)
                 }
+        }
+    }
+    
+    var followInfoArea: some View {
+        HStack(spacing: 8) {
+            HStack(spacing: 6) {
+                Text("팔로우")
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                    .foregroundStyle(.gray500)
+                
+                NavigationLink {
+                    Text("팔로우") //유저의 팔로워 목록 뷰로 이동해야합니다.
+                } label: {
+                    Text("13") //유저의 팔로워 수를 넣어야합니다.
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
+                        .foregroundStyle(.gray50)
+                }
+            }
+            
+            Text("•")
+                .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                .foregroundStyle(.gray500)
+            
+            HStack(spacing: 6) {
+                Text("팔로잉")
+                    .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
+                    .foregroundStyle(.gray500)
+                
+                NavigationLink {
+                    Text("팔로잉") //유저가 팔로우하는 사용자 목록 뷰로 이동해야합니다.
+                } label: {
+                    Text("125") //유저가 팔로우하는 사용자 수를 넣어야합니다.
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
+                        .foregroundStyle(.gray50)
+                }
+            }
         }
     }
     
