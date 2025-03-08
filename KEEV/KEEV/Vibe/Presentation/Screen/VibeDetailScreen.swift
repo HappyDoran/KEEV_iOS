@@ -151,7 +151,7 @@ struct VibeDetailScreen: LoginCheckableView {
                 VibeModifyScreen(vibe: $vibe, onUpdate: onUpdate)
             }
             .navigationDestination(item: $navigateToUserProfile){ userID in 
-                Text("1")
+                ProfileScreen(userID: userID, isMyProfile: false, isNavigation: true)
             }
             .onAppear{
                 fetchIsLiked()

@@ -21,7 +21,7 @@ struct EventVibeCell: View {
         VStack(alignment: .leading, spacing : 0){
             HStack(spacing: 0){
                 NavigationLink(){
-                    Text("1")
+                    ProfileScreen(userID: vibeData.userID, isMyProfile: false, isNavigation: true)
                 } label : {
                     profileImage(url: vibeData.userProfileImageURL)
                     
