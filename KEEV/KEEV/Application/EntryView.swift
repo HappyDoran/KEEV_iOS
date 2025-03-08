@@ -83,14 +83,14 @@ struct EntryView: View {
     
     private var signInSuccessView: some View {
         TabView(selection: $selectedItem) {
-            EventInfoScreen(selectedItem: $selectedItem)
+            EventInfoScreen()
                 .tabItem {
                     TabbedItem.label(for: .info)
                 }
                 .tag(TabbedItem.info.rawValue)
             
             // 바이브 피드 탭으로 교체해주어야합니다.
-            VibeFeedScreen(selectedItem: $selectedItem)
+            VibeFeedScreen()
                 .tabItem {
                     TabbedItem.label(for: .feed)
                 }
