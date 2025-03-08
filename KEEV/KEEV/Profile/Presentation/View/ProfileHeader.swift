@@ -28,6 +28,7 @@ struct ProfileHeader: View {
                     Image(systemName: "chevron.backward")
                         .font(.system(size: 17, weight: .semibold))
                         .foregroundColor(.gray100)
+                        .frame(width: 32, height: 32)
                 }
             }
             
@@ -53,6 +54,7 @@ struct ProfileHeader: View {
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xlarge, bodyWeight: .semibold)))
                         .font(.system(size: 20))
                         .foregroundStyle(.gray100)
+                        .frame(width: 32, height: 32)
                 }
             }
         }
