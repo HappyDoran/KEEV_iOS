@@ -28,7 +28,6 @@ struct ProfileScreen: View {
     @State private var showProfileEdit = false
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
-    @State private var tapFeedback = false
     @State private var scrollID: ShowProfileHeader? = .show
     @State private var error: Error? = nil
     
@@ -45,18 +44,15 @@ struct ProfileScreen: View {
                         
                         ProfileInfoView(
                             userProfile: userProfile,
-                            isMyProfile: isMyProfile
+                            isMyProfile: isMyProfile,
+                            showProfileEdit: $showProfileEdit
                         )
-                        
-                        if isMyProfile {
-                            profileEditButton
-                        }
+                        .id(ShowProfileHeader.hide)
                         
                         ProfileLikedEventsView(
                             userID: userID,
                             error: $error
                         )
-                        .id(ShowProfileHeader.hide)
                         
                         ProfileVibeView(
                             userID: userID,
@@ -99,7 +95,6 @@ struct ProfileScreen: View {
                     }
                 }
             }
-            .sensoryFeedback(.impact, trigger: tapFeedback)
             .fullScreenCover(isPresented: $showProfileEdit) {
                 ProfileEditScreen(userProfile: $userProfile, profileEditedToast: $profileEditedToast)
             }
@@ -118,25 +113,6 @@ struct ProfileScreen: View {
             .alertForError($error)
             .navigationBarBackButtonHidden()
         }
-    }
-}
-
-private extension ProfileScreen {
-    var profileEditButton: some View {
-        Button {
-            tapFeedback.toggle()
-            showProfileEdit = true
-        } label: {
-            RoundedRectangle(cornerRadius: 50)
-                .frame(width: 84, height: 25)
-                .foregroundStyle(.grayBG700)
-                .overlay {
-                    Text("프로필 수정")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .medium)))
-                        .foregroundStyle(.gray300)
-                }
-        }
-        .padding(.top, 16)
     }
 }
 

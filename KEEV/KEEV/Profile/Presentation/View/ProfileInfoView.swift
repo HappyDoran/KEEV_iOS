@@ -17,25 +17,63 @@ import SwiftUI
 struct ProfileInfoView: View {
     private let userProfile: DetailUserUIO?
     private let isMyProfile: Bool
+    @Binding private var showProfileEdit: Bool
     
-    init(userProfile: DetailUserUIO?, isMyProfile: Bool) {
+    init(userProfile: DetailUserUIO?, isMyProfile: Bool, showProfileEdit: Binding<Bool>) {
         self.userProfile = userProfile
         self.isMyProfile = isMyProfile
+        self._showProfileEdit = showProfileEdit
     }
     
+    @State private var tapFeedback = false
+    
     var body: some View {
-        VStack {
-            Text(userProfile?.nickname ?? "게스트")
-                .figmaFont(PretendardFont.title(style: .md))
-                .foregroundStyle(.gray100)
-                .padding(.bottom, 8)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                userNicknameArea
+                
+                Spacer()
+                
+                if isMyProfile {
+                    profileEditButton
+                }
+            }
+            
+            profileDescriptionArea
         }
+        .backgroundForKEEV()
+        .padding(.horizontal, 16)
+        .padding(.bottom, 16)
+        .sensoryFeedback(.impact, trigger: tapFeedback)
     }
 }
 
 private extension ProfileInfoView {
+    var userNicknameArea: some View {
+        Text(userProfile?.nickname ?? "게스트")
+            .figmaFont(PretendardFont.title(style: .md))
+            .bold()
+            .foregroundStyle(.gray100)
+    }
+    
+    var profileEditButton: some View {
+        Button {
+            tapFeedback.toggle()
+            showProfileEdit = true
+        } label: {
+            RoundedRectangle(cornerRadius: 50)
+                .frame(width: 50, height: 29)
+                .foregroundStyle(.grayBG700)
+                .overlay {
+                    Text("수정")
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
+                        .foregroundStyle(.gray300)
+                }
+        }
+    }
+    
     @ViewBuilder
-    var descriptionImageView: some View {
+    var profileDescriptionArea: some View {
         if let description = userProfile?.description {
             if description.isEmpty && isMyProfile {
                 Text("한 줄 소개를 입력해주세요.")
@@ -57,5 +95,5 @@ private extension ProfileInfoView {
 }
 
 #Preview {
-    ProfileInfoView(userProfile: .dummy0, isMyProfile: true)
+    ProfileInfoView(userProfile: .dummy0, isMyProfile: true, showProfileEdit: .constant(true))
 }

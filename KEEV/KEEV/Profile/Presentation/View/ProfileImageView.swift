@@ -31,9 +31,9 @@ struct ProfileImageView: View {
                 Spacer()
                 
                 URLProfileImage(url: userProfile?.profileImageURL, size: 96, editable: false, strokeWidth: 3, strokeColor: .gray950)
-                    .padding(.bottom, 8)
             }
             .padding(.horizontal, 16)
+            .padding(.bottom, 8)
         }
         .frame(height: 255)
         .backgroundForKEEV()
