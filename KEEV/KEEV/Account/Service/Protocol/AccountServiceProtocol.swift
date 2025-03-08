@@ -96,8 +96,12 @@ protocol AccountServiceProtocol: AnyObject, LayerRepresentable {
 
 extension AccountServiceProtocol {
     func isValidNickname(_ nickname: String) throws {
-        let nicknameRegex = "^[ㄱ-ㅎ가-힣A-Za-z0-9]{1,}$"
-        if !NSPredicate(format: "SELF MATCHES %@", nicknameRegex).evaluate(with: nickname) {
+        do {
+            let nicknameRegex = try Regex("[ㄱ-ㅎ가-힣A-Za-z0-9]{2,14}")
+            if nickname.wholeMatch(of: nicknameRegex) == nil {
+                throw AccountServiceError.invalidNickname
+            }
+        } catch {
             throw AccountServiceError.invalidNickname
         }
     }
