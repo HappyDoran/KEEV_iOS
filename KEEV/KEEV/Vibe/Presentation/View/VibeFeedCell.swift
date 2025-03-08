@@ -37,7 +37,7 @@ struct VibeFeedCell: View {
 private extension VibeFeedCell {
     var profileHeader: some View {
         HStack(spacing: 8) {
-            NavigationLink(){
+            NavigationLink {
                 ProfileScreen(userID: vibeData.userID, isMyProfile: false, isNavigation: true)
             } label : {
                 URLCircleImage(url: vibeData.userProfileImageURL)

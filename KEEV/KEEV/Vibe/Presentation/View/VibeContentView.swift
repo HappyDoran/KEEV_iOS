@@ -47,7 +47,7 @@ private extension VibeContentView {
     
     var userInfo: some View {
         HStack(spacing: 16) {
-            NavigationLink(){
+            NavigationLink {
                 ProfileScreen(userID: vibe.userID, isMyProfile: false, isNavigation: true)
             } label : {
                 userProfileImage
