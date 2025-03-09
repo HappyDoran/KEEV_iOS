@@ -13,7 +13,7 @@ struct DetailUserDTO: Decodable, Hashable, Identifiable {
     let profileImageURL: String?
     let backgroundImageURL: String?
     let description: String
-    let signupDate: String
+    let signupDate: Date
     let followerCount: Int
     let followingCount: Int
     

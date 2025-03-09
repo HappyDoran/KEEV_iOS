@@ -20,14 +20,15 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     
     private let networkUtility = NetworkUtility()
     private let tokenUtility = TokenUtility.shared
-    private let jsonDecoder = JSONDecoder()
+    private let jsonDecoder: JSONDecoder
     
     private var currentUser: DetailUserUIO? = nil
     private var cancellables = Set<AnyCancellable>()
     
     init() {
+        self.jsonDecoder = JSONDecoder()
         let dateformatter = DateFormatter()
-        dateformatter.dateFormat = "yyyy.MM.dd"
+        dateformatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
         jsonDecoder.dateDecodingStrategy = .formatted(dateformatter)
         
         NotificationCenter.Publisher.userInfoPublisher
