@@ -46,16 +46,18 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     }
     
     func getUserInfo(userID: Int) async throws -> DetailUserUIO {
-        try await doAsyncWithException(caller: "getUserInfo") {
+        try await doAsyncWithException(caller: "getUserInfo") { [weak self] in
+            guard let self else { throw KEEVError(layer: Self.layer, caller: "getUserInfo", occurPoint: .custom(message: "self is nil"), previousError: nil) }
+            
             if let currentUser, currentUser.id == userID {
                 return currentUser
             }
             
             let router = ActivityHTTPRequestRouter.userInfo(userID: userID)
             
-            let data = try await networkUtility.request(router: router)
+            let data = try await self.networkUtility.request(router: router)
             
-            let response = try jsonDecoder.decode(DetailUserDTO.self, from: data)
+            let response = try self.jsonDecoder.decode(DetailUserDTO.self, from: data)
             
             let detailUserUIO = DetailUserUIO(detailuserDTO: response)
             
@@ -64,12 +66,14 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     }
     
     func getUserVibeList(userID: Int) async throws -> [VibeUIO] {
-        try await doAsyncWithException(caller: "getUserVibeList") {
+        try await doAsyncWithException(caller: "getUserVibeList") { [weak self] in
+            guard let self else { throw KEEVError(layer: Self.layer, caller: "getUserInfo", occurPoint: .custom(message: "self is nil"), previousError: nil) }
+            
             let router = ActivityHTTPRequestRouter.userVibeList(userID: userID)
             
-            let data = try await networkUtility.request(router: router)
+            let data = try await self.networkUtility.request(router: router)
             
-            let response = try jsonDecoder.decode(PaginationDTO<VibeDTO>.self, from: data)
+            let response = try self.jsonDecoder.decode(PaginationDTO<VibeDTO>.self, from: data)
             
             if let currentUser {
                 return response.contents.map { VibeUIO(vibeDTO: $0, isMine: $0.user.id == currentUser.id ? true : false) }
@@ -92,8 +96,10 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
             )
         }
         
-        return try doWithException(caller: "loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])") {
-            let paginatedResponseDTO = try jsonDecoder.decode(PaginationDTO<LikedEventDTO>.self, from: data)
+        return try doWithException(caller: "loadLikedEvents(page: Int, size: Int, sort: [(SortCase, SortPattern)])") { [weak self] in
+            guard let self else { throw KEEVError(layer: Self.layer, caller: "getUserInfo", occurPoint: .custom(message: "self is nil"), previousError: nil) }
+            
+            let paginatedResponseDTO = try self.jsonDecoder.decode(PaginationDTO<LikedEventDTO>.self, from: data)
             
             let contents = paginatedResponseDTO.contents.map { SimpleEventUIO(likedEventDTO: $0) }
             
