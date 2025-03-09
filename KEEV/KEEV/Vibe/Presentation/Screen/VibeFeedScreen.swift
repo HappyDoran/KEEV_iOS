@@ -17,7 +17,6 @@ struct VibeFeedScreen: LoginCheckableView {
     @Injected private var vibeService: any VibeServiceProtocol
     @Environment(AppState.self) var appState
     
-    @Binding var selectedItem: TabbedItem.RawValue
     @State private var vibes: [VibeUIO] = []
     @State private var eventVibesState: EventVibeViewState = .loading
     @State private var currentPage = 0
@@ -177,7 +176,7 @@ private extension VibeFeedScreen {
 struct VibeFeedScreen_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            VibeFeedScreen(selectedItem: .constant("feed"))
+            VibeFeedScreen()
         }
     }
 }

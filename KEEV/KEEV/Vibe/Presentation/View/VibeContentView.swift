@@ -47,14 +47,18 @@ private extension VibeContentView {
     
     var userInfo: some View {
         HStack(spacing: 16) {
-            userProfileImage
-            Text(vibe.userNickname)
-                .lineLimit(1)
-                .figmaFont(
-                    PretendardFont.body(
-                        style: .init(bodySize: .base, bodyWeight: .semibold)
+            NavigationLink {
+                ProfileScreen(userID: vibe.userID, isMyProfile: false, isNavigation: true)
+            } label : {
+                userProfileImage
+                Text(vibe.userNickname)
+                    .lineLimit(1)
+                    .figmaFont(
+                        PretendardFont.body(
+                            style: .init(bodySize: .base, bodyWeight: .semibold)
+                        )
                     )
-                )
+            }
             Spacer()
             RatingView(rating: vibe.rating, image: Image(.star))
                 .frame(width: 80, height: 16)

@@ -14,4 +14,17 @@ struct DetailUserDTO: Decodable, Hashable, Identifiable {
     let backgroundImageURL: String?
     let description: String
     let signupDate: Date
+    let followerCount: Int
+    let followingCount: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case nickname
+        case profileImageURL
+        case backgroundImageURL
+        case description
+        case signupDate = "createdDate"
+        case followerCount
+        case followingCount
+    }
 }

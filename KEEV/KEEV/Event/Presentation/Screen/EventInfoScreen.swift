@@ -16,7 +16,6 @@ import SwiftUI
 struct EventInfoScreen: View {
     @Injected private var eventService: any EventServiceProtocol
 
-    @Binding var selectedItem: TabbedItem.RawValue
     @State private var isLoading: Bool = true
     @State private var events: [SimpleEventUIO] = SimpleEventUIO.dummies
     @State private var filterThemeEvents: [[SimpleEventUIO]] = Array(repeating: [], count: FilterTheme.allCases.count)
@@ -118,7 +117,7 @@ private extension EventInfoScreen {
 
 #Preview {
     NavigationStack {
-        EventInfoScreen(selectedItem: .constant("info"))
+        EventInfoScreen()
             .backgroundForKEEV()
     }
 }

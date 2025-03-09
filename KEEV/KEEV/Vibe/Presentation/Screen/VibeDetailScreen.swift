@@ -71,7 +71,6 @@ struct VibeDetailScreen: LoginCheckableView {
                             .padding(.horizontal, 16)
                         Rectangle().frame(height: 1).foregroundColor(.gray800)
                         ReplyListView(
-                            userID: 2,
                             replies: $replies,
                             userTapHandler: tapReplyUser,
                             moreTapHandler: tapReplyMore,
@@ -150,6 +149,9 @@ struct VibeDetailScreen: LoginCheckableView {
             }
             .navigationDestination(isPresented: $navigateToModifyVibe) {
                 VibeModifyScreen(vibe: $vibe, onUpdate: onUpdate)
+            }
+            .navigationDestination(item: $navigateToUserProfile){ userID in 
+                ProfileScreen(userID: userID, isMyProfile: false, isNavigation: true)
             }
             .onAppear{
                 fetchIsLiked()
