@@ -104,6 +104,12 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
         }
     }
     
+    func deleteAllTokens() throws {
+        accessToken = nil
+        expirationDateForAccess = nil
+        try KeyChain.delete(tag: Self.refreshTokenTag)
+    }
+    
     private func fetchAccessToken() async throws -> String {
         if let accessToken = accessToken,
            let expirationDateForAccess, expirationDateForAccess > Date.now {
