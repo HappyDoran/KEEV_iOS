@@ -33,7 +33,7 @@ struct AppEnvironment {
     /// - Author: newJunsung
     static func setupDependency() {
         // Service(서비스는 해당 구역에 작성해주시면 됩니다.)
-        diContainer.register(AccountService(), for: (any AccountServiceProtocol).self)
+        diContainer.register(NewAccountService(), for: (any AccountServiceProtocol).self)
         diContainer.register(EventService(), for: (any EventServiceProtocol).self)
         diContainer.register(SettingService(), for: (any SettingServiceProtocol).self)
         diContainer.register(ReplyService(), for: (any ReplyServiceProtocol).self)
