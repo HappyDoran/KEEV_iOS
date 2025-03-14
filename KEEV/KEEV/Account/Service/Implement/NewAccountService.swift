@@ -9,8 +9,6 @@ import Foundation
 import UIKit
 
 final class NewAccountService {
-    private static let refreshTokenTag = "keevRefreshToken"
-    
     private let networkUtility = NetworkUtility()
     private let tokenUtility = TokenUtility.shared
     private let jsonDecoder = {
