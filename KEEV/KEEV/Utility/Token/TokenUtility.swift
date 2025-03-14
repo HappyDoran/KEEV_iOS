@@ -92,6 +92,19 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
         }
     }
     
+    /// 나열한 토큰들을 모두 저장합니다.
+    ///
+    /// - Parameters:
+    ///   - tokens: 딕셔너리 타입입니다. key에는 토큰의 종류가 들어가며, value에는 토큰의 값이 들어갑니다.
+    ///
+    /// - Throws: `TokenError.keyChainWriteFail`: 키체인에 토큰 저장 실패 시 발생
+    /// - Author: newJunsung
+    func storeTokens(_ tokens: [TokenType: String]) throws {
+        for (type, token) in tokens {
+            try storeToken(token, for: type)
+        }
+    }
+    
     func deleteToken(for type: TokenType) throws {
         switch type {
         case .access:
