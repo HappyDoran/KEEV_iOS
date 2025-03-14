@@ -27,8 +27,8 @@ extension NewAccountHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .signInWithApple: .post
         case .signUp: .post
-        case .refreshAccessToken: .post
-        case .modifyAccount: .post
+        case .refreshAccessToken: .get
+        case .modifyAccount: .patch
         case .logout: .post
         case .deleteAccount: .delete
         }
@@ -75,7 +75,7 @@ extension NewAccountHTTPRequestRouter: HTTPRequestable {
         case .signInWithApple: ["open-api", "auth", "apple"]
         case .signUp: ["open-api", "auth", "sign-up"]
         case .refreshAccessToken: ["api", "auth", "token"]
-        case .modifyAccount: ["user", "register", "userinfo"]
+        case .modifyAccount: ["api", "user"]
         case .logout: ["auth", "logout"]
         case .deleteAccount: ["user", "delete"]
         }
