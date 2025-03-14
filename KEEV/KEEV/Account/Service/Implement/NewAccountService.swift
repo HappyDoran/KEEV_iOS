@@ -28,6 +28,19 @@ final class NewAccountService {
         }
     }
     
+    private func storeTokens(from account: AccountDTO?) async throws {
+        var tokens = [TokenUtility.TokenType: String]()
+        if let accessToken = account?.accessToken {
+            tokens[.access] = accessToken
+        }
+        
+        if let refreshToken = account?.keevRefreshToken {
+            tokens[.refresh] = refreshToken
+        }
+        
+        try await tokenUtility.storeTokens(tokens)
+    }
+    
     private func updateAccount(_ account: AccountDTO?) {
         guard let account else {
             NotificationCenter.default.post(name: .updateUserInfo, object: nil)
@@ -68,8 +81,7 @@ extension NewAccountService: AccountServiceProtocol {
             return .failed
         }
         
-        _ = try? await tokenUtility.storeToken(fetchedAccount.accessToken!, for: .access)
-        _ = try? await tokenUtility.storeToken(fetchedAccount.keevRefreshToken!, for: .refresh)
+        _ = try? await storeTokens(from: fetchedAccount)
         account = fetchedAccount
         updateSignInStatus(.ok(user: .init(account: fetchedAccount)))
         return .ok(user: .init(account: fetchedAccount))
@@ -86,9 +98,8 @@ extension NewAccountService: AccountServiceProtocol {
         }
         
         let fetchedAccount = try jsonDecoder.decode(AccountDTO.self, from: data)
+        try await storeTokens(from: fetchedAccount)
         account = fetchedAccount
-        try await tokenUtility.storeToken(fetchedAccount.accessToken!, for: .access)
-        try await tokenUtility.storeToken(fetchedAccount.keevRefreshToken!, for: .refresh)
         let ok = SignInStatus.ok(user: .init(account: fetchedAccount))
         updateSignInStatus(ok)
         return ok
@@ -97,7 +108,6 @@ extension NewAccountService: AccountServiceProtocol {
     func signUp(email: String?, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
         guard let identityToken else {
             account = nil
-            updateAccount(nil)
             try await tokenUtility.deleteAllTokens()
             return .failed
         }
@@ -120,8 +130,7 @@ extension NewAccountService: AccountServiceProtocol {
         let router = NewAccountHTTPRequestRouter.signUp(boundary: boundary, multipartData: multipartData)
         let data = try await networkUtility.request(router: router)
         let fetchedAccount = try jsonDecoder.decode(AccountDTO.self, from: data)
-        try await tokenUtility.storeToken(fetchedAccount.accessToken!, for: .access)
-        try await tokenUtility.storeToken(fetchedAccount.keevRefreshToken!, for: .refresh)
+        try await storeTokens(from: fetchedAccount)
         account = fetchedAccount
         updateSignInStatus(.ok(user: .init(account: fetchedAccount)))
         return .ok(user: .init(account: fetchedAccount))
