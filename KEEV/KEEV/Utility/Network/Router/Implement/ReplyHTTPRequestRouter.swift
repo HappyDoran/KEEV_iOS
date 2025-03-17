@@ -127,13 +127,13 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         case .deleteReply:
             path.append("delete")
         case .likeReply(_, let replyID):
-            path.append(contentsOf: ["like", "\(replyID)"])
+            return ["api", "reply", "like", "\(replyID)"]
         case .cancelLikeReply(_, let replyID):
-            path.append(contentsOf: ["like", "\(replyID)"])
+            return ["api", "reply", "like", "\(replyID)"]
         case .getReplyLikeCount(let replyID):
-            path.append(contentsOf: ["like", "\(replyID)", "count"])
+            return ["open-api", "reply", "like", "\(replyID)", "count"]
         case .checkIfUserLikedReply(_, let replyID):
-            path.append(contentsOf: ["liked", "\(replyID)"])
+            return ["api", "reply", "liked", "\(replyID)"]
         }
         
         return path
