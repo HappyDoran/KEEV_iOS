@@ -52,17 +52,16 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
-        try await doAsyncWithException(caller: "fetchReplies") {
-            let router = ReplyHTTPRequestRouter.fetchReplies(vibeID: vibeID)
-            
-            let data = try await networkUtility.request(router: router)
-            
-            let replyDTOs = try jsonDecoder.decode([ReplyDTO].self, from: data)
-            let currentUserID = currentUser?.id
-            let replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
-            
-            return replies
-        }
+        let token = try? await self.tokenUtility.fetchToken(for: .access)
+        let router = ReplyHTTPRequestRouter.fetchReplies(token: token, vibeID: vibeID)
+        
+        let data = try await self.networkUtility.request(router: router)
+        
+        let replyDTOs = try self.jsonDecoder.decode([ReplyDTO].self, from: data)
+        let currentUserID = currentUser?.id
+        let replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
+        
+        return replies
     }
     
     /// 바이브에 댓글을 추가하는 함수

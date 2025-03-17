@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// - Author: Doran, 라움
 enum ReplyHTTPRequestRouter {
-    case fetchReplies(vibeID: Int)
+    case fetchReplies(token: String?, vibeID: Int)
     case addReply(token: String, vibeID: Int, text: String)
     case modifyReply(token: String, replyID: String, vibeID: String, updatedText: String)
     case deleteReply(token: String, replyID: String)
@@ -44,8 +44,10 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String: String]? {
         switch self {
-        case .fetchReplies:
-            return nil
+        case .fetchReplies(let token, _):
+            return token == nil ? nil : [
+                "Authorization": "Bearer \(token!)"
+            ]
         case .addReply(let token, _, _):
             return [
                 "Authorization": "Bearer \(token)",
@@ -114,8 +116,10 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         var path = ["comment"]
         
         switch self {
-        case .fetchReplies(let vibeID):
-            return ["open-api", "vibe", "\(vibeID)", "comment"]
+        case .fetchReplies(let token, let vibeID):
+            return token == nil ?
+            ["open-api", "vibe", "\(vibeID)", "reply"]
+            : ["api", "vibe", "\(vibeID)", "reply"]
         case .addReply:
             path.append("register")
         case .modifyReply:
