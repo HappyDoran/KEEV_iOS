@@ -85,7 +85,7 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .fetchReplies, .likeReply, .cancelLikeReply, .getReplyLikeCount, .checkIfUserLikedReply:
+        case .fetchReplies, .likeReply, .cancelLikeReply, .getReplyLikeCount, .checkIfUserLikedReply, .deleteReply:
             return nil
         case .addReply(_, let vibeID, let text):
             let json: [String: Any] = [
@@ -98,11 +98,6 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
                 "id": replyID,
                 "vibeId": vibeID,
                 "content": updatedText
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .deleteReply(_, let replyID):
-            let json: [String: Any] = [
-                "id": replyID,
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
         }
@@ -124,8 +119,8 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
             path.append("register")
         case .modifyReply:
             path.append("edit")
-        case .deleteReply:
-            path.append("delete")
+        case .deleteReply(_, let replyID):
+            return ["api", "reply", "\(replyID)"]
         case .likeReply(_, let replyID):
             return ["api", "reply", "like", "\(replyID)"]
         case .cancelLikeReply(_, let replyID):
