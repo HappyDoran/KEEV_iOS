@@ -116,7 +116,7 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
             ["open-api", "vibe", "\(vibeID)", "reply"]
             : ["api", "vibe", "\(vibeID)", "reply"]
         case .addReply:
-            path.append("register")
+            return ["api", "reply"]
         case .modifyReply(_, let replyID, _, _):
             fallthrough
         case .deleteReply(_, let replyID):
