@@ -107,9 +107,7 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         AppEnvironment.keevBaseURL
     }
     
-    var path: [String]? {
-        var path = ["comment"]
-        
+    var path: [String]? {  
         switch self {
         case .fetchReplies(let token, let vibeID):
             return token == nil ?
@@ -130,8 +128,6 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         case .checkIfUserLikedReply(_, let replyID):
             return ["api", "reply", "liked", "\(replyID)"]
         }
-        
-        return path
     }
     
     var queryItems: [URLQueryItem]? { nil }
