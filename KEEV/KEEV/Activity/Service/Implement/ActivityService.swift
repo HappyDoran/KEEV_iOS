@@ -69,7 +69,6 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
         let accessToken = try await tokenUtility.fetchToken(for: .access)
         let userJSON = try JSONEncoder().encode(EditInfo(nickname: nickname, description: description))
-        print(String(data: userJSON, encoding: .utf8))
         
         var builder = MultipartFormBuilder()
         builder.append(name: "editInfo", content: .json(data: userJSON))
