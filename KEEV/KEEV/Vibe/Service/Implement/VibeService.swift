@@ -214,9 +214,9 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
             let router = VibeHTTPRequestRouter.checkIfUserUploadedVibe(token: accessToken, eventID: eventID)
             
             let data = try await networkUtility.request(router: router)
-            let vibeID = try jsonDecoder.decode(Int.self, from: data)
+            let vibe = try jsonDecoder.decode(VibeDTO.self, from: data)
             
-            return vibeID
+            return vibe.id
         }
     }
     

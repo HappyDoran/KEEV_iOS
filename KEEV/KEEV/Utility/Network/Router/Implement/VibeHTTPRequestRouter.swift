@@ -49,11 +49,12 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String : String]? {
         switch self {
-        case .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _), .likeVibe(let token, _), .cancelLikeVibe(let token, _), .checkIfUserLikedVibe(let token, _):
+        case .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _), .likeVibe(let token, _), .cancelLikeVibe(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
+        case .checkIfUserLikedVibe(let token, _): return ["Authorization": "Bearer \(token)"]
         case .getVibeLikeCount, .getVibeCount, .getVibes, .getVibeWithVibeID, .getVibesFromEventID:
             return nil
         }
@@ -91,7 +92,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         case .modifyVibe(_, let vibeID, _):
             path.append(contentsOf: ["update", "\(vibeID)"])
         case .checkIfUserUploadedVibe(_, let eventID):
-            path.append(contentsOf: ["find", "\(eventID)"])
+            return ["api", "event", "\(eventID)", "vibe"]
         case .getVibeWithVibeID(let vibeID):
             return ["open-api", "vibe", "\(vibeID)"]
         case .likeVibe(_, let vibeID):
