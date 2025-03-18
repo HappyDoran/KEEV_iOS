@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum NewAccountHTTPRequestRouter {
+enum AuthHTTPRequestRouter {
     /// 애플로 로그인할 때 사용하는 라우터. code는 `SignInWithApple`을 통해 받을 수 있는 `authorizationCode`입니다.
     case signInWithApple(identityToken: Data)
     /// 사용가 회원가입을 할 때 사용하는 라우터. multipartData에는 idToken, 닉네임, 이메일, 프로필 사진이 들어가야 합니다.
@@ -20,7 +20,7 @@ enum NewAccountHTTPRequestRouter {
     case deleteAccount(accessToken: String)
 }
 
-extension NewAccountHTTPRequestRouter: HTTPRequestable {
+extension AuthHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
         case .signInWithApple: .post

@@ -72,7 +72,7 @@ extension AuthService: AccountServiceProtocol {
             return .failed
         }
         
-        let router = NewAccountHTTPRequestRouter.refreshAccessToken(refreshToken: refreshToken)
+        let router = AuthHTTPRequestRouter.refreshAccessToken(refreshToken: refreshToken)
         let data = try! await networkUtility.request(router: router)
         guard let fetchedAccount = try? jsonDecoder.decode(AccountDTO.self, from: data) else {
             updateSignInStatus(.failed)
@@ -87,7 +87,7 @@ extension AuthService: AccountServiceProtocol {
     
     func signInWithApple(email: String?, user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
         self.identityToken = String(data: identityToken, encoding: .utf8)!
-        let router = NewAccountHTTPRequestRouter.signInWithApple(identityToken: identityToken)
+        let router = AuthHTTPRequestRouter.signInWithApple(identityToken: identityToken)
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         
         if code == 404 {
@@ -125,7 +125,7 @@ extension AuthService: AccountServiceProtocol {
             return .failed
         }
         
-        let router = NewAccountHTTPRequestRouter.signUp(boundary: boundary, multipartData: multipartData)
+        let router = AuthHTTPRequestRouter.signUp(boundary: boundary, multipartData: multipartData)
         let data = try await networkUtility.request(router: router)
         let fetchedAccount = try jsonDecoder.decode(AccountDTO.self, from: data)
         try await storeTokens(from: fetchedAccount)
@@ -154,7 +154,7 @@ extension AuthService: AccountServiceProtocol {
         
         let (boundary, multipartData) = builder.build()!
         
-        let router = NewAccountHTTPRequestRouter.modifyAccount(
+        let router = AuthHTTPRequestRouter.modifyAccount(
             accessToken: accessToken,
             boundary: boundary,
             multipartData: multipartData
@@ -174,7 +174,7 @@ extension AuthService: AccountServiceProtocol {
     
     func deleteAccount() async throws {
         let token = try await tokenUtility.fetchToken(for: .access)
-        let router = NewAccountHTTPRequestRouter.deleteAccount(accessToken: token)
+        let router = AuthHTTPRequestRouter.deleteAccount(accessToken: token)
         let _ = try await networkUtility.requestWithStatusCode(router: router)
         try await tokenUtility.deleteAllTokens()
         resetAllStatus()

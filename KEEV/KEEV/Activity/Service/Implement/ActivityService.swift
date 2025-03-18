@@ -85,7 +85,7 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
         
         let (boundary, multipartData) = builder.build()!
         
-        let router = NewAccountHTTPRequestRouter.modifyAccount(
+        let router = AuthHTTPRequestRouter.modifyAccount(
             accessToken: accessToken,
             boundary: boundary,
             multipartData: multipartData
