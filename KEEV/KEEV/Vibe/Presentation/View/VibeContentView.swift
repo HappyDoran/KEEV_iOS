@@ -133,7 +133,7 @@ private extension VibeContentView {
 
 private extension VibeContentView {
     func imageView(for url: URL?) -> some View {
-        URLCachedImage(url: url) { phase in
+        AsyncImage(url: url) { phase in
             if let image = phase.image {
                 image
                     .resizable()

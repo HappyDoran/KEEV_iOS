@@ -35,7 +35,7 @@ struct VibeDTO: Decodable, Hashable, Identifiable {
         case user
         case event
         case rating
-        case comment
+        case comment = "content"
         case imageURLs = "imageURLList"
         case createdDate
         case likeCount

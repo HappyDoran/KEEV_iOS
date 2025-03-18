@@ -18,7 +18,7 @@ enum VibeHTTPRequestRouter {
     case getVibes(page: Int, size: Int, sort: [SortParameter])
     case getVibesFromEventID(id: String, page: Int, size: Int, sort: [SortParameter])
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 업로드는 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
-    case uploadVibe(token: String, eventID: String, data: Data)
+    case uploadVibe(token: String, data: Data)
     case deleteVibe(token: String, vibeID: Int)
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 수정은 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
     case modifyVibe(token: String, vibeID: Int, data: Data)
@@ -49,11 +49,12 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String : String]? {
         switch self {
-        case .uploadVibe(let token, _, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _), .likeVibe(let token, _), .cancelLikeVibe(let token, _), .checkIfUserLikedVibe(let token, _):
+        case .uploadVibe(let token, _), .deleteVibe(let token, _), .modifyVibe(let token, _, _), .checkIfUserUploadedVibe(let token, _), .likeVibe(let token, _), .cancelLikeVibe(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
             ]
+        case .checkIfUserLikedVibe(let token, _): return ["Authorization": "Bearer \(token)"]
         case .getVibeLikeCount, .getVibeCount, .getVibes, .getVibeWithVibeID, .getVibesFromEventID:
             return nil
         }
@@ -61,15 +62,10 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .getVibeCount, .getVibes, .getVibeWithVibeID, .checkIfUserUploadedVibe, .getVibesFromEventID, .likeVibe, .cancelLikeVibe, .getVibeLikeCount, .checkIfUserLikedVibe:
+        case .getVibeCount, .getVibes, .getVibeWithVibeID, .checkIfUserUploadedVibe, .getVibesFromEventID, .likeVibe, .cancelLikeVibe, .getVibeLikeCount, .checkIfUserLikedVibe, .deleteVibe:
             return nil
-        case .uploadVibe(_, _, let data):
+        case .uploadVibe(_, let data):
             return data
-        case .deleteVibe(_, let vibeID):
-            let json: [String: Any] = [
-                "id": vibeID
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
         case .modifyVibe(_, _, let data):
             return data
         }
@@ -80,36 +76,32 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     }
     
     var path: [String]? {
-        var path = ["vibe"]
-        
         switch self {
         case .getVibeCount(let eventID):
-            path.append(contentsOf: ["count", "\(eventID)"])
+            return ["open-api", "event", "\(eventID)", "vibe", "count"]
         case .getVibes:
             return ["open-api", "vibe", "feed"]
         case .getVibesFromEventID(let id, _, _, _):
             return ["open-api", "event", "\(id)", "vibe"]
-        case .uploadVibe(_, let eventID, _):
-            path.append(contentsOf: ["register", "\(eventID)"])
-        case .deleteVibe:
-            path.append(contentsOf: ["delete"])
+        case .uploadVibe(_, _):
+            return ["api", "vibe"]
+        case .deleteVibe(_, let vibeID):
+            return ["api", "vibe", "\(vibeID)"]
         case .modifyVibe(_, let vibeID, _):
-            path.append(contentsOf: ["update", "\(vibeID)"])
+            return ["api", "vibe", "\(vibeID)"]
         case .checkIfUserUploadedVibe(_, let eventID):
-            path.append(contentsOf: ["find", "\(eventID)"])
+            return ["api", "event", "\(eventID)", "vibe"]
         case .getVibeWithVibeID(let vibeID):
             return ["open-api", "vibe", "\(vibeID)"]
         case .likeVibe(_, let vibeID):
-            path.append(contentsOf: ["like", "\(vibeID)"])
+            fallthrough
         case .cancelLikeVibe(_, let vibeID):
-            path.append(contentsOf: ["like", "\(vibeID)"])
+            return ["api", "vibe", "like", "\(vibeID)"]
         case .getVibeLikeCount(let vibeID):
-            path.append(contentsOf: ["like", "\(vibeID)", "count"])
+            return ["open-api", "vibe", "like", "\(vibeID)", "count"]
         case .checkIfUserLikedVibe(_, let vibeID):
-            path.append(contentsOf: ["liked", "\(vibeID)"])
+            return ["api", "vibe", "liked", "\(vibeID)"]
         }
-        
-        return path
     }
     
     var queryItems: [URLQueryItem]? {
