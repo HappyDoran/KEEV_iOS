@@ -16,8 +16,6 @@ enum NewAccountHTTPRequestRouter {
     case refreshAccessToken(refreshToken: String)
     /// 사용자가 회원정보를 수정할 때 사용하는 라우터
     case modifyAccount(accessToken: String, boundary: String, multipartData: Data)
-    /// 로그아웃 라우터
-    case logout(accessToken: String)
     /// 회원탈퇴 라우터
     case deleteAccount(accessToken: String)
 }
@@ -29,7 +27,6 @@ extension NewAccountHTTPRequestRouter: HTTPRequestable {
         case .signUp: .post
         case .refreshAccessToken: .get
         case .modifyAccount: .patch
-        case .logout: .post
         case .deleteAccount: .delete
         }
     }
@@ -45,7 +42,6 @@ extension NewAccountHTTPRequestRouter: HTTPRequestable {
             "Authorization": "Bearer \(token)",
             "Content-Type": "multipart/form-data; boundary=\(boundary)"
         ]
-        case .logout(let token): ["Authorization": "Bearer \(token)"]
         case .deleteAccount(let token): ["Authorization": "Bearer \(token)"]
         }
     }
@@ -61,7 +57,6 @@ extension NewAccountHTTPRequestRouter: HTTPRequestable {
         case .signUp(_, let multipartData): return multipartData
         case .refreshAccessToken: return nil
         case .modifyAccount(_, _, let multipartData): return multipartData
-        case .logout: return nil
         case .deleteAccount: return nil
         }
     }
@@ -76,8 +71,7 @@ extension NewAccountHTTPRequestRouter: HTTPRequestable {
         case .signUp: ["open-api", "auth", "sign-up"]
         case .refreshAccessToken: ["api", "auth", "token"]
         case .modifyAccount: ["api", "user"]
-        case .logout: ["auth", "logout"]
-        case .deleteAccount: ["user", "delete"]
+        case .deleteAccount: ["api", "user"]
         }
     }
     
