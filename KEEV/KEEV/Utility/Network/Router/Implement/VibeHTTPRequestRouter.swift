@@ -61,15 +61,10 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .getVibeCount, .getVibes, .getVibeWithVibeID, .checkIfUserUploadedVibe, .getVibesFromEventID, .likeVibe, .cancelLikeVibe, .getVibeLikeCount, .checkIfUserLikedVibe:
+        case .getVibeCount, .getVibes, .getVibeWithVibeID, .checkIfUserUploadedVibe, .getVibesFromEventID, .likeVibe, .cancelLikeVibe, .getVibeLikeCount, .checkIfUserLikedVibe, .deleteVibe:
             return nil
         case .uploadVibe(_, _, let data):
             return data
-        case .deleteVibe(_, let vibeID):
-            let json: [String: Any] = [
-                "id": vibeID
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
         case .modifyVibe(_, _, let data):
             return data
         }
@@ -91,8 +86,8 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
             return ["open-api", "event", "\(id)", "vibe"]
         case .uploadVibe(_, let eventID, _):
             path.append(contentsOf: ["register", "\(eventID)"])
-        case .deleteVibe:
-            path.append(contentsOf: ["delete"])
+        case .deleteVibe(_, let vibeID):
+            return ["api", "vibe", "\(vibeID)"]
         case .modifyVibe(_, let vibeID, _):
             path.append(contentsOf: ["update", "\(vibeID)"])
         case .checkIfUserUploadedVibe(_, let eventID):
