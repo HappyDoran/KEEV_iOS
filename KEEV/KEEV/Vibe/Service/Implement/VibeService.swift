@@ -129,6 +129,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
             var builder = MultipartFormBuilder()
             
             let inputData = try JSONSerialization.data(withJSONObject: [
+                "eventId": eventID,
                 "rating": rating,
                 "comment": comment as Any
             ])
@@ -147,7 +148,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
             }
             guard let (boundary, data) = builder.build() else { throw VibeError.multipartFormBuilderError }
             
-            let router = VibeHTTPRequestRouter.uploadVibe(token: accessToken, eventID: eventID, data: data)
+            let router = VibeHTTPRequestRouter.uploadVibe(token: accessToken, data: data)
             
             let vibeData = try await networkUtility.requestWithMultipartForm(router: router, boundary: boundary)
             do {
