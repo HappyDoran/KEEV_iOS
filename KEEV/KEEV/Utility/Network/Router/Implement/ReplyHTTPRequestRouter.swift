@@ -13,7 +13,7 @@ import SwiftUI
 ///
 /// - Author: Doran, 라움
 enum ReplyHTTPRequestRouter {
-    case fetchReplies(vibeID: Int)
+    case fetchReplies(token: String?, vibeID: Int)
     case addReply(token: String, vibeID: Int, text: String)
     case modifyReply(token: String, replyID: String, vibeID: String, updatedText: String)
     case deleteReply(token: String, replyID: String)
@@ -44,8 +44,10 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
     
     var headers: [String: String]? {
         switch self {
-        case .fetchReplies:
-            return nil
+        case .fetchReplies(let token, _):
+            return token == nil ? nil : [
+                "Authorization": "Bearer \(token!)"
+            ]
         case .addReply(let token, _, _):
             return [
                 "Authorization": "Bearer \(token)",
@@ -83,7 +85,7 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .fetchReplies, .likeReply, .cancelLikeReply, .getReplyLikeCount, .checkIfUserLikedReply:
+        case .fetchReplies, .likeReply, .cancelLikeReply, .getReplyLikeCount, .checkIfUserLikedReply, .deleteReply:
             return nil
         case .addReply(_, let vibeID, let text):
             let json: [String: Any] = [
@@ -98,11 +100,6 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
                 "content": updatedText
             ]
             return try? JSONSerialization.data(withJSONObject: json, options: [])
-        case .deleteReply(_, let replyID):
-            let json: [String: Any] = [
-                "id": replyID,
-            ]
-            return try? JSONSerialization.data(withJSONObject: json, options: [])
         }
     }
     
@@ -110,29 +107,27 @@ extension ReplyHTTPRequestRouter: HTTPRequestable {
         AppEnvironment.keevBaseURL
     }
     
-    var path: [String]? {
-        var path = ["comment"]
-        
+    var path: [String]? {  
         switch self {
-        case .fetchReplies(let vibeID):
-            return ["open-api", "vibe", "\(vibeID)", "comment"]
+        case .fetchReplies(let token, let vibeID):
+            return token == nil ?
+            ["open-api", "vibe", "\(vibeID)", "reply"]
+            : ["api", "vibe", "\(vibeID)", "reply"]
         case .addReply:
-            path.append("register")
-        case .modifyReply:
-            path.append("edit")
-        case .deleteReply:
-            path.append("delete")
+            return ["api", "reply"]
+        case .modifyReply(_, let replyID, _, _):
+            fallthrough
+        case .deleteReply(_, let replyID):
+            return ["api", "reply", "\(replyID)"]
         case .likeReply(_, let replyID):
-            path.append(contentsOf: ["like", "\(replyID)"])
+            return ["api", "reply", "like", "\(replyID)"]
         case .cancelLikeReply(_, let replyID):
-            path.append(contentsOf: ["like", "\(replyID)"])
+            return ["api", "reply", "like", "\(replyID)"]
         case .getReplyLikeCount(let replyID):
-            path.append(contentsOf: ["like", "\(replyID)", "count"])
+            return ["open-api", "reply", "like", "\(replyID)", "count"]
         case .checkIfUserLikedReply(_, let replyID):
-            path.append(contentsOf: ["liked", "\(replyID)"])
+            return ["api", "reply", "liked", "\(replyID)"]
         }
-        
-        return path
     }
     
     var queryItems: [URLQueryItem]? { nil }

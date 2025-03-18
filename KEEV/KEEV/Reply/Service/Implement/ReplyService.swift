@@ -52,17 +52,16 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
-        try await doAsyncWithException(caller: "fetchReplies") {
-            let router = ReplyHTTPRequestRouter.fetchReplies(vibeID: vibeID)
-            
-            let data = try await networkUtility.request(router: router)
-            
-            let replyDTOs = try jsonDecoder.decode([ReplyDTO].self, from: data)
-            let currentUserID = currentUser?.id
-            let replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
-            
-            return replies
-        }
+        let token = try? await self.tokenUtility.fetchToken(for: .access)
+        let router = ReplyHTTPRequestRouter.fetchReplies(token: token, vibeID: vibeID)
+        
+        let data = try await self.networkUtility.request(router: router)
+        
+        let replyDTOs = try self.jsonDecoder.decode([ReplyDTO].self, from: data)
+        let currentUserID = currentUser?.id
+        let replies = replyDTOs.map { ReplyUIO(reply: $0, currentUserID: currentUserID) }
+        
+        return replies
     }
     
     /// 바이브에 댓글을 추가하는 함수
@@ -80,18 +79,16 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func addReply(to vibeID: Int, text: String) async throws -> ReplyUIO {
-        try await doAsyncWithException(caller: "addReply") {
-            let accessToken = try await getAccessToken()
-            let router = ReplyHTTPRequestRouter.addReply(token: accessToken, vibeID: vibeID, text: text)
-            
-            let data = try await networkUtility.request(router: router)
-            
-            let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
-            let currentUserID = currentUser?.id
-            let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
-            
-            return reply
-        }
+        let accessToken = try await getAccessToken()
+        let router = ReplyHTTPRequestRouter.addReply(token: accessToken, vibeID: vibeID, text: text)
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
+        let currentUserID = currentUser?.id
+        let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
+        
+        return reply
     }
     
     /// 바이브에 대한 댓글을 수정하는 함수
@@ -110,23 +107,21 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func modifyReply(_ reply: ReplyUIO, vibeID: Int, updatedText: String) async throws -> ReplyUIO {
-        try await doAsyncWithException(caller: "modifyReply") {
-            let accessToken = try await getAccessToken()
-            let router = ReplyHTTPRequestRouter.modifyReply(
-                token: accessToken,
-                replyID: "\(reply.id)",
-                vibeID: "\(vibeID)",
-                updatedText: updatedText
-            )
-            
-            let data = try await networkUtility.request(router: router)
-            
-            let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
-            let currentUserID = currentUser?.id
-            let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
-            
-            return reply
-        }
+        let accessToken = try await getAccessToken()
+        let router = ReplyHTTPRequestRouter.modifyReply(
+            token: accessToken,
+            replyID: "\(reply.id)",
+            vibeID: "\(vibeID)",
+            updatedText: updatedText
+        )
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let replyDTO = try jsonDecoder.decode(ReplyDTO.self, from: data)
+        let currentUserID = currentUser?.id
+        let reply = ReplyUIO(reply: replyDTO, currentUserID: currentUserID)
+        
+        return reply
     }
     
     /// 바이브에 대한 댓글을 삭제하는 함수
@@ -138,12 +133,10 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func deleteReply(_ replyID: Int) async throws {
-        try await doAsyncWithException(caller: "deleteReply") {
-            let accessToken = try await getAccessToken()
-            let router = ReplyHTTPRequestRouter.deleteReply(token: accessToken, replyID: "\(replyID)")
-            
-            _ = try await networkUtility.requestWithStatusCode(router: router)
-        }
+        let accessToken = try await getAccessToken()
+        let router = ReplyHTTPRequestRouter.deleteReply(token: accessToken, replyID: "\(replyID)")
+        
+        _ = try await networkUtility.requestWithStatusCode(router: router)
     }
     
     /// 바이브에 달린 댓글에 대한 좋아요를 수행하는 함수
@@ -158,16 +151,14 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func likeReply(replyID: Int) async throws -> Bool {
-        try await doAsyncWithException(caller: "likeReply") {
-            let accessToken = try await getAccessToken()
-            let router = ReplyHTTPRequestRouter.likeReply(token: accessToken, replyID: "\(replyID)")
-            
-            let data = try await networkUtility.request(router: router)
-            
-            let replyLikeResponse = try jsonDecoder.decode(ReplyLikeResponse.self, from: data)
-            
-            return replyLikeResponse.isLiked
-        }
+        let accessToken = try await getAccessToken()
+        let router = ReplyHTTPRequestRouter.likeReply(token: accessToken, replyID: "\(replyID)")
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let replyLikeResponse = try jsonDecoder.decode(ReplyLikeResponse.self, from: data)
+        
+        return replyLikeResponse.isLiked
     }
     
     /// 바이브에 달린 댓글에 대한 좋아요를 취소하는 함수
@@ -182,16 +173,14 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: 라움
     func cancelLikeReply(replyID: Int) async throws -> Bool {
-        try await doAsyncWithException(caller: "cancelLikeReply") {
-            let accessToken = try await getAccessToken()
-            let router = ReplyHTTPRequestRouter.cancelLikeReply(token: accessToken, replyID: "\(replyID)")
-            
-            let data = try await networkUtility.request(router: router)
-            
-            let replyLikeResponse = try jsonDecoder.decode(ReplyLikeResponse.self, from: data)
-            
-            return replyLikeResponse.isLiked
-        }
+        let accessToken = try await getAccessToken()
+        let router = ReplyHTTPRequestRouter.cancelLikeReply(token: accessToken, replyID: "\(replyID)")
+        
+        let data = try await networkUtility.request(router: router)
+        
+        let replyLikeResponse = try jsonDecoder.decode(ReplyLikeResponse.self, from: data)
+        
+        return replyLikeResponse.isLiked
     }
 }
 
