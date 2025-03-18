@@ -90,7 +90,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         case .deleteVibe(_, let vibeID):
             return ["api", "vibe", "\(vibeID)"]
         case .modifyVibe(_, let vibeID, _):
-            path.append(contentsOf: ["update", "\(vibeID)"])
+            return ["api", "vibe", "\(vibeID)"]
         case .checkIfUserUploadedVibe(_, let eventID):
             return ["api", "event", "\(eventID)", "vibe"]
         case .getVibeWithVibeID(let vibeID):
