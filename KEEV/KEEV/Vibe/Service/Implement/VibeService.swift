@@ -167,8 +167,8 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     func modifyVibe(vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [UIImage]) async throws -> VibeUIO {
         let accessToken = try await getAccessToken()
         
-        for url in previousImageURLs {
-            await UIImageCache.shared.remove(for: URL(string: url)!)
+        if let thumbnailImage = previousImageURLs.first {
+            await UIImageCache.shared.remove(for: URL(string: thumbnailImage)!)
         }
         
         let uuid = UUID().uuidString
