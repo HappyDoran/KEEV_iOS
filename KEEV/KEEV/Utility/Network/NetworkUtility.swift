@@ -60,7 +60,17 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
             var request = try router.asURLRequest()
             request.setValue("multipart/form-data; boundary=\"\(boundary)\"", forHTTPHeaderField: "Content-Type")
             
-            let (data, _) = try await fetchData(from: request)
+            let (data, statusCode) = try await fetchData(from: request)
+            
+            
+            guard (200..<300).contains(statusCode) else {
+                let errorMessage = try decodeErrorMessage(from: data)
+                
+                throw throwKEEVError(
+                    caller: "fetchData",
+                    occurPoint: .remote(code: statusCode, message: errorMessage.message)
+                )
+            }
             
             return data
         }
@@ -114,15 +124,6 @@ struct NetworkUtility: LayerRepresentable, KEEVErrorHandler {
                     caller: "fetchData",
                     occurPoint: .local(description: "FAILED TO GET STATUS CODE"),
                     previousError: nil
-                )
-            }
-            
-            guard (200..<300).contains(statusCode) else {
-                let errorMessage = try decodeErrorMessage(from: data)
-                
-                throw throwKEEVError(
-                    caller: "fetchData",
-                    occurPoint: .remote(code: statusCode, message: errorMessage.message)
                 )
             }
             

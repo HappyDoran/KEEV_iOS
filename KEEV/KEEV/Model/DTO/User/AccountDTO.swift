@@ -19,7 +19,7 @@ struct AccountDTO: Decodable {
     let accessToken: String?
     let keevRefreshToken: String?
     
-    enum CodingKeys: CodingKey {
+    enum CodingKeys: String, CodingKey {
         case id
         case nickname
         case email
@@ -28,7 +28,7 @@ struct AccountDTO: Decodable {
         case profileImageURL
         case signUpDate
         case accessToken
-        case keevRefreshToken
+        case keevRefreshToken = "refreshToken"
     }
     
     init(from decoder: any Decoder) throws {

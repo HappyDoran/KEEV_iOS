@@ -39,11 +39,13 @@ struct SettingScreen: View {
     
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) var openURL
+    @Environment(AppState.self) private var appState
     
     @State private var showTermsOfUse = false
     @State private var showPrivacyPolicy = false
     @State private var showLogoutAlert = false
     @State private var showWithdrawAlert = false
+    @State private var loadingForDeleteAccount = false
     
     var body: some View {
         NavigationStack {
@@ -127,6 +129,7 @@ struct SettingScreen: View {
             secondButtonStyle: .normal,
             secondButtonAction: deleteAccount
         )
+        .loading(for: loadingForDeleteAccount)
     }
 }
 
@@ -144,12 +147,15 @@ extension SettingScreen {
     
     private func deleteAccount() {
         Task {
+            loadingForDeleteAccount = true
             do {
                 try await accountService.deleteAccount()
                 searchService.removeAllRecentSearch()
+                loadingForDeleteAccount = false
                 dismiss()
             } catch {
-                debugPrint(error)
+                loadingForDeleteAccount = false
+                appState.presentError(error)
             }
         }
     }

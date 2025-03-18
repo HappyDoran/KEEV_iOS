@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import UIKit
 
 /// 사용자가 서비스를 사용하면서 수행한 액티비티를 위한 ActivityService
 ///
@@ -65,6 +66,38 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
         }
     }
     
+    func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
+        let accessToken = try await tokenUtility.fetchToken(for: .access)
+        let userJSON = try JSONEncoder().encode(EditInfo(nickname: nickname, description: description))
+        
+        var builder = MultipartFormBuilder()
+        builder.append(name: "editInfo", content: .json(data: userJSON))
+        
+        if let profileImage,
+           let profileJPEG = profileImage.jpegData(compressionQuality: 0.5) {
+            builder.append(name: "profileImage", fileName: UUID().uuidString, content: .jpeg(data: profileJPEG))
+        }
+        
+        if let backgroundImage,
+           let backgroundJPEG = backgroundImage.jpegData(compressionQuality: 0.7) {
+            builder.append(name: "backgroundImage", fileName: UUID().uuidString, content: .jpeg(data: backgroundJPEG))
+        }
+        
+        let (boundary, multipartData) = builder.build()!
+        
+        let router = AuthHTTPRequestRouter.modifyAccount(
+            accessToken: accessToken,
+            boundary: boundary,
+            multipartData: multipartData
+        )
+        
+        let data = try await networkUtility.request(router: router)
+        let fetchedUser = try jsonDecoder.decode(DetailUserDTO.self, from: data)
+        let uio = DetailUserUIO(detailuserDTO: fetchedUser)
+        currentUser = uio
+        return uio
+    }
+    
     func getUserVibeList(userID: Int) async throws -> [VibeUIO] {
         try await doAsyncWithException(caller: "getUserVibeList") { [weak self] in
             guard let self else { throw KEEVError(layer: Self.layer, caller: "getUserInfo", occurPoint: .custom(message: "self is nil"), previousError: nil) }
@@ -112,5 +145,12 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
             
             return paginatedResponse
         }
+    }
+}
+
+private extension ActivityService {
+    struct EditInfo: Encodable {
+        let nickname: String
+        let description: String
     }
 }

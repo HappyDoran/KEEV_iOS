@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 /// ActivityService를 구현하기 위한 프로토콜
 ///
@@ -25,6 +26,26 @@ protocol ActivityServiceProtocol: LayerRepresentable, AnyObject {
     ///
     /// - Author: 라움
     func getUserInfo(userID: Int) async throws -> DetailUserUIO
+    
+    /// 회원가입 정보를 넣는 함수.
+    ///
+    /// - Parameters:
+    ///   - nickname: 유저가 쓸 닉네임 입니다.
+    ///   - profileImage: 프로필 사진이며 사용자가 사진을 넣지 않았을 경우, `nil`을 넣으면 됩니다..
+    ///   - backgroundImage: 프로필의 배경화면이며 사용자가 배경화면을 넣지 않았을 경우, `nil`을 넣으면 됩니다.
+    ///   - description: 한 줄 소개이며, 빈 값일 경우 `nil`을 넣으면 됩니다.
+    ///
+    /// 회원 정보를 서버로 넘겨 회원가입을 진행합니다.
+    ///
+    /// - Throws: 닉네임이 정해진 형식을 지키지 않았거나 서버에 중복된 이메일 또는 닉네임이 있을 때, 그리고 서버와 통신을 실패했을 때 에러를 던집니다.
+    /// - Returns: 회원정보가 서버에서 변경이 된다면 그 값을 `DetailUserUIO`로 다시 리턴받습니다.
+    /// - Author: newJunsung
+    func updateProfile(
+        nickname: String,
+        profileImage: UIImage?,
+        backgroundImage: UIImage?,
+        description: String
+    ) async throws -> DetailUserUIO
     
     /// 사용자의 바이브 목록을 가져오는 함수
     ///

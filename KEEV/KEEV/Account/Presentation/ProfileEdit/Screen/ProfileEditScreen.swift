@@ -24,7 +24,7 @@ struct ProfileEditScreen: View {
         self.description = userProfile.wrappedValue?.description ?? ""
     }
     
-    @Injected private var service: any AccountServiceProtocol
+    @Injected private var service: any ActivityServiceProtocol
     
     @Environment(\.dismiss) private var dismiss
     

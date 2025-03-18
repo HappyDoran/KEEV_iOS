@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 /// MockActivityService
 ///
@@ -13,6 +14,10 @@ import Foundation
 ///
 /// - Author: 라움
 class MockActivityService: ActivityServiceProtocol {
+    func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
+        .dummy0
+    }
+    
     static let layer: LayerType = .service(of: "MockActivityService")
     
     func getUserInfo(userID: Int) async throws -> DetailUserUIO {
