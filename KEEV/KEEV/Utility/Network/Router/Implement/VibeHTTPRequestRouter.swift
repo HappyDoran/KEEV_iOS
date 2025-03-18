@@ -104,7 +104,7 @@ extension VibeHTTPRequestRouter: HTTPRequestable {
         case .cancelLikeVibe(_, let vibeID):
             path.append(contentsOf: ["like", "\(vibeID)"])
         case .getVibeLikeCount(let vibeID):
-            path.append(contentsOf: ["like", "\(vibeID)", "count"])
+            return ["open-api", "vibe", "like", "\(vibeID)", "count"]
         case .checkIfUserLikedVibe(_, let vibeID):
             path.append(contentsOf: ["liked", "\(vibeID)"])
         }
