@@ -1,5 +1,5 @@
 //
-//  NewAccountService.swift
+//  AuthService.swift
 //  KEEV
 //
 //  Created by 김준성 on 3/13/25.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-final class NewAccountService {
+final class AuthService {
     private let networkUtility = NetworkUtility()
     private let tokenUtility = TokenUtility.shared
     private let jsonDecoder = {
@@ -59,7 +59,7 @@ final class NewAccountService {
     }
 }
 
-extension NewAccountService: AccountServiceProtocol {
+extension AuthService: AccountServiceProtocol {
     static let layer: LayerType = .service(of: "NewAccountService")
     
     func autoSignIn() async -> SignInStatus {
@@ -186,7 +186,7 @@ extension NewAccountService: AccountServiceProtocol {
     }
 }
 
-private extension NewAccountService {
+private extension AuthService {
     struct SignUpInfo: Encodable {
         let idToken: String
         let nickname: String
