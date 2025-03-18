@@ -177,20 +177,26 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     func modifyVibe(vibeID: Int, rating: Double, comment: String?, previousImageURLs: [String], images: [UIImage]) async throws -> VibeUIO {
         try await doAsyncWithException(caller: "modifyVibe") {
             let accessToken = try await getAccessToken()
+            
+            for url in previousImageURLs {
+                await UIImageCache.shared.remove(for: URL(string: url)!)
+            }
+            
+            let uuid = UUID().uuidString
             var builder = MultipartFormBuilder()
             
             let inputData = try JSONSerialization.data(withJSONObject: [
                 "rating": rating,
-                "comment": comment as Any,
+                "content": comment as Any,
                 "previousImageURLs": previousImageURLs
             ])
-            
+        
             builder.append(name: "vibeData", content: .json(data: inputData))
             for index in 0..<images.count {
                 if let jpegData = images[index].jpegData(compressionQuality: 0.7) {
                     builder.append(
-                        name: "vibeImages",
-                        fileName: "user1_firstVibeImage\(index).jpeg",
+                        name: "vibeImageList",
+                        fileName: "\(uuid)-\(index).jpeg",
                         content: .jpeg(data: jpegData)
                     )
                 } else {
