@@ -24,6 +24,12 @@ struct SimpleUserUIO: Identifiable, Hashable {
         self.nickname = nickname
         self.profileImageURL = profileImageURL
     }
+    
+    init(_ user: SimpleUserDTO) {
+        self.id = user.id
+        self.nickname = user.nickname ?? "guest"
+        self.profileImageURL = user.profileImageURL == nil ? nil : URL(string: user.profileImageURL!)
+    }
 }
 
 extension SimpleUserUIO {
