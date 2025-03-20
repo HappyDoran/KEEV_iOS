@@ -11,8 +11,8 @@ enum FollowHTTPRequestRouter {
     case follow(token: String, userID: Int)
     case unfollow(token: String, userID: Int)
     case checkFollow(token: String, userID: Int)
-    case followingUserList(userID: Int)
-    case followerUserList(userID: Int)
+    case followingUserList(userID: Int, page: Int, size: Int)
+    case followerUserList(userID: Int, page: Int, size: Int)
     case followersCount(userID: Int)
     case followingsCount(userID: Int)
     case followingsVibeList(token: String)
@@ -25,9 +25,9 @@ enum FollowHTTPRequestRouter {
             fallthrough
         case .checkFollow(let token, let userID):
             fallthrough
-        case .followingUserList(let userID):
+        case .followingUserList(let userID, _, _):
             fallthrough
-        case .followerUserList(let userID):
+        case .followerUserList(let userID, _, _):
             fallthrough
         case .followersCount(let userID):
             fallthrough
@@ -48,24 +48,24 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
         case .follow: .post
         case .unfollow: .delete
         case .checkFollow: .get
-        case .followingUserList,
-                .followerUserList,
-                .followingsCount,
-                .followersCount,
-                .followingsVibeList: .get
+        case .followingUserList
+            , .followerUserList
+            , .followingsCount
+            , .followersCount
+            , .followingsVibeList: .get
         }
     }
     
     var headers: [String : String]? {
         switch self {
-        case .follow(let token, _),
-                .unfollow(let token, _),
-                .checkFollow(let token, _),
-                .followingsVibeList(let token): ["Authorization": "Bearer " + token]
-        case .followingUserList,
-                .followerUserList,
-                .followingsCount,
-                .followersCount: nil
+        case .follow(let token, _)
+            , .unfollow(let token, _)
+            , .checkFollow(let token, _)
+            , .followingsVibeList(let token): ["Authorization": "Bearer " + token]
+        case .followingUserList
+            , .followerUserList
+            , .followingsCount
+            , .followersCount: nil
         }
     }
     
@@ -75,9 +75,9 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
     
     var path: [String]? {
         switch self {
-        case .follow,
-                .unfollow,
-                .checkFollow: ["api", "user", "follow", userIDString]
+        case .follow
+            , .unfollow
+            , .checkFollow: ["api", "user", "follow", userIDString]
         case .followingUserList: ["open-api", "user", userIDString, "following"]
         case .followerUserList: ["open-api", "user", userIDString, "follower"]
         case .followingsCount: ["open-api", "user", userIDString, "following", "count"]
@@ -87,6 +87,14 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
     }
     
     var queryItems: [URLQueryItem]? {
-        nil
+        switch self {
+        case .followerUserList(_, let page, let size)
+            , .followingUserList(_, let page, let size)
+            : [
+                URLQueryItem(name: "page", value: "\(page)"),
+                URLQueryItem(name: "size", value: "\(size)")
+            ]
+        default: nil
+        }
     }
 }
