@@ -45,11 +45,13 @@ struct EventInfoScreen: View {
             .onAppear {
                 loadFilterThemeEvents()
             }
+            .refreshable {
+                loadFilterThemeEvents()
+            }
         }
         .backgroundForKEEV()
     }
 }
-
 
 private extension EventInfoScreen {
     func themeSectionView(theme: [FilterTheme], events: [[SimpleEventUIO]]) -> some View {
@@ -84,7 +86,6 @@ private extension EventInfoScreen {
                 }
                 .padding(.top, 20)
             }
-            
         }
     }
 }
@@ -113,7 +114,6 @@ private extension EventInfoScreen {
         }
     }
 }
-
 
 #Preview {
     NavigationStack {
