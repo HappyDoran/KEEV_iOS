@@ -27,24 +27,26 @@ final class FollowService {
 }
 
 extension FollowService: FollowServiceProtocol {
-    func follow(_ userID: Int) async throws {
+    func follow(_ userID: Int) async throws -> FollowState {
         let token = try await tokenUtility.fetchToken(for: .access)
         let router = Router.follow(token: token, userID: userID)
-        _ = try await networkUtility.request(router: router)
+        let data = try await networkUtility.request(router: router)
+        return try decoder.decode(FollowState.self, from: data)
     }
     
-    func unfollow(_ userID: Int) async throws {
+    func unfollow(_ userID: Int) async throws -> FollowState {
         let token = try await tokenUtility.fetchToken(for: .access)
         let router = Router.unfollow(token: token, userID: userID)
-        _ = try await networkUtility.request(router: router)
+        let data = try await networkUtility.request(router: router)
+        return try decoder.decode(FollowState.self, from: data)
     }
     
-    func checkFollowing(of userID: Int) async throws -> Bool {
+    func checkFollowing(of userID: Int) async throws -> FollowState {
         let token = try await tokenUtility.fetchToken(for: .access)
         let router = Router.checkFollow(token: token, userID: userID)
         let data = try await networkUtility.request(router: router)
-        let dto = try decoder.decode(IsFollowingDTO.self, from: data)
-        return dto.isFollowing
+        let followState = try decoder.decode(FollowState.self, from: data)
+        return followState
     }
     
     func count(of userID: Int, type: UserFollowType) async throws -> Int {
@@ -94,10 +96,6 @@ extension FollowService: FollowServiceProtocol {
 }
 
 extension FollowService {
-    struct IsFollowingDTO: Decodable {
-        let isFollowing: Bool
-    }
-    
     struct CountDTO: Decodable {
         let count: Int
     }
