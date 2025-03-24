@@ -41,6 +41,5 @@ struct AppEnvironment {
         diContainer.register(SearchService(), for: (any SearchServiceProtocol).self)
         diContainer.register(ActivityService(), for: (any ActivityServiceProtocol).self)
         diContainer.register(ReportService(), for: (any ReportServiceProtocol).self)
-        diContainer.register(MockFollowService(), for: (any FollowServiceProtocol).self)
     }
 }
