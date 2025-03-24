@@ -13,9 +13,9 @@ private enum EventVibeViewState {
     case empty
 }
 
-enum FeedSection: Int, CaseIterable {
-    case all = 0
-    case following = 1
+enum FeedSection: CaseIterable {
+    case all
+    case following
 }
 
 struct VibeFeedScreen: LoginCheckableView {
