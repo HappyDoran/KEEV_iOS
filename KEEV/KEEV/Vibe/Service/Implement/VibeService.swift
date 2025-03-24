@@ -18,9 +18,9 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     typealias Layer = VibeService
     
     static let layer: LayerType = .service(of: "VibeService")
-    
+    private let dummyUsers: [SimpleUserUIO] = [.dummy0, .dummy1, .dummy2]
     private let networkUtility: NetworkUtility = NetworkUtility()
-    private let tokenUitility = TokenUtility.shared
+    private let tokenUtility = TokenUtility.shared
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     private var userProfile: DetailUserUIO? = nil
@@ -256,11 +256,25 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
         
         return isLikedResponse.isLiked
     }
+    
+    func myFollowingsVibes(page: Int, size: Int) async throws -> PaginatedResponse<VibeUIO> {
+        let token = try await getAccessToken()
+        let router = FollowHTTPRequestRouter.followingsVibeList(token: token)
+        let data = try await networkUtility.request(router: router)
+        let dto = try jsonDecoder.decode(PaginationDTO<VibeDTO>.self, from: data)
+        
+        return PaginatedResponse(
+            totalPages: dto.totalPages,
+            currentPage: dto.currentPage,
+            totalElements: dto.currentPage,
+            contents: dto.contents.map { VibeUIO.init(vibeDTO: $0, isMine: false) }
+        )
+    }
 }
 
 extension VibeService {
     private func getAccessToken() async throws -> String {
-        try await tokenUitility.fetchToken(for: .access)
+        try await tokenUtility.fetchToken(for: .access)
     }
     
     private struct VibeCountDTO: Decodable {
