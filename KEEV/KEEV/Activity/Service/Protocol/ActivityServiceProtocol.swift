@@ -74,4 +74,11 @@ protocol ActivityServiceProtocol: LayerRepresentable, AnyObject {
     ///
     /// - Author: newJunsung
     func getUserLikedEvents(userID: Int, page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<SimpleEventUIO>
+    
+    
+    func follow(_ userID: Int) async throws -> FollowState
+    func unfollow(_ userID: Int) async throws -> FollowState
+    func checkFollowing(of userID: Int) async throws -> FollowState
+    func count(of userID: Int, type: UserFollowType) async throws -> Int
+    func userList(of userID: Int, type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<SimpleUserUIO>
 }

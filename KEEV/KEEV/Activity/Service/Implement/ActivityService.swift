@@ -146,11 +146,67 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
             return paginatedResponse
         }
     }
+    
+    func follow(_ userID: Int) async throws -> FollowState {
+        let token = try await tokenUtility.fetchToken(for: .access)
+        let router = FollowHTTPRequestRouter.follow(token: token, userID: userID)
+        let data = try await networkUtility.request(router: router)
+        return try jsonDecoder.decode(FollowState.self, from: data)
+    }
+    
+    func unfollow(_ userID: Int) async throws -> FollowState {
+        let token = try await tokenUtility.fetchToken(for: .access)
+        let router = FollowHTTPRequestRouter.unfollow(token: token, userID: userID)
+        let data = try await networkUtility.request(router: router)
+        return try jsonDecoder.decode(FollowState.self, from: data)
+    }
+    
+    func checkFollowing(of userID: Int) async throws -> FollowState {
+        let token = try await tokenUtility.fetchToken(for: .access)
+        let router = FollowHTTPRequestRouter.checkFollow(token: token, userID: userID)
+        let data = try await networkUtility.request(router: router)
+        let followState = try jsonDecoder.decode(FollowState.self, from: data)
+        return followState
+    }
+    
+    func count(of userID: Int, type: UserFollowType) async throws -> Int {
+        let router: FollowHTTPRequestRouter
+        switch type {
+        case .following: router = .followingsCount(userID: userID)
+        case .follower: router = .followersCount(userID: userID)
+        }
+        let data = try await networkUtility.request(router: router)
+        let dto = try jsonDecoder.decode(CountDTO.self, from: data)
+        return dto.count
+    }
+    
+    func userList(of userID: Int, type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<SimpleUserUIO> {
+        let router: FollowHTTPRequestRouter
+        
+        switch type {
+        case .follower: router = .followingUserList(userID: userID, page: page, size: size)
+        case .following: router = .followingUserList(userID: userID, page: page, size: size)
+        }
+        
+        let data = try await networkUtility.request(router: router)
+        let dto = try jsonDecoder.decode(PaginationDTO<SimpleUserDTO>.self, from: data)
+        
+        return PaginatedResponse(
+            totalPages: dto.totalPages,
+            currentPage: dto.currentPage,
+            totalElements: dto.totalElements,
+            contents: dto.contents.map(SimpleUserUIO.init)
+        )
+    }
 }
 
 private extension ActivityService {
     struct EditInfo: Encodable {
         let nickname: String
         let description: String
+    }
+    
+    struct CountDTO: Decodable {
+        let count: Int
     }
 }
