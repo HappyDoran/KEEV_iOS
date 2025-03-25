@@ -13,10 +13,16 @@ private enum EventVibeViewState {
     case empty
 }
 
+enum FeedSection: CaseIterable {
+    case all
+    case following
+}
+
 struct VibeFeedScreen: LoginCheckableView {
     @Injected private var vibeService: any VibeServiceProtocol
     @Environment(AppState.self) var appState
     
+    @State private var feedSection: FeedSection = .all
     @State private var vibes: [VibeUIO] = []
     @State private var eventVibesState: EventVibeViewState = .loading
     @State private var currentPage = 0
@@ -27,7 +33,8 @@ struct VibeFeedScreen: LoginCheckableView {
     
     var body: some View {
         ScrollView(showsIndicators: false){
-            vibeFeedHeader
+            VibeFeedHeaderView(feedSection: $feedSection, isPresented: $isPresented)
+            
             switch eventVibesState {
             case .loading:
                 vibeFeedLoading
@@ -69,24 +76,6 @@ struct VibeFeedScreen: LoginCheckableView {
 }
 
 private extension VibeFeedScreen {
-    var vibeFeedHeader: some View {
-        VStack(spacing: 0){
-            HStack(spacing: 0){
-                Text("바이브")
-                    .figmaFont(PretendardFont.title(style: .xl))
-                Spacer()
-                Button(action: {
-                    checkLoginBefore {
-                        isPresented = true
-                    }
-                }) {
-                    CreateVibeButtonView()
-                }
-            }
-        }
-        .padding(EdgeInsets(top: 8, leading: 16, bottom: 16, trailing: 16))
-    }
-    
     var vibeFeedList: some View {
         LazyVStack(spacing: 20) {
             ForEach(vibes.indices, id: \.self) { index in
@@ -173,11 +162,8 @@ private extension VibeFeedScreen {
     }
 }
 
-struct VibeFeedScreen_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            VibeFeedScreen()
-        }
+#Preview {
+    NavigationStack {
+        VibeFeedScreen()
     }
 }
-

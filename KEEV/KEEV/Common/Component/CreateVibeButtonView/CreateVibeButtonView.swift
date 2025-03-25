@@ -14,18 +14,23 @@ import SwiftUI
 /// - Author: Doran
 struct CreateVibeButtonView: View {
     var body: some View {
-        RoundedRectangle(cornerRadius: 12)
-            .fill(Color.grayBG700)
-            .frame(width: 75, height: 29)
+        Capsule()
+            .fill(Color.gray50)
+            .frame(width: 86, height: 29)
             .overlay{
-                HStack(spacing: 2) {
+                HStack(spacing: 4) {
                     Text("글쓰기")
-                        .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
+                        .figmaFont(PretendardFont.body(style: .init(bodySize: .base, bodyWeight: .semibold)))
+                    
                     Image(systemName: "square.and.pencil")
-                        .font(.system(size: 12, weight: .semibold))
+                        .font(.system(size: 15, weight: .semibold))
                         .padding(.bottom, 1.4)
                 }
-                .foregroundColor(.brand500)
+                .foregroundStyle(.grayBG950)
             }
     }
+}
+
+#Preview {
+    CreateVibeButtonView()
 }

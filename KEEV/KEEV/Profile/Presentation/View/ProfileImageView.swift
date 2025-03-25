@@ -30,12 +30,12 @@ struct ProfileImageView: View {
             VStack(spacing: 0) {
                 Spacer()
                 
-                URLProfileImage(url: userProfile?.profileImageURL, size: 96, editable: false, strokeWidth: 3, strokeColor: .gray950)
+                URLProfileImage(url: userProfile?.profileImageURL, size: 96, editable: false, strokeWidth: 4, strokeColor: .grayBG950)
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 8)
         }
-        .frame(height: 255)
+        .frame(height: 203)
         .backgroundForKEEV()
     }
 }
@@ -49,7 +49,7 @@ private extension ProfileImageView {
                         image
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 202)
+                            .frame(height: 150)
                             .clipped()
                             .overlay {
                                 Color.black
@@ -57,7 +57,7 @@ private extension ProfileImageView {
                             }
                     } else if phase.error == nil {
                         ProgressView()
-                            .frame(height: 202)
+                            .frame(height: 150)
                             .overlay {
                                 Color.black
                                     .opacity(0.2)
@@ -75,7 +75,7 @@ private extension ProfileImageView {
     
     var emptyBackgroundImageView: some View {
         Color.gray800
-            .frame(height: 202)
+            .frame(height: 150)
             .overlay {
                 Color.black
                     .opacity(0.2)
