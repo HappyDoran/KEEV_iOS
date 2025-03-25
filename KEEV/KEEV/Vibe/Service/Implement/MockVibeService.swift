@@ -15,6 +15,7 @@ import SwiftUI
 /// - Author: 라움
 class MockVibeService: VibeServiceProtocol {
     static let layer: LayerType = .service(of: "MockVibeService")
+    private let dummyUsers: [SimpleUserUIO] = [.dummy0, .dummy1, .dummy2]
     
     private var vibes: [VibeUIO] = []
     private var vibeCount = 0
@@ -139,6 +140,21 @@ class MockVibeService: VibeServiceProtocol {
     
     func checkIfUserLikedVibe(vibeID: Int) async throws -> Bool {
         true
+    }
+    
+    func myFollowingsVibes(page: Int, size: Int) async throws -> PaginatedResponse<VibeUIO> {
+        var vibes: [VibeUIO] = []
+        for id in rangeOfIndex(page: page, size: size) {
+            vibes.append(.init(id: id, user: dummyUsers[id % dummyUsers.count], event: .dummies.randomElement()!, rating: 2.5, imageURLs: [], comment: "mockFollowingVibesComment\(id)", createdDate: "2023-03-05T00:00:00.222222", likeCount: 19, replyCount: 28, isMine: false))
+        }
+        
+        return PaginatedResponse(totalPages: size*10, currentPage: page, totalElements: 10, contents: vibes)
+    }
+    
+    private func rangeOfIndex(page: Int, size: Int) -> Range<Int> {
+        let minimumID = page * size
+        let maximumID = (page + 1) * size
+        return (minimumID..<maximumID)
     }
 }
 

@@ -167,4 +167,6 @@ protocol VibeServiceProtocol: LayerRepresentable, AnyObject {
     ///
     /// - Author: 라움
     func checkIfUserLikedVibe(vibeID: Int) async throws -> Bool
+    
+    func myFollowingsVibes(page: Int, size: Int) async throws -> PaginatedResponse<VibeUIO>
 }

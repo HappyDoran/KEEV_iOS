@@ -52,6 +52,42 @@ class MockActivityService: ActivityServiceProtocol {
         return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: events)
     }
     
+    func follow(_ userID: Int) async throws -> FollowState {
+        .following
+    }
+    
+    func unfollow(_ userID: Int) async throws -> FollowState {
+        .notFollowing
+    }
+    
+    func checkFollowing(of userID: Int) async throws -> FollowState {
+        .notFollowing
+    }
+    
+    func count(of userID: Int, type: UserFollowType) async throws -> Int {
+        switch type {
+        case .follower:
+            return 108
+        case .following:
+            return 2387
+        }
+    }
+    
+    func userList(of userID: Int, type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<SimpleUserUIO> {
+        var users: [SimpleUserUIO] = []
+        for id in rangeOfIndex(page: page, size: size) {
+            users.append(.init(id: id, nickname: "\(type)mockUser\(id)", profileImageURL: nil))
+        }
+        
+        return PaginatedResponse(totalPages: size*10, currentPage: page, totalElements: 10, contents: users)
+    }
+    
+    private func rangeOfIndex(page: Int, size: Int) -> Range<Int> {
+        let minimumID = page * size
+        let maximumID = (page + 1) * size
+        return (minimumID..<maximumID)
+    }
+    
     private enum ActivityServiceError: Error {
         case notFound
     }
