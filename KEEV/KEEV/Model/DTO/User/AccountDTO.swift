@@ -14,8 +14,9 @@ struct AccountDTO: Decodable {
     let description: String
     let backgroundImageURL: String
     let profileImageURL: String
+    let followerCount: Int
+    let followingCount: Int
     let signUpDate: String?
-    
     let accessToken: String?
     let keevRefreshToken: String?
     
@@ -26,7 +27,9 @@ struct AccountDTO: Decodable {
         case description
         case backgroundImageURL
         case profileImageURL
-        case signUpDate
+        case followerCount
+        case followingCount
+        case signUpDate = "createdDate"
         case accessToken
         case keevRefreshToken = "refreshToken"
     }
@@ -39,6 +42,8 @@ struct AccountDTO: Decodable {
         self.description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
         self.backgroundImageURL = try container.decodeIfPresent(String.self, forKey: .backgroundImageURL) ?? ""
         self.profileImageURL = try container.decodeIfPresent(String.self, forKey: .profileImageURL) ?? ""
+        self.followerCount = try container.decodeIfPresent(Int.self, forKey: .followerCount) ?? 0
+        self.followingCount = try container.decodeIfPresent(Int.self, forKey: .followingCount) ?? 0
         self.signUpDate = try container.decodeIfPresent(String.self, forKey: .signUpDate)
         self.accessToken = try container.decodeIfPresent(String.self, forKey: .accessToken)
         self.keevRefreshToken = try container.decodeIfPresent(String.self, forKey: .keevRefreshToken)

@@ -88,7 +88,7 @@ private extension ProfileInfoView {
                 NavigationLink {
                     Text("팔로우") //유저의 팔로워 목록 뷰로 이동해야합니다.
                 } label: {
-                    Text("13") //유저의 팔로워 수를 넣어야합니다.
+                    Text("\(userProfile?.followerCount ?? 0)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                         .foregroundStyle(.gray50)
                 }
@@ -106,7 +106,7 @@ private extension ProfileInfoView {
                 NavigationLink {
                     Text("팔로잉") //유저가 팔로우하는 사용자 목록 뷰로 이동해야합니다.
                 } label: {
-                    Text("125") //유저가 팔로우하는 사용자 수를 넣어야합니다.
+                    Text("\(userProfile?.followingCount ?? 0)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
                         .foregroundStyle(.gray50)
                 }
