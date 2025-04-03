@@ -45,7 +45,7 @@ struct EventVibeHeader: LoginCheckableView {
                     self.selectedEvent = self.event
                 }
             } label: {
-                CreateVibeButtonView()
+                CreateVibeButtonView(type: .purple)
             }
         }
         .navigationDestination(item: $selectedEvent, destination: { event in
