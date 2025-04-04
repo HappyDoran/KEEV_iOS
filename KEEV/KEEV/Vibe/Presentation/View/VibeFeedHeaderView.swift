@@ -39,7 +39,7 @@ private extension VibeFeedHeaderView {
                         isPresented = true
                     }
                 } label: {
-                    CreateVibeButtonView()
+                    CreateVibeButtonView(type: .white)
                 }
             }
         }
