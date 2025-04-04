@@ -33,22 +33,32 @@ struct DetailUserUIO: Identifiable {
     /// 한 줄 소개
     let description: String
     
-    init(id: Int, email: String? = nil, nickname: String, profileImageURL: URL?, backgroundImageURL: URL?, description: String) {
+    /// 팔로워 수
+    let followerCount: Int
+    
+    /// 팔로잉 수
+    let followingCount: Int
+    
+    init(id: Int, email: String? = nil, nickname: String, profileImageURL: URL?, backgroundImageURL: URL?, description: String, followerCount: Int, followingCount: Int) {
         self.id = id
         self.email = email
         self.nickname = nickname
         self.profileImageURL = profileImageURL
         self.backgroundImageURL = backgroundImageURL
         self.description = description
+        self.followerCount = followerCount
+        self.followingCount = followingCount
     }
     
     init(detailuserDTO user: DetailUserDTO) {
-        id = user.id
-        email = nil
-        nickname = user.nickname
-        profileImageURL = URL(string :user.profileImageURL ?? "")
-        backgroundImageURL = URL(string :user.backgroundImageURL ?? "")
-        description = user.description
+        self.id = user.id
+        self.email = nil
+        self.nickname = user.nickname
+        self.profileImageURL = URL(string :user.profileImageURL ?? "")
+        self.backgroundImageURL = URL(string :user.backgroundImageURL ?? "")
+        self.description = user.description
+        self.followerCount = user.followerCount
+        self.followingCount = user.followingCount
     }
     
     init(account: AccountDTO) {
@@ -58,24 +68,26 @@ struct DetailUserUIO: Identifiable {
         self.profileImageURL = account.profileImageURL.isEmpty ? nil : URL(string: account.profileImageURL)
         self.backgroundImageURL = account.backgroundImageURL.isEmpty ? nil : URL(string: account.backgroundImageURL)
         self.description = account.description
+        self.followerCount = account.followerCount
+        self.followingCount = account.followingCount
     }
 }
 
 extension DetailUserUIO {
     /// 프사 배경화면 한 줄 소개가 없는 더미 사용자
-    static let dummy0 = DetailUserUIO(id: 1, nickname: "abcd", profileImageURL: nil, backgroundImageURL: nil, description: "")
+    static let dummy0 = DetailUserUIO(id: 1, nickname: "abcd", profileImageURL: nil, backgroundImageURL: nil, description: "", followerCount: 128, followingCount: 130)
     
     /// 닉네임이 긴 더미 사용자
-    static let dummy1 = DetailUserUIO(id: 2, nickname: "김수한무 거북이와 두루미 삼천갑자 동방삭 치치카포 사리사리센타 워리워리 세브리깡 무두셀라 구름이 허리케인에 담벼락 담벼락에 서생원 서생원에 고양이 고양이엔 바둑이 바둑이는 돌돌이", profileImageURL: nil, backgroundImageURL: nil, description: "")
+    static let dummy1 = DetailUserUIO(id: 2, nickname: "김수한무 거북이와 두루미 삼천갑자 동방삭 치치카포 사리사리센타 워리워리 세브리깡 무두셀라 구름이 허리케인에 담벼락 담벼락에 서생원 서생원에 고양이 고양이엔 바둑이 바둑이는 돌돌이", profileImageURL: nil, backgroundImageURL: nil, description: "", followerCount: 12, followingCount: 35)
     
     /// 한 줄 설명이 긴 더미 사용자
-    static let dummy2 = DetailUserUIO(id: 3, nickname: "dummy0", profileImageURL: nil, backgroundImageURL: nil, description: "김수한무 거북이와 두루미 삼천갑자 동방삭 치치카포 사리사리센타 워리워리 세브리깡 무두셀라 구름이 허리케인에 담벼락 담벼락에 서생원 서생원에 고양이 고양이엔 바둑이 바둑이는 돌돌이")
+    static let dummy2 = DetailUserUIO(id: 3, nickname: "dummy0", profileImageURL: nil, backgroundImageURL: nil, description: "김수한무 거북이와 두루미 삼천갑자 동방삭 치치카포 사리사리센타 워리워리 세브리깡 무두셀라 구름이 허리케인에 담벼락 담벼락에 서생원 서생원에 고양이 고양이엔 바둑이 바둑이는 돌돌이", followerCount: 345, followingCount: 224)
     
     /// 프로필 사진이 있는 더미 사용자
-    static let dummy3 = DetailUserUIO(id: 4, nickname: "대상혁", profileImageURL: URL(string: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp"), backgroundImageURL: nil, description: "")
+    static let dummy3 = DetailUserUIO(id: 4, nickname: "대상혁", profileImageURL: URL(string: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp"), backgroundImageURL: nil, description: "", followerCount: 36, followingCount: 36)
     
     /// 프사와 배경화면이 둘 다 있는 더미 사용자
-    static let dummy4 = DetailUserUIO(id: 5, nickname: "대상혁", profileImageURL: URL(string: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp"), backgroundImageURL: URL(string: "https://image.kmib.co.kr/online_image/2024/1103/2024110311070142113_1730599621_0020687410.jpg"), description: "화이팅!")
+    static let dummy4 = DetailUserUIO(id: 5, nickname: "대상혁", profileImageURL: URL(string: "https://resources.chimhaha.net/article/1720288539228-nu7rc8ymarm.webp"), backgroundImageURL: URL(string: "https://image.kmib.co.kr/online_image/2024/1103/2024110311070142113_1730599621_0020687410.jpg"), description: "화이팅!", followerCount: 1357, followingCount: 0)
     
     /// 더미데이터 0~4까지 모은 배열
     static let dummies = [dummy0, dummy1, dummy2, dummy3, dummy4]

@@ -40,7 +40,7 @@ final class MockAccountService: AccountServiceProtocol {
         let id = dummy.id
         let profileImageURL = profileImage == nil ? nil : dummy.profileImageURL
         let backgroundImageURL = backgroundImage == nil ? nil : dummy.backgroundImageURL
-        return .ok(user: .init(id: id, nickname: nickname, profileImageURL: profileImageURL, backgroundImageURL: backgroundImageURL, description: description))
+        return .ok(user: .init(id: id, nickname: nickname, profileImageURL: profileImageURL, backgroundImageURL: backgroundImageURL, description: description, followerCount: 0, followingCount: 0))
     }
     
     func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
@@ -48,7 +48,7 @@ final class MockAccountService: AccountServiceProtocol {
         let id = dummy.id
         let profileImageURL = profileImage == nil ? nil : dummy.profileImageURL
         let backgroundImageURL = backgroundImage == nil ? nil : dummy.backgroundImageURL
-        return .init(id: id, nickname: nickname, profileImageURL: profileImageURL, backgroundImageURL: backgroundImageURL, description: description)
+        return .init(id: id, nickname: nickname, profileImageURL: profileImageURL, backgroundImageURL: backgroundImageURL, description: description, followerCount: DetailUserUIO.dummy4.followerCount, followingCount: DetailUserUIO.dummy4.followingCount)
     }
     
     func signOut() async throws {
