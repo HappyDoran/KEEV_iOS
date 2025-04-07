@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Observation
 
 enum SortPattern: String {
     case ascending = "asc"
