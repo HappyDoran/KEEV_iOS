@@ -36,16 +36,12 @@ extension SearchHTTPRequestRouter: HTTPRequestable {
     }
     
     var path: [String]? {
-        var path: [String] = ["event", "get", "search"]
-        
         switch self {
         case .searchEventByNameWhenAddVibe:
-            path.append(contentsOf: ["started"])
+            return ["open-api", "event", "search", "started"]
         case .searchEventByName:
-            path.append(contentsOf: [])
+            return ["open-api", "event", "search"]
         }
-        
-        return path
     }
     
     var queryItems: [URLQueryItem]? {
