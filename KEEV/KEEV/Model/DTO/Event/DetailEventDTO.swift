@@ -134,8 +134,7 @@ extension DetailEventDTO {
         posterURLString: "https://image.toast.com/aaaaab/ticketlink/TKL_2/m(19).jpg",
         description: nil,
         descriptionImagesURLStrings: ["http://image.toast.com/aaaaab/ticketlink/TKL_4/kaze_info_0913.jpg"],
-        places: [.init(id: 2313, name: "고척 스카이돔", address: "서울특별시 구로구 경인로 430", contry: "대한민국", latitude: 37.498333, longitude: 126.866667)],
-        artists: [.init(id: 19970614, name: "후지이 카제", profileImageURLString: "https://i.namu.wiki/i/9RIQJx-tv1hv1KhBK63FT6cYCP392Kotd9EBBHmmbA-TENCTFnoNeuAzsyvwa_h-38W3Sk-Dt6Jx9Be-XhHi55A2_yi8_UPnwiEjmzMCbAuN2KhZbp4YTaGAPFDDGwaeX7eTyrj7MaXFJkpu911Ck9tKtkNMp4Sq0HOzFBmMVC0.webp")]
+        places: [.init(id: 2313, name: "고척 스카이돔")],
     )
     
     /// 상세 설명 텍스트가 있고 경우, 상세 설명 이미지가 없는 경우
@@ -163,7 +162,6 @@ extension DetailEventDTO {
 공연 취소 시 : 없음
 """,
         descriptionImagesURLStrings: [],
-        places: [.init(id: 2313, name: "고척 스카이돔", address: "서울특별시 구로구 경인로 430", contry: "대한민국", latitude: 37.498333, longitude: 126.866667)],
-        artists: [.init(id: 19970614, name: "후지이 카제", profileImageURLString: "https://i.namu.wiki/i/9RIQJx-tv1hv1KhBK63FT6cYCP392Kotd9EBBHmmbA-TENCTFnoNeuAzsyvwa_h-38W3Sk-Dt6Jx9Be-XhHi55A2_yi8_UPnwiEjmzMCbAuN2KhZbp4YTaGAPFDDGwaeX7eTyrj7MaXFJkpu911Ck9tKtkNMp4Sq0HOzFBmMVC0.webp")]
+        places: [.init(id: 2313, name: "고척 스카이돔")],
     )
 }

@@ -141,11 +141,11 @@ extension DetailEventUIO {
         reservationStartDate: Date.now,
         startDate: SimpleEventDTO.dummy0.startDate,
         endDate: SimpleEventDTO.dummy0.endDate,
-        places: [.init(id: 1, name: "dummyPlace2", address: "dummyAddress2", contry: "대한민국", latitude: 123.3213, longitude: 39.32132)],
+        places: [.init(id: 1, name: "dummyPlace2")],
         description: "대한민국에 신이 강림한 날.\n항상 숭배해야만 해...\n가나다라마바사아자차카타파하고노도로모보소오조초코토포호아야어여이우유오요으에예애얘",
         descriptionImageURLStrings: DetailEventDTO.dummy0.descriptionImagesURLStrings
     )
     
     /// 에러 케이스
-    static let dummy3 = DetailEventUIO(id: 282827, name: "DetailEventUIDummy3", posterURL: nil, dDay: nil, reservationStartDate: nil, startDate: "Err", endDate: "Err", places: [.init(id: 1, name: "dummyPlace2", address: "dummyAddress2", contry: "대한민국", latitude: 123.3213, longitude: 39.32132)], description: nil, descriptionImageURLs: [nil, nil])
+    static let dummy3 = DetailEventUIO(id: 282827, name: "DetailEventUIDummy3", posterURL: nil, dDay: nil, reservationStartDate: nil, startDate: "Err", endDate: "Err", places: [.init(id: 1, name: "dummyPlace2")], description: nil, descriptionImageURLs: [nil, nil])
 }
