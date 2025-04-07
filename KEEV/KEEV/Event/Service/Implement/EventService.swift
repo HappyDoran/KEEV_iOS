@@ -154,14 +154,9 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
         }
         
         return try doWithException(caller: "loadDetailEvent") {
-            let eventResponseDTO = try jsonDecoder.decode(EventResponseDTO.self, from: data)
-            guard let detailEventDTO = eventResponseDTO.events.first else {
-                throw throwKEEVError(caller: "loadDetailEvent", occurPoint: .local(description: "Event not found"))
-            }
+            let event = try jsonDecoder.decode(DetailEventDTO.self, from: data)
             
-            let detailEventUIO = DetailEventUIO(detailEventDTO: detailEventDTO)
-            
-            return detailEventUIO
+            return .init(detailEventDTO: event)
             
         }
     }
