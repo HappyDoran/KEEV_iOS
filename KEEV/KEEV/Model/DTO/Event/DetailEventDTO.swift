@@ -15,7 +15,7 @@ import Foundation
 ///
 /// - Author: newJunsung
 struct DetailEventDTO: Decodable, Hashable, Identifiable {
-    let id: String
+    let id: Int
     
     /// 이벤트의 이름
     let name: String
@@ -73,7 +73,7 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         case artists
     }
     
-    init(id: String, name: String, types: [EventTypeDTO], genres: [GenreDTO], createdDate: Date, reservationStartDate: Date?, startDate: Date, endDate: Date, startTime: Date, posterURLString: String, description: String?, descriptionImagesURLStrings: [String], places: [PlaceDTO], artists: [SimpleArtistDTO]) {
+    init(id: Int, name: String, types: [EventTypeDTO], genres: [GenreDTO], createdDate: Date, reservationStartDate: Date?, startDate: Date, endDate: Date, startTime: Date, posterURLString: String, description: String?, descriptionImagesURLStrings: [String], places: [PlaceDTO], artists: [SimpleArtistDTO]) {
         self.id = id
         self.name = name
         self.types = types
@@ -101,7 +101,7 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         let tempEndDate = try container.decode(String.self, forKey: .endDate)
         let tempStartTime = try container.decode(String.self, forKey: .startTime)
         
-        self.id = try container.decode(String.self, forKey: .id)
+        self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.types = try container.decode([EventTypeDTO].self, forKey: .types)
         self.genres = try container.decode([GenreDTO].self, forKey: .genres)
@@ -122,7 +122,7 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
 extension DetailEventDTO {
     /// 상세 설명 이미지가 있고 상세 설명 텍스트가 없는 경우
     static let dummy0 = DetailEventDTO(
-        id: "1321321",
+        id: 1321321,
         name: "Best of Fujii Kaze 2020-2024 ASIA TOUR in SEOUL",
         types: [.init(id: 1, name: "콘서트"), .init(id: 2, name: "내한")],
         genres: [.init(id: 1, name: "J-POP")],
@@ -140,7 +140,7 @@ extension DetailEventDTO {
     
     /// 상세 설명 텍스트가 있고 경우, 상세 설명 이미지가 없는 경우
     static let dummy1 = DetailEventDTO(
-        id: "1321321",
+        id: 1329321,
         name: "Best of Fujii Kaze 2020-2024 ASIA TOUR in SEOUL",
         types: [.init(id: 1, name: "콘서트"), .init(id: 2, name: "내한")],
         genres: [.init(id: 1, name: "J-POP")],

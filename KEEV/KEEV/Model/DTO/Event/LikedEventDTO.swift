@@ -18,7 +18,7 @@ import Foundation
 /// - Author: 라움
 struct LikedEventDTO: Decodable, Identifiable {
     /// 이벤트의 ID
-    let id: String
+    let id: Int
     /// 이벤트의 이름
     let name: String
     /// 이벤트 포스터의 URL 문자열
@@ -42,7 +42,7 @@ struct LikedEventDTO: Decodable, Identifiable {
         case likedAt
     }
     
-    init(id: String, name: String, posterURLString: String, startDate: Date, endDate: Date, placeNames: [String], likedAt: Date) {
+    init(id: Int, name: String, posterURLString: String, startDate: Date, endDate: Date, placeNames: [String], likedAt: Date) {
         self.id = id
         self.name = name
         self.posterURLString = posterURLString
@@ -61,7 +61,7 @@ struct LikedEventDTO: Decodable, Identifiable {
         let tempEndDate = try container.decode(String.self, forKey: .endDate)
         let tempLikedAt = try container.decode(String.self, forKey: .endDate)
         
-        self.id = try container.decode(String.self, forKey: .id)
+        self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.posterURLString = try container.decode(String.self, forKey: .posterURLString)
         self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now

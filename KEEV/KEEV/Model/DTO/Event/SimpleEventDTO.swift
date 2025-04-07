@@ -19,7 +19,7 @@ import Foundation
 /// - Author: newJunsung
 struct SimpleEventDTO: Decodable, Identifiable, Hashable {
     /// 이벤트의 ID
-    let id: String
+    let id: Int
     /// 이벤트의 이름
     let name: String
     /// 이벤트가 시작되는 날짜
@@ -43,7 +43,7 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
         case placeNames = "placeNameList"
     }
     
-    init(id: String, name: String, startDate: Date, endDate: Date, posterURLString: String, placeNames: [String]) {
+    init(id: Int, name: String, startDate: Date, endDate: Date, posterURLString: String, placeNames: [String]) {
         self.id = id
         self.name = name
         self.startDate = startDate
@@ -60,7 +60,7 @@ struct SimpleEventDTO: Decodable, Identifiable, Hashable {
         let tempStartDate = try container.decode(String.self, forKey: .startDate)
         let tempEndDate = try container.decode(String.self, forKey: .endDate)
         
-        self.id = try container.decode(String.self, forKey: .id)
+        self.id = try container.decode(Int.self, forKey: .id)
         self.name = try container.decode(String.self, forKey: .name)
         self.startDate = tempStartDate.toDate(format: "yyyy-MM-dd") ?? .now
         self.endDate = tempEndDate.toDate(format: "yyyy-MM-dd") ?? .now
@@ -82,7 +82,7 @@ extension SimpleEventDTO {
 extension SimpleEventDTO {
     /// 숭배해야만 하는 데이터1
     static let dummy0 = SimpleEventDTO(
-        id: "85ef3d7a-21e3-449b-b49c-e5b5d3861912",
+        id: 12847,
         name: "¥$ VULTURES LISTENING EXPERIENCE",
         startDate: .startOfDay(year: 2024, month: 8, day: 23),
         endDate: .startOfDay(year: 2024, month: 8, day: 23),
@@ -92,7 +92,7 @@ extension SimpleEventDTO {
     
     /// 이벤트 이름이 긴 더미데이터
     static let dummy1 = SimpleEventDTO(
-        id: "dummy1",
+        id: 33333,
         name: "개발하기가 너무나도 귀찮은데 어떻게 해야 아무것도 안하면서 아무것도 한 척하는지를 노래로 표현하는 뉴준성의 콘서트",
         startDate: .startOfDay(year: 2024, month: 12, day: 25),
         endDate: .startOfDay(year: 2024, month: 12, day: 25),
@@ -102,7 +102,7 @@ extension SimpleEventDTO {
     
     /// 뉴준성이 갈 예정인 이벤트1
     static let dummy2 = SimpleEventDTO(
-        id: "dummy2",
+        id: 22222,
         name: "KENSHI YONEZU 2025 WORLD TOUR / JUNK",
         startDate: .startOfDay(year: 2025, month: 03, day: 22),
         endDate: .startOfDay(year: 2025, month: 03, day: 23),
@@ -112,7 +112,7 @@ extension SimpleEventDTO {
     
     /// 유효하지 않은 포스터 URL을 가진 더미 데이터1
     static let dummy3 = SimpleEventDTO(
-        id: "dummy3",
+        id: 1192,
         name: "더미즈 이벤트 넘버 3",
         startDate: .startOfDay(year: 2025, month: 04, day: 22),
         endDate: .startOfDay(year: 2025, month: 05, day: 22),
@@ -122,7 +122,7 @@ extension SimpleEventDTO {
     
     /// 유효하지 않은 포스터 URL을 가진 더미 데이터2
     static let dummy4 = SimpleEventDTO(
-        id: "dummy4",
+        id: 999999999,
         name: "더미즈 이벤트 넘버 4",
         startDate: .startOfDay(year: 2024, month: 11, day: 06),
         endDate: .startOfDay(year: 2024, month: 11, day: 06),
@@ -132,7 +132,7 @@ extension SimpleEventDTO {
     
     /// 이벤트 장소 이름이 긴 더미데이터
     static let dummy5 = SimpleEventDTO(
-        id: "dummy5",
+        id: 34314,
         name: "더미즈 이벤트 넘버 5",
         startDate: .startOfDay(year: 2025, month: 03, day: 22),
         endDate: .startOfDay(year: 2025, month: 03, day: 22),
@@ -142,7 +142,7 @@ extension SimpleEventDTO {
     
     /// 뉴준성이 갈 예정인 이벤트2
     static let dummy6 = SimpleEventDTO(
-        id: "dummy6",
+        id: 908976,
         name: "Best of Fujii Kaze 2020-2024 ASIA TOUR in SEOUL",
         startDate: .startOfDay(year: 2024, month: 12, day: 14),
         endDate: .startOfDay(year: 2024, month: 12, day: 14),
@@ -152,7 +152,7 @@ extension SimpleEventDTO {
     
     /// 숭배해야만 하는 이벤트2
     static let dummy7 = SimpleEventDTO(
-        id: "dummy7",
+        id: 123847,
         name: "WORLDS24 T1 우승 기념 이벤트",
         startDate: .startOfDay(year: 2024, month: 11, day: 06),
         endDate: .startOfDay(year: 2024, month: 11, day: 20),
@@ -161,7 +161,7 @@ extension SimpleEventDTO {
     )
     
     static let dummy8 = SimpleEventDTO(
-        id: "dummy8",
+        id: 747653,
         name: "챔피언스 리그 바이에른 vs 벤피카",
         startDate: .startOfDay(year: 2024, month: 11, day: 7),
         endDate: .startOfDay(year: 2024, month: 11, day: 7),
@@ -170,7 +170,7 @@ extension SimpleEventDTO {
     )
     
     static let dummy9 = SimpleEventDTO(
-        id: "dummy9",
+        id: 376675,
         name: "대상혁",
         startDate: .startOfDay(year: 2024, month: 11, day: 08),
         endDate: .startOfDay(year: 2024, month: 11, day: 08),
