@@ -135,7 +135,13 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func loadDetailEvent(id: Int) async throws -> DetailEventUIO {
-        let router = EventHTTPRequestRouter.fetchDetailEvent(eventID: id)
+        let router:EventHTTPRequestRouter
+        
+        if let token = try? await tokenUtility.fetchToken(for: .access) {
+            router = .fetchDetailEventWithToken(token: token, eventID: id)
+        } else {
+            router = .fetchDetailEvent(eventID: id)
+        }
         
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
         
