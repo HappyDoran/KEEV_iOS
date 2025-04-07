@@ -68,7 +68,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         
         switch self {
         case .fetchEvents:
-            path.append(contentsOf: ["get", "sortBy"])
+            return ["open-api", "event", "sorted"]
         case .fetchFilteredEvents:
             path.append(contentsOf: ["get", "filtered"])
         case .fetchFilterThemeEvents(let theme, _, _, _):
