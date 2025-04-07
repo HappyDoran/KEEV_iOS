@@ -56,7 +56,7 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 이벤트 상세정보 UIO
     ///
     /// - Author: 라움
-    func loadDetailEvent(id: String) async throws -> DetailEventUIO
+    func loadDetailEvent(id: Int) async throws -> DetailEventUIO
     
     /// 이벤트 ID에 해당하는 이벤트의 좋아요 갯수를 가져오는 함수
     ///
@@ -69,7 +69,7 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 좋아요 갯수
     ///
     /// - Author: Doran
-    func getEventLikeCount(id: String) async throws -> Int
+    func getEventLikeCount(id: Int) async throws -> Int
     
     /// 이벤트 ID에 해당하는 이벤트를 사용자가 이전에 좋아요를 했었는지 아닌지를 가져오는 함수
     ///
@@ -82,7 +82,7 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 좋아요 여부
     ///
     /// - Author: Doran
-    func getIsLikedEvent(id: String) async throws -> Bool
+    func getIsLikedEvent(id: Int) async throws -> Bool
     
     /// 이벤트 ID에 해당하는 이벤트에 사용자가 좋아요를 눌러서 관심표시로 바꾸는 함수
     ///
@@ -95,7 +95,7 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 좋아요가 잘 추가되면 true를 반환
     ///
     /// - Author: Doran
-    func addEventLike(id: String) async throws -> Bool
+    func addEventLike(id: Int) async throws -> Bool
     
     /// 이벤트 ID에 해당하는 이벤트에 사용자가 좋아요를 눌러서 관심 해제하는 함수
     ///
@@ -108,5 +108,5 @@ protocol EventServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 좋아요가 잘 해제됐으면 false를 반환
     ///
     /// - Author: Doran
-    func deleteEventLike(id: String) async throws -> Bool
+    func deleteEventLike(id: Int) async throws -> Bool
 }

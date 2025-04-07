@@ -134,7 +134,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     /// - Returns: 이벤트 상세정보 UIO
     ///
     /// - Author: Doran
-    func loadDetailEvent(id: String) async throws -> DetailEventUIO {
+    func loadDetailEvent(id: Int) async throws -> DetailEventUIO {
         let router = EventHTTPRequestRouter.fetchDetailEvent(eventID: id)
         
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
@@ -171,7 +171,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     /// - Returns: 좋아요 갯수
     ///
     /// - Author: Doran
-    func getEventLikeCount(id: String) async throws -> Int {
+    func getEventLikeCount(id: Int) async throws -> Int {
         let router = EventHTTPRequestRouter.fetchEventLikeCount(eventID: id)
         
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
@@ -201,7 +201,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     /// - Returns: 좋아요 여부
     ///
     /// - Author: Doran
-    func getIsLikedEvent(id: String) async throws -> Bool {
+    func getIsLikedEvent(id: Int) async throws -> Bool {
         try await doAsyncWithException(caller: "getIsLikedEvent"){
             let accessToken = try await getAccessToken()
             let router = EventHTTPRequestRouter.fetchEventisLiked(token: accessToken, eventID: id)
@@ -225,7 +225,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     /// - Returns: 좋아요가 잘 추가되면 true를 반환
     ///
     /// - Author: Doran
-    func addEventLike(id: String) async throws -> Bool {
+    func addEventLike(id: Int) async throws -> Bool {
         try await doAsyncWithException(caller: "addEventLike"){
             let accessToken = try await getAccessToken()
             let router = EventHTTPRequestRouter.addEventLike(token: accessToken, eventID: id)
@@ -249,7 +249,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     /// - Returns: 좋아요가 잘 해제됐으면 false를 반환
     ///
     /// - Author: Doran
-    func deleteEventLike(id: String) async throws -> Bool {
+    func deleteEventLike(id: Int) async throws -> Bool {
         try await doAsyncWithException(caller: "deleteEventLike"){
             let accessToken = try await getAccessToken()
             let router = EventHTTPRequestRouter.deleteEventLike(token: accessToken, eventID: id)

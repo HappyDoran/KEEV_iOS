@@ -46,23 +46,23 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: events)
     }
     
-    func loadDetailEvent(id: String) async throws -> DetailEventUIO {
+    func loadDetailEvent(id: Int) async throws -> DetailEventUIO {
         .dummy0
     }
     
-    func getEventLikeCount(id: String) async throws -> Int {
+    func getEventLikeCount(id: Int) async throws -> Int {
         return 35
     }
     
-    func getIsLikedEvent(id: String) async throws -> Bool {
+    func getIsLikedEvent(id: Int) async throws -> Bool {
         return true
     }
     
-    func addEventLike(id: String) async throws -> Bool {
+    func addEventLike(id: Int) async throws -> Bool {
         return true
     }
     
-    func deleteEventLike(id: String) async throws -> Bool {
+    func deleteEventLike(id: Int) async throws -> Bool {
         return false
     }
 }
