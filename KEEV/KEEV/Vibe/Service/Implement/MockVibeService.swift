@@ -33,7 +33,7 @@ class MockVibeService: VibeServiceProtocol {
                 .init(
                     id: index,
                     user: SimpleUserUIO(id: index, nickname: "더미닉네임\(index)", profileImageURL: nil),
-                    event: SimpleEventUIO(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: nil, dDay: 7, startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)"),
+                    event: SimpleEventUIO(id: index, name: "Dummy Title: 이벤트\(index)", posterURL: nil, dDay: 7, startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)"),
                     rating: Double(Int.random(in: 1 ... 10)) / 2,
                     imageURLs: VibeUIO.dummy0.imageURLs,
                     comment: "코멘트 내용\(index)",
@@ -61,7 +61,7 @@ class MockVibeService: VibeServiceProtocol {
                 .init(
                     id: index,
                     user: SimpleUserUIO(id: index, nickname: "더미닉네임\(index)", profileImageURL: nil),
-                    event: SimpleEventUIO(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: nil, dDay: 7, startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)"),
+                    event: SimpleEventUIO(id: index, name: "Dummy Title: 이벤트\(index)", posterURL: nil, dDay: 7, startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)"),
                     rating: Double(Int.random(in: 1 ... 10)) / 2,
                     imageURLs: VibeUIO.dummy0.imageURLs,
                     comment: "코멘트 내용\(index)",
@@ -80,7 +80,7 @@ class MockVibeService: VibeServiceProtocol {
         let newVibe = VibeUIO(
             id: vibeCount + 1,
             user: SimpleUserUIO(id: 123, nickname: "가래떡강아지", profileImageURL: nil),
-            event: SimpleEventUIO(id: "135", name: "번개반찬", posterURL: nil, dDay: 0, startDate: "2024.11.26", endDate: "2024.11.26", placeName: "기숙사 휴게실"),
+            event: SimpleEventUIO(id: 135, name: "번개반찬", posterURL: nil, dDay: 0, startDate: "2024.11.26", endDate: "2024.11.26", placeName: "기숙사 휴게실"),
             rating: 4.0,
             imageURLs: [nil],
             comment: "배부르다!",
@@ -103,7 +103,7 @@ class MockVibeService: VibeServiceProtocol {
         let vibe = VibeUIO(
             id: vibeID,
             user: SimpleUserUIO(id: 1, nickname: "가나다", profileImageURL: nil),
-            event: SimpleEventUIO(id: "dummyID", name: "Dummy Title", posterURL: nil, dDay: 7, startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장"),
+            event: SimpleEventUIO(id: 282736, name: "Dummy Title", posterURL: nil, dDay: 7, startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장"),
             rating: rating,
             imageURLs: VibeUIO.dummy0.imageURLs,
             comment: comment,
