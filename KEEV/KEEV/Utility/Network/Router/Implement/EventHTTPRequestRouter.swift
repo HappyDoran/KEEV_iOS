@@ -17,11 +17,11 @@ enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
     case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
     case fetchFilterThemeEvents(theme: FilterTheme, page: Int, size: Int, sort: [SortParameter])
-    case fetchDetailEvent(eventID: String)
-    case fetchEventLikeCount(eventID: String)
-    case fetchEventisLiked(token: String, eventID: String)
-    case addEventLike(token: String, eventID: String)
-    case deleteEventLike(token: String, eventID: String)
+    case fetchDetailEvent(eventID: Int)
+    case fetchEventLikeCount(eventID: Int)
+    case fetchEventisLiked(token: String, eventID: Int)
+    case addEventLike(token: String, eventID: Int)
+    case deleteEventLike(token: String, eventID: Int)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
