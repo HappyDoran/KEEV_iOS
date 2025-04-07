@@ -34,7 +34,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
             .store(in: &subscriptions)
     }
     
-    func getVibeCount(eventID: String) async throws -> Int {
+    func getVibeCount(eventID: Int) async throws -> Int {
         let router = VibeHTTPRequestRouter.getVibeCount(eventID: eventID)
         
         let (code, data) = try await networkUtility.requestWithStatusCode(router: router)
@@ -88,7 +88,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    func getPaginatedVibes(from eventID: String, page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<VibeUIO> {
+    func getPaginatedVibes(from eventID: Int, page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<VibeUIO> {
         let sortCases: [SortCase] = sort.map { $0.0 }
         let sortPatterns: [SortPattern] = sort.map { $0.1 }
         
@@ -117,7 +117,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
+    func uploadVibe(eventID: Int, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
         let accessToken = try await getAccessToken()
         var builder = MultipartFormBuilder()
         
@@ -203,7 +203,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
         return vibeUIO
     }
     
-    func checkIfUserUploadedVibe(eventID: String) async throws -> Int {
+    func checkIfUserUploadedVibe(eventID: Int) async throws -> Int {
         let accessToken = try await getAccessToken()
         let router = VibeHTTPRequestRouter.checkIfUserUploadedVibe(token: accessToken, eventID: eventID)
         

@@ -25,7 +25,7 @@ protocol VibeServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 이벤트에 현재까지 기록된 바이브의 갯수
     ///
     /// - Author: 라움
-    func getVibeCount(eventID: String) async throws -> Int
+    func getVibeCount(eventID: Int) async throws -> Int
     
     /// 바이브 목록을 가져오는 함수
     ///
@@ -56,7 +56,7 @@ protocol VibeServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 페이지네이션이 적용된 바이브 목록
     ///
     /// - Author: newJunsung
-    func getPaginatedVibes(from eventID: String, page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO>
+    func getPaginatedVibes(from eventID: Int, page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO>
     
     /// 특정 이벤트에 바이브를 등록하는 함수
     ///
@@ -72,7 +72,7 @@ protocol VibeServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 등록된 바이브의 UIO
     ///
     /// - Author: 라움
-    func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO
+    func uploadVibe(eventID: Int, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO
     
     /// 특정 바이브를 삭제하는 함수
     ///
@@ -114,7 +114,7 @@ protocol VibeServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 등록된 바이브의 ID
     ///
     /// - Author: 라움
-    func checkIfUserUploadedVibe(eventID: String) async throws -> Int
+    func checkIfUserUploadedVibe(eventID: Int) async throws -> Int
     
     /// 바이브 ID를 통해 바이브를 조회하는 함수
     ///

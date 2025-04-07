@@ -20,7 +20,7 @@ class MockVibeService: VibeServiceProtocol {
     private var vibes: [VibeUIO] = []
     private var vibeCount = 0
     
-    func getVibeCount(eventID: String) async throws -> Int {
+    func getVibeCount(eventID: Int) async throws -> Int {
         vibeCount
     }
     
@@ -52,7 +52,7 @@ class MockVibeService: VibeServiceProtocol {
         }
     }
     
-    func getPaginatedVibes(from eventID: String, page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO> {
+    func getPaginatedVibes(from eventID: Int, page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO> {
         var vibeList: [VibeUIO] = []
         let startIndex = page*size
         
@@ -76,7 +76,7 @@ class MockVibeService: VibeServiceProtocol {
         return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: vibeList)
     }
     
-    func uploadVibe(eventID: String, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
+    func uploadVibe(eventID: Int, rating: Double, comment: String?, images: [UIImage]) async throws -> VibeUIO {
         let newVibe = VibeUIO(
             id: vibeCount + 1,
             user: SimpleUserUIO(id: 123, nickname: "가래떡강아지", profileImageURL: nil),
@@ -116,7 +116,7 @@ class MockVibeService: VibeServiceProtocol {
         return vibe
     }
     
-    func checkIfUserUploadedVibe(eventID: String) async throws -> Int {
+    func checkIfUserUploadedVibe(eventID: Int) async throws -> Int {
         1
     }
     
