@@ -41,7 +41,7 @@ protocol ReportServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendVibeReport(eventID: String, vibeID: Int, reason: String) async throws -> String
+    func sendVibeReport(eventID: Int, vibeID: Int, reason: String) async throws -> String
     
     /// 유저 신고하기 함수
     ///
@@ -69,5 +69,5 @@ protocol ReportServiceProtocol: LayerRepresentable, AnyObject {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendEventReport(eventID: String, reason: String) async throws -> String
+    func sendEventReport(eventID: Int, reason: String) async throws -> String
 }
