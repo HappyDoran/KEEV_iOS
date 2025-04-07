@@ -79,13 +79,13 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         case .fetchDetailEventWithToken(_, let eventID):
             return ["api", "event", "\(eventID)"]
         case .fetchEventLikeCount(let eventID):
-            path.append(contentsOf: ["like", "\(eventID)", "count"])
+            return ["open-api", "event", "like", "\(eventID)", "count"]
         case .fetchEventisLiked(_, let eventID):
-            path.append(contentsOf: ["liked", "\(eventID)"])
+            return ["api", "event", "liked", "\(eventID)"]
         case .addEventLike(_, let eventID):
-            path.append(contentsOf: ["like", "\(eventID)"])
+            return ["api", "event", "like", "\(eventID)"]
         case .deleteEventLike(_, let eventID):
-            path.append(contentsOf: ["like", "\(eventID)"])
+            return ["api", "event", "like", "\(eventID)"]
         }
         
         return path
