@@ -19,11 +19,11 @@ enum FollowHTTPRequestRouter {
     
     private var userIDString: String {
         switch self {
-        case .follow(let token, let userID):
+        case .follow(_, let userID):
             fallthrough
-        case .unfollow(let token, let userID):
+        case .unfollow(_, let userID):
             fallthrough
-        case .checkFollow(let token, let userID):
+        case .checkFollow(_, let userID):
             fallthrough
         case .followingUserList(let userID, _, _):
             fallthrough

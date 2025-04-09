@@ -14,7 +14,7 @@ import Foundation
 /// - Author: newJunsung
 struct SimpleEventUIO: Identifiable, Hashable {
     /// 이벤트의 id
-    let id: String
+    let id: Int
     
     /// 이벤트 이름
     let name: String
@@ -37,7 +37,7 @@ struct SimpleEventUIO: Identifiable, Hashable {
     /// 관심 표시 시간
     let likedAt: String?
     
-    init(id: String, name: String, posterURL: URL?, dDay: Int, startDate: String, endDate: String, placeName: String, likedAt: String? = nil) {
+    init(id: Int, name: String, posterURL: URL?, dDay: Int, startDate: String, endDate: String, placeName: String, likedAt: String? = nil) {
         self.id = id
         self.name = name
         self.posterURL = posterURL

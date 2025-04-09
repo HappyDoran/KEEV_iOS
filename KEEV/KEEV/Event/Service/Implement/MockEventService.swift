@@ -26,7 +26,7 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         
         for index in startIndex..<startIndex + size {
             events.append(
-                .init(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: SimpleEventUIO.dummy0.posterURL, dDay: Int.random(in: -10...10), startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)")
+                .init(id: index, name: "Dummy Title: 이벤트\(index)", posterURL: SimpleEventUIO.dummy0.posterURL, dDay: Int.random(in: -10...10), startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)")
             )
         }
         
@@ -39,30 +39,30 @@ class MockEventService: EventServiceProtocol, KEEVErrorHandler {
         
         for index in startIndex..<startIndex + size {
             events.append(
-                .init(id: "dummyID: \(index)", name: "Dummy Title: 이벤트\(index)", posterURL: SimpleEventUIO.dummy0.posterURL, dDay: Int.random(in: -10...10), startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)")
+                .init(id: index, name: "Dummy Title: 이벤트\(index)", posterURL: SimpleEventUIO.dummy0.posterURL, dDay: Int.random(in: -10...10), startDate: "2024.12.05", endDate: "2024.12.05", placeName: "공연장\(index)")
             )
         }
         
         return PaginatedResponse(totalPages: 5, currentPage: page, totalElements: 50, contents: events)
     }
     
-    func loadDetailEvent(id: String) async throws -> DetailEventUIO {
+    func loadDetailEvent(id: Int) async throws -> DetailEventUIO {
         .dummy0
     }
     
-    func getEventLikeCount(id: String) async throws -> Int {
+    func getEventLikeCount(id: Int) async throws -> Int {
         return 35
     }
     
-    func getIsLikedEvent(id: String) async throws -> Bool {
+    func getIsLikedEvent(id: Int) async throws -> Bool {
         return true
     }
     
-    func addEventLike(id: String) async throws -> Bool {
+    func addEventLike(id: Int) async throws -> Bool {
         return true
     }
     
-    func deleteEventLike(id: String) async throws -> Bool {
+    func deleteEventLike(id: Int) async throws -> Bool {
         return false
     }
 }

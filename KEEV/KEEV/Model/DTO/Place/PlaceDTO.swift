@@ -13,25 +13,4 @@ struct PlaceDTO: Codable, Hashable, Identifiable {
     
     /// 장소 이름
     let name: String
-    
-    /// 주소(ex. 경상북도 포항시 청암로 77 남자기숙사 18동 112호)
-    let address: String
-    
-    /// 나라 이름
-    let contry: String
-    
-    /// 위도
-    let latitude: Double
-    
-    /// 경도
-    let longitude: Double
-    
-    enum CodingKeys: String, CodingKey {
-        case id
-        case name
-        case address
-        case contry = "countryName"
-        case latitude
-        case longitude
-    }
 }

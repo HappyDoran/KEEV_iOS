@@ -43,7 +43,7 @@ class ReportService: ReportServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    func sendVibeReport(eventID: String, vibeID: Int, reason: String) async throws -> String {
+    func sendVibeReport(eventID: Int, vibeID: Int, reason: String) async throws -> String {
         try await doAsyncWithException(caller: "sendVibeReport") {
             let accessToken = try await getAccessToken()
             let router = ReportHTTPRequestRouter.vibeReport(
@@ -76,7 +76,7 @@ class ReportService: ReportServiceProtocol, KEEVErrorHandler {
         }
     }
     
-    func sendEventReport(eventID: String, reason: String) async throws -> String {
+    func sendEventReport(eventID: Int, reason: String) async throws -> String {
         try await doAsyncWithException(caller: "sendEventReport") {
             let accessToken = try await getAccessToken()
             let router = ReportHTTPRequestRouter.eventReport(
@@ -107,8 +107,8 @@ extension ReportService {
 ///
 /// - Author: 라움
 enum ReportType: CustomStringConvertible {
-    case event(eventID: String)
-    case vibe(eventID: String, vibeID: Int)
+    case event(eventID: Int)
+    case vibe(eventID: Int, vibeID: Int)
     case user(userID: Int)
     case reply(vibeID: Int, replyID: Int)
     

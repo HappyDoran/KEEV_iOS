@@ -17,11 +17,12 @@ enum EventHTTPRequestRouter {
     case fetchEvents(page: Int, size: Int, sort: [SortParameter])
     case fetchFilteredEvents(size: Int, page: Int, eventTypeID: Int?, genreID: Int?, startDate: String?, endDate: String?, mode: String, desc: Bool)
     case fetchFilterThemeEvents(theme: FilterTheme, page: Int, size: Int, sort: [SortParameter])
-    case fetchDetailEvent(eventID: String)
-    case fetchEventLikeCount(eventID: String)
-    case fetchEventisLiked(token: String, eventID: String)
-    case addEventLike(token: String, eventID: String)
-    case deleteEventLike(token: String, eventID: String)
+    case fetchDetailEvent(eventID: Int)
+    case fetchDetailEventWithToken(token: String, eventID: Int)
+    case fetchEventLikeCount(eventID: Int)
+    case fetchEventisLiked(token: String, eventID: Int)
+    case addEventLike(token: String, eventID: Int)
+    case deleteEventLike(token: String, eventID: Int)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
@@ -30,7 +31,7 @@ enum EventHTTPRequestRouter {
 extension EventHTTPRequestRouter: HTTPRequestable {
     var method: HTTPMethod {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchFilterThemeEvents, .fetchDetailEvent, .fetchEventLikeCount, .fetchEventisLiked:
+        case .fetchEvents, .fetchFilteredEvents, .fetchFilterThemeEvents, .fetchDetailEvent, .fetchEventLikeCount, .fetchEventisLiked, .fetchDetailEventWithToken:
             return .get
         case .addEventLike:
             return .post
@@ -43,7 +44,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         switch self {
         case .fetchEvents, .fetchFilteredEvents, .fetchFilterThemeEvents, .fetchDetailEvent, .fetchEventLikeCount:
             return nil
-        case .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _):
+        case .fetchEventisLiked(let token, _), .addEventLike(let token, _), .deleteEventLike(let token, _), .fetchDetailEventWithToken(let token, _):
             return [
                 "Authorization": "Bearer \(token)",
                 "content-type": "application/json"
@@ -53,7 +54,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
     
     var body: Data? {
         switch self {
-        case .fetchEvents, .fetchFilteredEvents, .fetchFilterThemeEvents, .fetchDetailEvent, .fetchEventLikeCount, .fetchEventisLiked, .addEventLike, .deleteEventLike:
+        case .fetchEvents, .fetchFilteredEvents, .fetchFilterThemeEvents, .fetchDetailEvent, .fetchEventLikeCount, .fetchEventisLiked, .addEventLike, .deleteEventLike, .fetchDetailEventWithToken:
             return nil
         }
     }
@@ -67,22 +68,24 @@ extension EventHTTPRequestRouter: HTTPRequestable {
         
         switch self {
         case .fetchEvents:
-            path.append(contentsOf: ["get", "sortBy"])
+            return ["open-api", "event", "sorted"]
         case .fetchFilteredEvents:
             path.append(contentsOf: ["get", "filtered"])
         case .fetchFilterThemeEvents(let theme, _, _, _):
             path.removeAll()
             path = theme.path ?? []
         case .fetchDetailEvent(let eventID):
-            path.append(contentsOf: ["get", "\(eventID)"])
+            return ["open-api", "event", "\(eventID)"]
+        case .fetchDetailEventWithToken(_, let eventID):
+            return ["api", "event", "\(eventID)"]
         case .fetchEventLikeCount(let eventID):
-            path.append(contentsOf: ["like", "\(eventID)", "count"])
+            return ["open-api", "event", "like", "\(eventID)", "count"]
         case .fetchEventisLiked(_, let eventID):
-            path.append(contentsOf: ["liked", "\(eventID)"])
+            return ["api", "event", "liked", "\(eventID)"]
         case .addEventLike(_, let eventID):
-            path.append(contentsOf: ["like", "\(eventID)"])
+            return ["api", "event", "like", "\(eventID)"]
         case .deleteEventLike(_, let eventID):
-            path.append(contentsOf: ["like", "\(eventID)"])
+            return ["api", "event", "like", "\(eventID)"]
         }
         
         return path
@@ -127,7 +130,7 @@ extension EventHTTPRequestRouter: HTTPRequestable {
             }
             
             return queryItems
-        case .fetchDetailEvent, .fetchEventLikeCount, .fetchEventisLiked, .addEventLike, .deleteEventLike:
+        case .fetchDetailEvent, .fetchDetailEventWithToken, .fetchEventLikeCount, .fetchEventisLiked, .addEventLike, .deleteEventLike:
             return nil
         }
     }

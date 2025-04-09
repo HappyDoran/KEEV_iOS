@@ -71,5 +71,5 @@ extension ReportListView {
 }
 
 #Preview {
-    ReportListView(reportType: .event(eventID: "dee"), selectedCase: .constant(""))
+    ReportListView(reportType: .event(eventID: 2828), selectedCase: .constant(""))
 }

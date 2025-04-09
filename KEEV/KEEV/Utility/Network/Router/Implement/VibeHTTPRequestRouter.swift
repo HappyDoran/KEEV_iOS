@@ -14,15 +14,15 @@ import SwiftUI
 ///
 /// - Author: 라움
 enum VibeHTTPRequestRouter {
-    case getVibeCount(eventID: String)
+    case getVibeCount(eventID: Int)
     case getVibes(page: Int, size: Int, sort: [SortParameter])
-    case getVibesFromEventID(id: String, page: Int, size: Int, sort: [SortParameter])
+    case getVibesFromEventID(id: Int, page: Int, size: Int, sort: [SortParameter])
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 업로드는 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
     case uploadVibe(token: String, data: Data)
     case deleteVibe(token: String, vibeID: Int)
     /// 각각의 요소를 인자로 받던 것과 달리 바이브 수정은 MultipartFormBuilder로 처리된 데이터를 인자로 받습니다.
     case modifyVibe(token: String, vibeID: Int, data: Data)
-    case checkIfUserUploadedVibe(token: String, eventID: String)
+    case checkIfUserUploadedVibe(token: String, eventID: Int)
     case getVibeWithVibeID(vibeID: Int)
     case likeVibe(token: String, vibeID: Int)
     case cancelLikeVibe(token: String, vibeID: Int)

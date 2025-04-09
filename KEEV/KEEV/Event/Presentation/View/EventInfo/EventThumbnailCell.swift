@@ -69,7 +69,7 @@ struct EventThumbnailCell: View {
 
 #Preview {
     EventThumbnailCell(
-        event: .init(id: "www.google.com", name: "쏜애플 콘서트 '도시전설'", posterURL: nil, dDay: 1, startDate: "2024.12.04", endDate: "2024.12.08", placeName: "가나다"),
+        event: .init(id: 8383, name: "쏜애플 콘서트 '도시전설'", posterURL: nil, dDay: 1, startDate: "2024.12.04", endDate: "2024.12.08", placeName: "가나다"),
         showDday: true
     )
     .backgroundForKEEV()

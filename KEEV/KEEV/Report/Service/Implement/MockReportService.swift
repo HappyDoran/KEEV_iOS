@@ -46,7 +46,7 @@ class MockReportService: ReportServiceProtocol {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendVibeReport(eventID: String, vibeID: Int, reason: String) async throws -> String {
+    func sendVibeReport(eventID: Int, vibeID: Int, reason: String) async throws -> String {
         let response = "Vibe report has been successfully submitted."
         return response
     }
@@ -80,7 +80,7 @@ class MockReportService: ReportServiceProtocol {
     /// - Returns: 정상적으로 저장될 경우의 메시지
     ///
     /// - Author: 라움
-    func sendEventReport(eventID: String, reason: String) async throws -> String {
+    func sendEventReport(eventID: Int, reason: String) async throws -> String {
         let response = "Event report has been successfully submitted."
         return response
     }

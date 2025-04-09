@@ -122,5 +122,5 @@ extension ReportScreen {
 }
 
 #Preview {
-    ReportScreen(reportType: .event(eventID: "DEAFW23"))
+    ReportScreen(reportType: .event(eventID: 2827))
 }

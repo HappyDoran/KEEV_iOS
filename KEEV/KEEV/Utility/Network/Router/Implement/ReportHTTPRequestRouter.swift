@@ -14,9 +14,9 @@ import SwiftUI
 /// - Author: 라움
 enum ReportHTTPRequestRouter {
     case replyReport(token: String, vibeID: Int, replyID: Int, reason: String)
-    case vibeReport(token: String, eventID: String, vibeID: Int, reason: String)
+    case vibeReport(token: String, eventID: Int, vibeID: Int, reason: String)
     case userReport(token: String, userID: Int, reason: String)
-    case eventReport(token: String, eventID: String, reason: String)
+    case eventReport(token: String, eventID: Int, reason: String)
 }
 
 /// HTTPRequestable을 상속받아서 실제로 Request를 할 때 필요한 data, header, method, url을 만듭니다.
