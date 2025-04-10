@@ -262,7 +262,7 @@ extension EventDetailScreen {
     private func loadDetailEvent() async {
         do {
             selectedEvent = try await eventService.loadDetailEvent(id: selectedEvent.id)
-        } catch(let failToFetchEvent) {
+        } catch let failToFetchEvent {
             error = failToFetchEvent
         }
     }
@@ -275,23 +275,23 @@ extension EventDetailScreen {
         do {
             selectedEvent.interestCount = try await eventService.getEventLikeCount(id: selectedEvent.id)
         } catch(let failToFetchEventLikeCount) {
-            error = failToFetchEventLikeCount
+            appState.presentError(failToFetchEventLikeCount)
         }
     }
     
     private func addEventLike() async {
         do {
             selectedEvent.isInterested = try await eventService.addEventLike(id: selectedEvent.id)
-        } catch {
-            selectedEvent.isInterested = false
+        } catch let failToAddInterest {
+            appState.presentError(failToAddInterest)
         }
     }
     
     private func deleteEventLike() async {
         do {
             selectedEvent.isInterested = try await eventService.deleteEventLike(id: selectedEvent.id)
-        } catch {
-            selectedEvent.isInterested = false
+        } catch let failToDeleteInterest {
+            appState.presentError(failToDeleteInterest)
         }
     }
 }
