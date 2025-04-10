@@ -40,9 +40,6 @@ struct EventDetailScreen: LoginCheckableView {
     @State private var selectedEvent: DetailEventUIO
     @State private var vibeWriteState: VibeWriteState
     @State private var activeSection = EventDetailSection.detail
-    @State private var vibeCount: Int? = nil
-    @State private var likeCount: Int = 0
-    @State private var isFavorite: Bool = false
     @State private var showEventDetailSheet = false
     @State private var navigateToReportEvent = false
     @State private var navigateToWriteVibe = false
@@ -66,7 +63,7 @@ struct EventDetailScreen: LoginCheckableView {
     
     var body: some View {
         VStack(spacing: 0){
-            HeaderTabView(activeSection: $activeSection, dDay: selectedEvent.dDay, vibeCount: vibeCount)
+            HeaderTabView(activeSection: $activeSection, dDay: selectedEvent.dDay, vibeCount: selectedEvent.vibeCount)
             switch activeSection {
             case .detail:
                 infoView
@@ -115,13 +112,6 @@ struct EventDetailScreen: LoginCheckableView {
             if isLoadDetailEvent {
                 await loadDetailEvent()
             }
-            
-            if let dDay = selectedEvent.dDay, dDay >= 0 {
-                vibeCount = try? await vibeService.getVibeCount(eventID: selectedEvent.id)
-            }
-            
-            await getEventCount()
-            await getIsLiked()
         }
         .refreshable {
             await loadDetailEvent()
@@ -144,8 +134,17 @@ extension EventDetailScreen {
         VStack(spacing: 0) {
             ScrollView(showsIndicators: false) {
                 EventDetailThumbnail(selectedEvent: selectedEvent)
-                EventDetailInfoView(selectedEvent: selectedEvent,isFavorite: $isFavorite, likeCount: $likeCount)
+                EventDetailInfoView(selectedEvent: selectedEvent, isFavorite: $selectedEvent.isInterested, likeCount: $selectedEvent.interestCount)
                     .padding(.horizontal, 20)
+                    .onChange(of: selectedEvent.isInterested) { _, newValue in
+                        Task {
+                            if newValue {
+                                await addEventLike()
+                            } else {
+                                await deleteEventLike()
+                            }
+                        }
+                    }
                 
                 detailSection
             }
@@ -156,16 +155,6 @@ extension EventDetailScreen {
                 }
             }, style: .maxWidth, disabled: isDisabled)
             .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
-        }
-        .onDisappear{
-            Task {
-                if !isFavorite {
-                    await deleteEventLike()
-                }
-                else {
-                    await addEventLike()
-                }
-            }
         }
     }
     
@@ -279,12 +268,12 @@ extension EventDetailScreen {
     }
     
     private func getIsLiked() async {
-        isFavorite = (try? await eventService.getIsLikedEvent(id: selectedEvent.id)) ?? false
+        selectedEvent.isInterested = (try? await eventService.getIsLikedEvent(id: selectedEvent.id)) ?? false
     }
     
     private func getEventCount() async {
         do {
-            likeCount = try await eventService.getEventLikeCount(id: selectedEvent.id)
+            selectedEvent.interestCount = try await eventService.getEventLikeCount(id: selectedEvent.id)
         } catch(let failToFetchEventLikeCount) {
             error = failToFetchEventLikeCount
         }
@@ -292,17 +281,17 @@ extension EventDetailScreen {
     
     private func addEventLike() async {
         do {
-            isFavorite = try await eventService.addEventLike(id: selectedEvent.id)
+            selectedEvent.isInterested = try await eventService.addEventLike(id: selectedEvent.id)
         } catch {
-            isFavorite = false
+            selectedEvent.isInterested = false
         }
     }
     
     private func deleteEventLike() async {
         do {
-            isFavorite = try await eventService.deleteEventLike(id: selectedEvent.id)
+            selectedEvent.isInterested = try await eventService.deleteEventLike(id: selectedEvent.id)
         } catch {
-            isFavorite = false
+            selectedEvent.isInterested = false
         }
     }
 }
