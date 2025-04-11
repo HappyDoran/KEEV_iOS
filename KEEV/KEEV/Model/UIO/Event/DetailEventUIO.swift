@@ -131,7 +131,7 @@ struct DetailEventUIO: Identifiable, Hashable {
         self.placesName = tempPlacesName.isEmpty ? "공연 장소가 없습니다." : tempPlacesName
         self.isInterested = event.isInterested
         self.interestCount = event.interestCount
-        self.vibeCount = (dDay ?? 1000000000) > 0 ? nil : event.vibeCount
+        self.vibeCount = (dDay ?? -1000) < 0 ? nil : event.vibeCount
     }
     
     init(simpleEventUIO event: SimpleEventUIO) {
