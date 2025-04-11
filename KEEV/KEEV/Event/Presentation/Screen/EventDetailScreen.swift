@@ -38,26 +38,22 @@ struct EventDetailScreen: LoginCheckableView {
     @Injected private var vibeService: any VibeServiceProtocol
     
     @State private var selectedEvent: DetailEventUIO
-    @State private var vibeWriteState: VibeWriteState
+    @State private var vibeWriteState: VibeWriteState = .loading
     @State private var activeSection = EventDetailSection.detail
     @State private var showEventDetailSheet = false
     @State private var navigateToReportEvent = false
     @State private var navigateToWriteVibe = false
-    @State private var error: Error? = nil
+    @State private var navigateToDetailVibe: VibeUIO?
     
     private let isLoadDetailEvent: Bool
     
     init(detailEvent: DetailEventUIO) {
         self.selectedEvent = detailEvent
-        let dDay = detailEvent.dDay ?? 0
-        self.vibeWriteState = dDay >= 0 ? .canWrite : .writeYet(for: dDay)
         self.isLoadDetailEvent = false
     }
     
     init(simpleEvent: SimpleEventUIO) {
         self.selectedEvent = DetailEventUIO(simpleEventUIO: simpleEvent)
-        let dDay = simpleEvent.dDay ?? 0
-        self.vibeWriteState = dDay >= 0 ? .canWrite : .writeYet(for: dDay)
         self.isLoadDetailEvent = true
     }
     
@@ -112,6 +108,8 @@ struct EventDetailScreen: LoginCheckableView {
             if isLoadDetailEvent {
                 await loadDetailEvent()
             }
+            
+            await checkUserWroteVibe()
         }
         .refreshable {
             await loadDetailEvent()
@@ -120,7 +118,9 @@ struct EventDetailScreen: LoginCheckableView {
         .navigationDestination(isPresented: $navigateToWriteVibe) {
             VibeCreateScreen(selectedEvent: SimpleEventUIO(detailEventUIO: selectedEvent), isNavigation: true)
         }
-        .alertForError($error)
+        .navigationDestination(item: $navigateToDetailVibe) { vibe in
+            VibeDetailScreen(vibe: .constant(vibe))
+        }
     }
 }
 
@@ -151,9 +151,13 @@ extension EventDetailScreen {
             
             CommonButton(title: "\(vibeWriteState)", action: {
                 checkLoginBefore {
-                    navigateToWriteVibe = true
+                    if case let .alreadyWritten(vibe) = vibeWriteState {
+                        navigateToDetailVibe = vibe
+                    } else {
+                        navigateToWriteVibe = true
+                    }
                 }
-            }, style: .maxWidth, disabled: isDisabled)
+            }, style: .maxWidth, disabled: vibeWriteState.isDisabled)
             .padding(EdgeInsets(top: 12, leading: 16, bottom: 0, trailing: 16))
         }
     }
@@ -166,7 +170,7 @@ extension EventDetailScreen {
     @ViewBuilder
     private var vibeView: some View {
         VStack(spacing: 0){
-            if (isDisabled) {
+            if (vibeWriteState.isDisabled) {
                 yetStartVibe.frame(maxHeight: .infinity)
             }
             else {
@@ -263,7 +267,7 @@ extension EventDetailScreen {
         do {
             selectedEvent = try await eventService.loadDetailEvent(id: selectedEvent.id)
         } catch let failToFetchEvent {
-            error = failToFetchEvent
+            appState.presentError(failToFetchEvent)
         }
     }
     
@@ -294,21 +298,22 @@ extension EventDetailScreen {
             appState.presentError(failToDeleteInterest)
         }
     }
-}
-
-
-
-extension EventDetailScreen {
-    /// 이벤트 시작 여부를 판단하는 연산 프로퍼티
-    ///
-    /// - Returns: 이벤트가 시작되지 않았다면 true, 그렇지 않다면 false를 반환.
-    ///
-    /// - Author: Doran
-    private var isDisabled: Bool {
-        if vibeWriteState == .canWrite {
-            return false
+    
+    private func checkUserWroteVibe() async {
+        let dDay = selectedEvent.dDay ?? 0
+        guard dDay >= 0 else {
+            vibeWriteState = .writeYet(for: dDay)
+            return
         }
-        return true
+        
+        
+        do {
+            let id = try await vibeService.checkIfUserUploadedVibe(eventID: selectedEvent.id)
+            let vibe = try? await vibeService.getVibeWithVibeID(vibeID: id)
+            vibeWriteState = .alreadyWritten(vibe: vibe)
+        } catch {
+            vibeWriteState = .canWrite
+        }
     }
 }
 
@@ -317,7 +322,7 @@ extension EventDetailScreen {
         case writeYet(for: Int)
         case loading
         case canWrite
-        case alreadyWritten
+        case alreadyWritten(vibe: VibeUIO?)
         
         var description: String {
             switch self {
@@ -325,7 +330,18 @@ extension EventDetailScreen {
                 return "D\(dDay)"
             case .loading: return "로딩 중..."
             case .canWrite: return "글쓰기"
-            case .alreadyWritten: return "작성 완료"
+            case .alreadyWritten: return "이미 바이브를 작성했어요!"
+            }
+        }
+        
+        var isDisabled: Bool {
+            switch self {
+            case .writeYet, .loading:
+                return true
+            case .alreadyWritten(let vibe):
+                return vibe == nil
+            case .canWrite:
+                return false
             }
         }
     }
