@@ -44,6 +44,15 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
     /// 장소
     let places: [PlaceDTO]
     
+    /// 관심 표시 여부. 둘러보기일 땐 무조건 false.
+    let isInterested: Bool
+    
+    /// 관심 표시 수
+    let interestCount: Int
+    
+    /// 바이브 개수
+    let vibeCount: Int
+    
     enum CodingKeys: String, CodingKey {
         case id
         case name
@@ -55,9 +64,12 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         case description
         case descriptionImagesURLStrings = "descriptionImageURLList"
         case places = "placeList"
+        case isInterested
+        case interestCount
+        case vibeCount
     }
     
-    init(id: Int, name: String, reservationStartDate: Date?, startDate: Date, endDate: Date, startTime: Date, posterURLString: String, description: String?, descriptionImagesURLStrings: [String], places: [PlaceDTO]) {
+    init(id: Int, name: String, reservationStartDate: Date?, startDate: Date, endDate: Date, startTime: Date, posterURLString: String, description: String?, descriptionImagesURLStrings: [String], places: [PlaceDTO], isInterested: Bool = false, interestCount: Int = 0, vibeCount: Int = 0) {
         self.id = id
         self.name = name
         self.reservationStartDate = reservationStartDate
@@ -68,6 +80,9 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         self.description = description
         self.descriptionImagesURLStrings = descriptionImagesURLStrings
         self.places = places
+        self.isInterested = isInterested
+        self.interestCount = interestCount
+        self.vibeCount = vibeCount
     }
     
     /// 디코딩 데이터에 대해서 날짜를 포매팅 해주고 초기값을 생성
@@ -90,6 +105,9 @@ struct DetailEventDTO: Decodable, Hashable, Identifiable {
         self.description = try container.decodeIfPresent(String.self, forKey: .description)
         self.descriptionImagesURLStrings = try container.decode([String].self, forKey: .descriptionImagesURLStrings)
         self.places = try container.decode([PlaceDTO].self, forKey: .places)
+        self.isInterested = try container.decode(Bool.self, forKey: .isInterested)
+        self.interestCount = try container.decode(Int.self, forKey: .interestCount)
+        self.vibeCount = try container.decode(Int.self, forKey: .vibeCount)
     }
     
 }

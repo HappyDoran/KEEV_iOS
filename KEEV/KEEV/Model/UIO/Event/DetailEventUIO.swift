@@ -45,6 +45,12 @@ struct DetailEventUIO: Identifiable, Hashable {
     
     let placesName: String
     
+    var isInterested: Bool
+    
+    var interestCount: Int
+    
+    let vibeCount: Int?
+    
     init(
         id: Int,
         name: String,
@@ -55,7 +61,10 @@ struct DetailEventUIO: Identifiable, Hashable {
         endDate: String,
         places: [PlaceDTO],
         description: String?,
-        descriptionImageURLs: [URL?]
+        descriptionImageURLs: [URL?],
+        isInterested: Bool,
+        interestCount: Int,
+        vibeCount: Int
     ) {
         self.id = id
         self.name = name
@@ -69,6 +78,9 @@ struct DetailEventUIO: Identifiable, Hashable {
         self.descriptionImageURLs = descriptionImageURLs
         let tempPlacesName = places.map(\.name).joined(separator: ", ")
         self.placesName = tempPlacesName.isEmpty ? "공연 장소가 없어요" : tempPlacesName
+        self.isInterested = isInterested
+        self.interestCount = interestCount
+        self.vibeCount = vibeCount
     }
     
     init(
@@ -80,7 +92,10 @@ struct DetailEventUIO: Identifiable, Hashable {
         endDate: Date,
         places: [PlaceDTO],
         description: String?,
-        descriptionImageURLStrings: [String]
+        descriptionImageURLStrings: [String],
+        isInterested: Bool,
+        interestCount: Int,
+        vibeCount: Int
     ) {
         self.id = id
         self.name = name
@@ -94,13 +109,18 @@ struct DetailEventUIO: Identifiable, Hashable {
         self.descriptionImageURLs = descriptionImageURLStrings.map(URL.init)
         let tempPlacesName = places.map(\.name).joined(separator: ", ")
         self.placesName = tempPlacesName.isEmpty ? "공연 장소가 없습니다." : tempPlacesName
+        self.isInterested = isInterested
+        self.interestCount = interestCount
+        self.vibeCount = vibeCount
     }
     
     init(detailEventDTO event: DetailEventDTO) {
+        let dDay = event.startDate.difference(from: .now)
+        
         self.id = event.id
         self.name = event.name
         self.posterURL = URL(string: event.posterURLString)
-        self.dDay = event.startDate.difference(from: .now)
+        self.dDay = dDay
         self.reservationStartDate = event.reservationStartDate?.toString(format: "yyyy. MM. dd hh:mm")
         self.startDate = event.startDate.toString(format: "yyyy. MM. dd")
         self.endDate = event.endDate.toString(format: "yyyy. MM. dd")
@@ -109,6 +129,9 @@ struct DetailEventUIO: Identifiable, Hashable {
         self.descriptionImageURLs = event.descriptionImagesURLStrings.map(URL.init)
         let tempPlacesName = event.places.map(\.name).joined(separator: ", ")
         self.placesName = tempPlacesName.isEmpty ? "공연 장소가 없습니다." : tempPlacesName
+        self.isInterested = event.isInterested
+        self.interestCount = event.interestCount
+        self.vibeCount = (dDay ?? -1000) < 0 ? nil : event.vibeCount
     }
     
     init(simpleEventUIO event: SimpleEventUIO) {
@@ -123,6 +146,9 @@ struct DetailEventUIO: Identifiable, Hashable {
         self.description = nil
         self.descriptionImageURLs = []
         self.placesName = ""
+        self.isInterested = false
+        self.interestCount = 0
+        self.vibeCount = nil
     }
 }
 
@@ -143,9 +169,12 @@ extension DetailEventUIO {
         endDate: SimpleEventDTO.dummy0.endDate,
         places: [.init(id: 1, name: "dummyPlace2")],
         description: "대한민국에 신이 강림한 날.\n항상 숭배해야만 해...\n가나다라마바사아자차카타파하고노도로모보소오조초코토포호아야어여이우유오요으에예애얘",
-        descriptionImageURLStrings: DetailEventDTO.dummy0.descriptionImagesURLStrings
+        descriptionImageURLStrings: DetailEventDTO.dummy0.descriptionImagesURLStrings,
+        isInterested: false,
+        interestCount: 29,
+        vibeCount: 0
     )
     
     /// 에러 케이스
-    static let dummy3 = DetailEventUIO(id: 282827, name: "DetailEventUIDummy3", posterURL: nil, dDay: nil, reservationStartDate: nil, startDate: "Err", endDate: "Err", places: [.init(id: 1, name: "dummyPlace2")], description: nil, descriptionImageURLs: [nil, nil])
+    static let dummy3 = DetailEventUIO(id: 282827, name: "DetailEventUIDummy3", posterURL: nil, dDay: nil, reservationStartDate: nil, startDate: "Err", endDate: "Err", places: [.init(id: 1, name: "dummyPlace2")], description: nil, descriptionImageURLs: [nil, nil], isInterested: true, interestCount: 0, vibeCount: 19)
 }
