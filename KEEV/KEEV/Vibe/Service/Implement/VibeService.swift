@@ -124,7 +124,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
         let inputData = try JSONSerialization.data(withJSONObject: [
             "eventId": eventID,
             "rating": rating,
-            "comment": comment as Any
+            "content": comment as Any
         ])
         
         builder.append(name: "vibeData", content: .json(data: inputData))
