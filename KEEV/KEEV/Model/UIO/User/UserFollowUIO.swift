@@ -13,7 +13,7 @@ struct UserFollowUIO: Identifiable {
     let profileImageURL: URL?
     let vibeCount: Int
     let interestedEventCount: Int
-    let isFollowing: Bool
+    var isFollowing: Bool
     
     init (id: Int, nickname: String, profileImageURL: URL?, vibeCount: Int, interestedEventCount: Int, isFollowing: Bool) {
         self.id = id
