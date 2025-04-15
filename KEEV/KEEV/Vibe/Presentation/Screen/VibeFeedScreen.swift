@@ -22,6 +22,8 @@ struct VibeFeedScreen: LoginCheckableView {
     @Injected private var vibeService: any VibeServiceProtocol
     @Environment(AppState.self) var appState
     
+    let userID: Int?
+    
     @State private var feedSection: FeedSection = .all
     @State private var vibes: [VibeUIO] = []
     @State private var eventVibesState: EventVibeViewState = .loading
@@ -89,7 +91,7 @@ private extension VibeFeedScreen {
                         self.vibes.remove(at: index)
                     })
                 } label: {
-                    VibeFeedCell(vibeData: vibes[index])
+                    VibeFeedCell(userID: userID, vibeData: vibes[index])
                 }
                 .padding(.horizontal, 16)
                 .onAppear {
@@ -164,6 +166,6 @@ private extension VibeFeedScreen {
 
 #Preview {
     NavigationStack {
-        VibeFeedScreen()
+        VibeFeedScreen(userID: nil)
     }
 }
