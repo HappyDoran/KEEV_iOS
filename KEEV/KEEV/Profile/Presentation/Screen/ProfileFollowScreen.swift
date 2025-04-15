@@ -13,6 +13,7 @@ struct ProfileFollowScreen: View {
     @Environment(\.dismiss) private var dismiss
     
     let userID: Int?
+    let isMyProfile: Bool
     let userFollowType: UserFollowType
     
     @State private var currentPage = 0
@@ -73,7 +74,12 @@ private extension ProfileFollowScreen {
         guard let userID = userID else { return }
         
         do {
-            let response: PaginatedResponse<UserFollowUIO> = try await activityService.userList(of: userID, type: userFollowType, page: currentPage, size: pageSize)
+            let response: PaginatedResponse<UserFollowUIO>
+            if isMyProfile {
+                response = try await activityService.myUserList(type: userFollowType, page: currentPage, size: pageSize)
+            } else {
+                response = try await activityService.userList(of: userID, type: userFollowType, page: currentPage, size: pageSize)
+            }
             users.append(contentsOf: response.contents)
             totalPages = response.totalPages
             currentPage += 1
@@ -102,5 +108,5 @@ private extension ProfileFollowScreen {
 }
 
 #Preview {
-    ProfileFollowScreen(userID: 1, userFollowType: .follower)
+    ProfileFollowScreen(userID: 1, isMyProfile: true, userFollowType: .follower)
 }

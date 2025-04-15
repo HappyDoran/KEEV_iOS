@@ -86,7 +86,7 @@ private extension ProfileInfoView {
                     .foregroundStyle(.gray500)
                 
                 NavigationLink {
-                    Text("팔로우") //유저의 팔로워 목록 뷰로 이동해야합니다.
+                    ProfileFollowScreen(userID: userProfile?.id, isMyProfile: isMyProfile, userFollowType: .follower)
                 } label: {
                     Text("\(userProfile?.followerCount ?? 0)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
@@ -104,7 +104,7 @@ private extension ProfileInfoView {
                     .foregroundStyle(.gray500)
                 
                 NavigationLink {
-                    Text("팔로잉") //유저가 팔로우하는 사용자 목록 뷰로 이동해야합니다.
+                    ProfileFollowScreen(userID: userProfile?.id, isMyProfile: isMyProfile, userFollowType: .following)
                 } label: {
                     Text("\(userProfile?.followingCount ?? 0)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))

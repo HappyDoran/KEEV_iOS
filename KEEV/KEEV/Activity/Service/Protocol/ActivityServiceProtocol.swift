@@ -80,6 +80,7 @@ protocol ActivityServiceProtocol: LayerRepresentable, AnyObject {
     func unfollow(_ userID: Int) async throws -> FollowState
     func checkFollowing(of userID: Int) async throws -> FollowState
     func count(of userID: Int, type: UserFollowType) async throws -> Int
+    func myUserList(type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<UserFollowUIO>
     func userList(of userID: Int, type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<UserFollowUIO>
 }
 

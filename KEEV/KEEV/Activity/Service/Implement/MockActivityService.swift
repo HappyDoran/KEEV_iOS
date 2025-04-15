@@ -73,6 +73,15 @@ class MockActivityService: ActivityServiceProtocol {
         }
     }
     
+    func myUserList(type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<UserFollowUIO> {
+        var users: [UserFollowUIO] = []
+        for id in rangeOfIndex(page: page, size: size) {
+            users.append(.init(id: id, nickname: "\(type)mockUser\(id)", profileImageURL: nil, vibeCount: id, interestedEventCount: id * 2, isFollowing: id % 2 == 0 ? true : false))
+        }
+        
+        return PaginatedResponse(totalPages: size*10, currentPage: page, totalElements: 10, contents: users)
+    }
+    
     func userList(of userID: Int, type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<UserFollowUIO> {
         var users: [UserFollowUIO] = []
         for id in rangeOfIndex(page: page, size: size) {
