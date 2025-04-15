@@ -22,6 +22,7 @@ struct ProfileScreen: View {
     let isNavigation: Bool
     
     @State private var userProfile: DetailUserUIO? = nil
+    @State private var isFollowing: Bool = false
     @State private var showActionSheet = false
     @State private var navigateToReport: ReportType? = nil
     @State private var showProfileEdit = false
@@ -44,6 +45,7 @@ struct ProfileScreen: View {
                         ProfileInfoView(
                             userProfile: userProfile,
                             isMyProfile: isMyProfile,
+                            isFollowing: $isFollowing,
                             showProfileEdit: $showProfileEdit
                         )
                         .id(ShowProfileHeader.hide)
@@ -78,6 +80,8 @@ struct ProfileScreen: View {
                 if let userID {
                     do {
                         userProfile = try await service.getUserInfo(userID: userID)
+                        let followState: FollowState = try await service.checkFollowing(of: userID)
+                        isFollowing = followState.toBoolean
                     } catch let failToFetchUserProfile {
                         error = failToFetchUserProfile
                     }

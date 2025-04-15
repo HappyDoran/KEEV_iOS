@@ -15,17 +15,22 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileInfoView: View {
+    @Injected private var activityService: any ActivityServiceProtocol
+    
     private let userProfile: DetailUserUIO?
     private let isMyProfile: Bool
+    @Binding private var isFollowing: Bool
     @Binding private var showProfileEdit: Bool
     
-    init(userProfile: DetailUserUIO?, isMyProfile: Bool, showProfileEdit: Binding<Bool>) {
+    init(userProfile: DetailUserUIO?, isMyProfile: Bool, isFollowing: Binding<Bool>, showProfileEdit: Binding<Bool>) {
         self.userProfile = userProfile
         self.isMyProfile = isMyProfile
+        self._isFollowing = isFollowing
         self._showProfileEdit = showProfileEdit
     }
     
     @State private var tapFeedback = false
+    @State private var error: Error? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -37,8 +42,12 @@ struct ProfileInfoView: View {
                 if isMyProfile {
                     profileEditButton
                 } else {
-                    FollowButton(isFollowing: false) {
-                        //팔로우/팔로우취소 기능을 넣어야합니다.
+                    FollowButton(isFollowing: isFollowing) {
+                        Task {
+                            if let userProfile = userProfile {
+                                await userFollowAction(user: userProfile)
+                            }
+                        }
                     }
                 }
             }
@@ -50,8 +59,7 @@ struct ProfileInfoView: View {
         .backgroundForKEEV()
         .padding(.horizontal, 16)
         .padding(.bottom, 16)
-        .sensoryFeedback(.impact, trigger: tapFeedback)
-    }
+        .sensoryFeedback(.impact, trigger: tapFeedback)    }
 }
 
 private extension ProfileInfoView {
@@ -136,6 +144,22 @@ private extension ProfileInfoView {
     }
 }
 
+private extension ProfileInfoView {
+    func userFollowAction(user: DetailUserUIO) async {
+        do {
+            if isFollowing {
+                let followState: FollowState = try await activityService.unfollow(user.id)
+                isFollowing = followState.toBoolean
+            } else {
+                let followState: FollowState = try await activityService.follow(user.id)
+                isFollowing = followState.toBoolean
+            }
+        } catch let failToFollow {
+            error = failToFollow
+        }
+    }
+}
+
 #Preview {
-    ProfileInfoView(userProfile: .dummy0, isMyProfile: true, showProfileEdit: .constant(true))
+    ProfileInfoView(userProfile: .dummy0, isMyProfile: true, isFollowing: .constant(false), showProfileEdit: .constant(true))
 }
