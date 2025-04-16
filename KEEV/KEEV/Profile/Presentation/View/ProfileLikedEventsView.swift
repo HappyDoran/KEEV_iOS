@@ -15,13 +15,9 @@ import SwiftUI
 struct ProfileLikedEventsView: View {
     @Injected private var activityService: any ActivityServiceProtocol
     
-    private let userID: Int?
-    @Binding private var error: Error?
+    @Environment(AppState.self) private var appState
     
-    init(userID: Int?, error: Binding<Error?>) {
-        self.userID = userID
-        self._error = error
-    }
+    let userID: Int?
     
     @State private var likedEventsCount: Int = 0
     @State private var likedEvents: [SimpleEventUIO] = []
@@ -101,12 +97,12 @@ private extension ProfileLikedEventsView {
                 likedEventsCount = response.totalElements
                 likedEvents = response.contents
             } catch {
-                debugPrint("Error loading events: \(error)")
+                appState.presentError(error)
             }
         }
     }
 }
 
 #Preview {
-    ProfileLikedEventsView(userID: 1, error: .constant(nil))
+    ProfileLikedEventsView(userID: 1)
 }

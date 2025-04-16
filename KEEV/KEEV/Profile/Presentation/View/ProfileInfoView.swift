@@ -17,6 +17,8 @@ import SwiftUI
 struct ProfileInfoView: View {
     @Injected private var activityService: any ActivityServiceProtocol
     
+    @Environment(AppState.self) private var appState
+    
     private let userProfile: DetailUserUIO?
     private let isMyProfile: Bool
     @Binding private var isFollowing: Bool
@@ -30,7 +32,6 @@ struct ProfileInfoView: View {
     }
     
     @State private var tapFeedback = false
-    @State private var error: Error? = nil
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -59,7 +60,8 @@ struct ProfileInfoView: View {
         .backgroundForKEEV()
         .padding(.horizontal, 16)
         .padding(.bottom, 16)
-        .sensoryFeedback(.impact, trigger: tapFeedback)    }
+        .sensoryFeedback(.impact, trigger: tapFeedback)
+    }
 }
 
 private extension ProfileInfoView {
@@ -154,8 +156,8 @@ private extension ProfileInfoView {
                 let followState: FollowState = try await activityService.follow(user.id)
                 isFollowing = followState.toBoolean
             }
-        } catch let failToFollow {
-            error = failToFollow
+        } catch {
+            appState.presentError(error)
         }
     }
 }

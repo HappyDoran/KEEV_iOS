@@ -86,7 +86,7 @@ extension CarouselThirdView {
             for (index, id) in idsToFetch.enumerated() {
                 group.addTask {
                     do {
-                        let event = try await eventService.loadDetailEvent(id: id)
+                        let event = try await eventService.loadDetailEvent(id: Int(id)!)
                         return (index, SimpleEventUIO(detailEventUIO: event))
                     } catch {
                         debugPrint(error.localizedDescription)

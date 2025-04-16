@@ -10,6 +10,7 @@ import SwiftUI
 struct ProfileFollowScreen: View {
     @Injected private var activityService: any ActivityServiceProtocol
     
+    @Environment(AppState.self) private var appState
     @Environment(\.dismiss) private var dismiss
     
     let userID: Int?
@@ -20,7 +21,6 @@ struct ProfileFollowScreen: View {
     @State private var totalPages = 1
     private let pageSize = 7
     @State private var users: [UserFollowUIO] = []
-    @State private var error: Error? = nil
     
     var body: some View {
         ScrollView {
@@ -66,7 +66,6 @@ struct ProfileFollowScreen: View {
                 }
             }
         }
-        .alertForError($error)
     }
 }
 
@@ -84,8 +83,8 @@ private extension ProfileFollowScreen {
             users.append(contentsOf: response.contents)
             totalPages = response.totalPages
             currentPage += 1
-        } catch let failToLoadEvent {
-            error = failToLoadEvent
+        } catch {
+            appState.presentError(error)
         }
     }
     
@@ -100,8 +99,8 @@ private extension ProfileFollowScreen {
                 let followState: FollowState = try await activityService.follow(user.id)
                 updatedUser.isFollowing = followState.toBoolean
             }
-        } catch let failToFollow {
-            error = failToFollow
+        } catch {
+            appState.presentError(error)
         }
         
         return updatedUser

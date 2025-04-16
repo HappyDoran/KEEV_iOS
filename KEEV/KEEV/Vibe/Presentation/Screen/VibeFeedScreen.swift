@@ -30,7 +30,6 @@ struct VibeFeedScreen: LoginCheckableView {
     @State private var currentPage = 0
     @State private var totalPages = 1
     private let pageSize = 7
-    @State private var error: Error? = nil
     @State private var isPresented = false
     
     var body: some View {
@@ -67,8 +66,8 @@ struct VibeFeedScreen: LoginCheckableView {
                 totalPages = response.totalPages
                 currentPage = 1
                 
-            } catch let failToRefreshVibe {
-                error = failToRefreshVibe
+            } catch {
+                appState.presentError(error)
             }
         }
         .fullScreenCover(isPresented: $isPresented) {
@@ -155,8 +154,8 @@ private extension VibeFeedScreen {
                         totalPages = response.totalPages
                         currentPage += 1
                         
-                    } catch let failToLoadVibe {
-                        error = failToLoadVibe
+                    } catch {
+                        appState.presentError(error)
                     }
                 }
             }
