@@ -55,7 +55,7 @@ extension CarouselSecondView {
             for id in idsToFetch {
                 group.addTask {
                     do {
-                        let event = try await eventService.loadDetailEvent(id: Int(id)!)
+                        let event = try await eventService.loadDetailEvent(id: id)
                         return SimpleEventUIO(detailEventUIO: event)
                     } catch {
                         debugPrint(error.localizedDescription)
