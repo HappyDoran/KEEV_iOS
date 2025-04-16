@@ -18,16 +18,16 @@ struct ProfileVibeView: View {
     @Injected private var vibeService: any VibeServiceProtocol
     @Injected private var service: any ActivityServiceProtocol
     
+    @Environment(AppState.self) private var appState
+    
     private let userID: Int?
     private let isMyProfile: Bool
     @Binding private var selectedVibeViewType: VibeViewType
-    @Binding private var error: Error?
     
-    init(userID: Int?, isMyProfile: Bool, selectedVibeViewType: Binding<VibeViewType>, error: Binding<Error?>) {
+    init(userID: Int?, isMyProfile: Bool, selectedVibeViewType: Binding<VibeViewType>) {
         self.userID = userID
         self.isMyProfile = isMyProfile
         self._selectedVibeViewType = selectedVibeViewType
-        self._error = error
     }
     
     @State private var vibes: [VibeUIO] = []
@@ -50,7 +50,7 @@ struct ProfileVibeView: View {
                             NavigationLink {
                                 LazyView(VibeDetailScreen(vibe: $vibes[index], vibeDetailpath: .feed))
                             } label: {
-                                VibeFeedCell(vibeData: vibes[index])
+                                VibeFeedCell(userID: userID, vibeData: vibes[index])
                             }
                         }
                     }
@@ -81,8 +81,8 @@ struct ProfileVibeView: View {
                         vibes = try await service.getUserVibeList(userID: userID)
                         vibesLoaded = true
                     }
-                } catch let failToFetchVibes {
-                    error = failToFetchVibes
+                } catch {
+                    appState.presentError(error)
                 }
             }
         }
@@ -148,5 +148,5 @@ private extension ProfileVibeView {
 }
 
 #Preview {
-    ProfileVibeView(userID: 1, isMyProfile: true, selectedVibeViewType: .constant(.list), error: .constant(nil))
+    ProfileVibeView(userID: 1, isMyProfile: true, selectedVibeViewType: .constant(.list))
 }

@@ -180,22 +180,42 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
         return dto.count
     }
     
-    func userList(of userID: Int, type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<SimpleUserUIO> {
+    func myUserList(type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<UserFollowUIO> {
+        let token = try await tokenUtility.fetchToken(for: .access)
         let router: FollowHTTPRequestRouter
         
         switch type {
-        case .follower: router = .followingUserList(userID: userID, page: page, size: size)
-        case .following: router = .followingUserList(userID: userID, page: page, size: size)
+        case .following: router = .myFollowingUserList(token: token, page: page, size: size)
+        case .follower: router = .myFollowerUserList(token: token, page: page, size: size)
         }
         
         let data = try await networkUtility.request(router: router)
-        let dto = try jsonDecoder.decode(PaginationDTO<SimpleUserDTO>.self, from: data)
+        let dto = try jsonDecoder.decode(PaginationDTO<UserFollowDTO>.self, from: data)
         
         return PaginatedResponse(
             totalPages: dto.totalPages,
             currentPage: dto.currentPage,
             totalElements: dto.totalElements,
-            contents: dto.contents.map(SimpleUserUIO.init)
+            contents: dto.contents.map(UserFollowUIO.init)
+        )
+    }
+    
+    func userList(of userID: Int, type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<UserFollowUIO> {
+        let router: FollowHTTPRequestRouter
+        
+        switch type {
+        case .following: router = .followingUserList(userID: userID, page: page, size: size)
+        case .follower: router = .followerUserList(userID: userID, page: page, size: size)
+        }
+        
+        let data = try await networkUtility.request(router: router)
+        let dto = try jsonDecoder.decode(PaginationDTO<UserFollowDTO>.self, from: data)
+        
+        return PaginatedResponse(
+            totalPages: dto.totalPages,
+            currentPage: dto.currentPage,
+            totalElements: dto.totalElements,
+            contents: dto.contents.map(UserFollowUIO.init)
         )
     }
 }

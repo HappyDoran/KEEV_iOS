@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct VibeFeedCell: View {
+    private let userID: Int?
     private let vibeData: VibeUIO
     
-    init(vibeData: VibeUIO) {
+    init(userID: Int?, vibeData: VibeUIO) {
+        self.userID = userID
         self.vibeData = vibeData
     }
     
@@ -38,7 +40,7 @@ private extension VibeFeedCell {
     var profileHeader: some View {
         HStack(spacing: 8) {
             NavigationLink {
-                ProfileScreen(userID: vibeData.userID, isMyProfile: false, isNavigation: true)
+                ProfileScreen(userID: vibeData.userID, isMyProfile: userID == vibeData.userID ? true : false, isNavigation: true)
             } label : {
                 URLCircleImage(url: vibeData.userProfileImageURL)
                     .frame(width: 36, height: 36)
@@ -115,5 +117,5 @@ private extension VibeFeedCell {
 }
 
 #Preview{
-    VibeFeedCell(vibeData: .dummy0)
+    VibeFeedCell(userID: nil, vibeData: .dummy0)
 }

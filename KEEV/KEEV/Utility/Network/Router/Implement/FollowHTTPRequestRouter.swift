@@ -11,6 +11,8 @@ enum FollowHTTPRequestRouter {
     case follow(token: String, userID: Int)
     case unfollow(token: String, userID: Int)
     case checkFollow(token: String, userID: Int)
+    case myFollowingUserList(token: String, page: Int, size: Int)
+    case myFollowerUserList(token: String, page: Int, size: Int)
     case followingUserList(userID: Int, page: Int, size: Int)
     case followerUserList(userID: Int, page: Int, size: Int)
     case followersCount(userID: Int)
@@ -34,6 +36,7 @@ enum FollowHTTPRequestRouter {
         case .followingsCount(let userID):
             return String(userID)
         case .followingsVibeList: fatalError("팔로우한 유저의 컨텐츠 조회에는 userID가 없습니다.")
+        case .myFollowingUserList, .myFollowerUserList: fatalError("유저의 팔로우, 팔로워 조회에는 userID가 없습니다.")
         }
     }
 }
@@ -52,7 +55,9 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
             , .followerUserList
             , .followingsCount
             , .followersCount
-            , .followingsVibeList: .get
+            , .followingsVibeList
+            , .myFollowingUserList
+            , .myFollowerUserList: .get
         }
     }
     
@@ -61,7 +66,9 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
         case .follow(let token, _)
             , .unfollow(let token, _)
             , .checkFollow(let token, _)
-            , .followingsVibeList(let token): ["Authorization": "Bearer " + token]
+            , .followingsVibeList(let token)
+            , .myFollowingUserList(let token, _, _)
+            , .myFollowerUserList(let token, _, _): ["Authorization": "Bearer " + token]
         case .followingUserList
             , .followerUserList
             , .followingsCount
@@ -78,6 +85,8 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
         case .follow
             , .unfollow
             , .checkFollow: ["api", "user", "follow", userIDString]
+        case .myFollowingUserList: ["api", "user", "following"]
+        case .myFollowerUserList: ["api", "user", "follower"]
         case .followingUserList: ["open-api", "user", userIDString, "following"]
         case .followerUserList: ["open-api", "user", userIDString, "follower"]
         case .followingsCount: ["open-api", "user", userIDString, "following", "count"]
@@ -88,8 +97,10 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
     
     var queryItems: [URLQueryItem]? {
         switch self {
-        case .followerUserList(_, let page, let size)
-            , .followingUserList(_, let page, let size)
+        case .followingUserList(_, let page, let size)
+            , .followerUserList(_, let page, let size)
+            , .myFollowingUserList(_, let page, let size)
+            , .myFollowerUserList(_, let page, let size)
             : [
                 URLQueryItem(name: "page", value: "\(page)"),
                 URLQueryItem(name: "size", value: "\(size)")

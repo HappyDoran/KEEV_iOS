@@ -17,18 +17,20 @@ import SwiftUI
 struct ProfileScreen: View {
     @Injected private var service: any ActivityServiceProtocol
     
+    @Environment(AppState.self) private var appState
+    
     let userID: Int?
     let isMyProfile: Bool
     let isNavigation: Bool
     
     @State private var userProfile: DetailUserUIO? = nil
+    @State private var isFollowing: Bool = false
     @State private var showActionSheet = false
     @State private var navigateToReport: ReportType? = nil
     @State private var showProfileEdit = false
     @State private var profileEditedToast: Toast? = nil
     @State private var selectedVibeViewType: VibeViewType = .list
     @State private var scrollID: ShowProfileHeader? = .show
-    @State private var error: Error? = nil
     
     var body: some View {
         ScrollViewReader { proxy in
@@ -44,20 +46,19 @@ struct ProfileScreen: View {
                         ProfileInfoView(
                             userProfile: userProfile,
                             isMyProfile: isMyProfile,
+                            isFollowing: $isFollowing,
                             showProfileEdit: $showProfileEdit
                         )
                         .id(ShowProfileHeader.hide)
                         
                         ProfileLikedEventsView(
-                            userID: userID,
-                            error: $error
+                            userID: userID
                         )
                         
                         ProfileVibeView(
                             userID: userID,
                             isMyProfile: isMyProfile,
-                            selectedVibeViewType: $selectedVibeViewType,
-                            error: $error
+                            selectedVibeViewType: $selectedVibeViewType
                         )
                     }
                 }
@@ -78,8 +79,10 @@ struct ProfileScreen: View {
                 if let userID {
                     do {
                         userProfile = try await service.getUserInfo(userID: userID)
-                    } catch let failToFetchUserProfile {
-                        error = failToFetchUserProfile
+                        let followState: FollowState = try await service.checkFollowing(of: userID)
+                        isFollowing = followState.toBoolean
+                    } catch {
+                        appState.presentError(error)
                     }
                 }
             }
@@ -88,8 +91,8 @@ struct ProfileScreen: View {
                     Task {
                         do {
                             userProfile = try await service.getUserInfo(userID: userID)
-                        } catch let failToFetchUserProfile {
-                            error = failToFetchUserProfile
+                        } catch {
+                            appState.presentError(error)
                         }
                     }
                 }
@@ -109,7 +112,6 @@ struct ProfileScreen: View {
                     })
                 ]
             )
-            .alertForError($error)
             .navigationBarBackButtonHidden()
         }
     }

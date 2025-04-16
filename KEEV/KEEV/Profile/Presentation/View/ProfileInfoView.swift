@@ -15,13 +15,19 @@ import SwiftUI
 ///
 /// - Author: 라움
 struct ProfileInfoView: View {
+    @Injected private var activityService: any ActivityServiceProtocol
+    
+    @Environment(AppState.self) private var appState
+    
     private let userProfile: DetailUserUIO?
     private let isMyProfile: Bool
+    @Binding private var isFollowing: Bool
     @Binding private var showProfileEdit: Bool
     
-    init(userProfile: DetailUserUIO?, isMyProfile: Bool, showProfileEdit: Binding<Bool>) {
+    init(userProfile: DetailUserUIO?, isMyProfile: Bool, isFollowing: Binding<Bool>, showProfileEdit: Binding<Bool>) {
         self.userProfile = userProfile
         self.isMyProfile = isMyProfile
+        self._isFollowing = isFollowing
         self._showProfileEdit = showProfileEdit
     }
     
@@ -37,8 +43,12 @@ struct ProfileInfoView: View {
                 if isMyProfile {
                     profileEditButton
                 } else {
-                    FollowButton(isFollowing: false) {
-                        //팔로우/팔로우취소 기능을 넣어야합니다.
+                    FollowButton(isFollowing: isFollowing) {
+                        Task {
+                            if let userProfile = userProfile {
+                                await userFollowAction(user: userProfile)
+                            }
+                        }
                     }
                 }
             }
@@ -86,7 +96,7 @@ private extension ProfileInfoView {
                     .foregroundStyle(.gray500)
                 
                 NavigationLink {
-                    Text("팔로우") //유저의 팔로워 목록 뷰로 이동해야합니다.
+                    ProfileFollowScreen(userID: userProfile?.id, isMyProfile: isMyProfile, userFollowType: .follower)
                 } label: {
                     Text("\(userProfile?.followerCount ?? 0)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
@@ -104,7 +114,7 @@ private extension ProfileInfoView {
                     .foregroundStyle(.gray500)
                 
                 NavigationLink {
-                    Text("팔로잉") //유저가 팔로우하는 사용자 목록 뷰로 이동해야합니다.
+                    ProfileFollowScreen(userID: userProfile?.id, isMyProfile: isMyProfile, userFollowType: .following)
                 } label: {
                     Text("\(userProfile?.followingCount ?? 0)")
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
@@ -136,6 +146,22 @@ private extension ProfileInfoView {
     }
 }
 
+private extension ProfileInfoView {
+    func userFollowAction(user: DetailUserUIO) async {
+        do {
+            if isFollowing {
+                let followState: FollowState = try await activityService.unfollow(user.id)
+                isFollowing = followState.toBoolean
+            } else {
+                let followState: FollowState = try await activityService.follow(user.id)
+                isFollowing = followState.toBoolean
+            }
+        } catch {
+            appState.presentError(error)
+        }
+    }
+}
+
 #Preview {
-    ProfileInfoView(userProfile: .dummy0, isMyProfile: true, showProfileEdit: .constant(true))
+    ProfileInfoView(userProfile: .dummy0, isMyProfile: true, isFollowing: .constant(false), showProfileEdit: .constant(true))
 }
