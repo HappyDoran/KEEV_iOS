@@ -42,6 +42,7 @@ struct ProfileFollowScreen: View {
             }
             .padding(16)
         }
+        .backgroundForKEEV()
         .navigationTitle(userFollowType == .follower ? "팔로워" : "팔로잉")
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(true)
