@@ -91,7 +91,7 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
         case .followerUserList: ["open-api", "user", userIDString, "follower"]
         case .followingsCount: ["open-api", "user", userIDString, "following", "count"]
         case .followersCount: ["open-api", "user", userIDString, "follower", "count"]
-        case .followingsVibeList: ["open-api", "user", "following", "vibe"]
+        case .followingsVibeList: ["api", "user", "following", "vibe"]
         }
     }
     
