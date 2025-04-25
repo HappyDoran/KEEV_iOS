@@ -38,34 +38,46 @@ struct VibeFeedScreen: LoginCheckableView {
             
             switch eventVibesState {
             case .loading:
-                vibeFeedLoading
+                vibeFeedLoading(feedSection: feedSection)
             case .loaded:
-                vibeFeedList
+                vibeFeedList(feedSection: feedSection)
             case .empty:
                 vibeFeedNotExist
             }
         }
         .backgroundForKEEV()
+        .onChange(of: feedSection, {
+            eventVibesState = .loading
+            currentPage = 0
+            totalPages = 1
+        })
         .refreshable {
             do {
                 let response : PaginatedResponse<VibeUIO>
-                response = try await vibeService.getPaginatedVibes(
-                    page: 0,
-                    size: pageSize,
-                    sort: [(SortCase.createdDate, SortPattern.descending)]
-                )
+                switch feedSection {
+                case .all:
+                    response = try await vibeService.getPaginatedVibes(
+                        page: 0,
+                        size: pageSize,
+                        sort: [(SortCase.createdDate, SortPattern.descending)]
+                    )
+                case .following:
+                    response = try await vibeService.myFollowingsVibes(
+                        page: 0,
+                        size: pageSize,
+                        sort: [(SortCase.createdDate, SortPattern.descending)]
+                    )
+                }
                 
                 vibes = response.contents
+                totalPages = response.totalPages
+                currentPage = 1
                 
                 if vibes.isEmpty {
                     eventVibesState = .empty
                 } else {
                     eventVibesState = .loaded
                 }
-                
-                totalPages = response.totalPages
-                currentPage = 1
-                
             } catch {
                 appState.presentError(error)
             }
@@ -77,7 +89,7 @@ struct VibeFeedScreen: LoginCheckableView {
 }
 
 private extension VibeFeedScreen {
-    var vibeFeedList: some View {
+    func vibeFeedList(feedSection: FeedSection) -> some View {
         LazyVStack(spacing: 20) {
             ForEach(vibes.indices, id: \.self) { index in
                 NavigationLink {
@@ -97,17 +109,26 @@ private extension VibeFeedScreen {
                     if index == vibes.count - 1 && currentPage < totalPages {
                         Task {
                             do {
-                                let response = try await vibeService.getPaginatedVibes(
-                                    page: currentPage,
-                                    size: pageSize,
-                                    sort: [(SortCase.createdDate, SortPattern.descending)]
-                                )
+                                let response: PaginatedResponse<VibeUIO>
+                                switch feedSection {
+                                case .all:
+                                    response = try await vibeService.getPaginatedVibes(
+                                        page: currentPage,
+                                        size: pageSize,
+                                        sort: [(SortCase.createdDate, SortPattern.descending)]
+                                    )
+                                case .following:
+                                    response = try await vibeService.myFollowingsVibes(
+                                        page: currentPage,
+                                        size: pageSize,
+                                        sort: [(SortCase.createdDate, SortPattern.descending)]
+                                    )
+                                }
                                 
                                 await MainActor.run {
                                     vibes.append(contentsOf: response.contents)
                                     currentPage += 1
                                 }
-                                
                             } catch {
                                 debugPrint(error)
                             }
@@ -116,6 +137,44 @@ private extension VibeFeedScreen {
                 }
             }
         }
+    }
+    
+    func vibeFeedLoading(feedSection: FeedSection) -> some View {
+        ProgressView()
+            .onAppear {
+                Task {
+                    do {
+                        let response : PaginatedResponse<VibeUIO>
+                        switch feedSection {
+                        case .all:
+                            response = try await vibeService.getPaginatedVibes(
+                                page: currentPage,
+                                size: pageSize,
+                                sort: [(SortCase.createdDate, SortPattern.descending)]
+                            )
+                        case .following:
+                            response = try await vibeService.myFollowingsVibes(
+                                page: currentPage,
+                                size: pageSize,
+                                sort: [(SortCase.createdDate, SortPattern.descending)]
+                            )
+                        }
+                        
+                        vibes = response.contents
+                        totalPages = response.totalPages
+                        currentPage += 1
+                        
+                        if vibes.isEmpty {
+                            eventVibesState = .empty
+                        } else {
+                            eventVibesState = .loaded
+                        }
+                    } catch {
+                        appState.presentError(error)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     
     var vibeFeedNotExist: some View {
@@ -130,36 +189,6 @@ private extension VibeFeedScreen {
         }
         .padding(.bottom, 61)
         .frame(maxHeight: .infinity)
-    }
-    
-    var vibeFeedLoading: some View {
-        ProgressView()
-            .onAppear {
-                Task {
-                    do {
-                        let response : PaginatedResponse<VibeUIO>
-                        response = try await vibeService.getPaginatedVibes(
-                            page: currentPage,
-                            size: pageSize,
-                            sort: [(SortCase.createdDate, SortPattern.descending)]
-                        )
-                        
-                        vibes.append(contentsOf: response.contents)
-                        if vibes.isEmpty {
-                            eventVibesState = .empty
-                        } else {
-                            eventVibesState = .loaded
-                        }
-                        
-                        totalPages = response.totalPages
-                        currentPage += 1
-                        
-                    } catch {
-                        appState.presentError(error)
-                    }
-                }
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 

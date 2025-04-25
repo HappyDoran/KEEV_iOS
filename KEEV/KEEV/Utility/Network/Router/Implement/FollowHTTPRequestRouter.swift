@@ -17,7 +17,7 @@ enum FollowHTTPRequestRouter {
     case followerUserList(userID: Int, page: Int, size: Int)
     case followersCount(userID: Int)
     case followingsCount(userID: Int)
-    case followingsVibeList(token: String)
+    case followingsVibeList(token: String, page: Int, size: Int, sort: [SortParameter])
     
     private var userIDString: String {
         switch self {
@@ -66,7 +66,7 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
         case .follow(let token, _)
             , .unfollow(let token, _)
             , .checkFollow(let token, _)
-            , .followingsVibeList(let token)
+            , .followingsVibeList(let token, _, _, _)
             , .myFollowingUserList(let token, _, _)
             , .myFollowerUserList(let token, _, _): ["Authorization": "Bearer " + token]
         case .followingUserList
@@ -91,21 +91,35 @@ extension FollowHTTPRequestRouter: HTTPRequestable {
         case .followerUserList: ["open-api", "user", userIDString, "follower"]
         case .followingsCount: ["open-api", "user", userIDString, "following", "count"]
         case .followersCount: ["open-api", "user", userIDString, "follower", "count"]
-        case .followingsVibeList: ["open-api", "user", "following", "vibe"]
+        case .followingsVibeList: ["api", "user", "following", "vibe"]
         }
     }
     
     var queryItems: [URLQueryItem]? {
         switch self {
+        case .followingsVibeList(_, let page, let size, let sort):
+            var queryItems = [
+                URLQueryItem(name: "size", value: "\(size)"),
+                URLQueryItem(name: "page", value: "\(page)")
+            ]
+            
+            for parameter in sort {
+                let sortItem = URLQueryItem(name: "sort", value: "\(parameter.key),\(parameter.value)")
+                queryItems.append(sortItem)
+            }
+            
+            return queryItems
         case .followingUserList(_, let page, let size)
             , .followerUserList(_, let page, let size)
             , .myFollowingUserList(_, let page, let size)
-            , .myFollowerUserList(_, let page, let size)
-            : [
+            , .myFollowerUserList(_, let page, let size):
+            let queryItems = [
                 URLQueryItem(name: "page", value: "\(page)"),
                 URLQueryItem(name: "size", value: "\(size)")
             ]
-        default: nil
+            return queryItems
+        default:
+            return nil
         }
     }
 }
