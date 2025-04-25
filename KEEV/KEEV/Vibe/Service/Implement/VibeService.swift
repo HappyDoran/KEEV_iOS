@@ -257,9 +257,9 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
         return isLikedResponse.isLiked
     }
     
-    func myFollowingsVibes(page: Int, size: Int) async throws -> PaginatedResponse<VibeUIO> {
+    func myFollowingsVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)] = [(SortCase.createdDate, .descending)]) async throws -> PaginatedResponse<VibeUIO> {
         let token = try await getAccessToken()
-        let router = FollowHTTPRequestRouter.followingsVibeList(token: token)
+        let router = FollowHTTPRequestRouter.followingsVibeList(token: token, page: page, size: size, sort: sort.map { $0.0.sortCase(with: $0.1) })
         let data = try await networkUtility.request(router: router)
         let dto = try jsonDecoder.decode(PaginationDTO<VibeDTO>.self, from: data)
         

@@ -142,7 +142,7 @@ class MockVibeService: VibeServiceProtocol {
         true
     }
     
-    func myFollowingsVibes(page: Int, size: Int) async throws -> PaginatedResponse<VibeUIO> {
+    func myFollowingsVibes(page: Int, size: Int, sort: [(SortCase, SortPattern)]) async throws -> PaginatedResponse<VibeUIO> {
         var vibes: [VibeUIO] = []
         for id in rangeOfIndex(page: page, size: size) {
             vibes.append(.init(id: id, user: dummyUsers[id % dummyUsers.count], event: .dummies.randomElement()!, rating: 2.5, imageURLs: [], comment: "mockFollowingVibesComment\(id)", createdDate: "2023-03-05T00:00:00.222222", likeCount: 19, replyCount: 28, isMine: false))
