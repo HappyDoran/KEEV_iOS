@@ -65,9 +65,7 @@ struct VibeDetailScreen: LoginCheckableView {
             VStack(spacing: 0) {
                 ScrollView {
                     VStack(spacing: 0) {
-                        eventInfo
-                        VibeContentView(vibe: $vibe, isLiked: $isLiked, likeTapHandler: tapVibeLike)
-                            .padding(.top, 20)
+                        VibeContentView(vibeDetailPath: vibeDetailPath, vibe: $vibe, isLiked: $isLiked, likeTapHandler: tapVibeLike)
                             .padding(.horizontal, 16)
                         Rectangle().frame(height: 1).foregroundColor(.gray800)
                         ReplyListView(
@@ -361,23 +359,6 @@ private extension VibeDetailScreen {
         
         let index: Int
         let reply: ReplyUIO
-    }
-}
-
-private extension VibeDetailScreen {
-    @ViewBuilder
-    var eventInfo: some View {
-        switch vibeDetailPath {
-        case .feed:
-            NavigationLink{
-                EventDetailScreen(simpleEvent: vibe.event)
-            } label: {
-                VibeFeedEventInfoCell(eventData: vibe.event)
-                .padding(EdgeInsets(top: 16, leading: 16, bottom: 4, trailing: 16))
-            }
-        case .event:
-            EmptyView()
-        }
     }
 }
 
