@@ -162,7 +162,9 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     }
     
     func checkFollowing(of userID: Int) async throws -> FollowState {
-        let token = try await tokenUtility.fetchToken(for: .access)
+        guard let token = try? await tokenUtility.fetchToken(for: .access) else {
+            return .notFollowing
+        }
         let router = FollowHTTPRequestRouter.checkFollow(token: token, userID: userID)
         let data = try await networkUtility.request(router: router)
         let followState = try jsonDecoder.decode(FollowState.self, from: data)
