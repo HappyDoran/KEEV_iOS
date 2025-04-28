@@ -14,10 +14,10 @@ import SwiftUI
 /// - 닉네임, 프로필 수정/팔로우/팔로잉 버튼, 팔로우, 팔로잉, 한 줄 소개
 ///
 /// - Author: 라움
-struct ProfileInfoView: View {
+struct ProfileInfoView: LoginCheckableView {
     @Injected private var activityService: any ActivityServiceProtocol
     
-    @Environment(AppState.self) private var appState
+    @Environment(AppState.self) var appState
     
     private let userProfile: DetailUserUIO?
     private let isMyProfile: Bool
@@ -44,9 +44,11 @@ struct ProfileInfoView: View {
                     profileEditButton
                 } else {
                     FollowButton(isFollowing: isFollowing) {
-                        Task {
-                            if let userProfile = userProfile {
-                                await userFollowAction(user: userProfile)
+                        checkLoginBefore {
+                            Task {
+                                if let userProfile = userProfile {
+                                    await userFollowAction(user: userProfile)
+                                }
                             }
                         }
                     }

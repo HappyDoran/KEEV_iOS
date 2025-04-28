@@ -75,14 +75,16 @@ struct ProfileScreen: View {
                 }
             }
             .backgroundForKEEV()
-            .task {
+            .onAppear {
                 if let userID {
-                    do {
-                        userProfile = try await service.getUserInfo(userID: userID)
-                        let followState: FollowState = try await service.checkFollowing(of: userID)
-                        isFollowing = followState.toBoolean
-                    } catch {
-                        appState.presentError(error)
+                    Task {
+                        do {
+                            userProfile = try await service.getUserInfo(userID: userID)
+                            let followState: FollowState = try await service.checkFollowing(of: userID)
+                            isFollowing = followState.toBoolean
+                        } catch {
+                            appState.presentError(error)
+                        }
                     }
                 }
             }
