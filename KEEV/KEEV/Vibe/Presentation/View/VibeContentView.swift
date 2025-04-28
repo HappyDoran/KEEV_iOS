@@ -12,11 +12,13 @@ struct VibeContentView: LoginCheckableView {
     
     @Binding private var vibe: VibeUIO
     @Binding private var isLiked: Bool
+    private let vibeDetailPath: VibeDetailPath
     private let likeTapHandler: () -> Void
     
-    init(vibe: Binding<VibeUIO>, isLiked: Binding<Bool>, likeTapHandler: @escaping () -> Void) {
+    init(vibeDetailPath: VibeDetailPath, vibe: Binding<VibeUIO>, isLiked: Binding<Bool>, likeTapHandler: @escaping () -> Void) {
         self._vibe = vibe
         self._isLiked = isLiked
+        self.vibeDetailPath = vibeDetailPath
         self.likeTapHandler = likeTapHandler
     }
     
@@ -35,6 +37,7 @@ private extension VibeContentView {
     var vibeContent: some View {
         VStack(alignment: .leading, spacing: 12) {
             userInfo
+            eventInfo
             if vibe.imageURLs.count > 0 {
                 vibeImages
             }
@@ -42,6 +45,20 @@ private extension VibeContentView {
                 Text(comment.splitWords())
             }
             dateText
+        }
+    }
+    
+    @ViewBuilder
+    var eventInfo: some View {
+        switch vibeDetailPath {
+        case .feed:
+            NavigationLink{
+                EventDetailScreen(simpleEvent: vibe.event)
+            } label: {
+                VibeFeedEventInfoCell(eventData: vibe.event)
+            }
+        case .event:
+            EmptyView()
         }
     }
     
@@ -172,11 +189,11 @@ private extension VibeContentView {
         }
     }
 }
-
-#Preview {
-    VibeContentView(vibe: .constant(.dummy0), isLiked: .constant(false), likeTapHandler: {
-        
-    })
-    .padding(.top, 20)
-    .padding(.horizontal, 16)
-}
+//
+//#Preview {
+//    VibeContentView(vibeDetailPath: .event, vibe: .constant(.dummy0), isLiked: .constant(false), likeTapHandler: {
+//        
+//    })
+//    .padding(.top, 20)
+//    .padding(.horizontal, 16)
+//}
