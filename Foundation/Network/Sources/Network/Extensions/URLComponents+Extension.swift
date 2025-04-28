@@ -12,7 +12,7 @@ extension URLComponents {
         self.scheme = ingredients.scheme
         self.host = ingredients.host
         self.port = ingredients.port
-        self.path = ingredients.path?.joined(separator: "/") ?? ""
+        self.path = "/" + (ingredients.path?.joined(separator: "/") ?? "")
         self.queryItems = ingredients.queryItems?.map { (name, value) in
             URLQueryItem(name: name, value: value)
         }
