@@ -8,56 +8,21 @@ import SwiftUI
 ///
 /// - Author: Doran
 struct EventCarouselView: View {
-    let timer = Timer.publish(every: 3.0, on: .main, in: .common).autoconnect()
+    
     
     @State private var selectedImageIndex: Int = 0
     @State private var itemsArray: [BannerProtocol] = []
-
-    let banners: [Banner] = [
-        Banner(title: "키브를 소개합니다", description: "키브의 A to Z, 키브에 대해 알아봅시다", image: Image("Banner1"), detailImage: Image("DetailBanner1"), detailDescriptionImage: Image("DetailDescription1")),
-        Banner(title: "올해의 첫 내한,\n어디 갈까?", description: "올해 1, 2월 주요 내한 공연을 모아봤어요", image: Image("Banner2"), detailImage: Image("DetailBanner2"), detailDescriptionImage: Image("DetailDescription2")),
-        Banner(title: "2024 공연결산.zip\n주요 공연 소개", description: "작년의 주요 공연들을 소개합니다", image: Image("Banner3"), detailImage: Image("DetailBanner3"), detailDescriptionImage: Image("DetailDescription3")),
-    ]
-
+    
+    let introduceKEEV: Banner = Banner(title: "키브를 소개합니다", description: "키브의 A to Z, 키브에 대해 알아봅시다", image: Image("Banner1"), detailImage: Image("DetailBanner1"), detailDescriptionImage: Image("DetailDescription1"))
+    
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            TabView(selection: $selectedImageIndex) {
-                ForEach(0..<itemsArray.count, id: \.self) { index in
-                    NavigationLink {
-                        EventCarouselDetailScreen(bannerItem: itemsArray[index] as! Banner)
-                    } label: {
-                        banner(index: index)
-                    }
-                }
+            NavigationLink {
+                EventCarouselDetailScreen(bannerItem: introduceKEEV)
+            } label: {
+                banner
             }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             capsuleView
-        }
-        .onAppear {
-            itemsArray = banners + banners + banners
-            selectedImageIndex = banners.count
-        }
-        .onChange(of: selectedImageIndex) { _, newValue in
-            if newValue == 0 {
-                Task {
-                    try await Task.sleep(nanoseconds: 300_000_000)
-                    itemsArray.removeLast(3)
-                    itemsArray.insert(contentsOf: banners, at: 0)
-                    selectedImageIndex += banners.count
-                }
-            } else if newValue == itemsArray.count - 1 {
-                Task {
-                    try await Task.sleep(nanoseconds: 300_000_000)
-                    itemsArray.removeFirst(3)
-                    itemsArray.append(contentsOf: banners)
-                    selectedImageIndex = selectedImageIndex - banners.count
-                }
-            }
-        }
-        .onReceive(timer) { _ in
-            withAnimation(.default) {
-                selectedImageIndex = (selectedImageIndex + 1) % itemsArray.count
-            }
         }
         .frame(height: 264)
     }
@@ -70,9 +35,9 @@ extension EventCarouselView {
             .frame(width: 42, height: 21)
             .overlay{
                 HStack(spacing : 0) {
-                    Text("\(selectedImageIndex % banners.count+1) ")
+                    Text("1 ")
                         .foregroundColor(.gray50)
-                    Text("/ \(banners.count)")
+                    Text("/ 1")
                         .foregroundColor(.gray500)
                 }
                 .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall, bodyWeight: .semibold)))
@@ -83,21 +48,20 @@ extension EventCarouselView {
 }
 
 extension EventCarouselView {
-    private func banner(index: Int) -> some View {
-        itemsArray[index].image
+    private var banner: some View {
+        introduceKEEV.image
             .resizable()
             .scaledToFill()
-            .tag(index)
             .frame(height: 264)
             .clipped()
             .overlay(alignment: .bottomLeading) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(itemsArray[index].title)
+                    Text(introduceKEEV.title)
                         .figmaFont(PretendardFont.title(style: .lg))
                         .foregroundColor(.gray50)
                         .multilineTextAlignment(.leading)
                     
-                    Text(itemsArray[index].description)
+                    Text(introduceKEEV.description)
                         .figmaFont(PretendardFont.body(style: .init(bodySize: .xsmall2, bodyWeight: .medium)))
                         .foregroundColor(.gray100)
                 }
