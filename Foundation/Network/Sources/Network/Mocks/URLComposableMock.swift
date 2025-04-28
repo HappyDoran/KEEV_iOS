@@ -57,7 +57,7 @@ extension URLComposableMock {
     /// test 1의 예상 결과
     static let result1: URL? = URL(string: "\(Self.mockScheme)://\(Self.mockHost)?key=value")
     /// test 2의 예상 결과
-    static let result2: URL? = URL(string: "\(Self.mockScheme)://\(Self.mockHost)/path/")
+    static let result2: URL? = URL(string: "\(Self.mockScheme)://\(Self.mockHost)/path")
     /// test 3의 예상 결과
     static let result3: URL? = URL(string: "\(Self.mockScheme)://\(Self.mockHost)/path/?key1=value1&key2=value2")
     /// test 4의 예상 결과
@@ -65,7 +65,7 @@ extension URLComposableMock {
     /// test 5의 예상 결과
     static let result5: URL? = URL(string: "\(Self.mockScheme)://\(Self.mockHost):8080?key1=value1&key2=value2")
     /// test 6의 예상 결과
-    static let result6: URL? = URL(string: "\(Self.mockScheme)://\(Self.mockHost):8080/path/")
+    static let result6: URL? = URL(string: "\(Self.mockScheme)://\(Self.mockHost):8080/path")
     /// test 7의 예상 결과
     static let result7: URL? = URL(string: "\(Self.mockScheme)://\(Self.mockHost):8080/path/?key=value")
     /// test 8의 예상 결과
