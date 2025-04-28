@@ -1,0 +1,17 @@
+//
+//  URLRequestConvertible.swift
+//  KEEVCore
+//
+//  Created by junsungkim on 4/28/25.
+//
+
+import Foundation
+
+public typealias URLComposable = BaseURL & URLEndpoint
+
+public protocol URLRequestConvertible {
+    var urlIngredients: URLComposable { get }
+    var method: HTTPMethod { get }
+    var headers: [String: String] { get }
+    var body: URLRequestBody { get }
+}
