@@ -65,7 +65,9 @@ private extension VibeFeedHeaderView {
                         .frame(maxWidth: .infinity)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            feedSection = .following
+                            checkLoginBefore {
+                                feedSection = .following
+                            }
                         }
                 }
                 .frame(height: 46)

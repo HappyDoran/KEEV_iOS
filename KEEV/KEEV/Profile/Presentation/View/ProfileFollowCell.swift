@@ -12,7 +12,9 @@ import SwiftUI
 /// 팔로워/팔로잉 목록 스크린에 보여지는 각 유저들에 대한 Cell입니다.
 ///
 /// - Author: 라움
-struct ProfileFollowCell: View {
+struct ProfileFollowCell: LoginCheckableView {
+    @Environment(AppState.self) var appState
+    
     let user: UserFollowUIO
     let userFollowAction: () -> Void
     
@@ -49,7 +51,9 @@ struct ProfileFollowCell: View {
             Spacer()
             
             FollowButton(isFollowing: user.isFollowing) {
-                userFollowAction()
+                checkLoginBefore {
+                    userFollowAction()
+                }
             }
         }
     }
