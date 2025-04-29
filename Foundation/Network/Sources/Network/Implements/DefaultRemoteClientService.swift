@@ -42,14 +42,14 @@ public final class DefaultRemoteClientService: RemoteClientService {
     private func buildRequest(from converter: URLRequestConvertible) throws -> URLRequest {
         var components = URLComponents()
         
-        guard let url = components.build(from: converter.urlIngredients) else {
+        guard let url = components.build(from: converter) else {
             throw URLError(.badURL)
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = converter.method.rawValue
         request.allHTTPHeaderFields = converter.headers
-        request.httpBody = try converter.body.toData()
+        request.httpBody = try converter.body?.toData()
         return request
     }
 }
