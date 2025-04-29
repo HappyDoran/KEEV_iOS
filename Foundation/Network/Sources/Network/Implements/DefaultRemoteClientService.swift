@@ -19,17 +19,17 @@ public final class DefaultRemoteClientService: RemoteClientService {
     }
     
     public func request<T>(
-        from converter: some URLRequestConvertible,
+        by converter: some URLRequestConvertible,
         for type: T.Type,
         decoder: JSONDecoder = .init()
     ) async throws -> T where T : Decodable {
-        let request = try buildRequest(from: converter)
+        let request = try buildRequest(by: converter)
         let (data, _) = try await session.data(for: request)
         return try decoder.decode(T.self, from: data)
     }
     
-    public func request(from converter: some URLRequestConvertible) async throws -> APIResponse {
-        let request = try buildRequest(from: converter)
+    public func request(by converter: some URLRequestConvertible) async throws -> APIResponse {
+        let request = try buildRequest(by: converter)
         let (data, response) = try await session.data(for: request)
         
         guard let response = response as? HTTPURLResponse else {
@@ -39,7 +39,22 @@ public final class DefaultRemoteClientService: RemoteClientService {
         return (data, response.statusCode)
     }
     
-    private func buildRequest(from converter: URLRequestConvertible) throws -> URLRequest {
+    public func request(from request: URLRequest) async throws -> APIResponse {
+        let (data, response) = try await session.data(for: request)
+        
+        guard let response = response as? HTTPURLResponse else {
+            throw URLError(.cannotParseResponse)
+        }
+        
+        return (data, response.statusCode)
+    }
+    
+    public func request<T>(from request: URLRequest, for type: T.Type, decoder: JSONDecoder = JSONDecoder()) async throws -> T where T : Decodable {
+        let (data, _) = try await session.data(for: request)
+        return try decoder.decode(T.self, from: data)
+    }
+    
+    private func buildRequest(by converter: URLRequestConvertible) throws -> URLRequest {
         var components = URLComponents()
         
         guard let url = components.build(from: converter) else {
