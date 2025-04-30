@@ -5,8 +5,6 @@
 //  Created by junsungkim on 4/28/25.
 //
 
-import Foundation
-
 public typealias URLComposable = BaseURL & URLEndpoint
 
 public protocol URLRequestConvertible: URLComposable {
