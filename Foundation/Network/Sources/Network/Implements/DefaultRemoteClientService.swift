@@ -50,6 +50,7 @@ public final class DefaultRemoteClientService: RemoteClientService {
         return (data, response.statusCode)
     }
     
+    @available(*, deprecated, renamed: "request(by:for:decoder:)", message: "해당 API는 기존의 KEEV 프로젝트를 지원하기 위한 API입니다. 대신 request(by:for:decoder:)를 사용해주세요.")
     /// URLRequest를 받아 데이터를 지정한 타입으로 디코딩하여 반환하는 함수
     ///
     /// 인자로 받은 JSONDecoder를 활용하여 디코딩을 합니다.
@@ -69,6 +70,7 @@ public final class DefaultRemoteClientService: RemoteClientService {
     /// Data의 경우 서버로부터 받은 body에 있는 데이터입니다.
     /// Int의 경우 StatusCode를 입니다.
     /// HTTP를 통해 통신한 것이 아닐 경우, URLError(.cannotParseResponse) 에러를 던집니다.
+    @available(*, deprecated, renamed: "request(by:)", message: "해당 API는 기존의 KEEV 프로젝트를 지원하기 위한 API입니다. 대신 request(by:)를 사용해주세요.")
     public func request(from request: URLRequest) async throws -> APIResponse {
         let (data, response) = try await session.data(for: request)
         
