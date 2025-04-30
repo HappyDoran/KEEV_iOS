@@ -72,8 +72,16 @@ extension MockRouter {
 }
 
 
-@Test func URLRequest를_통해_리퀘스트했을_때_데이터가_정상적으로_반환된다() async throws {
+@Test func URLRequest를_통해_리퀘스트했을_때_데이터가_정상적으로_디코딩된다() async throws {
     let service = DefaultRemoteClientService()
     let todo = try await service.request(from: MockRouter.request, for: Todo.self)
     #expect(todo == Todo.result0)
+}
+
+@Test func URLRequest를_통해_리퀘스트했을_때_데이터가_정상적으로_반환된다() async throws {
+    let service = DefaultRemoteClientService()
+    let (data, _) = try await service.request(from: MockRouter.request)
+    let decoder = JSONDecoder()
+    let test0 = try decoder.decode(Todo.self, from: data)
+    #expect(test0 == Todo.result0)
 }
