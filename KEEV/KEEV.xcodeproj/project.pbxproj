@@ -11,6 +11,7 @@
 		0DD259292D2FFEAE0052A11E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD259282D2FFEAE0052A11E /* FirebaseAnalytics */; };
 		0DD2592B2D2FFEAE0052A11E /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD2592A2D2FFEAE0052A11E /* FirebaseCore */; };
 		0DD2592D2D2FFEAE0052A11E /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD2592C2D2FFEAE0052A11E /* FirebaseCrashlytics */; };
+		B55264962DC276A000414B48 /* Network in Frameworks */ = {isa = PBXBuildFile; productRef = B55264952DC276A000414B48 /* Network */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,7 @@
 		0DF5F1AF2CBE82560031DEF0 /* KEEV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KEEV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF5F1BF2CBE82570031DEF0 /* KEEVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KEEVTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF5F1C92CBE82570031DEF0 /* KEEVUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KEEVUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B55262122DC12CB900414B48 /* Network */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Network; path = ../Foundation/Network; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -76,6 +78,7 @@
 				0DD2592D2D2FFEAE0052A11E /* FirebaseCrashlytics in Frameworks */,
 				0DD2592B2D2FFEAE0052A11E /* FirebaseCore in Frameworks */,
 				01AA7DBF2CD61D5F003CAA7C /* Lottie in Frameworks */,
+				B55264962DC276A000414B48 /* Network in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +105,7 @@
 				0DF5F1B12CBE82560031DEF0 /* KEEV */,
 				0DF5F1C22CBE82570031DEF0 /* KEEVTests */,
 				0DF5F1CC2CBE82570031DEF0 /* KEEVUITests */,
+				B55262112DC12CB900414B48 /* Frameworks */,
 				0DF5F1B02CBE82560031DEF0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -114,6 +118,14 @@
 				0DF5F1C92CBE82570031DEF0 /* KEEVUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B55262112DC12CB900414B48 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B55262122DC12CB900414B48 /* Network */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +153,7 @@
 				0DD259282D2FFEAE0052A11E /* FirebaseAnalytics */,
 				0DD2592A2D2FFEAE0052A11E /* FirebaseCore */,
 				0DD2592C2D2FFEAE0052A11E /* FirebaseCrashlytics */,
+				B55264952DC276A000414B48 /* Network */,
 			);
 			productName = KEEV;
 			productReference = 0DF5F1AF2CBE82560031DEF0 /* KEEV.app */;
@@ -428,7 +441,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.HMHZ.KEEV;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = newJunsungProfile;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = KEEVProfile;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -633,7 +646,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.HMHZ.KEEV;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = newJunsungProfile;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = KEEVProfile;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -674,7 +687,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.HMHZ.KEEV;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = newJunsungProfile;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = KEEVProfile;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -845,6 +858,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0DD259272D2FFEAE0052A11E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
+		};
+		B55264952DC276A000414B48 /* Network */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Network;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
