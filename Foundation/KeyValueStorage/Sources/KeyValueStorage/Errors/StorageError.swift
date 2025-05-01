@@ -11,5 +11,6 @@ public enum StorageError: Error {
     case encodingFailed
     case decodingFailed
     case keychainError(status: OSStatus)
+    case unexpectedData
     case unknown
 }
