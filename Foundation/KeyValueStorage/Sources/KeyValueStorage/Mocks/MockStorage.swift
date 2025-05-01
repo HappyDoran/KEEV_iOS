@@ -37,5 +37,6 @@ final class MockStorage: KeyValueStorage {
         for key in keys {
             storage.remove(key)
         }
+        keys.removeAll()
     }
 }
