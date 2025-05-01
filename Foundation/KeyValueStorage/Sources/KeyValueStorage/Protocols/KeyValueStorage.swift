@@ -7,13 +7,13 @@
 
 import Foundation
 
-protocol KeyValueStorage {
+public protocol KeyValueStorage {
     func load<T: Codable>(_ key: String, decoder: JSONDecoder) throws -> T?
     func save<T: Codable>(_ value: T, forKey key: String, encoder: JSONEncoder) throws
     func remove(_ key: String)
 }
 
-extension KeyValueStorage {
+public extension KeyValueStorage {
     func save<T: Codable>(_ value: T, forKey key: String) throws {
         try save(value, forKey: key, encoder: JSONEncoder())
     }

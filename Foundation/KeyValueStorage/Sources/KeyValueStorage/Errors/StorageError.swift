@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum StorageError: Error {
+public enum StorageError: Error {
     case encodingFailed
     case decodingFailed
     case keychainError(status: OSStatus)
