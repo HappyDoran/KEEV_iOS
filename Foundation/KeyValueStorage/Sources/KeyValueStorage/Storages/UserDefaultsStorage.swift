@@ -14,7 +14,7 @@ public final class UserDefaultsStorage: KeyValueStorage {
         self.userDefaults = userDefaults
     }
     
-    func load<T>(_ key: String, decoder: JSONDecoder = JSONDecoder()) throws -> T? where T: Codable {
+    public func load<T>(_ key: String, decoder: JSONDecoder = JSONDecoder()) throws -> T? where T: Codable {
         guard let data = userDefaults.data(forKey: key) else {
             return nil
         }
@@ -26,7 +26,7 @@ public final class UserDefaultsStorage: KeyValueStorage {
         }
     }
     
-    func save<T>(_ value: T, forKey key: String, encoder: JSONEncoder = JSONEncoder()) throws where T: Codable {
+    public func save<T>(_ value: T, forKey key: String, encoder: JSONEncoder = JSONEncoder()) throws where T: Codable {
         do {
             userDefaults.set(try encoder.encode(value), forKey: key)
         } catch {
@@ -34,7 +34,7 @@ public final class UserDefaultsStorage: KeyValueStorage {
         }
     }
     
-    func remove(_ key: String) {
+    public func remove(_ key: String) {
         userDefaults.removeObject(forKey: key)
     }
 }
