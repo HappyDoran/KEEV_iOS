@@ -8,14 +8,14 @@
 import Foundation
 import Security
 
-public final class KeyChainStorage: KeyValueStorage {
+public actor KeyChainStorage: KeyValueStorage {
     private let service: String
     
-    init(service: String) {
+    public init(service: String) {
         self.service = service
     }
     
-    public func save<T>(_ value: T, forKey key: String, encoder: JSONEncoder) throws where T: Codable {
+    public func save<T>(_ value: T, forKey key: String, encoder: JSONEncoder) async throws where T: Codable, T: Sendable {
         let data = try encode(value, encoder: encoder)
         
         let query: [CFString: Any] = [
@@ -35,7 +35,7 @@ public final class KeyChainStorage: KeyValueStorage {
         }
     }
     
-    public func load<T>(_ key: String, decoder: JSONDecoder) throws -> T? where T: Codable {
+    public func load<T>(_ key: String, decoder: JSONDecoder) async throws -> T? where T: Codable, T: Sendable {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: key,
@@ -60,7 +60,7 @@ public final class KeyChainStorage: KeyValueStorage {
         return try decode(data, decoder: decoder)
     }
     
-    public func remove(_ key: String) {
+    public func remove(_ key: String) async {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrAccount: key,
