@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class UserDefaultsStorage: KeyValueStorage {
+public final class UserDefaultsStorage: KeyValueStorage, @unchecked Sendable {
     private let userDefaults: UserDefaults
     
     init(userDefaults: UserDefaults = .standard) {
