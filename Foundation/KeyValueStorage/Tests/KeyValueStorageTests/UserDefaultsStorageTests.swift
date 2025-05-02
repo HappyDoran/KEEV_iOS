@@ -31,20 +31,20 @@ let encoder: JSONEncoder = {
 func save를_호출하면_밸류가_저장되는가() async throws {
     let key = UUID().uuidString
     let storage = MockStorage(storage: UserDefaultsStorage())
-    try storage.save(value, forKey: key, encoder: JSONEncoder())
+    try await storage.save(value, forKey: key, encoder: JSONEncoder())
 
-    #expect(try storage.load(key) == value)
-    storage.removeAll()
+    await #expect(try storage.load(key) == value)
+    await storage.removeAll()
 }
 
 @Test
 func 아무것도_없는_상태에서_load를_호출하면_저장한_nil이_나온다() async throws {
     let key = UUID().uuidString
     let storage = MockStorage(storage: UserDefaultsStorage())
-    let condition : Int? = try storage.load(key)
+    let condition : Int? = try await storage.load(key)
     
     #expect(condition == nil)
-    storage.removeAll()
+    await storage.removeAll()
 }
 
 @Test
@@ -52,21 +52,21 @@ func remove를_호출하면_밸류가_지워지는가() async throws {
     let key = UUID().uuidString
     let storage = MockStorage(storage: UserDefaultsStorage())
     
-    try storage.save(value, forKey: key, encoder: JSONEncoder())
-    storage.remove(key)
+    try await storage.save(value, forKey: key, encoder: JSONEncoder())
+    await storage.remove(key)
     
-    #expect(try storage.load(key) == Optional<String>.none)
-    storage.removeAll()
+    await #expect(try storage.load(key) == Optional<String>.none)
+    await storage.removeAll()
 }
 
 @Test
 func 잘못된_디코더로_디코딩_시_에러가_발생하는가() async throws {
     let key = UUID().uuidString
     let storage = MockStorage(storage: UserDefaultsStorage())
-    try storage.save(value, forKey: key, encoder: encoder)
+    try await storage.save(value, forKey: key, encoder: encoder)
     
-    #expect(throws: StorageError.self) {
-        let _: Todo? = try storage.load(key)
+    await #expect(throws: StorageError.self) {
+        let _: Todo? = try await storage.load(key)
     }
-    storage.removeAll()
+    await storage.removeAll()
 }

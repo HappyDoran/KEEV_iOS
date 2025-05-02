@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class MockStorage: KeyValueStorage {
+final class MockStorage: KeyValueStorage, @unchecked Sendable {
     private let storage: any KeyValueStorage
     private var keys = Set<String>()
     
@@ -15,27 +15,27 @@ final class MockStorage: KeyValueStorage {
         self.storage = storage
     }
     
-    deinit {
-        removeAll()
-    }
-    
-    func save<T>(_ value: T, forKey key: String, encoder: JSONEncoder) throws where T : Decodable, T : Encodable {
-        try storage.save(value, forKey: key, encoder: encoder)
+    func save<T>(_ value: T, forKey key: String, encoder: JSONEncoder) async throws where T: Sendable & Codable {
+        try await storage.save(value, forKey: key, encoder: encoder)
         keys.insert(key)
     }
     
-    func load<T>(_ key: String, decoder: JSONDecoder) throws -> T? where T : Decodable, T : Encodable {
-        try storage.load(key, decoder: decoder)
+    func load<T: Sendable>(_ key: String, decoder: JSONDecoder) async throws -> T? where T : Decodable, T : Encodable {
+        try await storage.load(key, decoder: decoder)
     }
     
-    func remove(_ key: String) {
-        storage.remove(key)
+    func remove(_ key: String) async {
+        await storage.remove(key)
         keys.remove(key)
     }
     
-    func removeAll() {
-        for key in keys {
-            storage.remove(key)
+    func removeAll() async {
+        await withTaskGroup { group in
+            group.addTask { [self] in
+                for key in keys {
+                    await storage.remove(key)
+                }
+            }
         }
         keys.removeAll()
     }
