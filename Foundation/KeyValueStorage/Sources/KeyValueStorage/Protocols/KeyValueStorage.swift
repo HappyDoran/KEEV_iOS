@@ -7,18 +7,20 @@
 
 import Foundation
 
-public protocol KeyValueStorage {
-    func load<T: Codable>(_ key: String, decoder: JSONDecoder) throws -> T?
-    func save<T: Codable>(_ value: T, forKey key: String, encoder: JSONEncoder) throws
-    func remove(_ key: String)
+public protocol KeyValueStorage: Sendable {
+    func load<T: Codable & Sendable>(_ key: String, decoder: JSONDecoder) async throws -> T?
+    func load<T: Codable & Sendable>(_ key: String) async throws -> T?
+    func save<T: Codable & Sendable>(_ value: T, forKey key: String, encoder: JSONEncoder) async throws
+    func save<T: Codable & Sendable>(_ value: T, forKey key: String) async throws
+    func remove(_ key: String) async
 }
 
 public extension KeyValueStorage {
-    func save<T: Codable>(_ value: T, forKey key: String) throws {
-        try save(value, forKey: key, encoder: JSONEncoder())
+    func save<T: Codable & Sendable>(_ value: T, forKey key: String) async throws {
+        try await save(value, forKey: key, encoder: JSONEncoder())
     }
     
-    func load<T: Codable>(_ key: String) throws -> T? {
-        try load(key, decoder: JSONDecoder())
+    func load<T: Codable & Sendable>(_ key: String) async throws -> T? {
+        try await load(key, decoder: JSONDecoder())
     }
 }
