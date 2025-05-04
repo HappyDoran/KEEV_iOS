@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import KeyValueStorage
 
 /// 검색과 관련된 기능들을 수행하는 SearchService
 ///
@@ -17,7 +18,7 @@ class SearchService: SearchServiceProtocol, KEEVErrorHandler {
     
     static let layer: LayerType = .service(of: "SearchService")
     
-    private let userDefaultsUtility: UserDefaultsUtility = UserDefaultsUtility()
+    private let localStorage = UserDefaultsStorage()
     private let networkUtility: NetworkUtility = NetworkUtility()
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     private var recentSearch: [RecentSearch] = []
@@ -28,7 +29,7 @@ class SearchService: SearchServiceProtocol, KEEVErrorHandler {
     
     private func loadRecentSearch() {
         do {
-            recentSearch = try userDefaultsUtility.get([RecentSearch].self, forKey: "recentSearch") ?? []
+            recentSearch = try localStorage.load("recentSearch") ?? []
         } catch {
             print("최근 검색어를 불러오는데 실패했습니다.")
         }
@@ -36,7 +37,7 @@ class SearchService: SearchServiceProtocol, KEEVErrorHandler {
     
     private func updateUserDefaults(recendSearch: [RecentSearch]) {
         do {
-            try userDefaultsUtility.set(recentSearch, forKey: "recentSearch")
+            try localStorage.save(recendSearch, forKey: "recentSearch")
         } catch {
             print("최근 검색어를 업데이트하지 못했습니다.")
         }
