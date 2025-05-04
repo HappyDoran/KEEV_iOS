@@ -20,19 +20,13 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
             return isRegistered(from: account) ? .ok(user: .init(account: account)) : .created
         }
         
-        guard let tokenData = KeyChain.read(tag: Self.refreshTokenTag) else {
+        guard let token = try? await tokenUtility.fetchToken(for: .refresh) else {
             updateSignInStatus(.failed)
             return .failed
         }
-        
-        guard let tokenString = String(data: tokenData, encoding: .utf8) else {
-            try? KeyChain.delete(tag: Self.refreshTokenTag)
-            updateSignInStatus(.failed)
-            return .failed
-        }
-        
+
         do {
-            let (code, fetchedAccount) = try await fetchAccountDTO(from: .refreshAccessToken(refreshToken: tokenString))
+            let (code, fetchedAccount) = try await fetchAccountDTO(from: .refreshAccessToken(refreshToken: token))
             try await doAsyncWithException(caller: "autoSignIn") {
                 try await storeToken(fetchedAccount.accessToken, for: .access)
             }
