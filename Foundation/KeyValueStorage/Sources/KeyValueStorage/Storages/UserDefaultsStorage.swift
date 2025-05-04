@@ -16,7 +16,7 @@ public final class UserDefaultsStorage: KeyValueStorage, @unchecked Sendable {
     
     /// UserDefaults 인스턴스를 주입받아 초기화합니다.
     /// 기본값은 `.standard`입니다.
-    init(userDefaults: UserDefaults = .standard) {
+    public init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
     }
     
