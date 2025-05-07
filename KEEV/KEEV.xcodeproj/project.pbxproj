@@ -11,6 +11,7 @@
 		0DD259292D2FFEAE0052A11E /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD259282D2FFEAE0052A11E /* FirebaseAnalytics */; };
 		0DD2592B2D2FFEAE0052A11E /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD2592A2D2FFEAE0052A11E /* FirebaseCore */; };
 		0DD2592D2D2FFEAE0052A11E /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0DD2592C2D2FFEAE0052A11E /* FirebaseCrashlytics */; };
+		B54AC1192DC743880037ABA8 /* KeyValueStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B54AC1182DC743880037ABA8 /* KeyValueStorage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +35,7 @@
 		0DF5F1AF2CBE82560031DEF0 /* KEEV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KEEV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF5F1BF2CBE82570031DEF0 /* KEEVTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KEEVTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0DF5F1C92CBE82570031DEF0 /* KEEVUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KEEVUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B54ABE9E2DC73E650037ABA8 /* KeyValueStorage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = KeyValueStorage; path = ../Foundation/KeyValueStorage; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -75,6 +77,7 @@
 				0DD259292D2FFEAE0052A11E /* FirebaseAnalytics in Frameworks */,
 				0DD2592D2D2FFEAE0052A11E /* FirebaseCrashlytics in Frameworks */,
 				0DD2592B2D2FFEAE0052A11E /* FirebaseCore in Frameworks */,
+				B54AC1192DC743880037ABA8 /* KeyValueStorage in Frameworks */,
 				01AA7DBF2CD61D5F003CAA7C /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -102,6 +105,7 @@
 				0DF5F1B12CBE82560031DEF0 /* KEEV */,
 				0DF5F1C22CBE82570031DEF0 /* KEEVTests */,
 				0DF5F1CC2CBE82570031DEF0 /* KEEVUITests */,
+				B54ABE9D2DC73E650037ABA8 /* Frameworks */,
 				0DF5F1B02CBE82560031DEF0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -114,6 +118,14 @@
 				0DF5F1C92CBE82570031DEF0 /* KEEVUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		B54ABE9D2DC73E650037ABA8 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B54ABE9E2DC73E650037ABA8 /* KeyValueStorage */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,6 +153,7 @@
 				0DD259282D2FFEAE0052A11E /* FirebaseAnalytics */,
 				0DD2592A2D2FFEAE0052A11E /* FirebaseCore */,
 				0DD2592C2D2FFEAE0052A11E /* FirebaseCrashlytics */,
+				B54AC1182DC743880037ABA8 /* KeyValueStorage */,
 			);
 			productName = KEEV;
 			productReference = 0DF5F1AF2CBE82560031DEF0 /* KEEV.app */;
@@ -845,6 +858,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 0DD259272D2FFEAE0052A11E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
+		};
+		B54AC1182DC743880037ABA8 /* KeyValueStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = KeyValueStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

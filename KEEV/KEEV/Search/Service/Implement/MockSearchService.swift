@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import KeyValueStorage
 
 /// MockSearchService
 ///
@@ -15,7 +16,6 @@ import Foundation
 class MockSearchService: SearchServiceProtocol {
     static let layer: LayerType = .service(of: "MockSearchService")
     
-    private let userDefaultsUtility = UserDefaultsUtility()
     private var recentSearch: [RecentSearch] = []
     
     func setRecentSearch(searchItem: RecentSearch) {

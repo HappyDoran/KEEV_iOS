@@ -6,22 +6,19 @@
 //
 
 import Foundation
+import KeyValueStorage
 
 /// Token을 관리하는 유틸리티 액터
 ///
 /// - Note: 액세스 토큰은 액터의 프로퍼티로 관리되고, 리프레시 토큰은 키체인에 저장되어 보안이 강화됩니다.
 /// - Author: newJunsung
-actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
-    static let layer: LayerType = .utility(of: "TokenUtility")
-    
-    typealias Layer = TokenUtility
-    
+actor TokenUtility {
     /// TokenUtility의 싱글톤 인스턴스
     ///
     /// 이 싱글톤을 통해 `TokenUtility`에 대한 단일 진입점을 제공합니다.
     static let shared = TokenUtility()
     
-    private static let refreshTokenTag = "keevRefreshToken"
+    private let tokenStorage: some KeyValueStorage = KeyChainStorage(service: "hmhzKEEVService")
     private let network = NetworkUtility()
     private var accessToken: String?
     private var expirationDateForAccess: Date?
@@ -39,9 +36,9 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
     func fetchToken(for type: TokenType) async throws -> String {
         switch type {
         case .access:
-            return try await doAsyncWithException(caller: "fetchToken", fetchAccessToken)
+            return try await fetchAccessToken()
         case .refresh:
-            return try await doAsyncWithException(caller: "fetchToken", decodeRefreshToken)
+            return try await decodeRefreshToken()
         }
     }
     
@@ -51,20 +48,18 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
     /// - Throws: `TokenError.tokenNotFound`: 리프레시 토큰이 존재하지 않는 경우, `TokenError.tokenIsNil`: 서버로부터 액세스 토큰을 받을 수 없는 경우, `Other`: 네트워크 요청 또는 디코딩 실패 시 발생하는 오류
     /// - Author: newJunsung
     func refreshAccessToken() async throws -> String {
-        let refreshToken = try doWithException(caller: "refreshAccessToken", decodeRefreshToken)
+        let refreshToken = try await decodeRefreshToken()
         let router = AccountHTTPRequestRouter.refreshAccessToken(refreshToken: refreshToken)
         
         // 네트워크 통신
-        let data = try await doAsyncWithException(caller: "refreshAccessToken") {
-            try await network.request(router: router)
-        }
+        let data = try await network.request(router: router)
         expirationDateForAccess = Date.now.addingTimeInterval(TimeUnit.hours(of: 1).toSeconds)
         
         // 서버 응답 디코딩
-        let account = try doWithException(caller: "refreshAccessToken") { try JSONDecoder().decode(AccountDTO.self, from: data) }
+        let account = try JSONDecoder().decode(AccountDTO.self, from: data)
         
         guard let fetchedAccessToken = account.accessToken else {
-            throw KEEVError(layer: Self.layer, caller: "refreshAccessToken", occurPoint: .local(description: "ACCESS TOKEN NOT FOUND"), previousError: nil)
+            throw TokenError.tokenNotFound
         }
         
         accessToken = fetchedAccessToken
@@ -80,15 +75,13 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
     /// - Throws: `TokenError.keyChainWriteFail`: 키체인에 토큰 저장 실패 시 발생
     ///
     /// - Author: newJunsung
-    func storeToken(_ token: String, for type: TokenType) throws {
+    func storeToken(_ token: String, for type: TokenType) async throws {
         switch type {
         case .access:
             accessToken = token
             expirationDateForAccess = Date.now.addingTimeInterval(TimeUnit.minutes(of: 55).toSeconds)
         case .refresh:
-            try doWithException(caller: "storeToken") {
-                try storeRefreshToken(token)
-            }
+            try await storeRefreshToken(token)
         }
     }
     
@@ -99,28 +92,26 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
     ///
     /// - Throws: `TokenError.keyChainWriteFail`: 키체인에 토큰 저장 실패 시 발생
     /// - Author: newJunsung
-    func storeTokens(_ tokens: [TokenType: String]) throws {
+    func storeTokens(_ tokens: [TokenType: String]) async throws {
         for (type, token) in tokens {
-            try storeToken(token, for: type)
+            try await storeToken(token, for: type)
         }
     }
     
-    func deleteToken(for type: TokenType) throws {
+    func deleteToken(for type: TokenType) async throws {
         switch type {
         case .access:
             accessToken = nil
             expirationDateForAccess = nil
         case .refresh:
-            try doWithException(caller: "deleteToken") {
-                try KeyChain.delete(tag: Self.refreshTokenTag)
-            }
+            await tokenStorage.remove("keevRefreshToken")
         }
     }
     
-    func deleteAllTokens() throws {
+    func deleteAllTokens() async throws {
         accessToken = nil
         expirationDateForAccess = nil
-        try KeyChain.delete(tag: Self.refreshTokenTag)
+        await tokenStorage.remove("keevRefreshToken")
     }
     
     private func fetchAccessToken() async throws -> String {
@@ -129,7 +120,7 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
             return accessToken
         }
         
-        return try await doAsyncWithException(caller: "fetchAccessToken", refreshAccessToken)
+        return try await refreshAccessToken()
     }
     
     /// 리프레시 토큰을 키체인에서 디코딩합니다.
@@ -137,26 +128,12 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
     /// - Returns: 저장된 리프레시 토큰 문자열
     /// - Throws: `TokenError.tokenNotFound`: 키체인에 토큰이 존재하지 않는 경우. `TokenError.decodeFail`: 토큰 디코딩 실패
     /// - Author: newJunsung
-    private nonisolated func decodeRefreshToken() throws -> String {
-        guard let data = KeyChain.read(tag: Self.refreshTokenTag) else {
-            throw KEEVError(
-                layer: Self.layer,
-                caller: "decodeRefreshToken",
-                occurPoint: .local(description: "TOKEN IS NOT FOUND"),
-                previousError: nil
-            )
+    private nonisolated func decodeRefreshToken() async throws -> String {
+        guard let data: String = try await tokenStorage.load("keevRefreshToken") else {
+            throw TokenError.tokenNotFound
         }
         
-        guard let token = String(data: data, encoding: .utf8) else {
-            throw KEEVError(
-                layer: Self.layer,
-                caller: "decodeRefreshToken",
-                occurPoint: .local(description: "Failed to decode refresh token"),
-                previousError: nil
-            )
-        }
-        
-        return token
+        return data
     }
     
     /// 리프레시 토큰을 키체인에 저장합니다.
@@ -164,10 +141,8 @@ actor TokenUtility: LayerRepresentable, KEEVErrorHandler {
     /// - Parameter token: 저장할 리프레시 토큰 문자열
     /// - Throws: `TokenError.keyChainWriteFail`: 키체인 저장 실패
     /// - Author: newJunsung
-    private func storeRefreshToken(_ token: String) throws {
-        try doWithException(caller: "storeRefreshToken") {
-            try KeyChain.create(token, tag: Self.refreshTokenTag)
-        }
+    private func storeRefreshToken(_ token: String) async throws {
+        try await tokenStorage.save(token, forKey: "keevRefreshToken")
     }
 }
 
