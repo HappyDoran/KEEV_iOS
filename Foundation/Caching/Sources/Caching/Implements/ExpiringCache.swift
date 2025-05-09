@@ -5,18 +5,18 @@
 //  Created by junsungkim on 5/8/25.
 //
 
-import Combine
 import Foundation
 
 fileprivate typealias KW = CacheKeyWrapper /* CacheKeyWrapper의 약자 */
 fileprivate typealias EO = ExpirableObject /* ExpirableObject의 약자 */
 
-public final class ExpiringCache<Key, Value> where Key: Hashable {
+public final class ExpiringCache<Key, Value>: @unchecked Sendable where Key: Hashable {
     private let cache: NSCache<KW, EO<Value>>
+    private let lock: NSLock
     private let expirationInterval: TimeInterval
     
     private var keys: Set<KW>
-    private var cancellables: Set<AnyCancellable>
+    private var cleanupTask: Task<Void, Never>?
     
     public init(configuration: ExpiringCache.Configuration) {
         let cache = NSCache<KW, EO<Value>>()
@@ -24,34 +24,46 @@ public final class ExpiringCache<Key, Value> where Key: Hashable {
         cache.totalCostLimit = configuration.memoryLimit
         
         self.cache = cache
+        self.lock = NSLock()
         self.expirationInterval = configuration.expirationInterval
         self.keys = []
-        self.cancellables = []
         
-        Timer.publish(every: configuration.expirationInterval, on: .main, in: .common)
-            .autoconnect()
-            .sink { [weak self] _ in
-                self?.checkExpiration()
+        let interval = UInt64(configuration.expirationInterval * 1_000_000_000)
+        self.cleanupTask = Task(priority: .background) { [weak self] in
+            guard let self = self else { return }
+            while !Task.isCancelled {
+                try? await Task.sleep(nanoseconds: interval)
+                self.checkExpiration()
             }
-            .store(in: &cancellables)
+        }
     }
     
     deinit {
+        cleanupTask?.cancel()
+        cleanupTask = nil
         cache.removeAllObjects()
-        for cancellable in cancellables {
-            cancellable.cancel()
-        }
-        cancellables.removeAll()
     }
     
     private func removeValue(forKey key: KW) {
+        lock.lock()
+        defer { lock.unlock() }
+        
         cache.removeObject(forKey: key)
         keys.remove(key)
     }
     
     private func checkExpiration() {
-        for key in keys {
-            guard let expirableValue = cache.object(forKey: key) else { continue }
+        lock.lock()
+        let atomicKeys = keys
+        lock.unlock()
+        
+        for key in atomicKeys {
+            guard let expirableValue = cache.object(forKey: key) else {
+                lock.lock()
+                keys.remove(key)
+                lock.unlock()
+                continue
+            }
             if expirableValue.isExpired {
                 removeValue(forKey: key)
             }
@@ -74,6 +86,10 @@ extension ExpiringCache: CacheStorage {
     public func set(_ value: Value, forKey key: Key) {
         let wrapper = KW(key: key)
         let expirableValue = EO(value: value, expiration: Date(timeIntervalSinceNow: expirationInterval))
+        
+        lock.lock()
+        defer { lock.unlock() }
+        
         cache.setObject(expirableValue, forKey: wrapper)
         keys.insert(wrapper)
     }
@@ -94,6 +110,9 @@ extension ExpiringCache: CacheStorage {
     }
     
     public func removeAll() {
+        lock.lock()
+        defer { lock.unlock() }
+        
         cache.removeAllObjects()
         keys.removeAll()
     }
