@@ -18,17 +18,17 @@ public final class ExpiringCache<Key, Value> where Key: Hashable {
     private var keys: Set<KW>
     private var cancellables: Set<AnyCancellable>
     
-    public init(configuartion: ExpiringCache.Configuration) {
+    public init(configuration: ExpiringCache.Configuration) {
         let cache = NSCache<KW, EO<Value>>()
-        cache.countLimit = configuartion.countLimit
-        cache.totalCostLimit = configuartion.memoryLimit
+        cache.countLimit = configuration.countLimit
+        cache.totalCostLimit = configuration.memoryLimit
         
         self.cache = cache
-        self.expirationInterval = configuartion.expirationInterval
+        self.expirationInterval = configuration.expirationInterval
         self.keys = []
         self.cancellables = []
         
-        Timer.publish(every: configuartion.expirationInterval, on: .current, in: .common)
+        Timer.publish(every: configuration.expirationInterval, on: .main, in: .common)
             .autoconnect()
             .sink { [weak self] _ in
                 self?.checkExpiration()
