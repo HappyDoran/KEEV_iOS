@@ -49,3 +49,19 @@ let testValue = 42
     cache.removeAll()
     #expect(cache.get(forKey: testKey) == nil)
 }
+
+@Test func 개수제한을_넘어버리면_캐싱된_값이_삭제된다() async throws {
+    let configuration = ExpiringCache<String, Int>.Configuration(memoryLimit: 1024, countLimit: 1, expirationInterval: nil, cleanUpInterval: nil)
+    let cache = ExpiringCache<String, Int>(configuration: configuration)
+    cache.set(testValue, forKey: testKey)
+    cache.set(2, forKey: "t")
+    #expect(cache.get(forKey: testKey) == nil)
+}
+
+@Test func 값을_덮어씌우면_기존의_값이_삭제된다() async throws {
+    let configuration = ExpiringCache<String, Int>.Configuration(memoryLimit: 1024, countLimit: 1, expirationInterval: nil, cleanUpInterval: nil)
+    let cache = ExpiringCache<String, Int>(configuration: configuration)
+    cache.set(testValue, forKey: testKey)
+    cache.set(2, forKey: testKey)
+    #expect(cache.get(forKey: testKey) != testValue)
+}
