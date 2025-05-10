@@ -13,7 +13,7 @@ fileprivate typealias EO = ExpirableObject /* ExpirableObject의 약자 */
 public final class ExpiringCache<Key, Value>: @unchecked Sendable where Key: Hashable {
     private let cache: NSCache<KW, EO<Value>>
     private let lock: NSLock
-    private let expirationInterval: TimeInterval
+    private let expirationInterval: TimeInterval?
     
     private var keys: Set<KW>
     private var cleanupTask: Task<Void, Never>?
@@ -27,13 +27,16 @@ public final class ExpiringCache<Key, Value>: @unchecked Sendable where Key: Has
         self.lock = NSLock()
         self.expirationInterval = configuration.expirationInterval
         self.keys = []
+        self.cleanupTask = nil
         
-        let interval = UInt64(configuration.expirationInterval * 1_000_000_000)
-        self.cleanupTask = Task(priority: .background) { [weak self] in
-            guard let self = self else { return }
-            while !Task.isCancelled {
-                try? await Task.sleep(nanoseconds: interval)
-                self.checkExpiration()
+        if let cleanUpInterval = configuration.cleanUpInterval {
+            let nanoTimeInterval = UInt64(cleanUpInterval * 1_000_000_000)
+            self.cleanupTask = Task(priority: .background) { [weak self] in
+                guard let self = self else { return }
+                while !Task.isCancelled {
+                    try? await Task.sleep(nanoseconds: nanoTimeInterval)
+                    self.checkExpiration()
+                }
             }
         }
     }
@@ -75,7 +78,8 @@ public extension ExpiringCache {
     struct Configuration {
         let memoryLimit: Int
         let countLimit: Int
-        let expirationInterval: TimeInterval
+        let expirationInterval: TimeInterval?
+        let cleanUpInterval: TimeInterval?
     }
 }
 
@@ -85,7 +89,13 @@ extension ExpiringCache: CacheStorage {
     
     public func set(_ value: Value, forKey key: Key) {
         let wrapper = KW(key: key)
-        let expirableValue = EO(value: value, expiration: Date(timeIntervalSinceNow: expirationInterval))
+        let expirableValue: EO<Value>
+        if let expirationInterval = expirationInterval {
+            expirableValue = EO(value: value, expiration: Date(timeIntervalSinceNow: expirationInterval))
+        } else {
+            expirableValue = EO(value: value, expiration: nil)
+        }
+        
         
         lock.lock()
         defer { lock.unlock() }
