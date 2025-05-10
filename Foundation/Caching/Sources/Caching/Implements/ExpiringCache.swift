@@ -118,6 +118,13 @@ public extension ExpiringCache {
         /// 만료된 항목을 정기적으로 정리할 주기 (초 단위)
         /// `nil`일 경우 정기 정리 작업은 수행되지 않습니다.
         let cleanUpInterval: TimeInterval?
+        
+        public init(memoryLimit: Int, countLimit: Int, expirationInterval: TimeInterval?, cleanUpInterval: TimeInterval?) {
+            self.memoryLimit = memoryLimit
+            self.countLimit = countLimit
+            self.expirationInterval = expirationInterval
+            self.cleanUpInterval = cleanUpInterval
+        }
     }
 }
 
