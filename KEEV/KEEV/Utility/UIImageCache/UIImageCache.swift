@@ -8,6 +8,8 @@
 import Foundation
 import UIKit
 
+import Caching
+
 /// 이미지를 캐싱하는 액터
 ///
 /// 이 액터를 생성할 때, 환경설정을 반드시 해줘야합니다.
@@ -16,9 +18,9 @@ import UIKit
 ///
 /// - Author: newJunsung
 actor UIImageCache {
-    typealias Cache = MemoryCacheStorage<NSURL, UIImage>
+    typealias Cache = ExpiringCache<URL, UIImage>
     
-    static let shared = UIImageCache(configuration: .init(countLimit: 256, totalCostLimit: .megabytes(of: 128), cleanTerm: .seconds(of: 0)))
+    static let shared = UIImageCache(configuration: Cache.Configuration(memoryLimit: 1024 * 1024 * 128, countLimit: 512, expirationInterval: 256, cleanUpInterval: nil))
     
     private let cache: Cache
     
@@ -39,7 +41,7 @@ actor UIImageCache {
     /// - Returns: 이미지가 있으면 `UIImage`를 반환하고 없으면 `nil`을 반환합니다.
     /// - Author: newJunsung
     nonisolated func image(for key: URL) -> UIImage? {
-        cache.fetch(for: key as NSURL)
+        cache.get(forKey: key)
     }
     
     /// 키와 이미지를 캐싱하는 함수
@@ -54,16 +56,13 @@ actor UIImageCache {
     ///
     /// - Author: newJunsung
     func store(_ image: UIImage, for key: URL) {
-        guard !cache.contains(for: key as NSURL) else {
-            return
-        }
-        cache.store(image, for: key as NSURL)
+        cache.set(image, forKey: key)
     }
     
     /// 키 값에 해당하는 이미지를 삭제합니다.
     /// - Author: newJunsung
     func remove(for key: URL) {
-        cache.remove(for: key as NSURL)
+        cache.remove(forKey: key)
     }
     
     /// 키 값과 캐싱된 이미지를 전부 삭제합니다.
