@@ -9,7 +9,7 @@ import Network
 import KeyValueStorage
 
 public actor TokenManager {
-    public func fetch(_ type: TokenType) -> String? {
+    nonisolated public func fetch(_ type: TokenType) throws -> String? {
         nil
     }
     
