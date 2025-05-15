@@ -8,6 +8,6 @@
 import Network
 import KeyValueStorage
 
-public actor TokenManager: TokenManagable {
+public actor TokenManager {
     
 }
