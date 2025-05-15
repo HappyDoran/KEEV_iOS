@@ -9,24 +9,23 @@ import Network
 import KeyValueStorage
 
 public actor TokenManager {
-    public func fetch(_ type: TokenType) -> TokenState? {
+    public func fetch(_ type: TokenType) -> String? {
         nil
     }
     
-    @discardableResult
-    public func remove(_ type: TokenType) -> TokenState? {
-        nil
+    public func remove(_ type: TokenType) {
+        
     }
     
     public func removeAll() {
         
     }
     
-    public func refreshAccessToken() throws -> TokenState {
-        .expired
+    public func refreshAccessToken() throws -> String {
+        ""
     }
     
-    public func store(_ tokens: [TokenType: TokenState]) {
+    public func store(_ tokens: [TokenType: String]) {
         
     }
 }
