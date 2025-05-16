@@ -48,14 +48,14 @@ extension MockRouter {
 
 // MARK: 테스트 케이스
 @Test func 라우터를_통해_리퀘스트했을_때_디코딩이_제대로_되어_Todo를_반환된다() async throws {
-    let service = DefaultRemoteClientService()
+    let service = URLSessionAPIClient()
     let router = MockRouter(path: ["todos/1"])
     let test0 = try await service.request(by: router, for: Todo.self)
     #expect(test0 == Todo.result0)
 }
 
 @Test func 라우터를_통해_리퀘스트했을_때_디코딩을_실패하여_에러를_반환한다() async throws {
-    let service = DefaultRemoteClientService()
+    let service = URLSessionAPIClient()
     let router = MockRouter(path: ["users/1/posts"])
     await #expect(throws: DecodingError.self) {
         let _ = try await service.request(by: router, for: Todo.self)
@@ -63,7 +63,7 @@ extension MockRouter {
 }
 
 @Test func 라우터를_통해_리퀘스트했을_때_데이터가_정상적으로_반환된다() async throws {
-    let service = DefaultRemoteClientService()
+    let service = URLSessionAPIClient()
     let decoder = JSONDecoder()
     let router = MockRouter(path: ["todos/1"])
     let (data, _) = try await service.request(by: router)
@@ -73,13 +73,13 @@ extension MockRouter {
 
 
 @Test func URLRequest를_통해_리퀘스트했을_때_데이터가_정상적으로_디코딩된다() async throws {
-    let service = DefaultRemoteClientService()
+    let service = URLSessionAPIClient()
     let todo = try await service.request(from: MockRouter.request, for: Todo.self)
     #expect(todo == Todo.result0)
 }
 
 @Test func URLRequest를_통해_리퀘스트했을_때_데이터가_정상적으로_반환된다() async throws {
-    let service = DefaultRemoteClientService()
+    let service = URLSessionAPIClient()
     let (data, _) = try await service.request(from: MockRouter.request)
     let decoder = JSONDecoder()
     let test0 = try decoder.decode(Todo.self, from: data)

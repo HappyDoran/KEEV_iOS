@@ -1,5 +1,6 @@
 //
-//  DefaultRemoteClientService.swift
+//  URLSessionAPIClient.swift
+//  API 통신을 담당하는 URLSession 기반의 기본 클라이언트 구현체
 //  KEEVCore
 //
 //  Created by junsungkim on 4/28/25.
@@ -7,8 +8,8 @@
 
 import Foundation
 
-/// RemoteClientService를 채택해서 만든 기본 서버 통신 객체
-public final class DefaultRemoteClientService: RemoteClientService {
+/// APIClient 프로토콜을 채택한 URLSession 기반의 기본 네트워크 클라이언트
+public final class URLSessionAPIClient: APIClient {
     private let session: URLSession
     
     public init(session: URLSession = .shared) {
