@@ -10,4 +10,5 @@ import Foundation
 public enum TokenError: Error, Sendable, Equatable {
     case invalidToken
     case expiredToken
+    case tokenNotFound
 }
