@@ -59,11 +59,25 @@ public actor TokenManager {
     }
     
     public func remove(_ type: TokenType) {
-        
+        switch type {
+        case .accessToken:
+            accessToken = nil
+            accessTokenDate = nil
+        case .refreshToken:
+            refreshToken = nil
+            Task(priority: .background) {
+                await storage.remove(TokenManager.refreshTokenKey)
+            }
+        }
     }
     
     public func removeAll() {
-        
+        accessToken = nil
+        accessTokenDate = nil
+        refreshToken = nil
+        Task(priority: .background) {
+            await storage.remove(TokenManager.refreshTokenKey)
+        }
     }
     
     public func refreshAccessToken() async throws -> String {
