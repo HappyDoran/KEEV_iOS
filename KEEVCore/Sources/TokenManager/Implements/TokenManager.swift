@@ -26,6 +26,13 @@ extension TokenManager {
 
 public actor TokenManager {
     private static let refreshTokenKey = "keevRefreshToken"
+    private static let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        let dateformatter = DateFormatter()
+        dateformatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+        decoder.dateDecodingStrategy = .formatted(dateformatter)
+        return decoder
+    }()
     
     private let refreshInterval: TimeInterval
     private let storage: KeyValueStorage
@@ -45,7 +52,7 @@ public actor TokenManager {
         switch type {
         case .accessToken:
             if let token = try fetchAccessToken() { return token }
-            return try refreshAccessToken()
+            return try await refreshAccessToken()
         case .refreshToken:
             return try await fetchRefreshToken()
         }
@@ -59,8 +66,25 @@ public actor TokenManager {
         
     }
     
-    public func refreshAccessToken() throws -> String {
-        ""
+    public func refreshAccessToken() async throws -> String {
+        accessToken = nil
+        accessTokenDate = nil
+        
+        guard let refreshToken = try await fetchRefreshToken() else {
+            throw TokenError.tokenNotFound
+        }
+        
+        let router = TokenRouter(refreshToken: refreshToken)
+        let token = try await network.request(by: router, for: TokenResponseDTO.self, decoder: Self.decoder)
+        
+        self.accessToken = token.accessToken
+        self.accessTokenDate = token.createdDate
+        
+        if let refreshToken = token.refreshToken {
+            store([.refreshToken: refreshToken])
+        }
+        
+        return token.accessToken
     }
     
     public func store(_ tokens: [TokenType: String]) {
