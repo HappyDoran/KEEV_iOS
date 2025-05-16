@@ -48,10 +48,10 @@ public actor TokenManager {
         self.network = configuration.network
     }
     
-    public func fetch(_ type: TokenType) async throws -> String? {
+    public func fetch(_ type: TokenType) async throws -> String {
         switch type {
         case .accessToken:
-            if let token = try fetchAccessToken() { return token }
+            let token = try fetchAccessToken()
             return try await refreshAccessToken()
         case .refreshToken:
             return try await fetchRefreshToken()
@@ -80,10 +80,7 @@ public actor TokenManager {
         accessToken = nil
         accessTokenDate = nil
         
-        guard let refreshToken = try await fetchRefreshToken() else {
-            throw TokenError.tokenNotFound
-        }
-        
+        let refreshToken = try await fetchRefreshToken()
         let router = TokenRouter(refreshToken: refreshToken)
         let token = try await network.request(by: router, for: TokenResponseDTO.self, decoder: Self.decoder)
         
@@ -112,18 +109,22 @@ public actor TokenManager {
         }
     }
     
-    private func fetchAccessToken() throws -> String? {
-        guard let accessToken = accessToken, let accessTokenDate = accessTokenDate else { return nil }
+    private func fetchAccessToken() throws -> String {
+        guard let accessToken = accessToken, let accessTokenDate = accessTokenDate else { throw TokenError.tokenNotFound }
         guard Date.now < accessTokenDate.addingTimeInterval(refreshInterval) else { throw TokenError.expiredToken }
         return accessToken
     }
     
-    private func fetchRefreshToken() async throws -> String? {
+    private func fetchRefreshToken() async throws -> String {
         if let token = self.refreshToken {
             return token
         }
         
-        self.refreshToken = try await storage.load(TokenManager.refreshTokenKey)
-        return self.refreshToken
+        guard let token: String = try await storage.load(TokenManager.refreshTokenKey) else {
+            self.refreshToken = nil
+            throw TokenError.tokenNotFound
+        }
+        self.refreshToken = token
+        return self.refreshToken!
     }
 }
