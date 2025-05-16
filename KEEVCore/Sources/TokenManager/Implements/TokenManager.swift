@@ -14,9 +14,9 @@ extension TokenManager {
     public struct Configuration {
         let refreshInterval: TimeInterval
         let storage: KeyValueStorage
-        let network: RemoteClientService
+        let network: APIClient
         
-        public init(refreshInterval: TimeInterval, storage: KeyValueStorage, network: RemoteClientService) {
+        public init(refreshInterval: TimeInterval, storage: KeyValueStorage, network: APIClient) {
             self.refreshInterval = refreshInterval
             self.storage = storage
             self.network = network
@@ -29,7 +29,7 @@ public actor TokenManager {
     
     private let refreshInterval: TimeInterval
     private let storage: KeyValueStorage
-    private let network: RemoteClientService
+    private let network: APIClient
     
     private var accessTokenDate: Date?
     private var accessToken: String?
