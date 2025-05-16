@@ -11,7 +11,7 @@ import Network
 ///
 /// - Author: Doran
 struct NetworkUtility {
-    private let service = DefaultRemoteClientService()
+    private let service = URLSessionAPIClient()
     private let decoder: JSONDecoder = JSONDecoder()
     
     /// 서버에서 데이터를 가져오는 메소드
