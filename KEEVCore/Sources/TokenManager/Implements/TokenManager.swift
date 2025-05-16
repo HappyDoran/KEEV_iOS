@@ -102,7 +102,18 @@ public actor TokenManager {
     }
     
     public func store(_ tokens: [TokenType: String]) {
-        
+        for (type, token) in tokens {
+            switch type {
+            case .accessToken:
+                accessToken = token
+                accessTokenDate = .now
+            case .refreshToken:
+                refreshToken = token
+                Task(priority: .background) {
+                    try await storage.save(token, forKey: TokenManager.refreshTokenKey)
+                }
+            }
+        }
     }
     
     private func fetchAccessToken() throws -> String? {
