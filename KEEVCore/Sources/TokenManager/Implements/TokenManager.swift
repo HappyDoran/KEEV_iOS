@@ -72,12 +72,8 @@ public actor TokenManager {
     }
     
     public func removeAll() {
-        accessToken = nil
-        accessTokenDate = nil
-        refreshToken = nil
-        Task(priority: .background) {
-            await storage.remove(TokenManager.refreshTokenKey)
-        }
+        remove(.accessToken)
+        remove(.refreshToken)
     }
     
     public func refreshAccessToken() async throws -> String {
