@@ -31,14 +31,24 @@ public actor TokenManager {
     private let storage: KeyValueStorage
     private let network: RemoteClientService
     
+    private var accessTokenDate: Date?
+    private var accessToken: String?
+    private var refreshToken: String?
+    
     public init(configuration: Configuration) {
         self.refreshInterval = configuration.refreshInterval
         self.storage = configuration.storage
         self.network = configuration.network
     }
     
-    nonisolated public func fetch(_ type: TokenType) throws -> String? {
-        nil
+    public func fetch(_ type: TokenType) async throws -> String? {
+        switch type {
+        case .accessToken:
+            if let token = try fetchAccessToken() { return token }
+            return try refreshAccessToken()
+        case .refreshToken:
+            return try await fetchRefreshToken()
+        }
     }
     
     public func remove(_ type: TokenType) {
@@ -55,5 +65,20 @@ public actor TokenManager {
     
     public func store(_ tokens: [TokenType: String]) {
         
+    }
+    
+    private func fetchAccessToken() throws -> String? {
+        guard let accessToken = accessToken, let accessTokenDate = accessTokenDate else { return nil }
+        guard Date.now < accessTokenDate.addingTimeInterval(refreshInterval) else { throw TokenError.expiredToken }
+        return accessToken
+    }
+    
+    private func fetchRefreshToken() async throws -> String? {
+        if let token = self.refreshToken {
+            return token
+        }
+        
+        self.refreshToken = try await storage.load(TokenManager.refreshTokenKey)
+        return self.refreshToken
     }
 }
