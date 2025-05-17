@@ -21,7 +21,7 @@ final class MockAPIClient: APIClient {
     "backgroundImageURL": "",
     "followerCount": 0,
     "followingCount": 0,
-    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZGtmZnhiampjQHByaXZhdGVyZWxheS5hcHBsZWlkLmNvbSIsInVzZXJJZCI6MTI1Mywicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTc0MjM1MzU3MywiZXhwIjoxNzQyMzU3MTczfQ.ooslgZnyRer7HtsJn9Y0aSq4KN2scBE4deuQQIGUXww",
+    "accessToken": "\(UUID().uuidString)",
     "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnZGtmZnhiampjQHByaXZhdGVyZWxheS5hcHBsZWlkLmNvbSIsInVzZXJJZCI6MTI1Mywicm9sZSI6IlJPTEVfVVNFUiIsImlhdCI6MTc0MjM1MzU3MiwiZXhwIjoxNzQ0OTQ1NTcyfQ.qVD0Mv0rwoH2Q6YoboxwYMFkx0pjNzJO_UtnAfDxKSk",
     "createdDate": "2025-03-19T12:06:09.358742"
 }
