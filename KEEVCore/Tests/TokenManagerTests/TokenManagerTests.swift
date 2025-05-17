@@ -40,6 +40,7 @@ fileprivate extension TokenManager.Configuration {
 }
 @Test func 액세스_토큰을_갱신할_수_있다() async throws {
     let manager = TokenManager(configuration: .mock)
+    await manager.store([.accessToken: UUID().uuidString])
     await manager.store([.refreshToken: UUID().uuidString])
     let prevAccessToken = try await manager.fetch(.accessToken)
     let newAccessToken = try await manager.refreshAccessToken()
