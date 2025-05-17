@@ -52,7 +52,7 @@ public actor TokenManager {
         switch type {
         case .accessToken:
             let token = try fetchAccessToken()
-            return try await refreshAccessToken()
+            return token
         case .refreshToken:
             return try await fetchRefreshToken()
         }
