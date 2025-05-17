@@ -2,29 +2,31 @@ import Foundation
 import Testing
 @testable import KEEVCore
 
-extension TokenManager.Configuration {
+fileprivate extension TokenManager.Configuration {
     static var mock: Self {
-        .init(refreshInterval: 1, storage: MockStorage(), network: MockAPIClient())
+        .init(refreshInterval: 100000, storage: MockStorage(), network: MockAPIClient())
     }
 }
 
 // MARK: fetch 테스트
-@Test func 액세스_토큰이_없을_때_nil을_반환한다() async throws {
+@Test func 액세스_토큰이_없을_때_에러를_반환한다() async throws {
     let manager = TokenManager(configuration: .mock)
-    let _ = try await manager.fetch(.accessToken)
-    #expect(true)
+    await #expect(throws: TokenError.self, performing: {
+        let _ = try await manager.fetch(.accessToken)
+    })
 }
 
-@Test func 리프레시_토큰이_없을_때_nil을_반환한다() async throws {
+@Test func 리프레시_토큰이_없을_때_에러를_반환한다() async throws {
     let manager = TokenManager(configuration: .mock)
-    let _ = try await manager.fetch(.refreshToken)
-    #expect(true)
+    await #expect(throws: TokenError.tokenNotFound) {
+        let _ = try await manager.fetch(.refreshToken)
+    }
 }
 
 @Test func 액세스_토큰이_만료되었을_때_expired를_반환한다() async throws {
-    let manager = TokenManager(configuration: .mock)
+    let manager = TokenManager(configuration: .init(refreshInterval: 0, storage: MockStorage(), network: MockAPIClient()))
     await manager.store([.accessToken: UUID().uuidString])
-    await #expect(throws: TokenError.self) {
+    await #expect(throws: TokenError.expiredToken) {
         let _ = try await manager.fetch(.accessToken)
     }
 }
@@ -50,7 +52,7 @@ extension TokenManager.Configuration {
     let manager = TokenManager(configuration: .mock)
     await manager.store([.accessToken: UUID().uuidString])
     await manager.remove(.accessToken)
-    await #expect(throws: TokenError.self) {
+    await #expect(throws: TokenError.tokenNotFound) {
         _ = try await manager.fetch(.accessToken)
     }
 }
@@ -59,7 +61,7 @@ extension TokenManager.Configuration {
     let manager = TokenManager(configuration: .mock)
     await manager.store([.refreshToken: UUID().uuidString])
     await manager.remove(.refreshToken)
-    await #expect(throws: TokenError.self) {
+    await #expect(throws: TokenError.tokenNotFound) {
         _ = try await manager.fetch(.refreshToken)
     }
 }
@@ -72,11 +74,11 @@ extension TokenManager.Configuration {
     ])
     await manager.removeAll()
     
-    await #expect(throws: TokenError.self) {
+    await #expect(throws: TokenError.tokenNotFound) {
         _ = try await manager.fetch(.accessToken)
     }
     
-    await #expect(throws: TokenError.self) {
+    await #expect(throws: TokenError.tokenNotFound) {
         _ = try await manager.fetch(.refreshToken)
     }
 }
@@ -86,7 +88,9 @@ extension TokenManager.Configuration {
     let manager = TokenManager(configuration: .mock)
     let accessToken = UUID().uuidString
     await manager.store([.accessToken: accessToken])
-    await #expect(try manager.fetch(.accessToken) == accessToken)
+    let fetchedAccessToken = try await manager.fetch(.accessToken)
+    print("aaa")
+    #expect(fetchedAccessToken == accessToken)
 }
 
 @Test func 리프레시_토큰을_정상적으로_저장한다() async throws {

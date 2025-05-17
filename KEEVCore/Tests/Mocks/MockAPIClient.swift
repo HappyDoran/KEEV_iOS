@@ -10,7 +10,7 @@ import Foundation
 import Network
 
 final class MockAPIClient: APIClient {
-    private let data: Data =
+    private var data: Data {
 """
 {
     "id": 1253,
@@ -26,6 +26,7 @@ final class MockAPIClient: APIClient {
     "createdDate": "2025-03-19T12:06:09.358742"
 }
 """.data(using: .utf8)!
+    }
     
     func request<T>(by converter: some Network.URLRequestConvertible, for type: T.Type, decoder: JSONDecoder) async throws -> T where T : Decodable {
         try decoder.decode(T.self, from: data)
