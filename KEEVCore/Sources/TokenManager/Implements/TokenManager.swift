@@ -124,7 +124,13 @@ public actor TokenManager {
             self.refreshToken = nil
             throw TokenError.tokenNotFound
         }
+        
         self.refreshToken = token
-        return self.refreshToken!
+        
+        guard let refreshToken = self.refreshToken else {
+            throw TokenError.tokenNotFound
+        }
+        
+        return refreshToken
     }
 }
