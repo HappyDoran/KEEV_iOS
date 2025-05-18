@@ -14,7 +14,7 @@ actor MockStorage: KeyValueStorage {
     
     func save<T>(_ value: T, forKey key: String, encoder: JSONEncoder) async throws where T : Decodable, T : Encodable, T : Sendable {
         let data = try encoder.encode(value)
-        storage[key] = data;
+        storage[key] = data
     }
     
     
