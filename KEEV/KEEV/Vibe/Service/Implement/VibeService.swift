@@ -9,6 +9,8 @@ import Combine
 import Foundation
 import SwiftUI
 
+import KEEVCore
+
 /// 바이브와 관련된 기능들을 수행하는 VibeService
 ///
 /// 바이브와 관련된 기능들을 수행하는 VibeService입니다.
@@ -20,7 +22,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
     static let layer: LayerType = .service(of: "VibeService")
     private let dummyUsers: [SimpleUserUIO] = [.dummy0, .dummy1, .dummy2]
     private let networkUtility: NetworkUtility = NetworkUtility()
-    private let tokenUtility = TokenUtility.shared
+    private let tokenManager = AppEnvironment.tokenManager
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     private var userProfile: DetailUserUIO? = nil
@@ -274,7 +276,7 @@ class VibeService: VibeServiceProtocol, KEEVErrorHandler {
 
 extension VibeService {
     private func getAccessToken() async throws -> String {
-        try await tokenUtility.fetchToken(for: .access)
+        try await tokenManager.fetch(.accessToken)
     }
     
     private struct VibeCountDTO: Decodable {
