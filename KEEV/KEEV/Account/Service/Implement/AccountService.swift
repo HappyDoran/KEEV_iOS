@@ -3,11 +3,7 @@ import UIKit
 
 import KEEVCore
 
-final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
-    typealias Layer = AccountService
-    
-    static let layer: LayerType = .service(of: "AccountService")
-    
+final class AccountService: AccountServiceProtocol {
     private static let refreshTokenTag = "keevRefreshToken"
     
     private let networkUtility = NetworkUtility()
@@ -26,12 +22,10 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
             updateSignInStatus(.failed)
             return .failed
         }
-
+        
         do {
             let (code, fetchedAccount) = try await fetchAccountDTO(from: .refreshAccessToken(refreshToken: token))
-            try await doAsyncWithException(caller: "autoSignIn") {
-                try await storeToken(fetchedAccount.accessToken, for: .accessToken)
-            }
+            try await storeToken(fetchedAccount.accessToken, for: .accessToken)
             return determineStatus(from: fetchedAccount, with: code)
         } catch {
             updateSignInStatus(.failed)
@@ -40,15 +34,12 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     }
     
     func signInWithApple(email: String?, user: String, identityToken: Data, authorizationCode: Data) async throws -> SignInStatus {
-        try await doAsyncWithException(caller: "signInWithApple") {
-            let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(email: email, code: authorizationCode))
+        let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(email: email, code: authorizationCode))
         
-            try await storeToken(fetchedAccount.accessToken, for: .accessToken)
-            try await storeToken(fetchedAccount.keevRefreshToken, for: .refreshToken)
-            
-            return determineStatus(from: fetchedAccount, with: code)
-        }
+        try await storeToken(fetchedAccount.accessToken, for: .accessToken)
+        try await storeToken(fetchedAccount.keevRefreshToken, for: .refreshToken)
         
+        return determineStatus(from: fetchedAccount, with: code)
     }
     
     func signUp(email: String?, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
@@ -56,32 +47,29 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
             return .failed
         }
         
-        return try await doAsyncWithException(
-            caller: "signUp"
-        ) {
-            let json = try buildUserDataJSON(email: email, nickname: nickname, description: description)
-            let (profileJPEG, backgroundJPEG) = convertToJPEG(profileImage: profileImage, backgroundImage: backgroundImage)
-            
-            guard let (boundary, data) = buildMultipartFormData(
-                id: account.id,
-                userJSON: json,
-                profileJPEG: profileJPEG,
-                backgroundJPEG: backgroundJPEG
-            ) else {
-                return .failed
-            }
-            
-            let accessToken = try await tokenManager.fetch(.accessToken)
-            
-            let router = AccountHTTPRequestRouter.modifyAccount(
-                accessToken: accessToken,
-                boundary: boundary,
-                multipartData: data
-            )
-            
-            let (code, fetchedAccount) = try await fetchAccountDTO(from: router)
-            return determineStatus(from: fetchedAccount, with: code)
+        
+        let json = try buildUserDataJSON(email: email, nickname: nickname, description: description)
+        let (profileJPEG, backgroundJPEG) = convertToJPEG(profileImage: profileImage, backgroundImage: backgroundImage)
+        
+        guard let (boundary, data) = buildMultipartFormData(
+            id: account.id,
+            userJSON: json,
+            profileJPEG: profileJPEG,
+            backgroundJPEG: backgroundJPEG
+        ) else {
+            return .failed
         }
+        
+        let accessToken = try await tokenManager.fetch(.accessToken)
+        
+        let router = AccountHTTPRequestRouter.modifyAccount(
+            accessToken: accessToken,
+            boundary: boundary,
+            multipartData: data
+        )
+        
+        let (code, fetchedAccount) = try await fetchAccountDTO(from: router)
+        return determineStatus(from: fetchedAccount, with: code)
     }
     
     func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
@@ -89,30 +77,26 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
             NotificationCenter.default.post(name: .updateUserInfo, object: nil)
             NotificationCenter.default.post(name: .updateSignInStatus, object: SignInStatus.failed)
             throw KEEVError(
-                layer: Self.layer,
+                layer: .service(of: "AccountService"),
                 caller: "updateProfile",
                 occurPoint: .local(description: "NO ACCOUNT"),
                 previousError: nil
             )
         }
         
-        let result = try await doAsyncWithException(
-            caller: "updateProfile"
-        ) {
-            try await signUp(
-                email: email,
-                nickname: nickname,
-                profileImage: profileImage,
-                backgroundImage: backgroundImage,
-                description: description
-            )
-        }
+        let result = try await signUp(
+            email: email,
+            nickname: nickname,
+            profileImage: profileImage,
+            backgroundImage: backgroundImage,
+            description: description
+        )
         
         if case .ok(let user) = result {
             return user
         } else {
             throw KEEVError(
-                layer: Self.layer,
+                layer: .service(of: "AccountService"),
                 caller: "updateProfile",
                 occurPoint: .local(description: "FAILED TO UPDATE PROFILE"),
                 previousError: nil
@@ -121,23 +105,19 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     }
     
     func signOut() async throws {
-        try await doAsyncWithException(caller: "signOut") {
             let token = try await tokenManager.fetch(.accessToken)
             let router = AccountHTTPRequestRouter.logout(accessToken: token)
             _ = try? await networkUtility.request(router: router)
             try await deleteAllTokens()
             resetStatus()
-        }
     }
     
     func deleteAccount() async throws {
-        try await doAsyncWithException(caller: "deleteAccount") {
             let token = try await tokenManager.fetch(.accessToken)
             let router = AccountHTTPRequestRouter.deleteAccount(accessToken: token)
             let _ = try await networkUtility.request(router: router)
             try await deleteAllTokens()
             resetStatus()
-        }
     }
     
     func lookAround() -> SignInStatus {
@@ -172,7 +152,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         guard (200..<300).contains(code) else {
             let error = try decoder.decode(ErrorMessageDTO.self, from: data)
             throw KEEVError(
-                layer: Self.layer,
+                layer: .service(of: "AccountService"),
                 caller: "fetchAccountDTO",
                 occurPoint: .remote(code: code, message: error.message),
                 previousError: nil
