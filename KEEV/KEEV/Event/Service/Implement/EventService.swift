@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+import KEEVCore
+
 enum SortPattern: String {
     case ascending = "asc"
     case descending = "desc"
@@ -31,7 +33,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     static let layer: LayerType = .service(of: "EventService")
     
     private let networkUtility: NetworkUtility = NetworkUtility()
-    private let tokenUtility = TokenUtility.shared
+    private let tokenManager = AppEnvironment.tokenManager
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
     /// 이벤트 목록을 가져오는 함수
@@ -136,7 +138,7 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
     func loadDetailEvent(id: Int) async throws -> DetailEventUIO {
         let router:EventHTTPRequestRouter
         
-        if let token = try? await tokenUtility.fetchToken(for: .access) {
+        if let token = try? await getAccessToken() {
             router = .fetchDetailEventWithToken(token: token, eventID: id)
         } else {
             router = .fetchDetailEvent(eventID: id)
@@ -266,6 +268,6 @@ class EventService: EventServiceProtocol, KEEVErrorHandler {
 
 extension EventService {
     private func getAccessToken() async throws -> String {
-        try await tokenUtility.fetchToken(for: .access)
+        try await tokenManager.fetch(.accessToken)
     }
 }
