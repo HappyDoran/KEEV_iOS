@@ -1,6 +1,8 @@
 import Foundation
 import UIKit
 
+import KEEVCore
+
 final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     typealias Layer = AccountService
     
@@ -9,7 +11,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     private static let refreshTokenTag = "keevRefreshToken"
     
     private let networkUtility = NetworkUtility()
-    private let tokenUtility = TokenUtility.shared
+    private let tokenManager = AppEnvironment.tokenManager
     private let decoder = JSONDecoder()
     
     private var account: AccountDTO?
@@ -20,7 +22,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
             return isRegistered(from: account) ? .ok(user: .init(account: account)) : .created
         }
         
-        guard let token = try? await tokenUtility.fetchToken(for: .refresh) else {
+        guard let token = try? await tokenManager.fetch(.refreshToken) else {
             updateSignInStatus(.failed)
             return .failed
         }
@@ -28,7 +30,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         do {
             let (code, fetchedAccount) = try await fetchAccountDTO(from: .refreshAccessToken(refreshToken: token))
             try await doAsyncWithException(caller: "autoSignIn") {
-                try await storeToken(fetchedAccount.accessToken, for: .access)
+                try await storeToken(fetchedAccount.accessToken, for: .accessToken)
             }
             return determineStatus(from: fetchedAccount, with: code)
         } catch {
@@ -41,8 +43,8 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         try await doAsyncWithException(caller: "signInWithApple") {
             let (code, fetchedAccount) = try await fetchAccountDTO(from: .signInWithApple(email: email, code: authorizationCode))
         
-            try await storeToken(fetchedAccount.accessToken, for: .access)
-            try await storeToken(fetchedAccount.keevRefreshToken, for: .refresh)
+            try await storeToken(fetchedAccount.accessToken, for: .accessToken)
+            try await storeToken(fetchedAccount.keevRefreshToken, for: .refreshToken)
             
             return determineStatus(from: fetchedAccount, with: code)
         }
@@ -69,7 +71,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
                 return .failed
             }
             
-            let accessToken = try await tokenUtility.fetchToken(for: .access)
+            let accessToken = try await tokenManager.fetch(.accessToken)
             
             let router = AccountHTTPRequestRouter.modifyAccount(
                 accessToken: accessToken,
@@ -120,7 +122,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     
     func signOut() async throws {
         try await doAsyncWithException(caller: "signOut") {
-            let token = try await tokenUtility.fetchToken(for: .access)
+            let token = try await tokenManager.fetch(.accessToken)
             let router = AccountHTTPRequestRouter.logout(accessToken: token)
             _ = try? await networkUtility.request(router: router)
             try await deleteAllTokens()
@@ -130,7 +132,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     
     func deleteAccount() async throws {
         try await doAsyncWithException(caller: "deleteAccount") {
-            let token = try await tokenUtility.fetchToken(for: .access)
+            let token = try await tokenManager.fetch(.accessToken)
             let router = AccountHTTPRequestRouter.deleteAccount(accessToken: token)
             let _ = try await networkUtility.request(router: router)
             try await deleteAllTokens()
@@ -192,9 +194,9 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
         account.email != nil
     }
     
-    private func storeToken(_ token: String?, for type: TokenUtility.TokenType) async throws {
+    private func storeToken(_ token: String?, for type: KEEVCore.TokenType) async throws {
         if let token {
-            try await tokenUtility.storeToken(token, for: type)
+            await tokenManager.store([type: token])
         }
     }
     
@@ -246,8 +248,7 @@ final class AccountService: AccountServiceProtocol, KEEVErrorHandler {
     }
     
     private func deleteAllTokens() async throws {
-        try await tokenUtility.deleteToken(for: .access)
-        try await tokenUtility.deleteToken(for: .refresh)
+        await tokenManager.removeAll()
     }
     
     private func resetStatus() {
