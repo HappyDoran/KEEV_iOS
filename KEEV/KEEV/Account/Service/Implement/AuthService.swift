@@ -8,9 +8,11 @@
 import Foundation
 import UIKit
 
+import KEEVCore
+
 final class AuthService {
     private let networkUtility = NetworkUtility()
-    private let tokenUtility = TokenUtility.shared
+    private let tokenManager = AppEnvironment.tokenManager
     private let jsonDecoder = {
         let jsonDecoder = JSONDecoder()
         let dateformatter = DateFormatter()
@@ -27,16 +29,16 @@ final class AuthService {
     }
     
     private func storeTokens(from account: AccountDTO?) async throws {
-        var tokens = [TokenUtility.TokenType: String]()
+        var tokens = [KEEVCore.TokenType: String]()
         if let accessToken = account?.accessToken {
-            tokens[.access] = accessToken
+            tokens[.accessToken] = accessToken
         }
         
         if let refreshToken = account?.keevRefreshToken {
-            tokens[.refresh] = refreshToken
+            tokens[.refreshToken] = refreshToken
         }
         
-        try await tokenUtility.storeTokens(tokens)
+        await tokenManager.store(tokens)
     }
     
     private func updateAccount(_ account: AccountDTO?) {
@@ -67,7 +69,7 @@ extension AuthService: AccountServiceProtocol {
             return .ok(user: .init(account: account))
         }
         
-        guard let refreshToken = try? await tokenUtility.fetchToken(for: .refresh) else {
+        guard let refreshToken = try? await tokenManager.fetch(.refreshToken) else {
             updateSignInStatus(.failed)
             return .failed
         }
@@ -106,7 +108,7 @@ extension AuthService: AccountServiceProtocol {
     func signUp(email: String?, nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> SignInStatus {
         guard let identityToken else {
             account = nil
-            try await tokenUtility.deleteAllTokens()
+            await tokenManager.removeAll()
             return .failed
         }
         
@@ -136,7 +138,7 @@ extension AuthService: AccountServiceProtocol {
     }
     
     func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
-        let accessToken = try await tokenUtility.fetchToken(for: .access)
+        let accessToken = try await tokenManager.fetch(.accessToken)
         let userJSON = try JSONEncoder().encode(EditInfo(nickname: nickname, description: description))
         
         var builder = MultipartFormBuilder()
@@ -168,15 +170,15 @@ extension AuthService: AccountServiceProtocol {
     }
     
     func signOut() async throws {
-        try await tokenUtility.deleteAllTokens()
+        await tokenManager.removeAll()
         resetAllStatus()
     }
     
     func deleteAccount() async throws {
-        let token = try await tokenUtility.fetchToken(for: .access)
+        let token = try await tokenManager.fetch(.accessToken)
         let router = AuthHTTPRequestRouter.deleteAccount(accessToken: token)
         let _ = try await networkUtility.requestWithStatusCode(router: router)
-        try await tokenUtility.deleteAllTokens()
+        await tokenManager.removeAll()
         resetAllStatus()
     }
     
