@@ -7,12 +7,24 @@
 
 import Foundation
 
+import KEEVCore
+import KeyValueStorage
+import Network
+
 /// 앱의 환경변수들을 저장하고 있는 구조체
 ///
 /// 앱의 환경변수들을 전역변수로 저장하고 있습니다.
 ///
 /// - Author: 라움
 struct AppEnvironment {
+    private static let tokenConfiguration = TokenManager.Configuration(
+        refreshInterval: 60 * 55,
+        storage: KeyChainStorage(service: "hmhzKEEVService"),
+        network: URLSessionAPIClient()
+    )
+    
+    static let tokenManager = TokenManager(configuration: Self.tokenConfiguration)
+    
     static let diContainer: DIContainer = .init()
     
     /// KEEV의 현재 버전 정보를 담고 있는 프로퍼티입니다.
