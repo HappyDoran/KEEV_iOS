@@ -8,13 +8,15 @@
 import Combine
 import Foundation
 
+import KEEVCore
+
 class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     typealias Layer = ReplyService
     
     static let layer: LayerType = .service(of: "ReplyService")
     
     private let networkUtility = NetworkUtility()
-    private let tokenUtility = TokenUtility.shared
+    private let tokenManager = AppEnvironment.tokenManager
     private var currentUser: DetailUserUIO?
     private let jsonDecoder: JSONDecoder = JSONDecoder()
     
@@ -52,7 +54,7 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
     ///
     /// - Author: Doran
     func fetchReplies(for vibeID: Int) async throws -> [ReplyUIO] {
-        let token = try? await self.tokenUtility.fetchToken(for: .access)
+        let token = try? await getAccessToken()
         let router = ReplyHTTPRequestRouter.fetchReplies(token: token, vibeID: vibeID)
         
         let data = try await self.networkUtility.request(router: router)
@@ -186,6 +188,6 @@ class ReplyService: ReplyServiceProtocol, KEEVErrorHandler {
 
 extension ReplyService {
     private func getAccessToken() async throws -> String {
-        try await tokenUtility.fetchToken(for: .access)
+        try await tokenManager.fetch(.accessToken)
     }
 }

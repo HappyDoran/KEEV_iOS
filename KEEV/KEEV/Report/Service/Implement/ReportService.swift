@@ -18,7 +18,7 @@ class ReportService: ReportServiceProtocol, KEEVErrorHandler {
     static let layer: LayerType = .service(of: "ReportService")
     
     private let networkUtility = NetworkUtility()
-    private let tokenUtility = TokenUtility.shared
+    private let tokenManager = AppEnvironment.tokenManager
     private let jsonDecoder = JSONDecoder()
     
     private struct ReportResponse: Decodable {
@@ -95,7 +95,7 @@ class ReportService: ReportServiceProtocol, KEEVErrorHandler {
 
 extension ReportService {
     private func getAccessToken() async throws -> String {
-        try await tokenUtility.fetchToken(for: .access)
+        try await tokenManager.fetch(.accessToken)
     }
 }
 

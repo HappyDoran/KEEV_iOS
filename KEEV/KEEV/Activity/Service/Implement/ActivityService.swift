@@ -9,6 +9,8 @@ import Combine
 import Foundation
 import UIKit
 
+import KEEVCore
+
 /// 사용자가 서비스를 사용하면서 수행한 액티비티를 위한 ActivityService
 ///
 /// 사용자가 서비스를 사용하면서 수행한 액태비티를 위한 ActivityService입니다.
@@ -20,7 +22,7 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     static let layer: LayerType = .service(of: "ActivityService")
     
     private let networkUtility = NetworkUtility()
-    private let tokenUtility = TokenUtility.shared
+    private let tokenManager = AppEnvironment.tokenManager
     private let jsonDecoder: JSONDecoder
     
     private var currentUser: DetailUserUIO? = nil
@@ -67,7 +69,7 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     }
     
     func updateProfile(nickname: String, profileImage: UIImage?, backgroundImage: UIImage?, description: String) async throws -> DetailUserUIO {
-        let accessToken = try await tokenUtility.fetchToken(for: .access)
+        let accessToken = try await getAccessToken()
         let userJSON = try JSONEncoder().encode(EditInfo(nickname: nickname, description: description))
         
         var builder = MultipartFormBuilder()
@@ -148,21 +150,21 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     }
     
     func follow(_ userID: Int) async throws -> FollowState {
-        let token = try await tokenUtility.fetchToken(for: .access)
+        let token = try await getAccessToken()
         let router = FollowHTTPRequestRouter.follow(token: token, userID: userID)
         let data = try await networkUtility.request(router: router)
         return try jsonDecoder.decode(FollowState.self, from: data)
     }
     
     func unfollow(_ userID: Int) async throws -> FollowState {
-        let token = try await tokenUtility.fetchToken(for: .access)
+        let token = try await getAccessToken()
         let router = FollowHTTPRequestRouter.unfollow(token: token, userID: userID)
         let data = try await networkUtility.request(router: router)
         return try jsonDecoder.decode(FollowState.self, from: data)
     }
     
     func checkFollowing(of userID: Int) async throws -> FollowState {
-        guard let token = try? await tokenUtility.fetchToken(for: .access) else {
+        guard let token = try? await getAccessToken() else {
             return .notFollowing
         }
         let router = FollowHTTPRequestRouter.checkFollow(token: token, userID: userID)
@@ -183,7 +185,7 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
     }
     
     func myUserList(type: UserFollowType, page: Int, size: Int) async throws -> PaginatedResponse<UserFollowUIO> {
-        let token = try await tokenUtility.fetchToken(for: .access)
+        let token = try await getAccessToken()
         let router: FollowHTTPRequestRouter
         
         switch type {
@@ -223,6 +225,10 @@ final class ActivityService: ActivityServiceProtocol, KEEVErrorHandler {
 }
 
 private extension ActivityService {
+    func getAccessToken() async throws -> String {
+        try await tokenManager.fetch(.accessToken)
+    }
+    
     struct EditInfo: Encodable {
         let nickname: String
         let description: String

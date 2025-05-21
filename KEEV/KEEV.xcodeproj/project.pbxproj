@@ -14,6 +14,7 @@
 		B51BEC362DCF75E100BAE17E /* Caching in Frameworks */ = {isa = PBXBuildFile; productRef = B51BEC352DCF75E100BAE17E /* Caching */; };
 		B54AC1192DC743880037ABA8 /* KeyValueStorage in Frameworks */ = {isa = PBXBuildFile; productRef = B54AC1182DC743880037ABA8 /* KeyValueStorage */; };
 		B55264962DC276A000414B48 /* Network in Frameworks */ = {isa = PBXBuildFile; productRef = B55264952DC276A000414B48 /* Network */; };
+		B5B60CC92DDC5C570039D5B8 /* KEEVCore in Frameworks */ = {isa = PBXBuildFile; productRef = B5B60CC82DDC5C570039D5B8 /* KEEVCore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +41,7 @@
 		B51BE9BF2DCF746F00BAE17E /* Caching */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Caching; path = ../Foundation/Caching; sourceTree = "<group>"; };
 		B54ABE9E2DC73E650037ABA8 /* KeyValueStorage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = KeyValueStorage; path = ../Foundation/KeyValueStorage; sourceTree = "<group>"; };
 		B55262122DC12CB900414B48 /* Network */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Network; path = ../Foundation/Network; sourceTree = "<group>"; };
+		B5B60CC72DDC5C140039D5B8 /* KEEVCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = KEEVCore; path = ../KEEVCore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -83,6 +85,7 @@
 				0DD2592D2D2FFEAE0052A11E /* FirebaseCrashlytics in Frameworks */,
 				0DD2592B2D2FFEAE0052A11E /* FirebaseCore in Frameworks */,
 				B54AC1192DC743880037ABA8 /* KeyValueStorage in Frameworks */,
+				B5B60CC92DDC5C570039D5B8 /* KEEVCore in Frameworks */,
 				B51BEC362DCF75E100BAE17E /* Caching in Frameworks */,
 				01AA7DBF2CD61D5F003CAA7C /* Lottie in Frameworks */,
 				B55264962DC276A000414B48 /* Network in Frameworks */,
@@ -130,6 +133,7 @@
 		B55262112DC12CB900414B48 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				B5B60CC72DDC5C140039D5B8 /* KEEVCore */,
 				B51BE9BF2DCF746F00BAE17E /* Caching */,
 				B55262122DC12CB900414B48 /* Network */,
 				B54ABE9E2DC73E650037ABA8 /* KeyValueStorage */,
@@ -165,6 +169,7 @@
 				B55264952DC276A000414B48 /* Network */,
 				B54AC1182DC743880037ABA8 /* KeyValueStorage */,
 				B51BEC352DCF75E100BAE17E /* Caching */,
+				B5B60CC82DDC5C570039D5B8 /* KEEVCore */,
 			);
 			productName = KEEV;
 			productReference = 0DF5F1AF2CBE82560031DEF0 /* KEEV.app */;
@@ -881,6 +886,10 @@
 		B55264952DC276A000414B48 /* Network */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Network;
+		};
+		B5B60CC82DDC5C570039D5B8 /* KEEVCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = KEEVCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
