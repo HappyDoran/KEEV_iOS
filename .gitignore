@@ -140,3 +140,4 @@ xcuserdata
 *.xcuserstate
 *.xcconfig
 GoogleService-Info.plist
+.claude/settings.local.json
